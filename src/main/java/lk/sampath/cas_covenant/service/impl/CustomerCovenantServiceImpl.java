@@ -3,24 +3,19 @@ package lk.sampath.cas_covenant.service.impl;
 import java.util.*;
 import java.util.stream.Collectors;
 import lk.sampath.cas_covenant.common.PropertyFileValue;
-import lk.sampath.cas_covenant.controller.base_controller.StandardResponse;
 import lk.sampath.cas_covenant.dto.*;
 import lk.sampath.cas_covenant.entity.CustomerCovenant;
 import lk.sampath.cas_covenant.entity.NoneComplianceCovenant;
 import lk.sampath.cas_covenant.entity.facilityPaper.FacilityPaper;
 import lk.sampath.cas_covenant.enums.CovenantStatus;
-import lk.sampath.cas_covenant.enums.ErrorEnums;
 import lk.sampath.cas_covenant.enums.YesNoStatus;
 import lk.sampath.cas_covenant.exception.ApiRequestException;
 import lk.sampath.cas_covenant.repository.CustomerCovenantRepository;
 import lk.sampath.cas_covenant.repository.FacilityPaperRepository;
 import lk.sampath.cas_covenant.repository.NoneComplianceCovenantRepository;
 import lk.sampath.cas_covenant.service.CustomerCovenantService;
-import lk.sampath.cas_covenant.service.FacilityCovenantService;
 import lk.sampath.cas_covenant.service.IntegrationService;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,116 +25,71 @@ import org.springframework.transaction.annotation.Transactional;
 @Log4j2
 public class CustomerCovenantServiceImpl implements CustomerCovenantService {
 
+  private static final String SPECIAL_COMMENT_SRL = "-999";
+  private static final int SPECIAL_COMMENT_SERIAL = -999;
+
   private final CustomerCovenantRepository customerCovenantRepository;
   private final PropertyFileValue propertyFileValue;
   private final FacilityPaperRepository facilityPaperRepository;
   private final IntegrationService integrationService;
   private final NoneComplianceCovenantRepository noneComplianceCovenantRepository;
-  private final FacilityCovenantService facilityCovenantService;
 
-  @Autowired
   public CustomerCovenantServiceImpl(
-          CustomerCovenantRepository customerCovenantRepository,
-          PropertyFileValue propertyFileValue,
-          FacilityPaperRepository facilityPaperRepository, IntegrationService integrationService, NoneComplianceCovenantRepository noneComplianceCovenantRepository, FacilityCovenantService facilityCovenantService) {
+      CustomerCovenantRepository customerCovenantRepository,
+      PropertyFileValue propertyFileValue,
+      FacilityPaperRepository facilityPaperRepository,
+      IntegrationService integrationService,
+      NoneComplianceCovenantRepository noneComplianceCovenantRepository) {
     this.customerCovenantRepository = customerCovenantRepository;
     this.propertyFileValue = propertyFileValue;
     this.facilityPaperRepository = facilityPaperRepository;
-      this.integrationService = integrationService;
-      this.noneComplianceCovenantRepository = noneComplianceCovenantRepository;
-      this.facilityCovenantService = facilityCovenantService;
+    this.integrationService = integrationService;
+    this.noneComplianceCovenantRepository = noneComplianceCovenantRepository;
   }
 
   @Override
   @Transactional(propagation = Propagation.REQUIRED)
-  public ResponseEntity<StandardResponse<List<CustomerCovenantDTO>>> saveCustomerCovenant(List<CustomerCovenantDTO> dtoList) throws ApiRequestException {
+  public List<CustomerCovenantDTO> saveCustomerCovenant(List<CustomerCovenantDTO> dtoList)
+      throws ApiRequestException {
 
-    log.info("START | saveCustomerCovenants");
+    log.info("START | saveCustomerCovenants | count: {}", dtoList == null ? 0 : dtoList.size());
 
     if (dtoList == null || dtoList.isEmpty()) {
       throw new ApiRequestException("Customer covenant list cannot be null or empty");
     }
 
-    List<CustomerCovenant> entityList = new ArrayList<>();
-    List<CustomerCovenantDTO> responseList = new ArrayList<>();
-
     try {
-      // 1. Extract facility reference
-      Integer facilityPaperID = dtoList.get(0).getFacilityPaperId();
+      Map<Integer, FacilityPaper> facilityMap = loadFacilityPaperMap(dtoList);
+      Map<Integer, Integer> nextDisplayOrderByFacility = new HashMap<>();
 
-      // 2. Get max display order directly (OPTIMIZED)
-      Integer maxDisplayOrder = customerCovenantRepository.findMaxDisplayOrderByFacilityPaperID(facilityPaperID);
-
-      int displayOrder = (maxDisplayOrder != null) ? maxDisplayOrder + 1 : 1;
-
-      // 3. Fetch all FacilityPapers in ONE query
-      Set<Integer> facilityIds = dtoList.stream().map(CustomerCovenantDTO::getFacilityPaperId).collect(Collectors.toSet());
-
-      Map<Integer, FacilityPaper> facilityMap = facilityPaperRepository.findAllById(facilityIds).stream()
-              .collect(Collectors.toMap(FacilityPaper::getFacilityPaperID, fp -> fp));
-
-      // 4. Process DTOs
+      List<CustomerCovenant> entityList = new ArrayList<>(dtoList.size());
       for (CustomerCovenantDTO dto : dtoList) {
-        try {
-          FacilityPaper facilityPaper = facilityMap.get(dto.getFacilityPaperId());
-
-          if (facilityPaper == null) {
-            throw new ApiRequestException("Invalid FacilityPaper ID: " + dto.getFacilityPaperId());
-          }
-
-          CustomerCovenant entity = new CustomerCovenant();
-
-          entity.setRequestUUID(propertyFileValue.getRequestUUID());
-          entity.setCreatedBy(dto.getCreatedBy());
-          entity.setCreatedUserDisplayName(dto.getCreatedUserDisplayName());
-          entity.setCreatedDate(new Date());
-
-          entity.setCustomerFinancialID(dto.getCustomerFinancialID());
-          entity.setDisbursementType(dto.getDisbursementType());
-          entity.setApplicableType(dto.getApplicableType());
-
-          entity.setFacilityPaper(facilityPaper);
-
-          entity.setCovenant_Code(dto.getCovenant_Code());
-          entity.setCovenant_Description(dto.getCovenant_Description());
-          entity.setCovenant_Frequency(dto.getCovenant_Frequency());
-          entity.setCovenant_Due_Date(dto.getCovenant_Due_Date());
-          entity.setNoFrequencyDueDate(dto.getNoFrequencyDueDate());
-
-          entity.setStatus(CovenantStatus.Active);
-          entity.setIsExists(YesNoStatus.N);
-
-          entity.setDisplayOrder(displayOrder++);
-
-          entityList.add(entity);
-
-        } catch (Exception ex) {
-          log.warn("Skipping invalid DTO: {} | {}", dto.getCustomerFinancialID(), ex.getMessage());
-        }
+        FacilityPaper facilityPaper = requireFacilityPaper(facilityMap, dto.getFacilityPaperId());
+        int displayOrder =
+            nextDisplayOrder(nextDisplayOrderByFacility, dto.getFacilityPaperId());
+        entityList.add(mapToEntity(dto, facilityPaper, displayOrder));
       }
 
-      // 5. Batch save
-      List<CustomerCovenant> saved = customerCovenantRepository.saveAll(entityList);
+      List<CustomerCovenantDTO> responseList =
+          customerCovenantRepository.saveAll(entityList).stream()
+              .map(CustomerCovenantDTO::new)
+              .collect(Collectors.toList());
 
-      // 6. Map response
-      saved.forEach(e -> responseList.add(new CustomerCovenantDTO(e)));
+      log.info("END | saveCustomerCovenants | saved: {}", responseList.size());
+      return responseList;
 
-      log.info("Saved {} records, skipped {}", saved.size(), dtoList.size() - saved.size());
-
+    } catch (ApiRequestException e) {
+      throw e;
     } catch (Exception e) {
       log.error("Batch save failed", e);
-      throw new ApiRequestException("Failed to save customer covenants: " + e.getMessage());
+      throw new ApiRequestException("Failed to save customer covenants: " + e.getMessage(), e);
     }
-
-    return ResponseEntity.ok(
-        new StandardResponse<>(
-            ErrorEnums.SUCCESS_CODE.getStatus(), ErrorEnums.SUCCESS_CODE.getLabel(), responseList));
   }
 
   @Override
   @Transactional(propagation = Propagation.REQUIRED)
-  public ResponseEntity<StandardResponse<CustomerCovenantDTO>> updateCustomerCovenant(
-          CustomerCovenantDTO dto) throws ApiRequestException {
+  public CustomerCovenantDTO updateCustomerCovenant(CustomerCovenantDTO dto)
+      throws ApiRequestException {
 
     log.info("START | updateCustomerCovenant | ID: {}", dto.getCustomerCovenantId());
 
@@ -148,224 +98,301 @@ public class CustomerCovenantServiceImpl implements CustomerCovenantService {
     }
 
     try {
-      // 1. Fetch existing record
-      CustomerCovenant entity = customerCovenantRepository.findById(dto.getCustomerCovenantId())
-              .orElseThrow(() -> new ApiRequestException(
-                      "CustomerCovenant not found for ID: " + dto.getCustomerCovenantId()));
+      CustomerCovenant entity =
+          customerCovenantRepository
+              .findById(dto.getCustomerCovenantId())
+              .orElseThrow(
+                  () ->
+                      new ApiRequestException(
+                          "CustomerCovenant not found for ID: " + dto.getCustomerCovenantId()));
 
-      // 2. Update fields (ONLY mutable ones)
-      entity.setCustomerFinancialID(dto.getCustomerFinancialID());
-      entity.setDisbursementType(dto.getDisbursementType());
-      entity.setApplicableType(dto.getApplicableType());
-
-      entity.setCovenant_Code(dto.getCovenant_Code());
-      entity.setCovenant_Description(dto.getCovenant_Description());
-      entity.setCovenant_Frequency(dto.getCovenant_Frequency());
-      entity.setCovenant_Due_Date(dto.getCovenant_Due_Date());
-      entity.setNoFrequencyDueDate(dto.getNoFrequencyDueDate());
-
-      // Optional audit fields
-      entity.setModifiedBy(dto.getCreatedBy());
-      entity.setLastModifiedDate(new Date());
-
-      // 3. Save
-      CustomerCovenant updated = customerCovenantRepository.save(entity);
-
-      // 4. Response
-      CustomerCovenantDTO responseDTO = new CustomerCovenantDTO(updated);
+      applyUpdates(entity, dto);
+      CustomerCovenantDTO responseDTO =
+          new CustomerCovenantDTO(customerCovenantRepository.save(entity));
 
       log.info("END | updateCustomerCovenant | ID: {}", dto.getCustomerCovenantId());
+      return responseDTO;
 
-      return ResponseEntity.ok(
-              new StandardResponse<>(
-                      ErrorEnums.SUCCESS_CODE.getStatus(),
-                      ErrorEnums.SUCCESS_CODE.getLabel(),
-                      responseDTO
-              )
-      );
-
+    } catch (ApiRequestException e) {
+      throw e;
     } catch (Exception e) {
       log.error("Error updating covenant ID {}: {}", dto.getCustomerCovenantId(), e.getMessage(), e);
-      throw new ApiRequestException("Failed to update customer covenant: " + e.getMessage());
+      throw new ApiRequestException("Failed to update customer covenant: " + e.getMessage(), e);
     }
   }
 
   @Override
-  @Transactional(propagation = Propagation.SUPPORTS)
-  public ResponseEntity<StandardResponse<List<CustomerCovenantDTO>>> getAllCustomerCovenant(Integer facilityPaperId) throws ApiRequestException {
+  @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+  public List<CustomerCovenantDTO> getAllCustomerCovenant(Integer facilityPaperId)
+      throws ApiRequestException {
 
     log.info("START | getAllCustomerCovenant | FacilityPaperID: {}", facilityPaperId);
 
-    if(facilityPaperId == null) {
+    if (facilityPaperId == null) {
       throw new ApiRequestException("FacilityPaper ID is required");
     }
 
-    try{
-        List<CustomerCovenant> covenants = customerCovenantRepository.findCustomerCovenantsByFacilityPaperID(facilityPaperId);
+    try {
+      List<CustomerCovenantDTO> responseList =
+          customerCovenantRepository
+              .findCustomerCovenantsByFacilityPaperID(facilityPaperId)
+              .stream()
+              .map(CustomerCovenantDTO::new)
+              .collect(Collectors.toList());
 
-        List<CustomerCovenantDTO> responseList = covenants.stream()
-                .map(CustomerCovenantDTO::new)
-                .collect(Collectors.toList());
+      log.info(
+          "END | getAllCustomerCovenant | FacilityPaperID: {} | Records: {}",
+          facilityPaperId,
+          responseList.size());
+      return responseList;
 
-        log.info("END | getAllCustomerCovenant | FacilityPaperID: {} | Records: {}", facilityPaperId, responseList.size());
-
-        return ResponseEntity.ok(
-                new StandardResponse<>(
-                        ErrorEnums.SUCCESS_CODE.getStatus(),
-                        ErrorEnums.SUCCESS_CODE.getLabel(),
-                        responseList
-                )
-        );
+    } catch (ApiRequestException e) {
+      throw e;
     } catch (Exception e) {
-        log.error("Error fetching covenants for FacilityPaperID {}: {}", facilityPaperId, e.getMessage(), e);
-        throw new ApiRequestException("Failed to fetch customer covenants: " + e.getMessage());
+      log.error(
+          "Error fetching covenants for FacilityPaperID {}: {}",
+          facilityPaperId,
+          e.getMessage(),
+          e);
+      throw new ApiRequestException("Failed to fetch customer covenants: " + e.getMessage(), e);
     }
-
   }
 
-  @Transactional(propagation = Propagation.SUPPORTS, rollbackFor = ApiRequestException.class)
-  public CovenantDetailsFinacleDTO getCovenantDetailsFromFinacle(LoadCovenantDataDTO loadCovenantDataDTO) throws ApiRequestException{
+  @Override
+  @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+  public CovenantDetailsFinacleDTO getCovenantDetailsFromFinacle(
+      LoadCovenantDataDTO loadCovenantDataDTO) throws ApiRequestException {
 
-    String customerFinacleId = customerCovenantRepository.findCustomerFinancialId(loadCovenantDataDTO.getFacilityPaperId());
+    String customerFinacleId =
+        customerCovenantRepository.findCustomerFinancialId(
+            loadCovenantDataDTO.getFacilityPaperId());
     loadCovenantDataDTO.setCustId(customerFinacleId);
 
-    CovenantDetailsFinacleDTO covenantDetailsFinacleDTO = integrationService.getCovenantDetailsFromFinacle(loadCovenantDataDTO);
+    CovenantDetailsFinacleDTO details =
+        integrationService.getCovenantDetailsFromFinacle(loadCovenantDataDTO);
 
-    if (covenantDetailsFinacleDTO != null && covenantDetailsFinacleDTO.getCovenant() != null) {
-      List<CovenantDataDTO> covenantList = covenantDetailsFinacleDTO.getCovenant();
-
-      covenantList.sort((c1, a1) -> {
-        boolean isc_other = c1.getCovenantInq().stream().anyMatch(cov -> cov.getCovCod().endsWith("_OTH"));
-        boolean isa_other = a1.getCovenantInq().stream().anyMatch(cov -> cov.getCovCod().endsWith("_OTH"));
-
-        if (isc_other && !isa_other) return 1;
-        if (!isc_other && isa_other) return -1;
-        return 0;
-      });
-
-      covenantDetailsFinacleDTO.setCovenant(covenantList);
-
-      // Get matching comments
-      Map<String, NoneComplianceCovenantDTO> matchingComments = getMatchingCommentsMap(covenantDetailsFinacleDTO, loadCovenantDataDTO.getFacilityPaperId());
-
-      // Add comments to CovenantInquiryDTO
-      for (CovenantDataDTO covenantData : covenantList) {
-        for (CovenantInquiryDTO inquiry : covenantData.getCovenantInq()) {
-          if (matchingComments.containsKey(inquiry.getSrlNum())) {
-            inquiry.setNonComplianceCovenantDTO(matchingComments.get(inquiry.getSrlNum()));
-          }
-        }
-      }
-
-      // Handle the -999 comment separately
-      if (matchingComments.containsKey("-999")) {
-        NoneComplianceCovenantDTO specialComment = matchingComments.get("-999");
-        if(specialComment.getFacilityPaperId().equals(loadCovenantDataDTO.getFacilityPaperId())){
-          covenantDetailsFinacleDTO.setSpecialComment(specialComment);
-        }
-      }
-
+    if (details == null || details.getCovenant() == null) {
+      return details;
     }
 
-    return covenantDetailsFinacleDTO;
+    List<CovenantDataDTO> covenantList = details.getCovenant();
+    sortOtherCovenantsLast(covenantList);
+    details.setCovenant(covenantList);
 
+    attachNonComplianceComments(details, covenantList, loadCovenantDataDTO.getFacilityPaperId());
+    return details;
   }
 
-  private Map<String, NoneComplianceCovenantDTO> getMatchingCommentsMap(CovenantDetailsFinacleDTO covenantDetailsFinacleDTO, Integer facilityPaperId) throws ApiRequestException {
-    log.info("Getting matching comments for facilityPaperId: {}", facilityPaperId);
+  @Override
+  @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+  public List<NoneComplianceCovenantDTO> getCovenantCommentList(Integer facilityPaperId)
+      throws ApiRequestException {
 
-    // Get the srlNumList and validate
-    List<String> srlNumList = getSrlNumList(covenantDetailsFinacleDTO);
-    if (srlNumList == null || srlNumList.isEmpty()) {
-      log.warn("SrlNum list is null or empty");
-      return Collections.emptyMap();
-    }
+    List<NoneComplianceCovenant> comments =
+        noneComplianceCovenantRepository.findByFacilityPaperId(facilityPaperId);
 
-    // Get the covenant comments and validate
-    List<NoneComplianceCovenantDTO> covenantComments = getCovenantCommentList(facilityPaperId);
-    if (covenantComments == null || covenantComments.isEmpty()) {
-      log.warn("Covenant comments list is null or empty");
-      return Collections.emptyMap();
-    }
-
-    // Create a map of serialNumber to comment
-    return covenantComments.stream()
-            .filter(comment ->
-                    (comment.getSerialNumber() != null && srlNumList.contains(comment.getSerialNumber().toString()))
-                            || (comment.getSerialNumber() != null && comment.getSerialNumber() == -999)
-            )
-            .collect(Collectors.toMap(
-                    comment -> comment.getSerialNumber().toString(),
-                    comment -> comment
-            ));
-  }
-
-  public List<String> getSrlNumList(CovenantDetailsFinacleDTO covenantDetailsFinacleDTO) {
-    log.info("Extracting SrlNum list from CovenantDetailsFinacleDTO");
-    if (covenantDetailsFinacleDTO == null || covenantDetailsFinacleDTO.getCovenant() == null) {
-      return Collections.emptyList();
-    }
-
-    List<String> srlNumList = covenantDetailsFinacleDTO.getCovenant().stream()
-            .flatMap(covenantData -> covenantData.getCovenantInq().stream())
-            .map(CovenantInquiryDTO::getSrlNum)
-            .collect(Collectors.toList());
-
-    log.info("SrlNum List: {}", srlNumList);
-    return srlNumList;
-  }
-
-  @Transactional(propagation = Propagation.SUPPORTS, rollbackFor = ApiRequestException.class)
-  public List<NoneComplianceCovenantDTO> getCovenantCommentList(Integer facilityPaperId) throws ApiRequestException {
-    List<NoneComplianceCovenant> noneComplianceCovenant = noneComplianceCovenantRepository.findByFacilityPaperId(facilityPaperId);
-
-    if (noneComplianceCovenant == null) {
+    if (comments == null) {
       throw new ApiRequestException("No comments found for Facility Paper ID: " + facilityPaperId);
     }
 
-    List<NoneComplianceCovenantDTO> response = noneComplianceCovenant.stream()
-            .map(NoneComplianceCovenantDTO::new)
-            .collect(Collectors.toList());
-
-    return response;
+    return comments.stream().map(NoneComplianceCovenantDTO::new).collect(Collectors.toList());
   }
 
-  @Transactional(propagation = Propagation.REQUIRED, rollbackFor = ApiRequestException.class)
-  public NoneComplianceCovenantDTO addEditCommentToCovenant(NoneComplianceCovenantDTO noneComplianceCovenantDTO) throws ApiRequestException {
+  @Override
+  @Transactional(propagation = Propagation.REQUIRED)
+  public NoneComplianceCovenantDTO addEditCommentToCovenant(NoneComplianceCovenantDTO dto)
+      throws ApiRequestException {
 
-    log.info("Adding comment to covenant: {}", noneComplianceCovenantDTO);
+    log.info("Adding comment to covenant: {}", dto);
 
-    NoneComplianceCovenant noneComplianceCovenant;
+    NoneComplianceCovenant entity =
+        dto.getNonComplianceCovenantId() != null
+            ? noneComplianceCovenantRepository
+                .findById(dto.getNonComplianceCovenantId())
+                .orElseThrow(
+                    () ->
+                        new ApiRequestException(
+                            "Covenant comment with ID "
+                                + dto.getNonComplianceCovenantId()
+                                + " not found"))
+            : new NoneComplianceCovenant();
 
-    if(noneComplianceCovenantDTO.getNonComplianceCovenantId() != null){
-      noneComplianceCovenant = noneComplianceCovenantRepository.findById(noneComplianceCovenantDTO.getNonComplianceCovenantId()).orElseThrow(() -> new ApiRequestException("Covenant comment with ID " + noneComplianceCovenantDTO.getNonComplianceCovenantId() + " not found"));
-      noneComplianceCovenant.setSerialNumber(noneComplianceCovenantDTO.getSerialNumber());
-      noneComplianceCovenant.setFacilityPaperId(noneComplianceCovenantDTO.getFacilityPaperId());
-      noneComplianceCovenant.setComment(noneComplianceCovenantDTO.getComment());
-      noneComplianceCovenant.setAddedDate(new Date());
-      noneComplianceCovenant.setAddedBy(noneComplianceCovenantDTO.getAddedBy());
-      noneComplianceCovenant.setAddedUserDisplayName(noneComplianceCovenant.getAddedUserDisplayName());
-      noneComplianceCovenant.setAddedUserId(noneComplianceCovenantDTO.getAddedUserId());
-    }
+    applyCommentFields(entity, dto);
+    noneComplianceCovenantRepository.save(entity);
 
-    else {
-      noneComplianceCovenant = new NoneComplianceCovenant();
-      noneComplianceCovenant.setSerialNumber(noneComplianceCovenantDTO.getSerialNumber());
-      noneComplianceCovenant.setFacilityPaperId(noneComplianceCovenantDTO.getFacilityPaperId());
-      noneComplianceCovenant.setComment(noneComplianceCovenantDTO.getComment());
-      noneComplianceCovenant.setAddedDate(new Date());
-      noneComplianceCovenant.setAddedBy(noneComplianceCovenantDTO.getAddedBy());
-      noneComplianceCovenant.setAddedUserDisplayName(noneComplianceCovenant.getAddedUserDisplayName());
-      noneComplianceCovenant.setAddedUserId(noneComplianceCovenantDTO.getAddedUserId());
-    }
-
-    noneComplianceCovenantRepository.save(noneComplianceCovenant);
-
-    NoneComplianceCovenantDTO response = new NoneComplianceCovenantDTO(noneComplianceCovenant);
-
+    NoneComplianceCovenantDTO response = new NoneComplianceCovenantDTO(entity);
     log.info("Comment added/edited successfully: {}", response);
-
     return response;
   }
 
+  // --- private helpers ---
+
+  private Map<Integer, FacilityPaper> loadFacilityPaperMap(List<CustomerCovenantDTO> dtoList) {
+    Set<Integer> facilityIds =
+        dtoList.stream().map(CustomerCovenantDTO::getFacilityPaperId).collect(Collectors.toSet());
+
+    return facilityPaperRepository.findAllById(facilityIds).stream()
+        .collect(Collectors.toMap(FacilityPaper::getFacilityPaperID, fp -> fp));
+  }
+
+  private FacilityPaper requireFacilityPaper(
+      Map<Integer, FacilityPaper> facilityMap, Integer facilityPaperId) {
+    FacilityPaper facilityPaper = facilityMap.get(facilityPaperId);
+    if (facilityPaper == null) {
+      throw new ApiRequestException("Invalid FacilityPaper ID: " + facilityPaperId);
+    }
+    return facilityPaper;
+  }
+
+  private int nextDisplayOrder(
+      Map<Integer, Integer> nextDisplayOrderByFacility, Integer facilityPaperId) {
+    return nextDisplayOrderByFacility.compute(
+        facilityPaperId,
+        (id, current) -> {
+          if (current == null) {
+            Integer maxOrder =
+                customerCovenantRepository.findMaxDisplayOrderByFacilityPaperID(id);
+            return (maxOrder != null ? maxOrder : 0) + 1;
+          }
+          return current + 1;
+        });
+  }
+
+  private CustomerCovenant mapToEntity(
+      CustomerCovenantDTO dto, FacilityPaper facilityPaper, int displayOrder) {
+
+    CustomerCovenant entity = new CustomerCovenant();
+
+    entity.setRequestUUID(propertyFileValue.getRequestUUID());
+    entity.setCreatedBy(dto.getCreatedBy());
+    entity.setCreatedUserDisplayName(dto.getCreatedUserDisplayName());
+    entity.setCreatedDate(new Date());
+
+    entity.setCustomerFinancialID(dto.getCustomerFinancialID());
+    entity.setDisbursementType(dto.getDisbursementType());
+    entity.setApplicableType(dto.getApplicableType());
+    entity.setFacilityPaper(facilityPaper);
+
+    entity.setCovenant_Code(dto.getCovenant_Code());
+    entity.setCovenant_Description(dto.getCovenant_Description());
+    entity.setCovenant_Frequency(dto.getCovenant_Frequency());
+    entity.setCovenant_Due_Date(dto.getCovenant_Due_Date());
+    entity.setNoFrequencyDueDate(dto.getNoFrequencyDueDate());
+
+    entity.setStatus(CovenantStatus.Active);
+    entity.setIsExists(YesNoStatus.N);
+    entity.setDisplayOrder(displayOrder);
+
+    return entity;
+  }
+
+  private void applyUpdates(CustomerCovenant entity, CustomerCovenantDTO dto) {
+    entity.setCustomerFinancialID(dto.getCustomerFinancialID());
+    entity.setDisbursementType(dto.getDisbursementType());
+    entity.setApplicableType(dto.getApplicableType());
+
+    entity.setCovenant_Code(dto.getCovenant_Code());
+    entity.setCovenant_Description(dto.getCovenant_Description());
+    entity.setCovenant_Frequency(dto.getCovenant_Frequency());
+    entity.setCovenant_Due_Date(dto.getCovenant_Due_Date());
+    entity.setNoFrequencyDueDate(dto.getNoFrequencyDueDate());
+
+    entity.setModifiedBy(dto.getCreatedBy());
+    entity.setLastModifiedDate(new Date());
+  }
+
+  private void applyCommentFields(NoneComplianceCovenant entity, NoneComplianceCovenantDTO dto) {
+    entity.setSerialNumber(dto.getSerialNumber());
+    entity.setFacilityPaperId(dto.getFacilityPaperId());
+    entity.setComment(dto.getComment());
+    entity.setAddedDate(new Date());
+    entity.setAddedBy(dto.getAddedBy());
+    entity.setAddedUserDisplayName(dto.getAddedUserDisplayName());
+    entity.setAddedUserId(dto.getAddedUserId());
+  }
+
+  private void sortOtherCovenantsLast(List<CovenantDataDTO> covenantList) {
+    covenantList.sort(
+        (c1, c2) -> {
+          boolean c1Other =
+              c1.getCovenantInq().stream().anyMatch(cov -> cov.getCovCod().endsWith("_OTH"));
+          boolean c2Other =
+              c2.getCovenantInq().stream().anyMatch(cov -> cov.getCovCod().endsWith("_OTH"));
+
+          if (c1Other && !c2Other) return 1;
+          if (!c1Other && c2Other) return -1;
+          return 0;
+        });
+  }
+
+  private void attachNonComplianceComments(
+      CovenantDetailsFinacleDTO details,
+      List<CovenantDataDTO> covenantList,
+      Integer facilityPaperId)
+      throws ApiRequestException {
+
+    Map<String, NoneComplianceCovenantDTO> matchingComments =
+        getMatchingCommentsMap(details, facilityPaperId);
+
+    for (CovenantDataDTO covenantData : covenantList) {
+      for (CovenantInquiryDTO inquiry : covenantData.getCovenantInq()) {
+        NoneComplianceCovenantDTO comment = matchingComments.get(inquiry.getSrlNum());
+        if (comment != null) {
+          inquiry.setNonComplianceCovenantDTO(comment);
+        }
+      }
+    }
+
+    NoneComplianceCovenantDTO specialComment = matchingComments.get(SPECIAL_COMMENT_SRL);
+    if (specialComment != null && facilityPaperId.equals(specialComment.getFacilityPaperId())) {
+      details.setSpecialComment(specialComment);
+    }
+  }
+
+  private Map<String, NoneComplianceCovenantDTO> getMatchingCommentsMap(
+      CovenantDetailsFinacleDTO details, Integer facilityPaperId) throws ApiRequestException {
+
+    log.info("Getting matching comments for facilityPaperId: {}", facilityPaperId);
+
+    Set<String> srlNumSet = getSrlNumSet(details);
+    if (srlNumSet.isEmpty()) {
+      log.warn("SrlNum list is empty");
+      return Collections.emptyMap();
+    }
+
+    List<NoneComplianceCovenantDTO> covenantComments = getCovenantCommentList(facilityPaperId);
+    if (covenantComments.isEmpty()) {
+      log.warn("Covenant comments list is empty");
+      return Collections.emptyMap();
+    }
+
+    return covenantComments.stream()
+        .filter(
+            comment ->
+                comment.getSerialNumber() != null
+                    && (srlNumSet.contains(comment.getSerialNumber().toString())
+                        || comment.getSerialNumber() == SPECIAL_COMMENT_SERIAL))
+        .collect(
+            Collectors.toMap(
+                comment -> comment.getSerialNumber().toString(),
+                comment -> comment,
+                (existing, replacement) -> replacement));
+  }
+
+  private Set<String> getSrlNumSet(CovenantDetailsFinacleDTO details) {
+    log.info("Extracting SrlNum set from CovenantDetailsFinacleDTO");
+    if (details == null || details.getCovenant() == null) {
+      return Collections.emptySet();
+    }
+
+    Set<String> srlNumSet =
+        details.getCovenant().stream()
+            .flatMap(covenantData -> covenantData.getCovenantInq().stream())
+            .map(CovenantInquiryDTO::getSrlNum)
+            .filter(Objects::nonNull)
+            .collect(Collectors.toSet());
+
+    log.info("SrlNum Set: {}", srlNumSet);
+    return srlNumSet;
+  }
 }

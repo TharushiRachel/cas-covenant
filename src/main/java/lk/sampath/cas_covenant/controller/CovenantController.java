@@ -3,12 +3,12 @@ package lk.sampath.cas_covenant.controller;
 import java.util.List;
 import lk.sampath.cas_covenant.controller.base_controller.StandardResponse;
 import lk.sampath.cas_covenant.dto.*;
+import lk.sampath.cas_covenant.enums.ErrorEnums;
 import lk.sampath.cas_covenant.exception.ApiRequestException;
 import lk.sampath.cas_covenant.service.CustomerCovenantService;
 import lk.sampath.cas_covenant.service.FacilityCovenantService;
 import lk.sampath.cas_covenant.service.IntegrationService;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,55 +23,60 @@ public class CovenantController {
   private final FacilityCovenantService facilityCovenantService;
   private final IntegrationService integrationService;
 
-  @Autowired
-  public CovenantController(CustomerCovenantService customerCovenantService, FacilityCovenantService facilityCovenantService, IntegrationService integrationService) {
+  public CovenantController(
+      CustomerCovenantService customerCovenantService,
+      FacilityCovenantService facilityCovenantService,
+      IntegrationService integrationService) {
     this.customerCovenantService = customerCovenantService;
-      this.facilityCovenantService = facilityCovenantService;
-      this.integrationService = integrationService;
+    this.facilityCovenantService = facilityCovenantService;
+    this.integrationService = integrationService;
   }
-
 
   /**
    * Customer Covenants
-    * 1. Save Customer Covenants
-    * 2. Update Customer Covenants
-    * 3. Get All Customer Covenants by Facility Paper ID
+   * 1. Save Customer Covenants
+   * 2. Update Customer Covenants
+   * 3. Get All Customer Covenants by Facility Paper ID
    */
 
   @PostMapping("/saveCustomerCovenant")
-  public ResponseEntity<StandardResponse<List<CustomerCovenantDTO>>> saveCustomerCovenant(@RequestBody List<CustomerCovenantDTO> request) throws ApiRequestException {
+  public ResponseEntity<StandardResponse<List<CustomerCovenantDTO>>> saveCustomerCovenant(
+      @RequestBody List<CustomerCovenantDTO> request) throws ApiRequestException {
 
     log.info("START | saveCustomerCovenant - CovenantController | request : {}", request);
 
-    ResponseEntity<StandardResponse<List<CustomerCovenantDTO>>> response = customerCovenantService.saveCustomerCovenant(request);
+    List<CustomerCovenantDTO> response = customerCovenantService.saveCustomerCovenant(request);
 
-    log.info("END | saveComprehensiveLead - CovenantController | response : {}", response);
+    log.info("END | saveCustomerCovenant - CovenantController | response : {}", response);
 
-    return ResponseEntity.ok().body(response.getBody());
+    return success(response);
   }
 
   @PostMapping("/updateCustomerCovenant")
-  public ResponseEntity<StandardResponse<CustomerCovenantDTO>> updateCustomerCovenant(@RequestBody CustomerCovenantDTO request) throws ApiRequestException {
+  public ResponseEntity<StandardResponse<CustomerCovenantDTO>> updateCustomerCovenant(
+      @RequestBody CustomerCovenantDTO request) throws ApiRequestException {
 
     log.info("START | updateCustomerCovenant - CovenantController | request : {}", request);
 
-    ResponseEntity<StandardResponse<CustomerCovenantDTO>> response = customerCovenantService.updateCustomerCovenant(request);
+    CustomerCovenantDTO response = customerCovenantService.updateCustomerCovenant(request);
 
     log.info("END | updateCustomerCovenant - CovenantController | response : {}", response);
 
-    return ResponseEntity.ok().body(response.getBody());
+    return success(response);
   }
 
   @GetMapping("/getAllCustomerCovenant/{facilityPaperId}")
-  public ResponseEntity<StandardResponse<List<CustomerCovenantDTO>>> getAllCustomerCovenant(@PathVariable Integer facilityPaperId) throws ApiRequestException {
+  public ResponseEntity<StandardResponse<List<CustomerCovenantDTO>>> getAllCustomerCovenant(
+      @PathVariable Integer facilityPaperId) throws ApiRequestException {
 
     log.info("START | getAllCustomerCovenant - CovenantController | request : {}", facilityPaperId);
 
-    ResponseEntity<StandardResponse<List<CustomerCovenantDTO>>> response = customerCovenantService.getAllCustomerCovenant(facilityPaperId);
+    List<CustomerCovenantDTO> response =
+        customerCovenantService.getAllCustomerCovenant(facilityPaperId);
 
     log.info("END | getAllCustomerCovenant - CovenantController | response : {}", response);
 
-    return ResponseEntity.ok().body(response.getBody());
+    return success(response);
   }
 
   /**
@@ -166,6 +171,14 @@ public class CovenantController {
             new StandardResponse<>(true, "Fetched Successfully", response),
             HttpStatus.OK
     );
+  }
+
+  private <T> ResponseEntity<StandardResponse<T>> success(T data) {
+    return ResponseEntity.ok(
+        new StandardResponse<>(
+            ErrorEnums.SUCCESS_CODE.getStatus(),
+            ErrorEnums.SUCCESS_CODE.getLabel(),
+            data));
   }
 
 }
