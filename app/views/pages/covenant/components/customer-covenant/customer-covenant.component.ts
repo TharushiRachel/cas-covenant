@@ -8,6 +8,7 @@ import { ConfirmationDialogComponent } from "src/app/shared/components/confirmat
 import { AccountCovenantComponent } from "../add-account-covenant/account-covenant.component";
 import { Router } from "@angular/router";
 import { Subject, Subscription } from "rxjs";
+import { skip } from "rxjs/operators";
 import { ApplicationService } from "src/app/core/service/application/application.service";
 import { ApplicationCovenant } from "../../dto/application-covenant";
 import { AppUtils } from "src/app/shared/app.utils";
@@ -130,32 +131,23 @@ export class CustomerCovenantComponent implements OnInit, OnDestroy {
 
     this.getCovenantDetailsFromFinacle();
 
-    this.getApprovedFacilityCovenantList();
-
     this.subscriptions.add(
-      this.facilityPaperAddEditService.onFacilityCovenantTabChange.subscribe(
-        () => {
-          this.getFacilityCovenantList();
-          this.getDeactiaveFacilityCovenantList();
-        }
-      )
+      this.facilityPaperAddEditService.onFacilityCovenantTabChange
+        .pipe(skip(1))
+        .subscribe(() => {
+          this.loadFacilityCovenantLists();
+        })
     );
 
     this.subscriptions.add(
-      this.covenantService.onFacilityCovenantTabChange.subscribe(() => {
-        this.getFacilityCovenantList();
-        this.getDeactiaveFacilityCovenantList();
-      })
+      this.covenantService.onFacilityCovenantTabChange
+        .pipe(skip(1))
+        .subscribe(() => {
+          this.loadFacilityCovenantLists();
+        })
     );
 
-    this.covenantService
-      .getAllFacilityCovenantLegacy(this.facilityPaper.facilityPaperID)
-      .then((data) => {
-        this.groupedApprovedFacility =
-          this.getGroupedSortedApprovedCovenants(data);
-      });
-
-    this.getGroupedSortedApprovedCovenantsNew();
+    this.loadFacilityCovenantLists();
     this.computeApprovedCovenantCounters();
 
     this.covenantService
@@ -437,66 +429,268 @@ export class CustomerCovenantComponent implements OnInit, OnDestroy {
     );
   }
 
-  getFacilityCovenantList() {
+  /**
+   * Single API call that populates all facility-covenant derived lists.
+   */
+  loadFacilityCovenantLists() {
+    if (!this.facilityPaper || !this.facilityPaper.facilityPaperID) {
+      return;
+    }
+
     this.covenantService
       .getAllFacilityCovenantLegacy(this.facilityPaper.facilityPaperID)
-      .then((data) => {
-        this.covenantVal = data
-          .map((result) => {
-            const facilities =
-              result.covValue && Array.isArray(result.covValue)
-                ? result.covValue
-                : [];
-            const activeCovValues = facilities
-              .filter(
-                (covValue) =>
-                  covValue.status === "Active" &&
-                  (covValue.isExists === "N" || covValue.isExists === null),
-              )
-              .map((covValue) => {
-                const facilityDtos =
-                  covValue.applicationCovenantFacilityDTOS || [];
-                return Object.assign({}, covValue, {
-                  applicationCovenantFacilityDTOS:
-                    facilityDtos.length > 0
-                      ? facilityDtos.sort(
-                          (a, b) => a.displayOrder - b.displayOrder,
-                        )
-                      : [],
-                });
-              });
+      .then((data: any) => {
+        const list = Array.isArray(data) ? data : [];
+        this.applyActiveFacilityCovenants(list);
+        this.applyInactiveFacilityCovenants(list);
+        this.applyApprovedFacilityCovenants(list);
+        this.groupedApprovedFacility =
+          this.getGroupedSortedApprovedCovenants(list);
+        this.applyGroupedApprovedFacilityCovenants(list);
+      })
+      .catch((error) => {
+        console.error("Error loading facility covenants:", error);
+      });
+  }
 
-            if (activeCovValues.length > 0) {
-              return Object.assign({}, result, {
-                covValue: activeCovValues.sort((a, b) => {
-                  const aOrder =
-                    a.applicationCovenantFacilityDTOS.length > 0
-                      ? a.applicationCovenantFacilityDTOS[0].displayOrder
-                      : Number.MAX_VALUE;
-                  const bOrder =
-                    b.applicationCovenantFacilityDTOS.length > 0
-                      ? b.applicationCovenantFacilityDTOS[0].displayOrder
-                      : Number.MAX_VALUE;
-                  return aOrder - bOrder;
-                }),
-              });
-            } else {
-              return null;
-            }
+  getFacilityCovenantList() {
+    this.loadFacilityCovenantLists();
+  }
+
+  getDeactiaveFacilityCovenantList() {
+    this.loadFacilityCovenantLists();
+  }
+
+  getApprovedFacilityCovenantList() {
+    this.loadFacilityCovenantLists();
+  }
+
+  getGroupedSortedApprovedCovenantsNew() {
+    this.loadFacilityCovenantLists();
+  }
+
+  private applyActiveFacilityCovenants(data: any[]) {
+    this.covenantVal = data
+      .map((result) => {
+        const facilities =
+          result.covValue && Array.isArray(result.covValue)
+            ? result.covValue
+            : [];
+        const activeCovValues = facilities
+          .filter(
+            (covValue) =>
+              covValue.status === "Active" &&
+              (covValue.isExists === "N" || covValue.isExists === null)
+          )
+          .map((covValue) => {
+            const facilityDtos =
+              covValue.applicationCovenantFacilityDTOS || [];
+            return Object.assign({}, covValue, {
+              applicationCovenantFacilityDTOS:
+                facilityDtos.length > 0
+                  ? facilityDtos.sort(
+                      (a, b) => a.displayOrder - b.displayOrder
+                    )
+                  : [],
+            });
+          });
+
+        if (activeCovValues.length > 0) {
+          return Object.assign({}, result, {
+            covValue: activeCovValues.sort((a, b) => {
+              const aOrder =
+                a.applicationCovenantFacilityDTOS.length > 0
+                  ? a.applicationCovenantFacilityDTOS[0].displayOrder
+                  : Number.MAX_VALUE;
+              const bOrder =
+                b.applicationCovenantFacilityDTOS.length > 0
+                  ? b.applicationCovenantFacilityDTOS[0].displayOrder
+                  : Number.MAX_VALUE;
+              return aOrder - bOrder;
+            }),
+          });
+        }
+        return null;
+      })
+      .filter((result) => result !== null)
+      .sort((a, b) => {
+        const aOrder =
+          a.covValue[0].applicationCovenantFacilityDTOS.length > 0
+            ? a.covValue[0].applicationCovenantFacilityDTOS[0].displayOrder
+            : Number.MAX_VALUE;
+        const bOrder =
+          b.covValue[0].applicationCovenantFacilityDTOS.length > 0
+            ? b.covValue[0].applicationCovenantFacilityDTOS[0].displayOrder
+            : Number.MAX_VALUE;
+        return aOrder - bOrder;
+      });
+  }
+
+  private applyInactiveFacilityCovenants(data: any[]) {
+    this.deactivateCovenantVal = data
+      .map((result) => {
+        const facilities =
+          result.covValue && Array.isArray(result.covValue)
+            ? result.covValue
+            : [];
+        return Object.assign({}, result, {
+          covValue: facilities.filter(
+            (covValue) => covValue.status === "Inactive"
+          ),
+        });
+      })
+      .filter((result) => result.covValue.length > 0);
+  }
+
+  private applyApprovedFacilityCovenants(data: any[]) {
+    if (!data || !Array.isArray(data)) {
+      this.approvedCovValues = [];
+      return;
+    }
+
+    this.approvedCovValues = data
+      .map((result) => {
+        if (!result.covValue || !Array.isArray(result.covValue)) {
+          return null;
+        }
+
+        const activeCovValues = result.covValue
+          .filter(
+            (covValue) =>
+              covValue.status === "Active" && covValue.isExists === "Y"
+          )
+          .map((covValue) => {
+            return Object.assign({}, covValue, {
+              applicationCovenantFacilityDTOS:
+                covValue.applicationCovenantFacilityDTOS &&
+                covValue.applicationCovenantFacilityDTOS.length > 0
+                  ? covValue.applicationCovenantFacilityDTOS
+                      .slice()
+                      .sort((a, b) => a.displayOrder - b.displayOrder)
+                  : [],
+            });
           })
-          .filter((result) => result !== null)
           .sort((a, b) => {
+            const statusOrder = (status: string) => (status === "Y" ? 0 : 1);
+            const compStatusDiff =
+              statusOrder(a.complianceStatus) - statusOrder(b.complianceStatus);
+            if (compStatusDiff !== 0) {
+              return compStatusDiff;
+            }
+
             const aOrder =
-              a.covValue[0].applicationCovenantFacilityDTOS.length > 0
-                ? a.covValue[0].applicationCovenantFacilityDTOS[0].displayOrder
+              a.applicationCovenantFacilityDTOS.length > 0
+                ? a.applicationCovenantFacilityDTOS[0].displayOrder
                 : Number.MAX_VALUE;
             const bOrder =
-              b.covValue[0].applicationCovenantFacilityDTOS.length > 0
-                ? b.covValue[0].applicationCovenantFacilityDTOS[0].displayOrder
+              b.applicationCovenantFacilityDTOS.length > 0
+                ? b.applicationCovenantFacilityDTOS[0].displayOrder
                 : Number.MAX_VALUE;
             return aOrder - bOrder;
           });
+
+        if (activeCovValues.length > 0) {
+          return Object.assign({}, result, {
+            covValue: activeCovValues,
+          });
+        }
+        return null;
+      })
+      .filter((result) => result !== null)
+      .sort((a, b) => {
+        const aOrder =
+          a.covValue[0].applicationCovenantFacilityDTOS.length > 0
+            ? a.covValue[0].applicationCovenantFacilityDTOS[0].displayOrder
+            : Number.MAX_VALUE;
+        const bOrder =
+          b.covValue[0].applicationCovenantFacilityDTOS.length > 0
+            ? b.covValue[0].applicationCovenantFacilityDTOS[0].displayOrder
+            : Number.MAX_VALUE;
+        return aOrder - bOrder;
       });
+  }
+
+  private applyGroupedApprovedFacilityCovenants(data: any[]) {
+    const allCovenants: any[] = [];
+
+    if (data) {
+      data.forEach((result: any) => {
+        if (result.covValue && Array.isArray(result.covValue)) {
+          result.covValue.forEach((covenantItem: any) => {
+            if (
+              covenantItem.status === "Active" &&
+              covenantItem.isExists === "Y"
+            ) {
+              allCovenants.push(covenantItem);
+            }
+          });
+        }
+      });
+    }
+
+    const groupByAccountId = (items: any[]) => {
+      const map = new Map<string, any[]>();
+      for (const item of items) {
+        const accountId = item.accountId;
+        if (!map.has(accountId)) {
+          map.set(accountId, []);
+        }
+        const accountItems = map.get(accountId);
+        if (accountItems) {
+          accountItems.push(item);
+        }
+      }
+
+      return Array.from(map.entries())
+        .map(([accountId, covenants]) => {
+          if (this.existingCovenantRecordIdByAcctId[accountId] == null) {
+            const recordRow = covenants.find((c: any) => c.id != null);
+            this.existingCovenantRecordIdByAcctId[accountId] =
+              recordRow && recordRow.id != null ? recordRow.id : null;
+          }
+
+          const dtoOrders = covenants
+            .reduce(
+              (acc: any[], c: any) =>
+                acc.concat(c.applicationCovenantFacilityDTOS || []),
+              []
+            )
+            .map((f: any) => f.displayOrder)
+            .filter((o: any) => o != null);
+
+          const displayOrder =
+            dtoOrders.length > 0
+              ? Math.min.apply(null, dtoOrders)
+              : this.facilityDisplayOrderByAcctId[accountId] != null
+                ? this.facilityDisplayOrderByAcctId[accountId]
+                : 9999;
+
+          return {
+            accountId: accountId,
+            displayOrder: displayOrder,
+            covenants: covenants.sort((a, b) => {
+              const dateA = new Date(a.covenant_Due_Date || 0).getTime();
+              const dateB = new Date(b.covenant_Due_Date || 0).getTime();
+              return dateA - dateB;
+            }),
+          };
+        })
+        .sort((a, b) => a.displayOrder - b.displayOrder)
+        .map((group) => ({
+          accountId: group.accountId,
+          covenants: group.covenants,
+        }));
+    };
+
+    const complied = allCovenants.filter(
+      (item) => item.complianceStatus === "Y"
+    );
+    const nonComplied = allCovenants.filter(
+      (item) => item.complianceStatus === "N"
+    );
+
+    this.approvedFacilityCovComplied = groupByAccountId(complied);
+    this.approvedFacilityCovNoneComplied = groupByAccountId(nonComplied);
   }
 
   computeFacilityCovenantCounters() {
@@ -509,26 +703,6 @@ export class CustomerCovenantComponent implements OnInit, OnDestroy {
     return this.covenantVal.filter(
       (covenant) => covenant.covValue.status === "Inactive",
     );
-  }
-
-  getDeactiaveFacilityCovenantList() {
-    this.covenantService
-      .getAllFacilityCovenantLegacy(this.facilityPaper.facilityPaperID)
-      .then((data) => {
-        this.deactivateCovenantVal = data
-          .map((result) => {
-            const facilities =
-              result.covValue && Array.isArray(result.covValue)
-                ? result.covValue
-                : [];
-            return Object.assign({}, result, {
-              covValue: facilities.filter(
-                (covValue) => covValue.status === "Inactive",
-              ),
-            });
-          })
-          .filter((result) => result.covValue.length > 0);
-      });
   }
 
   getDisbursementTypeClass(disbursementType: string): string {
@@ -604,79 +778,6 @@ export class CustomerCovenantComponent implements OnInit, OnDestroy {
         covenant.isExists === "Y" &&
         covenant.complianceStatus === "N",
     );
-  }
-
-  getApprovedFacilityCovenantList() {
-    this.covenantService
-      .getAllFacilityCovenantLegacy(this.facilityPaper.facilityPaperID)
-      .then((data) => {
-      if (!data || !Array.isArray(data)) {
-        console.warn("No valid 'covenant' array found in response:", data);
-        this.approvedCovValues = [];
-        return;
-      }
-
-      this.approvedCovValues = data
-        .map((result) => {
-          if (!result.covValue || !Array.isArray(result.covValue)) {
-            return null;
-          }
-
-          const activeCovValues = result.covValue
-            .filter(
-              (covValue) =>
-                covValue.status === "Active" && covValue.isExists === "Y",
-            )
-            .map((covValue) => ({
-              ...covValue,
-              applicationCovenantFacilityDTOS:
-                covValue.applicationCovenantFacilityDTOS &&
-                covValue.applicationCovenantFacilityDTOS.length > 0
-                  ? covValue.applicationCovenantFacilityDTOS
-                      .slice()
-                      .sort((a, b) => a.displayOrder - b.displayOrder)
-                  : [],
-            }))
-            .sort((a, b) => {
-              const statusOrder = (status: string) => (status === "Y" ? 0 : 1);
-              const compStatusDiff =
-                statusOrder(a.complianceStatus) -
-                statusOrder(b.complianceStatus);
-              if (compStatusDiff !== 0) return compStatusDiff;
-
-              const aOrder =
-                a.applicationCovenantFacilityDTOS.length > 0
-                  ? a.applicationCovenantFacilityDTOS[0].displayOrder
-                  : Number.MAX_VALUE;
-              const bOrder =
-                b.applicationCovenantFacilityDTOS.length > 0
-                  ? b.applicationCovenantFacilityDTOS[0].displayOrder
-                  : Number.MAX_VALUE;
-              return aOrder - bOrder;
-            });
-
-          if (activeCovValues.length > 0) {
-            return {
-              ...result,
-              covValue: activeCovValues,
-            };
-          } else {
-            return null;
-          }
-        })
-        .filter((result) => result !== null)
-        .sort((a, b) => {
-          const aOrder =
-            a.covValue[0].applicationCovenantFacilityDTOS.length > 0
-              ? a.covValue[0].applicationCovenantFacilityDTOS[0].displayOrder
-              : Number.MAX_VALUE;
-          const bOrder =
-            b.covValue[0].applicationCovenantFacilityDTOS.length > 0
-              ? b.covValue[0].applicationCovenantFacilityDTOS[0].displayOrder
-              : Number.MAX_VALUE;
-          return aOrder - bOrder;
-        });
-    });
   }
 
   getCovenantComplianceLabel(complianceStatus) {
@@ -845,103 +946,6 @@ export class CustomerCovenantComponent implements OnInit, OnDestroy {
     );
 
     return result;
-  }
-
-  getGroupedSortedApprovedCovenantsNew() {
-    this.covenantService
-      .getAllFacilityCovenantLegacy(this.facilityPaper.facilityPaperID)
-      .then((data) => {
-        const allCovenants: any[] = [];
-
-        if (data) {
-          data.forEach((result: any) => {
-            if (result.covValue && Array.isArray(result.covValue)) {
-              result.covValue.forEach((covenantItem: any) => {
-                if (
-                  covenantItem.status === "Active" &&
-                  covenantItem.isExists === "Y"
-                ) {
-                  allCovenants.push(covenantItem);
-                }
-              });
-            }
-          });
-        } else {
-          console.warn("No valid 'covenant' array found in response:", data);
-        }
-
-        const groupByAccountId = (items: any[]) => {
-          const map = new Map<string, any[]>();
-          for (const item of items) {
-            const accountId = item.accountId;
-            if (!map.has(accountId)) {
-              map.set(accountId, []);
-            }
-            const accountItems = map.get(accountId);
-            if (accountItems) {
-              accountItems.push(item);
-            }
-          }
-
-          return Array.from(map.entries())
-            .map(([accountId, covenants]) => {
-              if (this.existingCovenantRecordIdByAcctId[accountId] == null) {
-                const recordRow = covenants.find((c: any) => c.id != null);
-                this.existingCovenantRecordIdByAcctId[accountId] =
-                  recordRow && recordRow.id != null ? recordRow.id : null;
-              }
-
-              const dtoOrders = covenants
-                .reduce(
-                  (acc: any[], c: any) =>
-                    acc.concat(c.applicationCovenantFacilityDTOS || []),
-                  [],
-                )
-                .map((f: any) => f.displayOrder)
-                .filter((o: any) => o != null);
-
-              const displayOrder =
-                dtoOrders.length > 0
-                  ? Math.min(...dtoOrders)
-                  : this.facilityDisplayOrderByAcctId[accountId] != null
-                    ? this.facilityDisplayOrderByAcctId[accountId]
-                    : 9999;
-
-              return {
-                accountId,
-                displayOrder,
-                covenants: covenants.sort((a, b) => {
-                  const dateA = new Date(a.covenant_Due_Date || 0).getTime();
-                  const dateB = new Date(b.covenant_Due_Date || 0).getTime();
-                  return dateA - dateB;
-                }),
-              };
-            })
-            .sort((a, b) => a.displayOrder - b.displayOrder)
-            .map(({ accountId, covenants }) => ({ accountId, covenants }));
-        };
-
-        const complied = allCovenants.filter(
-          (item) => item.complianceStatus === "Y",
-        );
-        const nonComplied = allCovenants.filter(
-          (item) => item.complianceStatus === "N",
-        );
-
-        this.approvedFacilityCovComplied = groupByAccountId(complied);
-        this.approvedFacilityCovNoneComplied = groupByAccountId(nonComplied);
-
-        // this.approvedFacilityCovComplied = allCovenants.filter(
-        //   (item) => item.complianceStatus === "Y"
-        // );
-
-        // this.approvedFacilityCovNoneComplied = allCovenants.filter(
-        //   (item) => item.complianceStatus === "N"
-        // );
-      })
-      .catch((error) => {
-        console.error("Error fetching covenant details:", error);
-      });
   }
 
   addComment(srlNum: number) {
