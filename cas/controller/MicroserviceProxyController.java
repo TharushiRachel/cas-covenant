@@ -1,12 +1,9 @@
 package com.itechro.cas.controller;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParser;
 import com.itechro.cas.commons.constants.AppsConstants;
 import com.itechro.cas.exception.aop.ResponseExceptionHandler;
 import com.itechro.cas.model.dto.integration.response.StandardResponse;
-import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,14 +14,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
+import reactor.core.publisher.Mono;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.Duration;
 import java.util.Enumeration;
+
 @RestController
 @RequestMapping("${api.prefix}/microservice")
 @CrossOrigin("*")
-public class MicroserviceProxyController  extends BaseController{
+public class MicroserviceProxyController extends BaseController {
 
     private static final Logger LOG = LoggerFactory.getLogger(MicroserviceProxyController.class);
 
@@ -33,6 +32,9 @@ public class MicroserviceProxyController  extends BaseController{
 
     @Value("${apps.integration.service.timeout.in.milliseconds.max}")
     private long serviceTimeoutInMillisecondsMax;
+
+    @Value("${apps.cas.context.path.covenantServiceURL}")
+    private String covenantServiceURL;
 
     @ResponseExceptionHandler
     @RequestMapping(value = "/**")
@@ -44,8 +46,17 @@ public class MicroserviceProxyController  extends BaseController{
         if (request.getQueryString() != null) {
             path += "?" + request.getQueryString();
         }
-        String url = microServiceURL + path;
-        LOG.info("Micro Service URL.... {}",url);
+
+        String url;
+
+        if (path.startsWith("/cas-covenant")) {
+            LOG.info("Request is for Covenant Service, forwarding to Covenant Service URL");
+            url = covenantServiceURL + path.replaceFirst("/cas-covenant", "");
+            LOG.info("Covenant Service URL.... {}",url);
+        } else {
+            url = microServiceURL + path;
+            LOG.info("Micro Service URL.... {}",url);
+        }
 
         HttpHeaders headers = new HttpHeaders();
         Enumeration<String> headerNames = request.getHeaderNames();
@@ -62,19 +73,28 @@ public class MicroserviceProxyController  extends BaseController{
         try {
             WebClient webClient = WebClient.create();
             Gson gson = new Gson();
-            JSONObject bodyValue;
-            bodyValue = body != null ? gson.fromJson(body, JSONObject.class) : null;
-            String response = webClient.method(HttpMethod.valueOf(request.getMethod()))
+            WebClient.RequestBodySpec requestSpec = webClient.method(HttpMethod.valueOf(request.getMethod()))
                     .uri(url)
-                    .bodyValue(bodyValue == null ? "" : bodyValue)
-                    .retrieve()
-                    .bodyToMono(String.class)
-                    .timeout(Duration.ofMillis(this.serviceTimeoutInMillisecondsMax))
-                    .onErrorReturn("Timeout occurred or service failed")
-                    .block();
+                .headers(httpHeaders -> httpHeaders.addAll(headers));
+
+            Mono<String> responseMono;
+            if (body != null && !body.trim().isEmpty()) {
+            responseMono = requestSpec
+                .bodyValue(body)
+                .retrieve()
+                .bodyToMono(String.class);
+            } else {
+            responseMono = requestSpec
+                .retrieve()
+                .bodyToMono(String.class);
+            }
+
+            String response = responseMono
+                .timeout(Duration.ofMillis(this.serviceTimeoutInMillisecondsMax))
+                .block();
 
             LOG.info("Proxy Request Response.... {}",response);
-            if (response == null || response.equals("Timeout occurred or service failed")){
+            if (response == null || response.trim().isEmpty()) {
                 StandardResponse  standardResponse =
                         new StandardResponse(
                                 AppsConstants.ErrorEnums.ERROR_CODE.getStatus(), AppsConstants.ErrorEnums.ERROR_CODE.getLabel(), null);
@@ -84,7 +104,7 @@ public class MicroserviceProxyController  extends BaseController{
                 return ResponseEntity.ok().body(responseDTO);
             }
         } catch (WebClientResponseException e){
-            LOG.error("WebClientResponseException::  ",e);
+            LOG.error("WebClientResponseException:: status={}, responseBody={}", e.getRawStatusCode(), e.getResponseBodyAsString(), e);
             StandardResponse  standardResponse =
                     new StandardResponse(
                             AppsConstants.ErrorEnums.ERROR_CODE.getStatus(), AppsConstants.ErrorEnums.ERROR_CODE.getLabel(), null);

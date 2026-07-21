@@ -176,9 +176,6 @@ export class EditCustomerCovenantComponent implements OnInit {
     this.errors = [];
     const formData = this.covenantForm.value;
 
-    let data: any = {};
-    let covenantDetails: any = [];
-
     let disbursementType = "";
     if (formData.preDisbursement) {
       disbursementType = "PRE";
@@ -186,37 +183,45 @@ export class EditCustomerCovenantComponent implements OnInit {
       disbursementType = "POST";
     }
 
-    let applicableTpe: string = "";
-
+    let applicableType: string = "";
     if (formData.applicableTypeAC) {
-      applicableTpe = Constants.covenantApplicableTypeConst.AC;
+      applicableType = Constants.covenantApplicableTypeConst.AC;
     } else {
-      applicableTpe = Constants.covenantApplicableTypeConst.ABU;
+      applicableType = Constants.covenantApplicableTypeConst.ABU;
     }
 
     const covenantDueDate = this.formatDateForInput(formData.covenantDueDate);
 
-    covenantDetails.push({
-      covenant_Code: this.content.customerCovenant.covenant_Code,
-      covenant_Description: formData.covenantDescription,
-      covenant_Frequency: formData.covenantFrequency,
-      disbursementType: disbursementType,
-      covenant_Due_Date: covenantDueDate,
-      applicableType: applicableTpe,
-    });
-
+    let customerCovenantId = null;
     const customerCovenantIdString =
       sessionStorage.getItem("customerCovenantId");
     if (customerCovenantIdString) {
-      data.customerCovenantId = parseInt(customerCovenantIdString, 10); // Use parseInt with base 10
+      customerCovenantId = parseInt(customerCovenantIdString, 10);
     }
-    data.RequestUUID = this.RequestUUID;
-    data.custId = this.urlEncodeService.decode(this.selectedCIFID);
-    data.casReference = this.casReference;
-    data.covenantDetails = covenantDetails;
-    (data.createdUserDisplayName =
-      this.applicationService.getLoggedInUserDisplayName()),
-      (data.createdDate = Date.now());
+
+    const facilityPaperId = Number(sessionStorage.getItem("facilityPaperID"));
+
+    // Backend expects CustomerCovenantDTO
+    const data = {
+      customerCovenantId: customerCovenantId,
+      requestUUID: this.RequestUUID,
+      customerFinancialID: this.urlEncodeService.decode(this.selectedCIFID),
+      facilityPaperRefNumber: this.casReference,
+      facilityPaperId: facilityPaperId,
+      covenant_Code:
+        this.content &&
+        this.content.customerCovenant &&
+        this.content.customerCovenant.covenant_Code
+          ? this.content.customerCovenant.covenant_Code
+          : "",
+      covenant_Description: formData.covenantDescription,
+      covenant_Frequency: formData.covenantFrequency,
+      covenant_Due_Date: covenantDueDate,
+      disbursementType: disbursementType,
+      applicableType: applicableType,
+      createdUserDisplayName:
+        this.applicationService.getLoggedInUserDisplayName(),
+    };
 
     this.facilityPaperAddEditService
       .updateCustomerCovenant(data)

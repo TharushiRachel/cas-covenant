@@ -226,28 +226,32 @@ export class CustomerCovenantListComponent implements OnInit {
   onSubmit() {
     this.isSubmitting = true;
     this.errors = [];
-    const formData = this.covenantForm.value;
-    let data: any = {};
 
-    data.RequestUUID = this.RequestUUID;
-    data.custId = this.urlEncodeService.decode(this.selectedCIFID);
-    data.casReference = this.casReference;
+    const facilityPaperId =
+      this.facilityPaper && this.facilityPaper.facilityPaperID
+        ? this.facilityPaper.facilityPaperID
+        : Number(sessionStorage.getItem("facilityPaperID"));
 
-    data.covenantDetails = this.covenantDetails.map((covenant) => {
+    // Backend expects List<CustomerCovenantDTO>
+    const payload = this.covenantDetails.map((covenant) => {
       return {
+        requestUUID: this.RequestUUID,
+        customerFinancialID: this.urlEncodeService.decode(this.selectedCIFID),
+        facilityPaperRefNumber: this.casReference,
+        facilityPaperId: facilityPaperId,
         covenant_Code: covenant.covenantCode,
         covenant_Description: covenant.covenantDescription,
         covenant_Frequency: covenant.covenantFrequency,
         covenant_Due_Date: covenant.covenantDueDate,
         disbursementType: covenant.disbursementType,
         applicableType: covenant.applicableType,
+        createdUserDisplayName:
+          this.applicationService.getLoggedInUserDisplayName(),
       };
     });
 
-    data.createdUserDisplayName =
-      this.applicationService.getLoggedInUserDisplayName();
     this.facilityPaperAddEditService
-      .saveCustomerCovenantDetails(data)
+      .saveCustomerCovenantDetails(payload)
       .then((response: any) => {
         response = Object.assign({}, response);
         this.action.next(response);

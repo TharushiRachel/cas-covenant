@@ -35,9 +35,13 @@ export class CustomerCovenantListComponent implements OnInit, OnDestroy {
   covenantForm: FormGroup;
   errors = [];
   isSubmitting = false;
-  custId: string | null;
-  casReference: string | null = sessionStorage.getItem("facilityPaperRefID");
-  RequestUUID: string | null = sessionStorage.getItem("facilityPaperRefID");
+  customerFinancialID: string | null;
+  facilityPaperRefNumber: string | null = sessionStorage.getItem(
+    "facilityPaperRefID"
+  );
+  requestUUID: string | null =
+    sessionStorage.getItem("RequestUUID") ||
+    sessionStorage.getItem("facilityPaperRefID");
   covenantDetails: any[] = [];
   isOtherSelected: boolean = false;
   createdUserDisplayName;
@@ -121,8 +125,10 @@ export class CustomerCovenantListComponent implements OnInit, OnDestroy {
         }
       }
 
-      if (!this.RequestUUID) {
-        this.RequestUUID = sessionStorage.getItem("RequestUUID");
+      if (!this.requestUUID) {
+        this.requestUUID =
+          sessionStorage.getItem("RequestUUID") ||
+          sessionStorage.getItem("facilityPaperRefID");
       }
     }
   }
@@ -201,9 +207,9 @@ export class CustomerCovenantListComponent implements OnInit, OnDestroy {
         covenantDescription: ["", [Validators.required]],
         covenantFrequency: ["", [Validators.required]],
         covenantDueDate: ["", [Validators.required]],
-        custId: this.urlEncodeService.decode(this.selectedCIFID),
-        casReference: this.casReference,
-        RequestUUID: this.RequestUUID,
+        customerFinancialID: this.urlEncodeService.decode(this.selectedCIFID),
+        facilityPaperRefNumber: this.facilityPaperRefNumber,
+        requestUUID: this.requestUUID,
         covenantDescription_other: [""],
         createdUserDisplayName: [""],
         createdDate: [""],
@@ -261,9 +267,11 @@ export class CustomerCovenantListComponent implements OnInit, OnDestroy {
             covenantDescription: data.covenant_Description,
             covenantFrequency: data.covenant_Frequency,
             covenantDueDate: covenantDueDate,
-            custId: this.urlEncodeService.decode(this.selectedCIFID),
-            casReference: this.casReference,
-            RequestUUID: this.RequestUUID,
+            customerFinancialID: this.urlEncodeService.decode(
+              this.selectedCIFID
+            ),
+            facilityPaperRefNumber: this.facilityPaperRefNumber,
+            requestUUID: this.requestUUID,
             createdUserDisplayName: data.createdUserDisplayName,
             createdDate: data.createdDate,
             preDisbursement: data.disbursementType === "PRE",
@@ -341,11 +349,12 @@ export class CustomerCovenantListComponent implements OnInit, OnDestroy {
     const facilityPaperId = this.getFacilityPaperId();
     const customerFinancialID = this.urlEncodeService.decode(this.selectedCIFID);
 
+    // Backend expects List<CustomerCovenantDTO>
     const payload = this.covenantDetails.map((covenant) => {
       return {
-        requestUUID: this.RequestUUID,
+        requestUUID: this.requestUUID,
         customerFinancialID: customerFinancialID,
-        facilityPaperRefNumber: this.casReference,
+        facilityPaperRefNumber: this.facilityPaperRefNumber,
         facilityPaperId: facilityPaperId,
         covenant_Code: covenant.covenantCode,
         covenant_Description: covenant.covenantDescription,
@@ -402,11 +411,12 @@ export class CustomerCovenantListComponent implements OnInit, OnDestroy {
       }
     }
 
+    // Backend expects CustomerCovenantDTO
     const payload = {
       customerCovenantId: customerCovenantId,
-      requestUUID: this.RequestUUID,
+      requestUUID: this.requestUUID,
       customerFinancialID: this.urlEncodeService.decode(this.selectedCIFID),
-      facilityPaperRefNumber: this.casReference,
+      facilityPaperRefNumber: this.facilityPaperRefNumber,
       facilityPaperId: this.getFacilityPaperId(),
       covenant_Code: covenantCode,
       covenant_Description: formData.covenantDescription,
