@@ -1,0 +1,276 @@
+.covenant-btn{
+    float: right;
+    //margin-top: 80px;
+    background-color: #e0e0e0!important;
+    color: #000;
+}
+
+.covenant-table{
+    padding-top: 10px;
+}
+
+.topic {
+    background-color: #dae3e6 !important;
+    padding-top: 6px !important;
+    padding-bottom: 1px !important;
+    margin-bottom: 5px !important;
+  }
+
+  .creditFacilityName{
+    width: 200px;
+  }
+
+  .customer-description{
+    margin-left: 50px;
+    width: 70%;
+  }
+
+  .facility-description{
+    margin-left: 50px;
+    width: 54.5%;
+    padding-right: 2%;
+    word-break: break-all;
+  }
+
+  .covenant-heading{
+    font-weight: 700 !important;
+  }
+
+  .table th {
+    border-bottom: 0.5px solid #dee2e6a1 !important;
+    background-color:#ced4da1f;
+}
+
+.table tr {
+    border-bottom: 0.5px solid #dee2e6a1;
+}
+
+.active-covenants{
+  color: #007e338a;
+  //padding: 5px;
+  border-radius: 10px;
+  text-align: center;
+  //font-weight: bold;
+}
+
+.inactive-covenants{
+  // color:  #AC9D16;
+  // background-color: #FAFDD4;
+  color: #D18700;
+  //padding: 5px;
+  border-radius: 10px;
+  text-align: center;
+  //font-weight: bold;
+}
+
+.outer
+{
+    width:100%;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+}
+.inner
+{
+    display: inline-block;
+}
+
+.delete-button{
+  background-color: #ff354785 !important;
+}
+
+.modified-covenants{
+  color: #7bccf2;
+  padding: 5px;
+  border-radius: 10px;
+  text-align: center;
+  font-weight: bold;
+}
+
+
+.mat-accordion .mat-header-row {
+  padding-left: 1.5rem;
+  padding-right: 2rem;
+  border-bottom: none;
+  background-color: #eee;
+}
+
+.mat-expansion-panel-header:hover {
+  background-color: #eee;
+}
+
+
+.mat-expansion-panel-header.mat-row {
+  border-bottom: none;
+  background-color: #eee;
+  font-style: bold;
+}
+
+//copied from https://github.com/angular/material2/blob/master/src/lib/table/table.scss
+$mat-header-row-height: 56px;
+$mat-row-height: 48px;
+$mat-row-horizontal-padding: 24px;
+
+.mat-expansion-panel-header:not([aria-disabled=true]) {
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.mat-expansion-panel-body {
+  padding: 0;
+  border-color: #E9ECEF;
+  border: solid;
+  border-width: thin;
+}
+
+.mat-table {
+  display: block;
+  width: 100%;
+}
+
+.mat-header-row {
+  min-height: $mat-header-row-height;
+}
+
+.mat-row {
+  min-height: $mat-row-height;
+}
+
+.mat-row, .mat-header-row {
+  display: flex;
+  border-bottom-width: 1px;
+  border-bottom-style: solid;
+  align-items: center;
+  padding: 0 $mat-row-horizontal-padding;
+  box-sizing: border-box;
+
+  // Workaround for https://goo.gl/pFmjJD in IE 11. Adds a pseudo
+  // element that will stretch the row the correct height. See:
+  // https://connect.microsoft.com/IE/feedback/details/802625
+  &::after {
+    display: inline-block;
+    min-height: inherit;
+    content: '';
+  }
+}
+
+.mat-cell, .mat-header-cell {
+  flex: 1;
+  overflow: hidden;
+  word-wrap: break-word;
+}
+
+.highlight {
+  background-color: yellow;
+}
+
+.top-eading-covenant{
+  display: flex;
+}
+
+.facility-sty{
+  padding-bottom: 20px;
+  width: 18%;
+  line-height: 2rem;
+}
+
+
+.disbursement-pre {
+  color: rgba(255, 150, 51, 0.65);
+  font-weight: 800;
+}
+
+.disbursement-post {
+  color: #2bbbad;
+  font-weight: 800;
+}
+
+.disbursement-default {
+  color: black;
+}
+
+.covenant-heading-facility{
+  margin-top: 40px;
+  font-weight: 700 !important;
+}
+
+.table-container {
+  // max-height: 175px; 
+  overflow-y: auto; 
+  overflow-x: hidden; 
+}
+
+.table-height {
+  width: 100%; 
+  table-layout: fixed; 
+}
+
+.custom-accordion {
+  border-radius: 8px; 
+  padding: 10px; 
+}
+
+.custom-accordion .mat-expansion-panel {
+  margin-bottom: 10px; 
+  border-radius: 4px; 
+  border-color: #E9ECEF;
+  border: solid #E9ECEF;
+  border-width: initial;
+}
+
+.custom-accordion .mat-expansion-panel-header {
+  background-color: #E9ECEF; 
+  font-weight: bold;
+}
+
+.compliance-status{
+  color: black;
+  border-radius: 10px;
+  text-align: center;
+  width: 135px;
+}
+
+
+.covenant-fieldset {
+  border: 2px solid #E9ECEF; /* Blue border */
+  border-radius: 8px; /* Rounded corners */
+  padding: 15px;
+  margin: 20px 0;
+}
+
+.covenant-fieldset legend {
+  font-size: 1em;
+  color: #000;
+  padding: 5px 10px;
+  font-weight: 700;
+  border: 1px solid #E9ECEF;
+  border-radius: 5px;
+  background: #f8f9fa;
+}
+
+.facility-description{
+  margin-left: 50px;
+  width: 60%;
+}
+
+.existing-customer-description{
+  margin-left: 50px;
+  width: 70%;
+}
+
+.refresh-sort-btn {
+  border: 1px solid #33B5E5;
+  color: #33B5E5;
+  background: #fff;
+  font-size: 11px;
+  padding: 2px 8px;
+  line-height: 0.5;
+}
+
+.existing-cov-facility-btn{
+    border: none;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 700;
+    color: #808080;
+}

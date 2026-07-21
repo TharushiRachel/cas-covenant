@@ -1,0 +1,33 @@
+<button (click)="mdbModalRef.hide()" aria-label="Close" class="close" data-dismiss="modal" type="button">
+    <span aria-hidden="true">&times;</span>
+</button>
+
+<div class="modal-header justify-content-center">
+    <h5 class="modal-title fw-bold text-center">Account Details</h5>
+  </div>
+  
+  <div class="details-grid" *ngIf = "bankDetails">
+    <div class="row">
+      <div class="label">SCHEME CODE</div>
+      <div class="colon">:</div>
+      <div class="value">{{ bankDetails.schmCode }}</div>
+    </div>
+    <div class="row">
+      <div class="label">CLEAR BALANCE</div>
+      <div class="colon">:</div>
+      <div class="value">{{ this.getFormattedValue(bankDetails.clearBalance) }}</div>
+    </div>
+    <div class="row">
+      <div class="label">SANCTION LIMIT/ GRANTED AMOUNT</div>
+      <div class="colon">:</div>
+      <div class="value">{{ this.getFormattedValue(bankDetails?.sanctionLimit) }}</div>
+    </div>
+    <div class="row">
+      <div class="label">ACCOUNT OPEN DATE</div>
+      <div class="colon">:</div>
+      <div class="value">{{ this.formatToDateString(bankDetails?.acctOpenDate) }}</div>
+    </div>
+  </div>
+  
+  
+  

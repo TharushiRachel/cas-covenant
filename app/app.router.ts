@@ -100,6 +100,11 @@ const routes: Routes = [
           "./views/pages/facility-paper/facility-paper.module#FacilityPaperModule",
       },
       {
+        path: "covenant",
+        loadChildren:
+          "./views/pages/covenant/covenant.module#CovenantModule",
+      },
+      {
         path: "my-facility-papers",
         loadChildren:
           "./views/pages/my-facility-papers/my-facility-papers.module#MyFacilityPapersModule",

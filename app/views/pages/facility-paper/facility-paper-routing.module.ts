@@ -8,7 +8,7 @@ import {FpAuditDetailComponent} from "./components/facility-paper-add-edit/compo
 import {AuditService} from "../audit/services/audit.service";
 import { FacilityPaperSearchComponent } from './components/facility-paper-search/facility-paper-search.component';
 import { FacilityPaperSearchService } from './services/facility-paper-search.service';
-import { CustomerCovenantComponent } from '../customer-360/components/customer-base/components/customer-covenant/customer-covenant.component';
+import { CustomerCovenantComponent } from '../covenant/components/customer-covenant/customer-covenant.component';
 import { BccAttachmentsComponent } from './attachments/bcc-attachments/bcc-attachments.component';
 import { BccDocumentUploadComponent } from './attachments/bcc-document-upload/bcc-document-upload.component';
 import { CustomerLimitsOutstandingDataComponent } from './components/facility-paper-add-edit/components/facility-wrapper/fp-facilities/finacle-data/customer-limits-outstanding-data/customer-limits-outstanding-data.component';

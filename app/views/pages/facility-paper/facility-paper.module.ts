@@ -72,21 +72,16 @@ import {FpCustomerPaperUpcHistoryComponent} from './components/facility-paper-ad
 import {FpShowCribDetailsButtonComponent} from './components/facility-paper-add-edit/components/common/fp-show-crib-details-button/fp-show-crib-details-button.component';
 import { FacilityPaperSearchComponent } from './components/facility-paper-search/facility-paper-search.component';
 import { FacilityPaperSearchService } from './services/facility-paper-search.service';
-import { CustomerCovenantComponent } from '../customer-360/components/customer-base/components/customer-covenant/customer-covenant.component';
-import { CustomerCovenantListComponent } from '../customer-360/components/customer-base/components/customer-covenant/add-customer-covenant/customer-covenant-list.component';
 import { CustomerEvaluationComponent } from '../customer-360/components/customer-base/components/customer-evaluation-list/customer-evaluation.component';
 import { CustomerEvaluationFormComponent } from '../customer-360/components/customer-base/components/customer-evaluation-form/customer-evaluation-form.component';
 import { MDBBootstrapModule, MDBModalRef, ModalModule } from 'ng-uikit-pro-standard';
-import { AccountCovenantComponent } from '../customer-360/components/customer-base/components/add-account-covenant/account-covenant.component';
 
 import { UrlEncodeService } from 'src/app/core/service/application/url-encode.service';
 import { FpCreditRiskCommentDocumentsComponent } from './components/facility-paper-add-edit/components/other-details-wrapper/fp-credit-risk-comment-documents/fp-credit-risk-comment-documents.component';
 import { FpCreditRiskCommentUploadDocumentsComponent } from './components/facility-paper-add-edit/components/other-details-wrapper/fp-credit-risk-comment-documents/fp-credit-risk-comment-upload-documents/fp-credit-risk-comment-upload-documents.component';
 import { ScorecardTemplateComponent } from './components/facility-paper-add-edit/components/fp-editor/scorecard-template/scorecard-template.component';
 import { ApplicationFormAddEditService } from '../application-form/application-form-add-edit/services/application-form-add-edit.service';
-import { EditCustomerCovenantComponent } from '../customer-360/components/customer-base/components/customer-covenant/edit-customer-covenant/edit-customer-covenant.component';
 import { MatButton, MatButtonModule, MatCheckbox, MatCheckboxModule, MatExpansionModule, MatIconModule, MatSelectModule } from '@angular/material';
-import { EditAccountCovenantComponent } from '../customer-360/components/customer-base/components/add-account-covenant/edit-account-covenant/edit-account-covenant.component';
 import { AddEditCustomFacilityDialogComponent } from './components/facility-paper-add-edit/components/facility-wrapper/fp-facilities/add-edit-facility/add-edit-custom-facility-dialog/add-edit-custom-facility-dialog.component';
 
 import {FpDocumentationComponent} from './components/facility-paper-add-edit/components/fp-documentation/fp-documentation.component';
@@ -125,7 +120,6 @@ import { AddCribReportComponent } from './components/facility-paper-add-edit/com
 import { EditCribReportComponent } from './components/facility-paper-add-edit/components/basic-wrapper/fp-personal-details/fp-personal-detail-tab-view/edit-crib-report/edit-crib-report.component';
 import { ViewCribContentComponent } from 'src/app/shared/components/view-crib-content/view-crib-content.component';
 import { CoveringApprovalService } from '../covering-approval/services/covering-approval.service';
-import { ViewCovenantAccountDetailsComponent } from '../customer-360/components/customer-base/components/customer-covenant/view-covenant-account-details/view-covenant-account-details.component';
 import { FpWalletShareComponent } from './components/facility-paper-add-edit/components/fp-wallet-share/fp-wallet-share.component';
 import { AddEditWalletShareComponent } from './components/facility-paper-add-edit/components/fp-wallet-share/add-edit-wallet-share/add-edit-wallet-share.component';
 import { FpEsgWrapperComponent } from './components/facility-paper-add-edit/components/fp-esg-wrapper/fp-esg-wrapper.component';
@@ -139,7 +133,6 @@ import { FpAddCommitteeInquiryComponent } from './components/facility-paper-add-
 import { FpInquiryRichEditorComponent } from './components/facility-paper-add-edit/components/fp-committe-inquiries/fp-inquiry-rich-editor/fp-inquiry-rich-editor.component';
 import { FpAddInquiryResponseComponent } from './components/facility-paper-add-edit/components/fp-committe-inquiries/fp-add-inquiry-response/fp-add-inquiry-response.component';
 import { FpAddCommitteInquryButtonComponent } from './components/facility-paper-add-edit/components/fp-committe-inquiries/fp-add-committe-inqury-button/fp-add-committe-inqury-button.component';
-import { AddCovenantCommentComponent } from '../customer-360/components/customer-base/components/customer-covenant/add-covenant-comment/add-covenant-comment.component';
 import { FpDeviationComponent } from './components/facility-paper-add-edit/components/fp-deviation/fp-deviation.component';
 import { FpDocumentationNewComponent } from './components/facility-paper-add-edit/components/fp-documentation-new/fp-documentation-new.component';
 import { AddEditContentFeildComponent } from './components/facility-paper-add-edit/components/fp-documentation-new/add-edit-content-feild/add-edit-content-feild.component';
@@ -148,8 +141,7 @@ import { SdInfoDialogComponent } from './components/facility-paper-add-edit/comp
 import { SdCovenantModalComponent } from './components/facility-paper-add-edit/components/fp-documentation-new/sd-covenant-modal/sd-covenant-modal.component';
 import { CustomerClarificationViewComponent } from './components/facility-paper-add-edit/components/basic-wrapper/fp-personal-details/fp-personal-detail-tab-view/customer-clarification-view/customer-clarification-view.component';
 import { FpMdAssistanceCmntViewComponent } from './components/facility-paper-add-edit/components/fp-md-assistance-cmnt-view/fp-md-assistance-cmnt-view.component';
-import { FacilitySelectModalComponent } from '../customer-360/components/customer-base/components/facility-select-modal/facility-select-modal.component';
-
+import { CovenantSharedModule } from '../covenant/covenant-shared.module';
 
 @NgModule({
   declarations: [FacilityPapersComponent,
@@ -215,18 +207,13 @@ import { FacilitySelectModalComponent } from '../customer-360/components/custome
     FpCustomerPaperUpcHistoryComponent,
     FpShowCribDetailsButtonComponent,
     FacilityPaperSearchComponent,
-    CustomerCovenantComponent,
-    CustomerCovenantListComponent,
     CustomerEvaluationComponent,
     CustomerEvaluationFormComponent,
-    AccountCovenantComponent,
     FpCreditRiskCommentDocumentsComponent,
     FpCreditRiskCommentUploadDocumentsComponent,
     ScorecardTemplateComponent,
     FpDocumentationComponent,
     AddEditDocumentComponent,
-    EditCustomerCovenantComponent,
-    EditAccountCovenantComponent,
     AddEditCustomFacilityDialogComponent,
     CreditRiskCommentNewComponent,
     CreditRiskOpinionHistoryNewComponent,
@@ -247,7 +234,6 @@ import { FacilitySelectModalComponent } from '../customer-360/components/custome
     FpGroupExposureComponent,
     AddCribReportComponent,
     EditCribReportComponent,
-    ViewCovenantAccountDetailsComponent,
     FpWalletShareComponent,
     AddEditWalletShareComponent,
     FpEsgWrapperComponent,
@@ -258,7 +244,6 @@ import { FacilitySelectModalComponent } from '../customer-360/components/custome
     FpInquiryRichEditorComponent,
     FpAddInquiryResponseComponent,
     FpAddCommitteInquryButtonComponent,
-    AddCovenantCommentComponent,
     FpDeviationComponent,
     FpDocumentationNewComponent,
     AddEditContentFeildComponent,
@@ -266,8 +251,7 @@ import { FacilitySelectModalComponent } from '../customer-360/components/custome
     SdInfoDialogComponent,
     SdCovenantModalComponent,
     CustomerClarificationViewComponent,
-    FpMdAssistanceCmntViewComponent,
-    FacilitySelectModalComponent
+    FpMdAssistanceCmntViewComponent
   ],
   imports: [
     PreviewModule,
@@ -275,6 +259,7 @@ import { FacilitySelectModalComponent } from '../customer-360/components/custome
     FacilityPaperRoutingModule,
     LeadModule,
     AuditModule,
+    CovenantSharedModule,
     TreeModule,
    // jsPDF,
    // ToastModule,
@@ -318,14 +303,10 @@ import { FacilitySelectModalComponent } from '../customer-360/components/custome
     UpdateOutstandingDateComponent,
     FpReturnComponent,
     FpCustomerPaperUpcHistoryComponent,
-    CustomerCovenantListComponent,
     CustomerEvaluationFormComponent,
-    AccountCovenantComponent,
     FpCreditRiskCommentUploadDocumentsComponent,
     FpDocumentationComponent,
     AddEditDocumentComponent,
-    EditCustomerCovenantComponent,
-    EditAccountCovenantComponent,
     AddEditCustomFacilityDialogComponent,
     FpFacilityCopyComponent,
     UpcNotifyComponentComponent,
@@ -339,11 +320,9 @@ import { FacilitySelectModalComponent } from '../customer-360/components/custome
     AddCribReportComponent,
     EditCribReportComponent,
     ViewCribContentComponent,
-    ViewCovenantAccountDetailsComponent,
     FpAddCommitteeInquiryComponent,
     FpInquiryRichEditorComponent,
     FpAddInquiryResponseComponent,
-    AddCovenantCommentComponent,
     AddEditWalletShareComponent,
     EsgAnnexureSelectorsCommonComponent,
     EsgAnnexureAttachmentComponent,
@@ -353,12 +332,10 @@ import { FacilitySelectModalComponent } from '../customer-360/components/custome
     AddEditContentFeildComponent,
     ActionLogViewComponent,
     SdInfoDialogComponent,
-    SdCovenantModalComponent,
-    FacilitySelectModalComponent
+    SdCovenantModalComponent
   ],
   providers: [
     FacilityPapersService,
-    FacilityPaperAddEditService,
     AuditService,
     CurrencyPipe,
     FacilityPaperSearchService,

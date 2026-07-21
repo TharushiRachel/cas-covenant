@@ -1,0 +1,172 @@
+<button (click)="mdbModalRef.hide()" aria-label="Close" class="close" data-dismiss="modal" type="button">
+  <span aria-hidden="true">&times;</span>
+</button>
+
+<div class="modal-header modal-topic">
+  <h4 class="modal-title w-100 font-weight-bold">{{ isEditMode ? 'Edit Covenant' : 'Add New Covenant' }}</h4>
+</div>
+
+<div class="modal-body mx-3 modal-detail form-margin">
+  <form [formGroup]="covenantForm" class="d-flex p-2 flex-column justify-content-start align-items-start w-100-p">
+    <div class="d-flex flex-row justify-content-between w-100-p">
+      <div class="md-form w-100-p m-right-left-2px">
+
+        <input type="hidden" name="customerCovenantId" [value]="customerCovenantId" />
+        <input type="hidden" name="custId" [value]="custId" />
+        <input type="hidden" name="casReference" [value]="casReference" />
+        <input type="hidden" name="RequestUUID" [value]="RequestUUID" />
+
+        <!-- ADD mode: type & description selects -->
+        <ng-container *ngIf="!isEditMode">
+          <div>
+            <mdb-select [allowClear]="true" [options]="dropdownOptionsCovenantType"
+              class="custom-mdb-select form-control custom-dropdown" label="Select Covenant Type*" data-size="7"
+              formControlName="covenantType" id="covenantType" mdbValidate required>
+            </mdb-select>
+          </div>
+
+          <div>
+            <mdb-select [allowClear]="true" [options]="dropdownOptions || []"
+              class="custom-mdb-select form-control custom-dropdown" label="Select Covenant *" data-size="10"
+              (ngModelChange)="onSelectedValueChange($event)" formControlName="covenantDescription"
+              id="covenantDescription" mdbValidate required>
+            </mdb-select>
+          </div>
+
+          <div class="row d-flex mx-0" *ngIf="descriptionBlanks.length > 0">
+            <div class="md-form w-33-p" *ngFor="let blankDesc of descriptionBlanks">
+              <input type="text" [id]="blankDesc.label" class="form-control" [value]="blankDesc.value"
+                (focusout)="handleBlankChange($event,blankDesc)" mdbInput>
+              <label [for]="blankDesc.label">{{blankDesc.label}} *</label>
+            </div>
+
+            <div class="my-2 mx-0">
+              <span [innerHTML]="descriptionWithBlank"></span>
+            </div>
+          </div>
+
+          <textarea *ngIf="isOtherSelected" class="form-control text-other" name="otherCovenantDescription"
+            placeholder="Enter other covenant description..." formControlName="covenantDescription_other"
+            id="covenantDescription_other"></textarea>
+
+          <p *ngIf="isOtherSelected && (covenantForm.get('covenantDescription_other').dirty || covenantForm.get('covenantDescription_other').touched) && covenantForm.get('covenantDescription_other').hasError('pattern')"
+            class="text-danger">
+            Only letters, numbers, spaces, and . , / ( ) &amp; % \ ' are allowed.
+          </p>
+        </ng-container>
+
+        <!-- EDIT mode: readonly type & description -->
+        <ng-container *ngIf="isEditMode">
+          <input class="custom-mdb-select form-control" label="Select Covenant Type*" data-size="7"
+            formControlName="covenantType" id="covenantType" readonly="readonly" required />
+
+          <input *ngIf="!isOtherSelected" class="custom-mdb-select form-control" label="Select Covenant *" data-size="7"
+            [value]="getDisplayCovenantDescription()" id="covenantDescriptionDisplay" readonly="readonly" required />
+          <input *ngIf="!isOtherSelected" type="hidden" formControlName="covenantDescription" id="covenantDescription" />
+
+          <textarea *ngIf="isOtherSelected" class="form-control text-other" name="otherCovenantDescription"
+            formControlName="covenantDescription" id="covenantDescription"></textarea>
+
+          <p *ngIf="isOtherSelected && (covenantForm.get('covenantDescription').dirty || covenantForm.get('covenantDescription').touched) && covenantForm.get('covenantDescription').hasError('pattern')"
+            class="text-danger">
+            Only letters, numbers, spaces, and . , / ( ) &amp; % \ ' are allowed.
+          </p>
+        </ng-container>
+
+        <div class="d-flex flex-row jc-start ai-center w-100-p">
+          <div class="md-form w-50-p">
+            <mdb-select [allowClear]="true" [options]="covenantFrequencyOptions" label="Frequency *"
+              class="form-control" formControlName="covenantFrequency" id="covenantFrequency" mdbValidate required
+              (ngModelChange)="onFrequencyChange($event)"></mdb-select>
+          </div>
+
+          <div class="date-picker-covenant md-form w-49-p">
+            <mdb-date-picker [label]="dueDateLabel" formControlName="covenantDueDate" class="form-control"
+              id="covenantDueDate" [options]="myDatePickerOptionsForBirthDay" [inline]="true"
+              mdbValidate></mdb-date-picker>
+          </div>
+        </div>
+
+        <div class="d-flex flex-row w-100-p mx-0">
+          <div class="d-flex flex-row w-50-p mx-0">
+            <div class="form-check">
+              <input type="checkbox" formControlName="preDisbursement" id="preDisbursement" class="form-check-input"
+                (change)="onDisbursementTypeChange('preDisbursement')"
+                [disabled]="covenantForm.get('postDisbursement').value" mdbValidate />
+              <label class="form-check-label" for="preDisbursement">Pre Disbursement</label>
+            </div>
+
+            <div class="form-check">
+              <input type="checkbox" formControlName="postDisbursement" id="postDisbursement" class="form-check-input"
+                (change)="onDisbursementTypeChange('postDisbursement')"
+                [disabled]="covenantForm.get('preDisbursement').value" mdbValidate />
+              <label class="form-check-label" for="postDisbursement">Post Disbursement</label>
+            </div>
+          </div>
+
+          <div class="d-flex flex-row w-50-p mx-0">
+            <div class="form-check">
+              <input type="checkbox" formControlName="applicableTypeAC" id="applicableTypeAC" class="form-check-input"
+                mdbValidate />
+              <label class="form-check-label" for="applicableTypeAC">Applicable to Customer</label>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ADD mode: multi-add grid -->
+    <ng-container *ngIf="!isEditMode">
+      <button (click)="onAdd()" [disabled]="!covenantForm.valid || isBlankFeildExist()"
+        class="add-btn relative waves-light modal-footer modal-end" color="secondary" mdbBtn mdbWavesEffect type="button">
+        ADD
+      </button>
+
+      <div class="mt-3" *ngIf="covenantDetails.length > 0">
+        <table class="table">
+          <thead>
+            <tr class="table-heading">
+              <th scope="col" class="description-width">Covenant Description</th>
+              <th scope="col" class="text-align-center">Frequency</th>
+              <th scope="col" class="text-align-center">Due Date</th>
+              <th scope="col" class="text-align-center">Disbursement Type</th>
+              <th scope="col" class="text-align-center" style="min-width: 150px;">Applicable Type</th>
+              <th scope="col"></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="width: 100%;" *ngFor="let covenant of covenantDetails; let i = index">
+              <td>{{ covenant.covenantDescription }}</td>
+              <td class="text-align-center">{{ getCovenantFrequencyLabel(covenant.covenantFrequency) }}</td>
+              <td class="text-align-center">{{ covenant.covenantDueDate | date: 'dd/MM/yyyy'}} </td>
+              <td class="text-align-center">{{ covenant.disbursementType }}</td>
+              <td class="text-align-center">{{getApplicableTypeTxt(covenant.applicableType)}}</td>
+              <td>
+                <i (click)="removeCovenant(i)" aria-hidden="true" class="fas fa-trash-alt text-black-50 input-size"
+                  color="red" flat="true" mdbTooltip="Delete" placement="top">
+                </i>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div *ngIf="covenantDetails.length > 0" class="save-btn relative waves-light modal-footer modal-end">
+        <button (click)="onSubmit()" color="secondary" mdbBtn mdbWavesEffect type="button">
+          SAVE
+        </button>
+      </div>
+    </ng-container>
+
+    <!-- EDIT mode: single SAVE -->
+    <button *ngIf="isEditMode" (click)="onSubmit()" [disabled]="!covenantForm.valid"
+      class="save-btn relative waves-light modal-footer modal-end" color="secondary" mdbBtn mdbWavesEffect
+      type="button">
+      SAVE
+    </button>
+
+  </form>
+
+</div>

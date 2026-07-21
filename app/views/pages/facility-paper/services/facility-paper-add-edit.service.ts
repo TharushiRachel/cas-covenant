@@ -22,8 +22,11 @@ import { HttpClient, HttpHeaders } from "@angular/common/http";
 import * as moment from "moment";
 import { AlertService } from "src/app/core/service/common/alert.service";
 import { map, distinctUntilChanged, tap } from "rxjs/operators";
+import { CovenantService } from "../../covenant/services/covenant.service";
 
-@Injectable()
+@Injectable({
+  providedIn: "root",
+})
 export class FacilityPaperAddEditService implements Resolve<any> {
   @LocalStorage(SETTINGS.STORAGE.SELECTED_FACILITY_PAPER_ID)
   selectedFacilityPaperID;
@@ -152,6 +155,7 @@ export class FacilityPaperAddEditService implements Resolve<any> {
     private http: HttpClient,
     private router: Router,
     private alertService: AlertService,
+    private covenantService: CovenantService,
   ) {}
 
   resolve(
@@ -1481,13 +1485,9 @@ export class FacilityPaperAddEditService implements Resolve<any> {
   }
 
   saveCustomerCovenantDetails(data): Promise<any> {
-    return new Promise((resolve, reject) => {
-      this.dataService
-        .post(SETTINGS.ENDPOINTS.saveCustomerCovenantDetails, data)
-        .subscribe((response: any) => {
-          this.onCustomerCovenantTabChange.next(response);
-          resolve(response);
-        });
+    return this.covenantService.saveCustomerCovenant(data).then((response) => {
+      this.onCustomerCovenantTabChange.next(response);
+      return response;
     });
   }
 
@@ -1996,13 +1996,9 @@ export class FacilityPaperAddEditService implements Resolve<any> {
   // }
 
   updateCustomerCovenant(data): Promise<any> {
-    return new Promise((resolve, reject) => {
-      this.dataService
-        .post(SETTINGS.ENDPOINTS.updateCustomerCovenant, data)
-        .subscribe((response: any) => {
-          this.onCustomerCovenantTabChange.next(response);
-          resolve(response);
-        });
+    return this.covenantService.updateCustomerCovenant(data).then((response) => {
+      this.onCustomerCovenantTabChange.next(response);
+      return response;
     });
   }
 
@@ -2653,15 +2649,7 @@ export class FacilityPaperAddEditService implements Resolve<any> {
       acctId: "",
       facilityPaperId: facilityPaperId,
     };
-    return this.dataService
-      .post(SETTINGS.ENDPOINTS.getCovenantDetailsFromFinacle, payload)
-      .toPromise();
-    // return new Promise((resolve, reject) => {
-    //   this.dataService.post(SETTINGS.ENDPOINTS.getCovenantDetailsFromFinacle, payload)
-    //     .subscribe((response: any) => {
-    //       resolve(response);
-    //     }, reject);
-    // });
+    return this.covenantService.getCovenantsDetails(payload);
   }
 
   refreshGroupExposureDetails(payload: any): Promise<any> {
@@ -3477,19 +3465,11 @@ export class FacilityPaperAddEditService implements Resolve<any> {
   }
 
   addCommentToCovenant(data: Object | undefined): Promise<any> {
-    return new Promise((resolve, reject) => {
-      this.dataService
-        .post(SETTINGS.ENDPOINTS.addCommentToCovenant, data)
-        .subscribe((response: any) => {
-          resolve(response);
-        });
-    });
+    return this.covenantService.addCommentToCovenant(data);
   }
 
   getCovenantCommentList(facilityPaperId: number): Observable<any> {
-    const data = Object.assign({}, SETTINGS.ENDPOINTS.getCovenantCommentList);
-    data.url = data.url + "/" + facilityPaperId;
-    return this.dataService.get(data);
+    return this.covenantService.getCovenantCommentList(facilityPaperId);
   }
   
   getCustomerBankAccountDetails(facilityPaperID: any) {

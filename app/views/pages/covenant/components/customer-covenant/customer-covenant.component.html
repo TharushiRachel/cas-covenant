@@ -1,0 +1,687 @@
+<mat-accordion class="custom-accordion">
+  <mat-expansion-panel [expanded]="true">
+    <mat-expansion-panel-header>
+      New Covenants
+    </mat-expansion-panel-header>
+
+    <div class="top-eading-covenant">
+      <label class="mr-auto p-2 font-weight-bold covenant-heading">Customer Covenants</label>
+      <button *ngIf="
+    isEqualLoginAndAssignUser() && showAddDeleteButton(facilityPaper) && isLoad && !isLegalOfficer
+  " class="medium-button btn btn-info btn-sm covenant-btn" mdbBtn mdbTooltip="Add Customer Covenant" mdbWavesEffect
+        placement="left" type="button" (click)="openDialog({})">
+        <i class="fas fa-plus" aria-hidden="true"></i>
+      </button>
+    </div>
+
+    <div class="covenant-table table-responsive">
+      <table class="table">
+        <tr *ngIf="computeCovenantCounters().length > 0">
+          <th></th>
+          <th>Description</th>
+          <th style="text-align: center">Pre/Post Disbursement</th>
+          <th>Frequency</th>
+          <th class="text-align-center" style="width: 130px !important">
+            Due Date
+          </th>
+          <th scope="col" class="text-align-center" style="min-width: 150px;">Applicable Type</th>
+          <th *ngIf="isLoad && !isLegalOfficer" style="text-align: center">Action</th>
+        </tr>
+        <ng-container *ngFor="let covenant of activeCustomerCovenantCounter; let i = index">
+          <tr *ngIf="covenant.status === 'Active'">
+            <td>{{ i + 1 }}</td>
+            <td class="customer-description">
+              {{ covenant.covenant_Description }}
+              <!-- <span [ngClass]="getDisbursementTypeClass(covenant.disbursementType)">
+            ({{ covenant.disbursementType }})
+          </span> -->
+
+              <p style="text-align: left; font-size: 12px; color: #33b5e5">
+                Covenant saved by {{ covenant.createdUserDisplayName }} on
+                {{ covenant.createdDate | date : "yyyy-MM-dd HH:mm:ss" }}
+              </p>
+            </td>
+            <td *ngIf="covenant.status === 'Active'">
+              <p class="active-covenants" [ngClass]="getDisbursementTypeClass(covenant.disbursementType)">{{
+                covenant.disbursementType }}</p>
+            </td>
+
+            <td style="text-align: center">{{ getCovenantFrequencyLabel(covenant.covenant_Frequency) }}</td>
+            <td style="text-align: center"> {{ covenant.covenant_Due_Date ? (covenant.covenant_Due_Date | date:
+              "yyyy-MM-dd") : covenant.noFrequencyDueDate }}</td>
+            <td class="text-align-center">{{getApplicableTypeTxt(covenant.applicableType)}}</td>
+            <td *ngIf="
+            isEqualLoginAndAssignUser() && showAddDeleteButton(facilityPaper) && isLoad && !isLegalOfficer
+          ">
+              <div class="outer">
+                <div class="inner">
+                  <button *ngIf="covenant.workClass <= accessLevelOfCurrentAssignUser"
+                    (click)="openDialogForUpdateCustomerCovenant(covenant, {})" class="btn btn-sm btn-secondary cta-btn"
+                    type="button" mdbWavesEffect mdbTooltip="Edit Covenant" placement="left">
+                    <mdb-icon fas icon="pencil-alt" aria-hidden="true"></mdb-icon>
+                  </button>
+                </div>
+                <div class="inner">
+                  <button *ngIf="covenant.workClass <= accessLevelOfCurrentAssignUser " type="button"
+                    class="btn btn-sm btn-danger cta-btn delete-button" mdbWavesEffect mdbTooltip="Deactivate covenant"
+                    placement="left" (click)="removeData(covenant.customerCovenantId)">
+                    <mdb-icon fas icon="trash-alt" aria-hidden="true"></mdb-icon>
+                  </button>
+                </div>
+              </div>
+            </td>
+          </tr>
+        </ng-container>
+        <tr *ngIf="computeCovenantCounters().length == 0">
+          <th colspan="4" class="text-align-center no-covenants-text">
+            <p class="no-data-message">
+              No Customer Covenants.
+            </p>
+          </th>
+        </tr>
+      </table>
+    </div>
+
+    <!-- accordion started -->
+    <mat-accordion *ngIf="computeCovenantCountersINA().length > 0">
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          Deactivated Customer Covenants
+        </mat-expansion-panel-header>
+
+        <table class="table">
+          <tr>
+
+            <th>Description</th>
+            <th style="text-align: center">Pre/Post Disbursement</th>
+            <th>Frequency</th>
+            <th class="text-align-center" style="width: 130px !important">
+              Due Date
+            </th>
+          </tr>
+          <ng-container *ngFor="let covenant of covenantList; let i = index">
+            <tr *ngIf="covenant.status === 'Inactive'">
+
+              <td class="customer-description">
+                {{ covenant.covenant_Description }}
+                <!-- <span [ngClass]="getDisbursementTypeClass(covenant.disbursementType)">
+              ({{ covenant.disbursementType }})
+            </span> -->
+
+                <p style="text-align: left; font-size: 12px; color: #33b5e5">
+                  Covenant deleted by {{ covenant.createdUserDisplayName }} on
+                  {{ covenant.createdDate | date : "yyyy-MM-dd HH:mm:ss" }}
+                </p>
+              </td>
+
+              <td *ngIf="covenant.status === 'Inactive'">
+                <p class="inactive-covenants" [ngClass]="getDisbursementTypeClass(covenant.disbursementType)">{{
+                  covenant.disbursementType }}</p>
+              </td>
+              <td>{{ getCovenantFrequencyLabel(covenant.covenant_Frequency) }}</td>
+              <td>{{ covenant.covenant_Due_Date ? (covenant.covenant_Due_Date | date: "yyyy-MM-dd") :
+                covenant.noFrequencyDueDate }}</td>
+            </tr>
+          </ng-container>
+        </table>
+      </mat-expansion-panel>
+    </mat-accordion>
+    <!-- accordion ended -->
+
+
+    <label class="mr-auto p-2 font-weight-bold covenant-heading-facility">Facility Covenants</label>
+
+    <button *ngIf="
+    isEqualLoginAndAssignUser() && showAddDeleteButton(facilityPaper) && isLoad && !isLegalOfficer
+  " class="medium-button btn btn-info btn-sm covenant-btn" mdbBtn mdbTooltip="Add Covenant" mdbWavesEffect
+      placement="left" type="button" (click)="OpenDialogForAccountCovenant()">
+      <i class="fas fa-plus" aria-hidden="true"></i>
+    </button>
+
+
+    <div class="covenant-table table-responsive">
+      <table class="table">
+        <tr *ngIf="covenantVal.length > 0">
+          <th style="text-align: center">Facility/ies</th>
+          <th>Description</th>
+          <th style="text-align: center">Pre/Post Disbursement</th>
+          <th style="text-align: center">Frequency</th>
+          <th class="text-align-center" style="width: 130px !important">Due Date</th>
+          <th scope="col" class="text-align-center" style="min-width: 150px;">Applicable Type</th>
+          <th *ngIf="isLoad && !isLegalOfficer" style="text-align: center">Action</th>
+        </tr>
+        <ng-container *ngFor="let covenant of covenantVal">
+          <ng-container *ngFor="let cov of covenant.covValue; let i = index">
+            <tr>
+              <td *ngIf="i === 0" [attr.rowspan]="covenant.covValue.length" class="facility-sty">
+                <ng-container *ngFor="let facility of cov.applicationCovenantFacilityDTOS">
+                  {{ facility.displayOrder }}. {{ facility.creditFacilityName }} - {{ facility.facilityCurrency }}
+                  {{getFormattedThreeDecimalValues(getMillionValue(facility.facilityAmount))}} Mn
+                  <br>
+                </ng-container>
+              </td>
+              <td class="facility-description">{{ cov.covenant_Description }}
+                <!-- <span [ngClass]="getDisbursementTypeClass(cov.disbursementType)">
+              ({{ cov.disbursementType }})
+            </span> -->
+                <p style="text-align: left; font-size: 12px; color: #33b5e5">
+                  Covenant saved by {{ cov.createdUserDisplayName }} on
+                  {{ cov.createdDate | date : "yyyy-MM-dd HH:mm:ss" }}
+                </p>
+              </td>
+              <td class="active-covenants" [ngClass]="getDisbursementTypeClass(cov.disbursementType)">{{
+                cov.disbursementType }}</td>
+              <td style="text-align: center">{{ getCovenantFrequencyLabel(cov.covenant_Frequency) }}</td>
+              <td style="text-align: center">{{ cov.covenant_Due_Date ? (cov.covenant_Due_Date | date: "yyyy-MM-dd") :
+                cov.noFrequencyDueDate }}</td>
+              <td class="text-align-center">{{getApplicableTypeTxt(cov.applicableType)}}</td>
+              <td
+                *ngIf="isEqualLoginAndAssignUser() && showAddDeleteButton(facilityPaper) && isLoad && !isLegalOfficer">
+                <div class="outer">
+                  <div class="inner">
+                    <button *ngIf="cov.workClass <= accessLevelOfCurrentAssignUser"
+                      (click)="openDialogForUpdateAccountCovenant(cov, {})" class="btn btn-sm btn-secondary cta-btn"
+                      type="button" mdbWavesEffect mdbTooltip="Edit Covenant" placement="left">
+                      <mdb-icon fas icon="pencil-alt" aria-hidden="true"></mdb-icon>
+                    </button>
+                  </div>
+                  <div class="inner">
+                    <button *ngIf="cov.workClass <= accessLevelOfCurrentAssignUser" type="button"
+                      class="btn btn-sm btn-danger cta-btn delete-button" mdbWavesEffect
+                      mdbTooltip="Deactivate covenant" placement="left"
+                      (click)="removeApplicationCovenants(cov.applicationCovenantId)">
+                      <mdb-icon fas icon="trash-alt" aria-hidden="true"></mdb-icon>
+                    </button>
+                  </div>
+                </div>
+              </td>
+            </tr>
+          </ng-container>
+        </ng-container>
+
+        <tr *ngIf="covenantVal.length == 0">
+          <th colspan="4" class="text-align-center no-covenants-text">
+            <p class="no-data-message">
+              No Facility Covenants.
+            </p>
+          </th>
+        </tr>
+      </table>
+    </div>
+
+
+    <!--facility accordion started -->
+    <mat-accordion *ngIf="deactivateCovenantVal.length > 0">
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          Deactivated Facility Covenants
+        </mat-expansion-panel-header>
+
+        <div class="covenant-table table-responsive">
+          <table class="table">
+            <tr>
+              <th style="text-align: center">Facility</th>
+              <th>Description</th>
+              <th style="text-align: center">Pre/Post Disbursement</th>
+              <th style="text-align: center">Frequency</th>
+              <th class="text-align-center" style="width: 130px !important">Due Date</th>
+
+            </tr>
+            <ng-container *ngFor="let covenant of deactivateCovenantVal">
+              <ng-container *ngFor="let cov of covenant.covValue; let i = index">
+                <tr>
+                  <td *ngIf="i === 0" [attr.rowspan]="covenant.covValue.length" class="facility-sty">
+                    <ng-container *ngFor="let facility of cov.applicationCovenantFacilityDTOS">
+                      {{ facility.displayOrder }}. {{ facility.creditFacilityName }} - {{ facility.facilityCurrency }}
+                      {{getFormattedThreeDecimalValues(getMillionValue(facility.facilityAmount))}} Mn
+                      <br>
+                    </ng-container>
+                  </td>
+                  <td class="facility-description">{{ cov.covenant_Description }}
+                    <!-- <span [ngClass]="getDisbursementTypeClass(cov.disbursementType)">
+                  ({{ cov.disbursementType }})
+                </span> -->
+                    <p style="text-align: left; font-size: 12px; color: #33b5e5">
+                      Covenant deleted by {{ cov.createdUserDisplayName }} on
+                      {{ cov.createdDate | date : "yyyy-MM-dd HH:mm:ss" }}
+                    </p>
+                  </td>
+                  <td class="active-covenants" [ngClass]="getDisbursementTypeClass(cov.disbursementType)">{{
+                    cov.disbursementType }}</td>
+                  <td>{{ getCovenantFrequencyLabel(cov.covenant_Frequency) }}</td>
+                  <td>{{ cov.covenant_Due_Date ? (cov.covenant_Due_Date | date: "yyyy-MM-dd") : cov.noFrequencyDueDate
+                    }}
+                  </td>
+                </tr>
+              </ng-container>
+            </ng-container>
+          </table>
+        </div>
+      </mat-expansion-panel>
+    </mat-accordion>
+
+    <!--facility accordion ended -->
+
+  </mat-expansion-panel>
+</mat-accordion>
+
+<mat-accordion class="custom-accordion" *ngIf="showAddDeleteButton(facilityPaper)">
+  <mat-expansion-panel>
+    <mat-expansion-panel-header>
+      Existing Covenants
+    </mat-expansion-panel-header>
+
+    <!-- table started for Complience Customer Covenants-->
+    <fieldset class="covenant-fieldset">
+      <legend class="font-weight-bold covenant-heading">Customer Level Covenants - Complied</legend>
+
+      <div class="covenant-table table-responsive table-container">
+        <table class="table table-height">
+          <tr *ngIf="covTypCCompStY.length > 0">
+            <th class="existing-customer-description">Description</th>
+            <th class="text-align-center">Frequency</th>
+            <th class="text-align-center" style="width: 130px !important">Due Date</th>
+          </tr>
+          <ng-container *ngFor="let covenant of covTypCCompStY; let i = index">
+            <tr>
+              <td> {{ covenant.covRem }} </td>
+              <td class="text-align-center">{{ getCovenantFrequencyLabel(covenant.covFrq) }}</td>
+              <td class="text-align-center">{{ covenant.covDue ? covenant.covDue : 'At the time of disbursement' }}</td>
+            </tr>
+          </ng-container>
+          <tr *ngIf="covTypCCompStY.length == 0">
+            <th colspan="4" class="text-align-center no-covenants-text">
+              <p class="no-data-message">No Covenants.</p>
+            </th>
+          </tr>
+        </table>
+      </div>
+    </fieldset>
+    <!-- table ended for Complience Customer Covenants-->
+
+    <!-- table started for None Complience Customer Covenants-->
+    <fieldset class="covenant-fieldset">
+      <legend class="font-weight-bold covenant-heading">Customer Level Covenants - Not Complied</legend>
+      <div class="covenant-table table-responsive table-container">
+        <table class="table table-height">
+          <tr *ngIf="covTypCCompStN.length > 0">
+            <th class="existing-customer-description">Description</th>
+            <th class="text-align-center">Frequency</th>
+            <th class="text-align-center" style="width: 130px !important">Due Date</th>
+            <th class="text-align-center">Remarks</th>
+          </tr>
+          <ng-container *ngFor="let covenant of covTypCCompStN; let i = index">
+            <tr>
+              <td>{{ covenant.covRem }}
+                <p style="text-align: left; font-size: 12px; color: #33b5e5">
+                  {{ covenant.nonComplianceCovenantDTO?.comment }}
+                </p>
+              </td>
+              <td class="text-align-center">{{ getCovenantFrequencyLabel(covenant.covFrq) }}</td>
+              <td class="text-align-center">{{ covenant.covDue ? covenant.covDue : 'At the time of disbursement' }}</td>
+              <td class="text-align-center">
+                <button *ngIf="!covenant.nonComplianceCovenantDTO" class="btn btn-sm cta-btn btn-info" mdbBtn
+                  (click)="addComment(covenant.srlNum)" mdbTooltip="Add Comment" placement="left">
+                  <mdb-icon aria-hidden="true" fas icon="fas fa-plus"></mdb-icon>
+                </button>
+                <button *ngIf="covenant.nonComplianceCovenantDTO && isEnabelEdit(covenant.nonComplianceCovenantDTO)"
+                  class="btn btn-sm cta-btn btn-info" mdbBtn
+                  (click)="editComment($event, covenant.nonComplianceCovenantDTO)" mdbTooltip="Edit Comment"
+                  placement="left">
+                  <mdb-icon fas icon="pencil-alt" aria-hidden="true"></mdb-icon>
+                </button>
+              </td>
+            </tr>
+          </ng-container>
+          <tr *ngIf="covTypCCompStN.length == 0">
+            <th colspan="4" class="text-align-center no-covenants-text">
+              <p class="no-data-message">No Covenants.</p>
+            </th>
+          </tr>
+        </table>
+      </div>
+    </fieldset>
+    <!-- table ended for None Complience Customer Covenants-->
+
+    <!-- table started for Complience Facility Covenants-->
+    <fieldset class="covenant-fieldset">
+      <legend class="font-weight-bold covenant-heading">Facility Level Covenants - Complied</legend>
+      <button class="btn mb-2 refresh-sort-btn" *ngIf="covTypACompStY.length > 0"
+        (click)="checkMatch()">
+       Sort by Facility No
+      </button>
+      <div class="covenant-table table-responsive table-container">
+        <table class="table table-height">
+          <tr *ngIf="covTypACompStY.length > 0">
+            <th class="text-align-center" style="width: 150px !important">Account Number</th>
+            <th class="existing-customer-description">Description</th>
+            <th class="text-align-center">Frequency</th>
+            <th class="text-align-center" style="width: 130px !important">Due Date</th>
+          </tr>
+          <ng-container *ngFor="let covenant of groupedCovTypACompStY; let i = index">
+            <tr>
+              <td class="text-align-center" [attr.rowspan]="covenant.items.length">
+                <a (click)="openBankDetails(covenant.acctId)"
+                  style="cursor: pointer; text-decoration: underline; color: blue;">
+                  {{ covenant.acctId }}
+                </a>
+                <ng-container *ngIf="existingFacilityCovenants[covenant.acctId]?.label">
+                  <p class="font-weight-bold">
+                    <span class="d-block">Facility {{ facilityDisplayOrderByAcctId[covenant.acctId] || '-' }}</span>
+                    <span class="d-block">{{ existingFacilityCovenants[covenant.acctId]?.label }}</span>
+                  </p>
+                </ng-container>
+                <button class="existing-cov-facility-btn"
+                  (click)="openFacilitySelectPopup(covenant.acctId, existingCovenantRecordIdByAcctId[covenant.acctId])">
+                  Select Facility
+                </button>
+              </td>
+              <td> {{ covenant.items[0].covRem }} </td>
+              <td class="text-align-center">{{ getCovenantFrequencyLabel(covenant.items[0].covFrq) }}</td>
+              <td class="text-align-center">{{ covenant.items[0].covDue ? covenant.items[0].covDue : 'At the time of
+                disbursement' }}</td>
+            </tr>
+            <tr *ngFor="let item of covenant.items.slice(1)">
+              <td>{{ item.covRem }}</td>
+              <td class="text-align-center">{{ getCovenantFrequencyLabel(item.covFrq) }}</td>
+              <td class="text-align-center">{{ item.covDue ? item.covDue : 'At the time of disbursement' }}</td>
+            </tr>
+          </ng-container>
+          <tr *ngIf="covTypACompStY.length == 0">
+            <th colspan="4" class="text-align-center no-covenants-text">
+              <p class="no-data-message">
+                No Covenants.
+              </p>
+            </th>
+          </tr>
+        </table>
+      </div>
+    </fieldset>
+    <!-- table ended for Complience Facility Covenants-->
+
+    <!-- table started for None Complience Facility Covenants-->
+    <fieldset class="covenant-fieldset">
+      <legend class="font-weight-bold covenant-heading">Facility Level Covenants - Not Complied</legend>
+      <button class="btn mb-2 refresh-sort-btn" *ngIf="covTypACompStN.length > 0"
+        (click)="checkMatch()">
+        Sort by Facility No
+      </button>
+      <div class="covenant-table table-responsive table-container">
+        <table class="table table-height">
+          <tr *ngIf="covTypACompStN.length > 0">
+            <th class="text-align-center" style="width: 150px !important">Account Number</th>
+            <th class="existing-customer-description">Description</th>
+            <th class="text-align-center">Frequency</th>
+            <th class="text-align-center" style="width: 130px !important">
+              Due Date
+            </th>
+            <th class="text-align-center">Remarks</th>
+          </tr>
+          <ng-container *ngFor="let covenant of groupedCovTypACompStN; let i = index">
+            <tr>
+              <td class="text-align-center" [attr.rowspan]="covenant.items.length">
+                <a (click)="openBankDetails(covenant.acctId)"
+                  style="cursor: pointer; text-decoration: underline; color: blue;">
+                  {{ covenant.acctId }}
+                </a>
+                <ng-container *ngIf="existingFacilityCovenants[covenant.acctId]?.label">
+                  <p class="font-weight-bold">
+                    <span class="d-block">Facility {{ facilityDisplayOrderByAcctId[covenant.acctId] || '-' }}</span>
+                    <span class="d-block">{{ existingFacilityCovenants[covenant.acctId]?.label }}</span>
+                  </p>
+                </ng-container>
+                <button class="existing-cov-facility-btn"
+                  (click)="openFacilitySelectPopup(covenant.acctId, existingCovenantRecordIdByAcctId[covenant.acctId])">
+                  Select Facility
+                </button>
+              </td>
+              <td> {{ covenant.items[0].covRem }}
+                <p style="text-align: left; font-size: 12px; color: #33b5e5">
+                  {{ covenant.items[0].nonComplianceCovenantDTO?.comment }}
+                </p>
+              </td>
+              <td class="text-align-center">{{ getCovenantFrequencyLabel(covenant.items[0].covFrq) }}</td>
+              <td class="text-align-center">{{ covenant.items[0].covDue ? covenant.items[0].covDue : 'At the time of
+                disbursement' }}</td>
+              <td class="text-align-center">
+                <button *ngIf="!covenant.items[0].nonComplianceCovenantDTO" class="btn btn-sm cta-btn btn-info" mdbBtn
+                  (click)="addComment(covenant.items[0].srlNum)" mdbTooltip="Add Comment" placement="left">
+                  <mdb-icon aria-hidden="true" fas icon="fas fa-plus"></mdb-icon>
+                </button>
+
+                <button
+                  *ngIf="covenant.items[0].nonComplianceCovenantDTO && isEnabelEdit(covenant.items[0].nonComplianceCovenantDTO)"
+                  class="btn btn-sm cta-btn btn-info" mdbBtn
+                  (click)="editComment($event, covenant.items[0].nonComplianceCovenantDTO)" mdbTooltip="Edit Comment"
+                  placement="left">
+                  <mdb-icon fas icon="pencil-alt" aria-hidden="true"></mdb-icon>
+                </button>
+              </td>
+            </tr>
+            <tr *ngFor="let item of covenant.items.slice(1)">
+              <td>{{ item.covRem }}
+                <p style="text-align: left; font-size: 12px; color: #33b5e5">
+                  {{ item.nonComplianceCovenantDTO?.comment }}
+                </p>
+              </td>
+              <td class="text-align-center">{{ getCovenantFrequencyLabel(item.covFrq) }}</td>
+              <td class="text-align-center">{{ item.covDue ? item.covDue: 'At the time of disbursement' }}</td>
+              <td class="text-align-center">
+                <button *ngIf="!item.nonComplianceCovenantDTO" class="btn btn-sm cta-btn btn-info" mdbBtn
+                  (click)="addComment(item.srlNum)" mdbTooltip="Add Comment" placement="left">
+                  <mdb-icon aria-hidden="true" fas icon="fas fa-plus"></mdb-icon>
+                </button>
+                <button *ngIf="item.nonComplianceCovenantDTO && isEnabelEdit(item.nonComplianceCovenantDTO)"
+                  class="btn btn-sm cta-btn btn-info" mdbBtn
+                  (click)="editComment($event, item.nonComplianceCovenantDTO)" mdbTooltip="Edit Comment"
+                  placement="left">
+                  <mdb-icon fas icon="pencil-alt" aria-hidden="true"></mdb-icon>
+                </button>
+              </td>
+            </tr>
+          </ng-container>
+
+          <tr *ngIf="covTypACompStN.length == 0">
+            <th colspan="4" class="text-align-center no-covenants-text">
+              <p class="no-data-message">
+                No Covenants.
+              </p>
+            </th>
+          </tr>
+        </table>
+      </div>
+    </fieldset>
+    <!-- table ended for None Complience Facility Covenants-->
+
+  <!--Start Add common comment-->
+  <div class="d-flex justify-content-between align-items-start mt-2 mb-2">
+    <div>
+      <label class="font-weight-bold mb-1">Comments on covenants (if any)</label>
+      <p class="mb-0">{{ specialComment?.comment}}</p>
+    </div>
+    <div class="text-align-center">
+      <button *ngIf="!specialComment" class="medium-button btn btn-info btn-sm covenant-btn" mdbBtn
+        (click)="addComment(-999)" mdbTooltip="Add Comment" placement="left">
+        Add Comment
+      </button>
+      <button *ngIf="specialComment"
+        class="btn btn-sm cta-btn btn-info" mdbBtn
+        (click)="editComment($event, specialComment)" mdbTooltip="Edit Comment"
+        placement="left">
+        <mdb-icon fas icon="pencil-alt" aria-hidden="true"></mdb-icon>
+      </button>
+    </div>
+  </div>
+  <!---End Add common comment-->
+  </mat-expansion-panel>
+</mat-accordion>
+
+<!--Start Existing Covenants after Approved-->
+<mat-accordion class="custom-accordion" *ngIf="facilityPaper.currentFacilityPaperStatus == 'APPROVED'">
+  <mat-expansion-panel>
+    <mat-expansion-panel-header>
+      Existing Covenants
+    </mat-expansion-panel-header>
+
+    <fieldset class="covenant-fieldset">
+      <legend class="font-weight-bold covenant-heading">Customer Covenants - Complied</legend>
+      <div class="covenant-table table-responsive table-container">
+        <table class="table table-height">
+          <tr *ngIf="approvedCustomerCovComplied.length > 0">
+            <th class="existing-customer-description">Description</th>
+            <th class="text-align-center">Frequency</th>
+            <th class="text-align-center" style="width: 130px !important">
+              Due Date
+            </th>
+          </tr>
+          <ng-container *ngFor="let covenant of approvedCustomerCovComplied; let i = index">
+            <tr>
+              <td> {{ covenant.covenant_Description }} </td>
+              <td class="text-align-center">{{ getCovenantFrequencyLabel(covenant.covenant_Frequency) }}</td>
+              <td class="text-align-center">{{ covenant.covenant_Due_Date ? (covenant.covenant_Due_Date |
+                date:"yyyy-MM-dd") : covenant.noFrequencyDueDate }}</td>
+            </tr>
+          </ng-container>
+          <tr *ngIf="approvedCustomerCovComplied.length == 0">
+            <th colspan="4" class="text-align-center no-covenants-text">
+              <p class="no-data-message">
+                No Covenants.
+              </p>
+            </th>
+          </tr>
+        </table>
+      </div>
+    </fieldset>
+
+    <fieldset class="covenant-fieldset">
+      <legend class="font-weight-bold covenant-heading">Customer Covenants - Not Complied</legend>
+      <div class="covenant-table table-responsive table-container">
+        <table class="table table-height">
+          <tr *ngIf="approvedCustomerCovNoneComplied.length > 0">
+            <th class="existing-customer-description">Description</th>
+            <th class="text-align-center">Frequency</th>
+            <th class="text-align-center" style="width: 130px !important">
+              Due Date
+            </th>
+          </tr>
+          <ng-container *ngFor="let covenant of approvedCustomerCovNoneComplied; let i = index">
+            <tr>
+              <td> {{ covenant.covenant_Description }} </td>
+              <td class="text-align-center">{{ getCovenantFrequencyLabel(covenant.covenant_Frequency) }}</td>
+              <td class="text-align-center">{{ covenant.covenant_Due_Date ? (covenant.covenant_Due_Date |
+                date:"yyyy-MM-dd") : covenant.noFrequencyDueDate }}</td>
+            </tr>
+          </ng-container>
+          <tr *ngIf="approvedCustomerCovNoneComplied.length == 0">
+            <th colspan="4" class="text-align-center no-covenants-text">
+              <p class="no-data-message">
+                No Covenants.
+              </p>
+            </th>
+          </tr>
+        </table>
+      </div>
+    </fieldset>
+
+
+    <fieldset class="covenant-fieldset">
+      <legend class="font-weight-bold covenant-heading">Facility Covenants - Complied</legend>
+      <div class="covenant-table table-responsive table-container">
+        <table class="table table-height">
+          <tr *ngIf="approvedFacilityCovComplied.length > 0">
+            <th class="text-align-center" style="width: 150px !important">Account Number</th>
+            <th class="existing-customer-description">Description</th>
+            <th class="text-align-center">Frequency</th>
+            <th class="text-align-center" style="width: 130px !important">
+              Due Date
+            </th>
+          </tr>
+          <ng-container *ngFor="let group of approvedFacilityCovComplied">
+            <ng-container *ngFor="let covenant of group.covenants; let i = index">
+              <tr>
+                <td class="text-align-center" [attr.rowspan]="group.covenants.length" *ngIf="i === 0">
+                  <a (click)="openBankDetails(group.accountId)"
+                    style="cursor: pointer; text-decoration: underline; color: blue;">
+                    {{ group.accountId }}
+                  </a>
+                   <p class="font-weight-bold">
+                    <span class="d-block">Facility {{ facilityDisplayOrderByAcctId[group.accountId] || '-' }}</span>
+                    <span class="d-block">{{ existingFacilityCovenants[group.accountId]?.label }}</span>
+                  </p>
+                </td>
+                <td>{{ covenant.covenant_Description }}</td>
+                <td class="text-align-center">{{ getCovenantFrequencyLabel(covenant.covenant_Frequency) }}</td>
+                <td class="text-align-center">
+                  {{ covenant.covenant_Due_Date ? (covenant.covenant_Due_Date | date:'yyyy-MM-dd') :
+                  covenant.noFrequencyDueDate }}
+                </td>
+              </tr>
+            </ng-container>
+          </ng-container>
+
+          <tr *ngIf="approvedFacilityCovComplied.length == 0">
+            <th colspan="4" class="text-align-center no-covenants-text">
+              <p class="no-data-message">
+                No Covenants.
+              </p>
+            </th>
+          </tr>
+        </table>
+      </div>
+    </fieldset>
+
+    <fieldset class="covenant-fieldset">
+      <legend class="font-weight-bold covenant-heading">Facility Covenants - Not Complied</legend>
+      <div class="covenant-table table-responsive table-container">
+        <table class="table table-height">
+          <tr *ngIf="approvedFacilityCovNoneComplied.length > 0">
+            <th class="text-align-center" style="width: 150px !important">Account Number</th>
+            <th class="existing-customer-description">Description</th>
+            <th class="text-align-center">Frequency</th>
+            <th class="text-align-center" style="width: 130px !important">
+              Due Date
+            </th>
+          </tr>
+
+          <ng-container *ngFor="let group of approvedFacilityCovNoneComplied">
+            <ng-container *ngFor="let covenant of group.covenants; let i = index">
+              <tr>
+                <td class="text-align-center" [attr.rowspan]="group.covenants.length" *ngIf="i === 0">
+                  <a (click)="openBankDetails(group.accountId)"
+                    style="cursor: pointer; text-decoration: underline; color: blue;">
+                    {{ group.accountId }}
+                  </a>
+                  <p class="font-weight-bold">
+                    <span class="d-block">Facility {{ facilityDisplayOrderByAcctId[group.accountId] || '-' }}</span>
+                    <span class="d-block">{{ existingFacilityCovenants[group.accountId]?.label }}</span>
+                    <!-- {{ selectedFacilities[group.accountId]?.creditFacilityName
+                    || existingFacilityCovenants[group.accountId]?.creditFacilityName
+                    || '' }} -->
+                  </p>
+                </td>
+                <td>{{ covenant.covenant_Description }}</td>
+                <td class="text-align-center">{{ getCovenantFrequencyLabel(covenant.covenant_Frequency) }}</td>
+                <td class="text-align-center">
+                  {{ covenant.covenant_Due_Date ? (covenant.covenant_Due_Date | date:'yyyy-MM-dd') :
+                  covenant.noFrequencyDueDate }}
+                </td>
+              </tr>
+            </ng-container>
+          </ng-container>
+
+          <tr *ngIf="approvedFacilityCovNoneComplied.length == 0">
+            <th colspan="4" class="text-align-center no-covenants-text">
+              <p class="no-data-message">
+                No Covenants.
+              </p>
+            </th>
+          </tr>
+        </table>
+      </div>
+    </fieldset>
+
+  </mat-expansion-panel>
+</mat-accordion>
+<!--End Existing Covenants after Approved-->
+
+<app-scroll-to-top></app-scroll-to-top>
