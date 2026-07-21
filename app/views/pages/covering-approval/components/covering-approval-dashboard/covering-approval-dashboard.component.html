@@ -1,0 +1,95 @@
+<div mdbSticky class="d-flex flex-row justify-content-between page-header">
+  <div class="d-flex flex-row align-items-center">
+    <h5><i class="fas fa-newspaper header-icon"></i> Covering Approval </h5>
+
+  </div>
+
+  <div class="d-flex flex-row align-items-center">
+    <ng-container *appHasAnyPrivilege="masterDataPrivilege.ICAS_SETTINGS_COVERING_APPROVAL_CREATE">
+      <button class="medium-button btn btn-info btn-sm covenant-btn" mdbBtn mdbTooltip="Add Covering Approval"
+        mdbWavesEffect type="button" mdbBtn (click)="openDialog($event)">
+        Covering Approval Creation
+      </button>
+    </ng-container>
+  </div>
+
+</div>
+<div class="card mt-1r default-box-styles">
+  <div class="card-body">
+    <div class="w-100-p mt-10p mb-10p display-flex flex-row jc-space-around ai-center">
+      <app-covering-approval-count-box class="box-width" [selectedStatus]="this.status"
+        [count]="coveringApprovalCounts.inboxCovApp" [status]="coveringApprovalDashboardStatusConst.INBOX"
+        (onClick)="loadPageData($event)"></app-covering-approval-count-box>
+      <app-covering-approval-count-box class="box-width" [selectedStatus]="this.status"
+        [count]="coveringApprovalCounts.inProgressCovApp" [status]="coveringApprovalDashboardStatusConst.IN_PROGRESS"
+        (onClick)="loadPageData($event)"></app-covering-approval-count-box>
+      <app-covering-approval-count-box class="box-width" [selectedStatus]="this.status"
+        [count]="coveringApprovalCounts.approvedCovApp" [status]="coveringApprovalDashboardStatusConst.APPROVED"
+        (onClick)="loadPageData($event)"></app-covering-approval-count-box>
+      <!-- <app-covering-approval-count-box class="box-width" [selectedStatus]="this.status"
+        [count]="coveringApprovalCounts.rejectedCovApp" [status]="coveringApprovalDashboardStatusConst.REJECTED"
+        (onClick)="loadPageData($event)"></app-covering-approval-count-box> -->
+      <app-covering-approval-count-box class="box-width" [selectedStatus]="this.status"
+        [count]="coveringApprovalCounts.returnedCovApp" [status]="coveringApprovalDashboardStatusConst.RETURN"
+        (onClick)="loadPageData($event)"></app-covering-approval-count-box>
+    </div>
+  </div>
+</div>
+
+<ng-container *ngFor="let coveringApprovalItem of this.coveringApprovals | keyvalue">
+  <label class="font-weight-bold status-sub">
+    {{ coveringApprovalItem.key.replaceAll("_", " ") }}
+    <label class="status-sub-header">
+      <ng-container
+        *ngIf="(coveringApprovalItem.value.length != 0) && (coveringApprovalItem.value[0].fromDate != null)">
+        ( FROM {{ coveringApprovalItem.value[0].fromDate }} )
+      </ng-container>
+    </label>
+  </label>
+
+  <ng-container *ngIf="coveringApprovalItem.value.length == 0">
+    <div class="alert alert-warning" role="alert">
+      No Covering Approval(s) Found!
+    </div>
+  </ng-container>
+
+  <ng-container *ngIf="coveringApprovalItem.value.length > 0">
+    <div class="ssection mb-15p">
+      <table class="table">
+        <thead>
+          <tr>
+            <ng-container *ngFor="let col of tableColumns">
+              <th scope="col">{{ col }}</th>
+            </ng-container>
+          </tr>
+        </thead>
+        <tbody>
+          <ng-container *ngFor="let coveringApproval of coveringApprovalItem.value">
+            <tr (click)="this.loadCoveringApproval(coveringApproval.covAppId, coveringApproval.accountNumber)"
+              class="table-clickable-row">
+              <td>{{ coveringApproval.customerName ? coveringApproval.customerName : '-' }}</td>
+              <td>{{ coveringApproval.covAppRefNumber }}
+                <ng-container *ngIf="coveringApproval.isAuthorized === true ">
+                  <span class="badge text-color-w ml-3p" style="background-color:red" data-toggle="tooltip"
+                    data-placement="left" [title]="'Unauthorized'">
+                    Unauthorized
+                  </span>
+                </ng-container>
+              </td>
+              <td>{{ coveringApproval.accountNumber }}</td>
+              <td>{{getBranchName(coveringApproval.branchCode) || '-'}}</td>
+              <td>{{ coveringApproval.createdDate | date:'dd/MM/yyyy' }}</td>
+              <td>{{ coveringApproval.chequeNumber }}</td>
+              <td>{{this.coveringApproval.tranCurrency +" "+ this.getFormattedValue(coveringApproval.amount)}}</td>
+              <td>{{ coveringApproval.assignedUser}}</td>
+            </tr>
+          </ng-container>
+        </tbody>
+      </table>
+      <app-paginator [pageIndex]="coveringApprovalsPage[coveringApprovalItem.key]?.currentPageNo - 1"
+        [length]="coveringApprovalsPage[coveringApprovalItem.key]?.totalNoOfRecords" [pageSize]="pageSize.pageSize"
+        [pageSizeOptions]="pageSize.pageSizeOptions"
+        (page)="onPageEvent($event, coveringApprovalItem.key)"></app-paginator>
+    </div>
+  </ng-container>
+</ng-container>

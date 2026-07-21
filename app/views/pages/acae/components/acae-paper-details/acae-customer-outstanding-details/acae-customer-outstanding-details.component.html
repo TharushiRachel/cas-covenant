@@ -1,0 +1,85 @@
+<div class="d-flex p-2 flex-column justify-content-start align-items-start w-100-p">
+  <ng-container *ngIf="isDataAvailable  ; else : noData">
+    <table class="custom-bordered-table width-100">
+      <tbody *ngFor="let accountNumber of accountNumbers">
+        <tr style="height: 30px" class="table-heading-color">
+          <th>Start Date</th>
+          <th>High Balance</th>
+          <th>Low Balance</th>
+          <th>Average Balance</th>
+          <th>Total Debit</th>
+          <th>Total Credit</th>
+          <th>Cheque Return(RD)</th>
+          <th>Float Amount</th>
+        </tr>
+        <tr style="height: 30px">
+          <td colspan="8" class="text-align-start" style="padding-left: 8px !important;">
+            <b>Account No : {{accountNumber}} - Last 12 months</b>
+          </td>
+        </tr>
+        <tr *ngFor="let statData of accountViceCasStatMap[accountNumber]">
+          <td style="width: 150px; text-align: left;">{{statData.startDate}}</td>
+          <td class="value-cel">{{getCurrencyFormat(statData.highBalance)}}</td>
+          <td class="value-cel">{{getCurrencyFormat(statData.lowBalance)}}</td>
+          <td class="value-cel">{{getCurrencyFormat(statData.averageBalance)}}</td>
+          <td class="value-cel">{{getCurrencyFormat(statData.totalDebt)}}</td>
+          <td class="value-cel">{{getCurrencyFormat(statData.totalCredit)}}</td>
+          <td class="value-cel">{{statData.chequeReturnRd}}</td>
+          <td class="value-cel">{{getCurrencyFormat(statData.floatAmount)}}</td>
+        </tr>
+        <tr>
+          <th class="text-align-start" style="padding-left: 8px !important;">Total</th>
+          <th></th>
+          <th></th>
+          <th class="text-align-end">{{getCurrencyFormat(accountViceAverageBalanceTotalMap[accountNumber])}}</th>
+          <th class="text-align-end">{{getCurrencyFormat(accountViceTotalDebitTotalMap[accountNumber])}}</th>
+          <th class="text-align-end">{{getCurrencyFormat(accountViceTotalCreditTotalMap[accountNumber])}}</th>
+          <th class="text-align-end">{{getCurrencyFormat(accountViceChequeReturnTotalMap[accountNumber])}}</th>
+          <th></th>
+        </tr>
+        <tr>
+          <th class="text-align-start" style="padding-left: 8px !important;">Average</th>
+          <th></th>
+          <th></th>
+          <th class="text-align-end">{{getCurrencyFormat(accountViceAverageBalanceAverageMap[accountNumber])}}</th>
+          <th class="text-align-end">{{getCurrencyFormat(accountViceTotalDebitAverageMap[accountNumber])}}</th>
+          <th class="text-align-end">{{getCurrencyFormat(accountViceTotalCreditAverageMap[accountNumber])}}</th>
+          <th class="text-align-end">{{getCurrencyFormat(accountViceChequeReturnAverageMap[accountNumber])}}</th>
+          <th></th>
+        </tr>
+
+        <tr>
+          <td colspan="8" style="padding: 15px !important;">
+            <ng-container *ngIf="accountViceCasChqReturnMap[accountNumber]">
+              <table class="custom-bordered-table width-50">
+                <thead>
+                  <tr style="height: 30px" class="table-heading-color">
+                    <td colspan="4">Cheque Return Status from <b> {{fromDate}} </b> to <b>{{toDate}}</b></td>
+                  </tr>
+                  <tr>
+                    <th colspan="2">Chq Return Code</th>
+                    <th colspan="2">No of Chq Returns</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let chqData of accountViceCasChqReturnMap[accountNumber]">
+                    <td colspan="2">{{chqData.chqReturnCode}}</td>
+                    <td colspan="2">{{chqData.noOfCheqReturn}}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </ng-container>
+          </td>
+        </tr>
+      </tbody>
+      <br>
+    </table>
+  </ng-container>
+
+  <ng-template #noData>
+    <p class="not-auth-message">
+      No Records Available
+    </p>
+  </ng-template>
+
+</div>

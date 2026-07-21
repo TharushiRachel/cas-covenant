@@ -1,0 +1,41 @@
+
+<div class="history-sec">
+<div>
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="mdbModalRef.hide()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+
+    <h4 class="h4-sec">View History</h4>
+  </div>
+
+  <ng-container *ngFor="let item of previousLockedComments">
+    <div *ngIf="item.creditRiskComment == null" class="risk-option">
+      <p class="no-comment-msg">No Records</p>
+    </div>
+  <div class="modal-body modal-detail form-margin" *ngIf="item.creditRiskComment != null">
+    <div class="modal-title w-100 font-weight-bold text-align-center risk-option">
+        <div class="name-container">
+          <p>{{item.modifiedUserName || item.createdUserName}}   :   </p>
+          <p>   {{item.modifiedDateStr ||item.commentedTimeStr }}</p>
+        </div>
+
+    </div>
+
+
+
+    <div class="custom-body risk-opinion-sec">
+      <div>
+        <div [innerHTML]="item.creditRiskComment | safeHtml"></div>
+      </div>
+    </div>
+
+
+    <br>
+
+
+
+  </div>
+
+</ng-container>
+
+</div>

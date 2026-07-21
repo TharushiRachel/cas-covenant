@@ -1,0 +1,18 @@
+<div class="table-paginator d-flex p-2 flex-row justify-content-end align-items-center">
+  <span class="custom-margin">
+    Items per page
+  </span>
+
+  <form class="custom-margin" [formGroup]="searchForm">
+    <mdb-select
+      [options]="optionsSelect"
+      formControlName="size"></mdb-select>
+  </form>
+
+  <span class="custom-margin">
+    {{getDisplayString()}}
+  </span>
+
+  <a (click)="prvClick($event)" class="custom-margin"><i class="fas fa-angle-left"></i></a>
+  <a (click)="nextClick($event)" class="custom-margin"><i class="fas fa-angle-right"></i></a>
+</div>

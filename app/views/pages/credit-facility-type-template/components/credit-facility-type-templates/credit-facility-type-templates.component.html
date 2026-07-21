@@ -1,0 +1,117 @@
+<div mdbSticky class="d-flex flex-row justify-content-between page-header">
+  <div class="d-flex flex-row align-items-center">
+    <h5><i class="fas fa-pallet header-icon"></i> Credit Facility Template(s)</h5>
+  </div>
+
+  <div class="d-flex flex-row align-items-center">
+    <ng-container *appHasAnyPrivilege="masterDataPrivilege.ICAS_SETTINGS_CREDIT_FACILITY_TEMPLATE_ADD">
+      <button (click)="loadCreditFacilityTemplate(null)"
+              class="custom-button"
+              mdbBtn
+              type="button"
+              color="default"
+              outline="true"
+              mdbWavesEffect>New Credit Facility Template
+      </button>
+    </ng-container>
+  </div>
+</div>
+
+<div class="page-search-section section display-flex flex-column jc-start p-2 pt-3 pb-3 default-box-styles">
+  <form class="display-flex w-100-p flex-row jc-space-around ai-center flex-1-gap" [formGroup]="searchForm">
+
+    <div class="md-form w-18-p min-width-120">
+      <input type="text" id="creditFacilityName" formControlName="creditFacilityName" class="form-control" mdbInput>
+      <label for="creditFacilityName">Template Name</label>
+    </div>
+
+    <div class="md-form w-18-p min-width-120">
+      <input type="text" id="description" formControlName="description" class="form-control" mdbInput>
+      <label for="description">Description</label>
+    </div>
+
+    <div class="md-form w-18-p min-width-120">
+      <input type="text" id="maxFacilityAmount" formControlName="maxFacilityAmount" class="form-control" mdbInput>
+      <label for="maxFacilityAmount">Max Amount</label>
+    </div>
+
+    <div class="md-form w-18-p min-width-120">
+      <input type="text" id="minFacilityAmount" formControlName="minFacilityAmount" class="form-control" mdbInput>
+      <label for="minFacilityAmount">Min Amount</label>
+    </div>
+
+    <div class="md-form w-18-p min-width-120">
+      <mdb-select
+        [options]="optionsSelect"
+        formControlName="status"
+        id="status"
+        placeholder="All"></mdb-select>
+      <label for="status">Status</label>
+    </div>
+
+    <div class="display-flex flex-1 flex-row jc-end ai-center">
+      <button (click)="doSearch()" type="button" class=" medium-button btn btn-info" mdbBtn>Search</button>
+      <button (click)="clearSearch()" class=" medium-button btn btn-outline-info clear-btn" mdbBtn type="button">
+        Clear
+      </button>
+    </div>
+  </form>
+</div>
+
+<div *ngIf="creditFacilityTemplates.length == 0" class="alert alert-warning section" role="alert">
+  No Credit Facility template Found !
+</div>
+
+<ng-container *ngIf="creditFacilityTemplates.length > 0">
+  <div class="section table-responsive mb-15p">
+    <table class="table">
+      <thead>
+      <tr>
+        <ng-container *ngFor="let col of tableColumns">
+          <th scope="col">{{col}}</th>
+        </ng-container>
+      </tr>
+      </thead>
+      <tbody>
+      <ng-container *ngFor="let template of creditFacilityTemplates">
+        <tr (click)="loadCreditFacilityTemplate(template.creditFacilityTemplateID)" class="table-clickable-row">
+          <td>{{template.creditFacilityName}}</td>
+          <td>{{template.facilityTypeName}}</td>
+          <td>{{template.description ? template.description : '-'}}</td>
+          <td>{{template.maxFacilityAmount}}</td>
+          <td>{{template.minFacilityAmount}}</td>
+          <td>
+            <span
+              [class.color-green]="template.status === statusConst.ACT"
+              [class.color-red]="template.status === statusConst.INA"
+            >
+                  {{status[template.status]}}
+                </span>
+          </td>
+          <td>
+            <span
+              [class.color-green]="template.approveStatus === approvedStatusConst.APPROVED"
+              [class.color-red]="template.approveStatus === approvedStatusConst.REJECTED"
+              [class.color-blue]="template.approveStatus == approvedStatusConst.PENDING"
+            >
+                  {{approvedStatus[template.approveStatus]}}
+                </span>
+          </td>
+          <td>{{template.approvedDateStr ? template.approvedDateStr : '-'}}</td>
+          <td>{{template.approvedBy ? template.approvedBy : '-'}}</td>
+        </tr>
+      </ng-container>
+      </tbody>
+    </table>
+  </div>
+  <div>
+    <app-paginator
+      [pageIndex]="pageSize.pageIndex"
+      [length]="pageSize.length"
+      [pageSize]="pageSize.pageSize"
+      [pageSizeOptions]="pageSize.pageSizeOptions"
+      (page)="onPageEvent($event)"
+    ></app-paginator>
+  </div>
+</ng-container>
+

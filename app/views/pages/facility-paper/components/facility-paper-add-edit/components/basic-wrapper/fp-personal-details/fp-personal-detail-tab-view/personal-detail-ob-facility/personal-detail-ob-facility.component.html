@@ -1,0 +1,65 @@
+<div class="d-flex flex-column justify-content-start align-items-start w-100-p">
+
+  <div class="d-flex flex-row justify-content-between w-100-p flex-wrap">
+    <label class="font-weight-bold mr-auto">Other Bank Facility(ies)</label>
+    <div>
+      <ng-container *appHasAnyPrivilege="masterDataPrivilege.ICAS_SETTINGS_FACILITY_PAPER_EDIT">
+        <ng-container *ngIf="isEqualLoginAndAssignUser() && !isApproveStatus() && !isRejected()">
+          <button
+            type="button"
+            class="btn btn-sm btn-info cta-btn"
+            aria-hidden="true"
+            mdbTooltip="Add other bank detail" placement="left"
+            (click)="openModalOtherBankFacility(facilityPaper, {})">
+            <i class="fas fa-plus" aria-hidden="true"></i>
+          </button>
+        </ng-container>
+      </ng-container>
+    </div>
+  </div>
+
+  <div class="table-responsive">
+    <table class="table custom-table">
+      <thead>
+      <tr>
+        <ng-container *ngFor="let col of tableColumns">
+          <th scope="col">{{col}}</th>
+        </ng-container>
+      </tr>
+      </thead>
+      <tbody>
+      <ng-container *ngIf="casCustomerOtherBankFacilityDTOList.length>0; else noData">
+        <ng-container *ngFor="let otherFacilityitem of casCustomerOtherBankFacilityDTOList">
+          <tr *ngIf="otherFacilityitem.status == 'ACT'">
+            <td>{{otherFacilityitem.bankName}}</td>
+            <td>{{otherFacilityitem.branchName}}</td>
+            <td>{{otherFacilityitem.facilityAmount}}</td>
+            <td>{{otherFacilityitem.outstandingAmount}}</td>
+            <td>{{otherFacilityitem.facilityType}}</td>
+            <td>{{otherFacilityitem.disbursementDateStr}}</td>
+            <td>{{otherFacilityitem.maturityDateStr}}</td>
+            <td>{{otherFacilityitem.securities}}</td>
+            <td class="text-align-center">
+              <button class="btn btn-sm btn-secondary cta-btn" type="button" mdbWavesEffect
+                      (click)="openModalOtherBankFacility(facilityPaper, otherFacilityitem)"
+                      mdbTooltip="Edit"
+                      [disabled]="isApproveStatus() || isRejected()"
+                      placement="left">
+                <mdb-icon fas icon="pencil-alt" aria-hidden="true"></mdb-icon>
+              </button>
+          </tr>
+        </ng-container>
+      </ng-container>
+      <ng-template #noData>
+        <tr>
+          <th colspan="9" class="text-align-center">
+            <p class="no-data-message">
+              No Other Bank Account(s)
+            </p>
+          </th>
+        </tr>
+      </ng-template>
+      </tbody>
+    </table>
+  </div>
+</div>

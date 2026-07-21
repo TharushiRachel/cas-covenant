@@ -1,0 +1,105 @@
+.ca-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.clickable-text {
+  color: #4d96e5;
+  cursor: pointer;
+}
+
+.read-view-btn {
+  min-width: 135px;
+  padding: 0.4rem 1rem !important;
+}
+
+.fieldset {
+  padding: 39px;
+  margin: 0;
+  border: revert;
+}
+
+.flex-row {
+  margin-top: 10px;
+}
+
+.legend {
+  display: block;
+  /* width: 100%; */
+  width: fit-content;
+  max-width: 100%;
+  padding: 0;
+  margin-bottom: -0.5rem;
+  font-size: 1rem;
+  font-weight: bold;
+  line-height: inherit;
+  color: inherit;
+  white-space: normal;
+}
+
+.flex-wrap {
+  margin-top: 5px;
+}
+
+.info-caption {
+  width: 35% !important;
+  margin-left: 20px;
+}
+
+.width-5 {
+  width: 5% !important;
+}
+
+.w-100-p {
+  width: 100% !important;
+}
+
+.info-details {
+  width: 60% !important;
+  font-weight: bold !important;
+}
+
+.margin-10 {
+  margin: 10px;
+}
+
+.btn-width {
+  width: 97px;
+}
+
+.detail-section {
+  width: 100%;
+  background-color: white;
+}
+
+.padding-unset {
+  padding-right: unset;
+  padding-left: unset;
+}
+
+.line-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 20px 0;
+}
+
+.line-container::before,
+.line-container::after {
+  content: "";
+  flex: 1;
+  border-bottom: 1px solid #000;
+  margin: 0 10px;
+}
+
+.line-container h2 {
+  margin: 0;
+  padding: 0 10px;
+  text-align: center;
+}
+
+.chkd {
+  margin-top: "10px";
+}

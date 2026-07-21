@@ -1,0 +1,44 @@
+.tab-close {
+  color: gray;
+  text-align: right;
+  cursor: pointer;
+}
+
+ul {
+  text-align: center;
+  margin-top: 2px;
+  margin-bottom: 10px;
+
+  li {
+    padding: 0.6rem 1rem;
+    //background-color: rgba(209, 212, 215, 0.99);
+    //background-color: rgba(206, 225, 244, 0.99);
+    background-color: #E9ECEF;
+    margin: 1px;
+    margin-bottom: 0;
+    min-width: 100px;
+    border-top-right-radius: 5px;
+    border-top-left-radius: 5px;
+
+    &:hover {
+      cursor: pointer;
+    }
+
+    span {
+      &.tab-title {
+        color: black;
+      }
+    }
+
+    &.active-tab {
+      background-color: white;
+      border: 2px solid rgba(209, 212, 215, 0.99);
+      border-bottom: 0;
+      font-weight: 500;
+    }
+  }
+}
+
+.icon-color {
+  color: #3d799c;
+}

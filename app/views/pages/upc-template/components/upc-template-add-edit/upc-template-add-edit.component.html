@@ -1,0 +1,153 @@
+<div mdbSticky class="d-flex flex-row justify-content-between page-header">
+  <div class="d-flex flex-row align-items-center">
+    <a appGoBack class="d-flex flex-row align-items-center">
+      <i class="fas fa-angle-left header-icon-back"></i>
+    </a>
+    <h5><i class="fas fa-drafting-compass header-icon"></i>
+      <span *ngIf="pageType=='new'">Add UPC Template</span>
+      <span *ngIf="pageType=='edit'">Edit UPC Template</span>
+    </h5>
+  </div>
+  <div class="d-flex  justify-content-end">
+
+    <ng-container *ngIf="isApproveOrRejectValid()">
+      <ng-container *appHasAnyPrivilege="masterDataPrivilege.ADMIN_MASTER_DATA_APPROVE_OR_REJECT">
+        <button (click)="approve()" mdbBtn class="custom-button" type="button" color="success" outline="true"
+          [disabled]="isDirty()" mdbWavesEffect>
+          <span *ngIf="pageType=='edit'">Approve</span>
+        </button>
+        <button (click)="reject()" mdbBtn type="button" class="custom-button" color="danger" outline="true"
+          [disabled]="isDirty()" mdbWavesEffect>
+          <span *ngIf="pageType=='edit'">Reject</span>
+        </button>
+      </ng-container>
+    </ng-container>
+    <ng-container *appHasAnyPrivilege="masterDataPrivilege.ICAS_SETTINGS_UPC_TEMPLATE_ADD">
+      <button *ngIf="pageType=='new'" (click)="saveUpdate() " class="custom-button" mdbBtn type="button"
+        color="secondary" outline="true" [disabled]="!isValid() || !isDirty()" mdbWavesEffect>
+        <span>SAVE</span>
+      </button>
+    </ng-container>
+
+    <ng-container *appHasAnyPrivilege="masterDataPrivilege.ICAS_SETTINGS_UPC_TEMPLATE_EDIT">
+      <button *ngIf="pageType=='edit'" (click)="saveUpdate()" class="custom-button" mdbBtn type="button"
+        color="secondary" outline="true" [disabled]="!isValid() || !isDirty()" mdbWavesEffect>
+        <span>UPDATE</span>
+      </button>
+    </ng-container>
+  </div>
+</div>
+
+<div class="page-search-section d-flex p-2 flex-column justify-content-start align-items-start">
+  <form class="d-flex p-2 flex-column justify-content-start align-items-start w-100-p" [formGroup]="componentForm">
+
+    <div class="md-form m-top-10px m-bottom-10px w-100-p">
+      <input mdbValidate type="text" id="templateName" maxlength="200" formControlName="templateName"
+        class="form-control" mdbInput>
+      <label for="templateName">UPC Template Name *</label>
+      <mdb-error *ngIf="formErrors.templateName.required">UPC Template Name required</mdb-error>
+      <mdb-error *ngIf="formErrors.templateName.maxlength">Maximum length for UPC Template Name
+        is {{formErrors.templateName.maxlength.requiredLength}}</mdb-error>
+    </div>
+
+    <div class="md-form m-top-10px m-bottom-10px w-100-p">
+      <input mdbValidate type="text" id="description" maxlength="200" formControlName="description" class="form-control"
+        (keydown)="tabPressDisabled($event)" mdbInput>
+      <label for="description">Description</label>
+      <mdb-error *ngIf="formErrors.description.maxlength">Maximum length for Description
+        is {{formErrors.description.maxlength.requiredLength}}</mdb-error>
+    </div>
+
+    <div class="md-form m-top-10px m-bottom-10px w-100-p">
+      <mdb-select [options]="optionsSelect" formControlName="status" id="status" placeholder="Status"></mdb-select>
+      <label for="status">Status</label>
+      <mdb-error *ngIf="formErrors.status.required">Status required</mdb-error>
+    </div>
+
+    <table>
+      <tr>
+        <td>
+          <div class="m-top-20px m-bottom-20px w-100-p">
+            <label class="label-font float-left"> UPC Label Format </label>
+            <span class="badge ml-10p" [style.background-color]="upcLabelBackgroundColor"
+              [style.color]="upcLabelFontColor" data-placement="left">{{upcLabel}}
+            </span>
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <div class="flex-row  w-80-p margin-10">
+            <label class="label-font  float-left"> UPC Label </label>
+          </div>
+        </td>
+        <td>
+          <input class="input-text" mdbValidate type="text" (ngModelChange)="upcLabelChange($event)" id="upcLabel"
+            formControlName="upcLabel" maxlength="3" mdbInput>
+          <mdb-error *ngIf="formErrors.upcLabel.required">UPC Label required</mdb-error>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <div class="flex-row  w-80-p margin-10">
+            <label class="label-font float-left"> Font Color </label>
+          </div>
+        </td>
+        <td>
+          <input class="input-color" type="color" id="upcLabelFontColor" value="upcLabelFontColor"
+            (ngModelChange)="upcLabelFontColorChange($event)" formControlName="upcLabelFontColor" mdbInput>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <div class="flex-row  w-80-p margin-10">
+            <label class="label-font float-left"> Background Label </label>
+          </div>
+        </td>
+        <td>
+          <input class="input-color" type="color" id="upcLabelBackgroundColor" value="upcLabelBackgroundColor"
+            (ngModelChange)="upcLabelBackgroundColorChange($event)" formControlName="upcLabelBackgroundColor" mdbInput>
+        </td>
+      </tr>
+
+    </table>
+
+
+    <h6 class="mt-3">Approval Notification Email(s)</h6>
+    <div class="row d-flex w-100 my-2 mx-0">
+      <div class="md-form m-0 w-33-p">
+        <input mdbValidate type="text" id="email" formControlName="email" class="form-control" mdbInput>
+        <label for="email">Email</label>
+      </div>
+      <div class="w-33-p m-0">
+        <button class="btn btn-sm" (click)="addNotifyEmail()" [disabled]="isInValidEmail()">
+          <mdb-icon fas icon="plus"></mdb-icon>
+        </button>
+      </div>
+    </div>
+
+    <div class="row d-flex mx-0">
+      <div class="row d-flex ml-0 mr-2 p-2 align-items-center"
+        style="border: 1px solid; background-color: #f5f5f5;border-radius: 8px;"
+        *ngFor="let item of notifyEmails;let i=index;">
+        <span class="my-0 ml-0 mr-2">{{item}}</span>
+        <mdb-icon style="cursor: pointer;" fas icon="times" (click)="removeEmail(i)"></mdb-icon>
+      </div>
+    </div>
+
+    <div class="md-form m-top-25px m-bottom-10px w-100-p">
+      <hr>
+    </div>
+
+    <ng-container *ngIf="pageType=='edit'" class="w-100-p">
+
+      <app-template-structure class="w-100-p m-top-10px" [allUpcSectionData]="allUpcSectionData"
+        [initNodeData]="initNodeData" [alreadyAddedUpcSectionIDs]="alreadyAddedUpcSectionIDs"
+        (onUpdate)="onUpdateTree($event)" (search)="search($event)">
+      </app-template-structure>
+
+      <app-trackeble-info class="w-100-p" [updateDTO]="selectedUpdateDTO">
+      </app-trackeble-info>
+    </ng-container>
+  </form>
+</div>

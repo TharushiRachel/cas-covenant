@@ -1,0 +1,49 @@
+<div class="d-flex flex-column justify-content-start">
+  <div class="d-flex flex-wrap">
+    <div class="d-flex flex-row justify-content-between width-50">
+      <label class="info-caption">Reference No</label>
+      <span class="width-5">:</span>
+      <span
+        class="info-details">{{facilityPaper.fpRefNumber || '-'}} ({{facilityStatus[this.facilityPaper.currentFacilityPaperStatus]}})</span>
+    </div>
+
+    <div class="d-flex flex-row justify-content-between width-50">
+      <label class="info-caption">Bank Account</label>
+      <span class="width-5">:</span>
+      <span
+        class="info-details">{{facilityPaper.bankAccountID || '-'}}</span>
+    </div>
+
+    <div class="d-flex flex-row justify-content-between width-50">
+      <label class="info-caption">Initiated User</label>
+      <span class="width-5">:</span>
+      <span
+        class="info-details">
+        {{facilityPaper.createdUserDisplayName ? facilityPaper.createdUserDisplayName + ' (' + facilityPaper.createdBy + ')' : facilityPaper.createdBy || '-' }}
+      </span>
+    </div>
+
+    <div class="d-flex flex-row justify-content-between width-50">
+      <label class="info-caption">Customer Name</label>
+      <span class="width-5">:</span>
+      <span
+        class="info-details">{{primaryCustomer.customerName || '-'}}</span>
+    </div>
+
+    <div class="d-flex flex-row justify-content-between width-50">
+      <label class="info-caption">Branch</label>
+      <span class="width-5">:</span>
+      <span
+        class="info-details">{{getBranchName(facilityPaper.branchCode)}}</span>
+    </div>
+
+    <div class="d-flex flex-row justify-content-between width-50">
+      <label class="info-caption">Assigned User</label>
+      <span class="width-5">:</span>
+      <span
+        class="info-details">
+        {{facilityPaper.assignUserDisplayName ? facilityPaper.assignUserDisplayName : getBranchName(facilityPaper.assignDepartmentCode) || '-'}}
+      </span>
+    </div>
+  </div>
+</div>

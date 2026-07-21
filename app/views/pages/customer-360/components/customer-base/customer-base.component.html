@@ -1,0 +1,96 @@
+<div mdbSticky class="d-flex flex-row justify-content-between page-header">
+  <div class="d-flex flex-row align-items-center">
+    <h5><i class="fas fa-street-view header-icon"></i> Customer 360</h5>
+  </div>
+
+</div>
+<mdb-tabset #staticTabs [buttonClass]="'nav md-pills pills-secondary mb-3'" [contentClass]="'card'">
+  <ng-container>
+    <mdb-tab heading="Finacle Customer">
+      <div class="page-search-section section display-flex flex-column jc-start p-2 pt-3 pb-3 default-box-styles">
+        <form class="display-flex w-100-p flex-row jc-space-around ai-center flex-1-gap" [formGroup]="searchForm">
+          <div class="md-form w-24-p min-width-120 ">
+            <mdb-select [options]="optionsSelect" formControlName="identificationType" placeholder="Select ID type"
+              id="identificationType"></mdb-select>
+            <label for="identificationType">ID Type</label>
+          </div>
+
+          <div class="md-form w-24-p min-width-120 ">
+            <input type="text" id="identificationNumber" formControlName="identificationNumber" class="form-control"
+              mdbInput>
+            <label for="identificationNumber">Identification Number</label>
+          </div>
+
+          <div class="md-form w-24-p min-width-120 ">
+            <input type="text" id="bankAccountNumber" formControlName="bankAccountNumber" class="form-control" mdbInput>
+            <label for="bankAccountNumber">Account Number</label>
+          </div>
+
+          <div class="md-form w-24-p min-width-120 ">
+            <input type="text" id="customerFinancialID" formControlName="customerFinancialID" class="form-control"
+              mdbInput>
+            <label for="customerFinancialID">CIF ID</label>
+          </div>
+
+          <div class="display-flex flex-1 flex-row jc-end ai-center">
+            <button (click)="doSearch()" type="button" class=" medium-button btn btn-info" mdbBtn>Search</button>
+            <button (click)="clearSearch()" class=" medium-button btn btn-outline-info clear-btn" mdbBtn type="button">
+              Clear
+            </button>
+          </div>
+        </form>
+
+      </div>
+      <ng-container *ngIf="hasData()">
+        <div class="single-row d-flex flex-column flex-md-row justify-content-start  justify-content-md-between">
+          <div class="w-49-5-p item-box section item-left">
+            <app-personal-details [customer360Details]="customer360Details"
+              (refreshCustomerDetailFromBank)="refreshCustomerDetailFromBank()">
+            </app-personal-details>
+          </div>
+
+          <div class="w-49-5-p item-box section item-right">
+            <app-account-detail-list [customer360Details]="customer360Details">
+            </app-account-detail-list>
+          </div>
+        </div>
+
+        <div class="single-row d-flex flex-column justify-content-start">
+          <app-finacle-facility-details class="w-100-p item-box section item-left item-right">
+            Finacle Facility Details
+          </app-finacle-facility-details>
+        </div>
+
+        <div class="single-row d-flex flex-column justify-content-start">
+          <div class="w-100-p item-box section item-left item-right">
+            <app-cas-facility-paper-list [customer360Details]="customer360Details"></app-cas-facility-paper-list>
+          </div>
+        </div>
+
+        <div class="single-row d-flex flex-column justify-content-start">
+          <app-lead-history-list class="w-100-p item-box section item-left item-right">
+            Lead history list
+          </app-lead-history-list>
+        </div>
+        <div class="single-row d-flex flex-column justify-content-start">
+          <app-kalipto-detail class="w-100-p item-box section item-left item-right">
+            Kalypto Detail
+          </app-kalipto-detail>
+        </div>
+
+      </ng-container>
+    </mdb-tab>
+    <mdb-tab heading="Non Finacle Customer">
+      <div class="text-align-center width-100">
+        <span class="no-data-message"><b>No Customer Found! </b></span>If the customer does not exist <a
+          (click)="createFPWithoutFinacleCustomer($event)" class="click-here">click here</a> to proceed with a new
+        customer
+      </div>
+    </mdb-tab>
+    <mdb-tab heading="CRIB">
+      <div class="m-0 p-0 w-100" style="position: relative;">
+        <app-crib-report></app-crib-report>
+      </div>
+    </mdb-tab>
+  </ng-container>
+</mdb-tabset>

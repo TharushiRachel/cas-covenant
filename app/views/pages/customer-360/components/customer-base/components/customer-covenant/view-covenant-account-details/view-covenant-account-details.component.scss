@@ -1,0 +1,22 @@
+.details-grid .row {
+    display: grid;
+    grid-template-columns: 200px 20px 1fr;
+    // margin-bottom: 8px;
+    align-items: center;
+    // margin-left: 20%;
+    margin: 5% 0 5% 17%;
+  }
+  
+  .label {
+    font-weight: bold;
+  }
+  
+  .colon {
+    text-align: center;
+  }
+  
+  .value {
+    text-align: left;
+    margin-left: 10%;
+  }
+  

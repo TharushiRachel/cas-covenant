@@ -1,0 +1,36 @@
+<form [formGroup]="justificationGroup">
+  <div class="d-flex flex-column width-100">
+    <div class="d-flex flex-row mt-5p">
+      <p style="width: 15%">Risk Based Pricing</p>
+      <p>:</p>
+      <div class="w-85 data-lbl">
+        <input mdbValidate
+               type="text"
+               id="riskBasedPricing"
+               maxlength="255"
+               formControlName="riskBasedPricing"
+               class="custom-text-input"
+               placeholder="Risk Base Pricing"
+               mdbInput>
+      </div>
+    </div>
+
+    <div class="d-flex flex-column">
+      <div>
+        <p style="margin: unset">Justification/Clarification for the urgency of the approval
+          (approval without referring to Board Credit Committee)</p>
+      </div>
+      <div>
+        <textarea type="text"
+                  id="justification"
+                  class="form-control comment-area"
+                  maxlength="4000"
+                  placeholder="Justification..."
+                  formControlName="justification"
+                  style="height: 100px"
+                  mdbInput>
+          </textarea>
+      </div>
+    </div>
+  </div>
+</form>

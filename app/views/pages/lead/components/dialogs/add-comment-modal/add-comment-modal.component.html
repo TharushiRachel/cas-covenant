@@ -1,0 +1,25 @@
+<div class="modal-header modal-topic">
+    <button type="button" class="close pull-right" aria-label="Close" (click)="onNoClick()">
+        <span aria-hidden="true">×</span>
+    </button>
+    <h4 class="modal-title w-100 heading-align font-weight-bold" id="myModalLabel">{{heading}}</h4>
+</div>
+<div class="modal-body">
+    <div class="row d-flex mt-3">
+        <div class="col-md-12">
+            <div class="md-form">
+                <label for="comment" style="color: black"></label>
+                <textarea type="text" id="comment" class="form-control comment-area" maxlength="4000"
+                    placeholder="Comment here..." [(ngModel)]="comment" appTextAreaAutoHeight customHeight="120px"
+                    mdbInput></textarea>
+            </div>
+
+        </div>
+    </div>
+</div>
+<div class="modal-footer modal-end">
+    <button type="button" mdbBtn color="info" class="btn-sm relative waves-light" mdbWavesEffect
+        [disabled]="comment === ''" (click)="handleSave()">
+        Save
+    </button>
+</div>

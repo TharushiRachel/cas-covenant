@@ -1,0 +1,26 @@
+<div class="modal-header flex-center modal-topic">
+    <h4 class="modal-title w-100 font-weight-bold">{{approveStatus[status]}} Committee</h4>
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="mdbModalRef.hide()">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+
+<div class="modal-body mx-3 modal-detail form-margin">
+    <span>Do you want to<b> {{approveStatus[status]}} </b> the <b>{{committeeName}}</b>?</span>
+
+    <ng-container>
+        <div class="md-form m-top-10px m-bottom-10px w-100-p">
+            <textarea class="form-control border border-1 p-2" name="comment" id="comment" cols="10" rows="4"
+                [(ngModel)]="comment"></textarea>
+        </div>
+    </ng-container>
+
+    <div class="w-100-p d-flex flex-row justify-content-end align-content-center">
+        <button mdbBtn color="info" class="my-4 editor-save-btn" (click)="save()">Yes
+        </button>
+        <ng-container>
+            <button mdbBtn color="danger" class="my-4 editor-save-btn" (click)=" close()">No
+            </button>
+        </ng-container>
+    </div>
+</div>

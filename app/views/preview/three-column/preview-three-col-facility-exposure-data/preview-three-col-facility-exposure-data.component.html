@@ -1,0 +1,221 @@
+<div class="d-flex flex-column width-100 justify-content-center">
+  <!--  <div class="text-align-center topic">-->
+  <!--    <h5>Exposure</h5>-->
+  <!--  </div>-->
+
+  <!-- <table class="width-100">
+    <thead>
+    <tr>
+      <th class="text-align-center">
+        Existing Limit
+      </th>
+
+      <th class="text-align-center">
+        Outstanding as at {{facilityPaper.outstandingDateStr}}
+      </th>
+      <th class="text-align-center">Exposure</th>
+      <th class="text-align-center">Proposed Limit</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr style="height: 30px;">
+      <td class="text-align-center">{{this.getFormattedThreeDecimalValues(this.facilityPaper.totalDirectExposureExisting)}}</td>
+      <td class="text-align-center">{{this.getFormattedThreeDecimalValues(this.facilityPaper.totalDirectExposurePrevious)}}</td>
+      <td class="text-align-center">Total Funded Exposure</td>
+      <td class="text-align-center">{{this.getFormattedThreeDecimalValues(this.facilityPaper.totalDirectExposureNew)}}</td>
+    </tr>
+
+    <tr style="height: 30px;">
+      <td class="text-align-center">{{this.getFormattedThreeDecimalValues(this.facilityPaper.totalIndirectExposureExisting)}}</td>
+      <td class="text-align-center">{{this.getFormattedThreeDecimalValues(this.facilityPaper.totalIndirectExposurePrevious)}}</td>
+      <td class="text-align-center">Total Non-funded Exposure</td>
+      <td class="text-align-center">{{this.getFormattedThreeDecimalValues(this.facilityPaper.totalIndirectExposureNew)}}</td>
+    </tr>
+
+    <tr style="height: 30px;">
+      <td class="text-align-center">{{this.getFormattedThreeDecimalValues(this.facilityPaper.totalExposureExisting)}}</td>
+      <td class="text-align-center">{{this.getFormattedThreeDecimalValues(this.facilityPaper.totalExposurePrevious)}}</td>
+      <td class="text-align-center">Total Exposure - Company</td>
+      <td class="text-align-center">{{this.getFormattedThreeDecimalValues(this.facilityPaper.totalExposureNew)}}</td>
+    </tr>
+
+    <tr style="height: 30px;">
+      <td class="text-align-center">{{this.getFormattedThreeDecimalValues(this.facilityPaper.cashMargin)}}</td>
+      <td class="text-align-center">{{this.getFormattedThreeDecimalValues(this.facilityPaper.cashMargin)}}</td>
+      <td class="text-align-center">Less: Cash Margin</td>
+      <td class="text-align-center">{{this.getFormattedThreeDecimalValues(this.facilityPaper.cashMargin)}}</td>
+    </tr>
+
+    <tr style="height: 30px;">
+      <td class="text-align-center">{{this.getFormattedThreeDecimalValues(this.facilityPaper.netTotalExposureExisting)}}</td>
+      <td class="text-align-center">{{this.getFormattedThreeDecimalValues(this.facilityPaper.netTotalExposurePrevious)}}</td>
+      <td class="text-align-center">Net- Total Company Exposure</td>
+      <td class="text-align-center">{{this.getFormattedThreeDecimalValues(this.facilityPaper.netTotalExposureNew)}}</td>
+    </tr>
+
+    <tr style="height: 30px;">
+      <td class="text-align-center">{{this.getFormattedThreeDecimalValues(this.facilityPaper.groupTotalDirectExposureExisting)}}</td>
+      <td class="text-align-center">{{this.getFormattedThreeDecimalValues(this.facilityPaper.groupTotalDirectExposurePrevious)}}</td>
+      <td class="text-align-center">Total Funded Group Exposure</td>
+      <td class="text-align-center">{{this.getFormattedThreeDecimalValues(this.facilityPaper.groupTotalDirectExposureNew)}}</td>
+    </tr>
+
+    <tr style="height: 30px;">
+      <td
+        class="text-align-center">{{this.getFormattedThreeDecimalValues(this.facilityPaper.groupTotalIndirectExposureExisting)}}</td>
+      <td
+        class="text-align-center">{{this.getFormattedThreeDecimalValues(this.facilityPaper.groupTotalIndirectExposurePrevious)}}</td>
+      <td class="text-align-center">Total Non-funded Group Exposure</td>
+      <td class="text-align-center">{{this.getFormattedThreeDecimalValues(this.facilityPaper.groupTotalIndirectExposureNew)}}</td>
+    </tr>
+
+    <tr style="height: 30px;">
+      <td class="text-align-center">{{this.getFormattedThreeDecimalValues(this.facilityPaper.groupTotalExposureExisting)}}</td>
+      <td class="text-align-center">{{this.getFormattedThreeDecimalValues(this.facilityPaper.groupTotalExposurePrevious)}}</td>
+      <td class="text-align-center">Total Exposure –Group</td>
+      <td class="text-align-center">{{this.getFormattedThreeDecimalValues(this.facilityPaper.groupTotalExposureNew)}}</td>
+    </tr>
+
+    <tr style="height: 30px;">
+      <td class="text-align-center">{{this.getFormattedThreeDecimalValues(this.facilityPaper.groupCashMargin)}}</td>
+      <td class="text-align-center">{{this.getFormattedThreeDecimalValues(this.facilityPaper.groupCashMargin)}}</td>
+      <td class="text-align-center">Less: Cash margin</td>
+      <td class="text-align-center">{{this.getFormattedThreeDecimalValues(this.facilityPaper.groupCashMargin)}}</td>
+    </tr>
+
+    <tr style="height: 30px;">
+      <td class="text-align-center">{{this.getFormattedThreeDecimalValues(this.facilityPaper.groupNetTotalExposureExisting)}}</td>
+      <td class="text-align-center">{{this.getFormattedThreeDecimalValues(this.facilityPaper.groupNetTotalExposurePrevious)}}</td>
+      <td class="text-align-center">Net - Total Group Exposure</td>
+      <td class="text-align-">{{this.getFormattedThreeDecimalValues(this.facilityPaper.groupNetTotalExposureNew)}}</td>
+    </tr>
+
+    </tbody>
+  </table> -->
+
+  <table class="table table-bordered my-3 exposure-table">
+    <tbody>
+      <tr>
+        <td>
+          {{getFormattedThreeDecimalValues(getMillionValue(facilityPaper.totalDirectExposureExisting))}}
+        </td>
+        <td>
+          {{getFormattedThreeDecimalValues(getMillionValue(facilityPaper.totalDirectExposurePrevious))}}
+        </td>
+        <td>Total Funded Exposure</td>
+        <td>
+          {{getFormattedThreeDecimalValues(getMillionValue(facilityPaper.totalDirectExposureNew))}}
+        </td>
+      </tr>
+      <tr>
+        <td>
+          {{getFormattedThreeDecimalValues(getMillionValue(facilityPaper.totalIndirectExposureExisting))}}
+        </td>
+        <td>
+          {{getFormattedThreeDecimalValues(getMillionValue(facilityPaper.totalIndirectExposurePrevious))}}
+        </td>
+        <td>Total Non-Funded Exposure</td>
+        <td>
+          {{getFormattedThreeDecimalValues(getMillionValue(facilityPaper.totalIndirectExposureNew))}}
+        </td>
+      </tr>
+      <tr>
+        <td>
+          {{getFormattedThreeDecimalValues(getMillionValue(facilityPaper.totalExposureExisting))}}
+        </td>
+        <td>
+          {{getFormattedThreeDecimalValues(getMillionValue(facilityPaper.totalExposurePrevious))}}
+        </td>
+        <td>Total Exposure - Company</td>
+        <td>
+          {{getFormattedThreeDecimalValues(getMillionValue(facilityPaper.totalExposureNew))}}
+        </td>
+      </tr>
+      <tr>
+        <td>
+          {{getFormattedThreeDecimalValues(getMillionValue(facilityPaper.existingCashMargin))}}
+        </td>
+        <td>
+          {{getFormattedThreeDecimalValues(getMillionValue(facilityPaper.outstandingCashMargin))}}
+        </td>
+        <td>Less: Cash Margin</td>
+        <td>
+          {{getFormattedThreeDecimalValues(getMillionValue(facilityPaper.proposedCashMargin))}}
+        </td>
+      </tr>
+      <tr>
+        <td>
+          {{getFormattedThreeDecimalValues(getMillionValue(facilityPaper.netTotalExposureExisting))}}
+        </td>
+        <td>
+          {{getFormattedThreeDecimalValues(getMillionValue(facilityPaper.netTotalExposurePrevious))}}
+        </td>
+        <td><b>Net - Total Company Exposure</b></td>
+        <td>
+          {{getFormattedThreeDecimalValues(getMillionValue(facilityPaper.netTotalExposureNew))}}
+        </td>
+      </tr>
+      <tr>
+        <td>
+          {{getFormattedThreeDecimalValues(getMillionValue(facilityPaper.groupTotalDirectExposureExisting))}}
+        </td>
+        <td>
+          {{getFormattedThreeDecimalValues(getMillionValue(facilityPaper.groupTotalDirectExposurePrevious))}}
+        </td>
+        <td>Total Funded Group Exposure</td>
+        <td>
+          {{getFormattedThreeDecimalValues(getMillionValue(facilityPaper.groupTotalDirectExposureNew))}}
+        </td>
+      </tr>
+      <tr>
+        <td>
+          {{getFormattedThreeDecimalValues(getMillionValue(facilityPaper.groupTotalIndirectExposureExisting))}}
+        </td>
+        <td>
+          {{getFormattedThreeDecimalValues(getMillionValue(facilityPaper.groupTotalIndirectExposurePrevious))}}
+        </td>
+        <td>Total Non-Funded Group Exposure</td>
+        <td>
+          {{getFormattedThreeDecimalValues(getMillionValue(facilityPaper.groupTotalIndirectExposureNew))}}
+        </td>
+      </tr>
+      <tr>
+        <td>
+          {{getFormattedThreeDecimalValues(getMillionValue(facilityPaper.groupTotalExposureExisting))}}
+        </td>
+        <td>
+          {{getFormattedThreeDecimalValues(getMillionValue(facilityPaper.groupTotalExposurePrevious))}}
+        </td>
+        <td>Total Exposure - Group</td>
+        <td>
+          {{getFormattedThreeDecimalValues(getMillionValue(facilityPaper.groupTotalExposureNew))}}
+        </td>
+      </tr>
+      <tr>
+        <td>
+          {{getFormattedThreeDecimalValues(getMillionValue(facilityPaper.groupExistingCashMargin))}}
+        </td>
+        <td>
+          {{getFormattedThreeDecimalValues(getMillionValue(facilityPaper.groupOutstandingCashMargin))}}
+        </td>
+        <td>Less: Cash margin</td>
+        <td>
+          {{getFormattedThreeDecimalValues(getMillionValue(facilityPaper.groupProposedCashMargin))}}
+        </td>
+      </tr>
+      <tr>
+        <td>
+          {{getFormattedThreeDecimalValues(getMillionValue(facilityPaper.groupNetTotalExposureExisting))}}
+        </td>
+        <td>
+          {{getFormattedThreeDecimalValues(getMillionValue(facilityPaper.groupNetTotalExposurePrevious))}}
+        </td>
+        <td><b>Net - Total Group Exposure</b></td>
+        <td>
+          {{getFormattedThreeDecimalValues(getMillionValue(facilityPaper.groupNetTotalExposureNew))}}
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+</div>

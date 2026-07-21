@@ -1,0 +1,46 @@
+.page-section {
+    margin: 0.5rem 0;
+  
+    &:first-child {
+    }
+  
+    .info-section {
+      margin: 3px 15px 3px 0;
+      min-width: 220px;
+  
+      .info-caption {
+        margin-right: 5px;
+      }
+    }
+  }
+  
+  .read-view-btn {
+    min-width: 135px;
+    padding: 0.4rem 1rem !important;
+  }
+  
+  .cft-btn {
+    padding: 0px;
+    height: 30px;
+    float: right;
+    margin-bottom: 15px;
+  }
+  
+  .cta-btn {
+    padding: .4rem .7rem;
+    font-size: .8rem;
+    color: #15181bb3;
+    background-color: #e0e0e0!important;
+    // box-shadow: unset !important;
+  }
+  
+  .table th, .table td {
+    padding: 0.27rem;
+    vertical-align: middle;
+  }
+  
+  .total {
+    font-weight: bold;
+  }
+  
+  

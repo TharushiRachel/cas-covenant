@@ -1,0 +1,220 @@
+<div class="d-flex flex-row flex-wrap justify-content-start w-100-p">
+  <div class="width-50 d-flex flex-row m-bottom-10px" *ngIf="customerDetails.customerName">
+    <div class="topic width-40">
+      Customer Full Name (Finacle)
+    </div>
+    <div class="width-2">:</div>
+    <div class="width-58">
+      {{customerDetails.customerName || '-'}}
+    </div>
+  </div>
+
+  <div class="width-50 d-flex flex-row m-bottom-10px" *ngIf="customerDetails.customerFinancialID">
+    <div class="topic width-40">
+      Finacle ID
+    </div>
+    <div class="width-2">:</div>
+    <div class="width-58">
+      {{customerDetails.customerFinancialID || '-'}}
+    </div>
+  </div>
+
+  <div class="width-50 d-flex flex-row m-bottom-10px">
+    <div class="topic width-40">
+      Name With Initial
+    </div>
+    <div class="width-2">:</div>
+    <div class="width-58">
+      {{customerDetails.title}} {{customerDetails.title ? '.' : ''}} {{basicInformation.nameWithInitials}}
+    </div>
+  </div>
+
+  <div class="width-50 d-flex flex-row m-bottom-10px">
+    <div class="topic width-40">
+      Name Represented by Initials
+    </div>
+    <div class="width-2">:</div>
+    <div class="width-58">
+      {{basicInformation.initialRepresentation}}
+    </div>
+  </div>
+
+  <ng-container
+    *ngIf="customerDetails.afCustomerIdentificationDTOList && customerDetails.afCustomerIdentificationDTOList.length > 0">
+    <ng-container *ngFor="let idDetail of customerDetails.afCustomerIdentificationDTOList">
+      <div class="width-50 d-flex flex-row m-bottom-10px">
+        <div class="topic width-40">
+          {{customerIdentificationType[idDetail.identificationType]}}
+        </div>
+        <div class="width-2">:</div>
+        <div class="width-58">
+          {{idDetail.identificationNumber}}
+        </div>
+      </div>
+    </ng-container>
+  </ng-container>
+
+
+  <div class="width-50 d-flex flex-row m-bottom-10px"
+       *ngIf="customerDetails.dateOfBirthStr || basicInformation.dateOfBirthStr">
+    <div class="topic width-40">
+      Date of birth
+    </div>
+    <div class="width-2">:</div>
+    <div class="width-58">
+      {{customerDetails.dateOfBirthStr || basicInformation.dateOfBirthStr || '-'}}
+    </div>
+  </div>
+
+
+  <div class="width-50 d-flex flex-row m-bottom-10px">
+    <div class="topic width-40">
+      Civil Status
+    </div>
+    <div class="width-2">:</div>
+    <div class="width-58">
+      {{civilStatus[basicInformation.civilStatus] || '-'}}
+    </div>
+  </div>
+
+  <div class="width-50 d-flex flex-row m-bottom-10px">
+    <div class="topic width-40">
+      Email (Primary)
+    </div>
+    <div class="width-2">:</div>
+    <div class="width-58">
+      {{customerDetails.emailAddress || '-'}}
+    </div>
+  </div>
+
+  <div class="width-50 d-flex flex-row m-bottom-10px">
+    <div class="topic width-40">
+      Official Address
+    </div>
+    <div class="width-2">:</div>
+    <div class="width-58">
+      {{basicInformation.officialAddress || '-'}}
+    </div>
+  </div>
+
+  <ng-container *ngIf="customerDetails.afCustomerAddressDTOList && customerDetails.afCustomerAddressDTOList.length > 0">
+    <ng-container *ngFor="let address of customerDetails.afCustomerAddressDTOList">
+      <div class="width-50 d-flex flex-row m-bottom-10px">
+        <div class="topic width-40">
+          {{addressType[address.addressType] ? addressType[address.addressType] : address.addressType }} Address
+        </div>
+        <div class="width-2">:</div>
+        <div class="width-58">
+          {{address.address1}} {{address.address2 ? ' ,' + address.address2 : ''}} {{address.city ? ' ,' + address.city : ''}}
+        </div>
+      </div>
+    </ng-container>
+  </ng-container>
+
+  <ng-container
+    *ngIf="customerDetails.afCustomerTelephoneDTOList && customerDetails.afCustomerTelephoneDTOList.length > 0">
+    <ng-container *ngFor="let  telephone of customerDetails.afCustomerTelephoneDTOList; let i = index;">
+      <div class="width-50 d-flex flex-row m-bottom-10px">
+        <div class="topic width-40">
+          Contact Number {{i + 1}}
+        </div>
+        <div class="width-2">:</div>
+        <div class="width-58">
+          {{telephone.contactNumber ? telephone.contactNumber : '-'}}
+          <span *ngIf="telephone.contactNumber && telephone.description">({{telephone.description}})</span>
+        </div>
+      </div>
+    </ng-container>
+  </ng-container>
+
+  <div class="width-50 d-flex flex-row m-bottom-10px">
+    <div class="topic width-40">
+      Nationality
+    </div>
+    <div class="width-2">:</div>
+    <div class="width-58">
+      {{basicInformation.nationality}}
+    </div>
+  </div>
+
+  <div class="width-50 d-flex flex-row m-bottom-10px">
+    <div class="topic width-40">
+      Highest Education Achievement
+    </div>
+    <div class="width-2">:</div>
+    <div class="width-58">
+      {{basicInformation.highestEduAchievement}}
+    </div>
+  </div>
+
+
+  <div class="width-50 d-flex flex-row m-bottom-10px">
+    <div class="topic width-40">
+      Employment
+    </div>
+    <div class="width-2">:</div>
+    <div class="width-58">
+      {{employStatus[basicInformation.employment]}}
+    </div>
+  </div>
+
+  <ng-container *ngIf="!isSelfEmployed()">
+    <div class="width-50 d-flex flex-row m-bottom-10px">
+      <div class="topic width-40">
+        Employer
+      </div>
+      <div class="width-2">:</div>
+      <div class="width-58">
+        {{basicInformation.employer}}
+      </div>
+    </div>
+  </ng-container>
+
+  <ng-container *ngIf="isSelfEmployed()">
+    <div class="width-50 d-flex flex-row m-bottom-10px">
+      <div class="topic width-40">
+        No of Business Years
+      </div>
+      <div class="width-2">:</div>
+      <div class="width-58">
+        {{basicInformation.noOfBusinessYears}}
+      </div>
+    </div>
+  </ng-container>
+
+  <ng-container *ngIf="!isSelfEmployed()">
+    <div class="width-50 d-flex flex-row m-bottom-10px">
+      <div class="topic width-40">
+        Your Position
+      </div>
+      <div class="width-2">:</div>
+      <div class="width-58">
+        {{basicInformation.position}}
+      </div>
+    </div>
+  </ng-container>
+
+  <ng-container *ngIf="!isSelfEmployed()">
+    <div class="width-50 d-flex flex-row m-bottom-10px">
+      <div class="topic width-40">
+        No of Years with Employer
+      </div>
+      <div class="width-2">:</div>
+      <div class="width-58">
+        {{basicInformation.noOfYearsEmployment}}
+      </div>
+    </div>
+  </ng-container>
+
+  <ng-container *ngIf="isSelfEmployed()">
+    <div class="width-50 d-flex flex-row m-bottom-10px">
+      <div class="topic width-40">
+        Nature Of Business
+      </div>
+      <div class="width-2">:</div>
+      <div class="width-58">
+        {{basicInformation.natureOfBusiness}}
+      </div>
+    </div>
+  </ng-container>
+</div>

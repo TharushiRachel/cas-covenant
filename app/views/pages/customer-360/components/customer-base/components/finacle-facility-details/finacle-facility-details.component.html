@@ -1,0 +1,74 @@
+<div class="item-wrapper d-flex flex-column justify-content-start">
+  <div>
+    <h6 class="hcaption">Finacle Facilities</h6>
+  </div>
+  <div *ngIf="tableDataList.length > 0 ; else noData">
+    <div class="table-responsive">
+      <table class="table">
+        <thead>
+        <tr>
+          <th>Nature</th>
+          <th class="text-align-center">Sanction Limit</th>
+          <th>Operative Account</th>
+          <th>Facility Account</th>
+          <th>Interest Rate (% p.a.)</th>
+          <th class="text-align-center">OS Amount</th>
+          <th>Asset Classification</th>
+          <th>Currency</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let data of resizedFinacleFacilitiesList; let i = index">
+          <td class="text-align-start">{{startCaseFormat(data.nature)}}</td>
+          <td class="text-align-end">{{this.getCurrencyFormat(data.sanctionLimit)}}</td>
+          <td>{{data.operativeAccount}}</td>
+          <td>{{data.facilityAccount}}</td>
+          <td class="text-align-center">{{this.getCurrencyFormat(data.intRate)}}</td>
+          <td class="text-align-end">{{this.getCurrencyFormat(data.outstandingAomunt)}}</td>
+          <td class="text-align-center">{{data.assetClassification}}</td>
+          <td class="text-align-center">{{data.currency}}</td>
+        </tr>
+        </tbody>
+      </table>
+
+      <div class="d-flex flex-row float-right">
+        <app-list-to-paginator
+          [inputArray]="tableDataList"
+          [listType]="''"
+          [pageSize]="pageSize"
+          [currentEndIndex]="pageSize"
+          (resizedArray)="onLoadResizedList($event)">
+        </app-list-to-paginator>
+      </div>
+
+    </div>
+  </div>
+
+  <ng-template #noData>
+    <div class="table-responsive">
+      <table class="table width-100">
+        <thead>
+        <tr>
+          <th>Nature</th>
+          <th class="text-align-center">Sanction Limit</th>
+          <th>Operative Account</th>
+          <th>Facility Account</th>
+          <th>Interest Rate (% p.a.)</th>
+          <th class="text-align-center">OS Amount</th>
+          <th>Asset Classification</th>
+          <th>Currency</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+          <td colspan="8" class="text-align-center">
+            <p class="not-auth-message">
+              No Fincale Facilities
+            </p>
+          </td>
+        </tr>
+      </table>
+    </div>
+  </ng-template>
+
+</div>

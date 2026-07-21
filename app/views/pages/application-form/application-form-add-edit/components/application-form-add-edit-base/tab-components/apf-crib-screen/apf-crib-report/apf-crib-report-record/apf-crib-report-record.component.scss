@@ -1,0 +1,56 @@
+.comment-area {
+  border: 1px solid #9d9ea0;
+  margin-top: -3%;
+  padding: 3px;
+}
+
+.cta-btn {
+  padding: .4rem .7rem;
+  font-size: .8rem;
+  color: unset;
+  margin: 2px;
+  box-shadow: unset !important;
+}
+
+.delete-button {
+  background-color: unset !important;
+
+  mdb-icon {
+    color: #ff354785;
+  }
+}
+
+.custom-crib-report-table {
+
+  th {
+    text-align: start !important;
+  }
+
+  tr {
+    height: 35px !important;
+  }
+
+  td, th {
+    padding: 0px 2px 0px 2px !important;
+    vertical-align: middle !important;
+  }
+
+  thead tr, thead th {
+    padding: 0px 2px 0px 2px !important;
+    background-color: unset;
+    vertical-align: middle !important;
+  }
+
+  tbody tr, tbody th {
+    padding: 0px 2px 0px 2px !important;
+    background-color: unset;
+    vertical-align: middle !important;
+  }
+
+  padding: unset !important;
+  border-spacing: 0px;
+  -webkit-border-horizontal-spacing: 0px;
+  -webkit-border-vertical-spacing: 0px;
+  border-collapse: collapse;
+  background-color: unset;
+}

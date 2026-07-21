@@ -1,0 +1,65 @@
+<div mdbSticky class="d-flex flex-row justify-content-between page-header">
+  <div class="d-flex flex-row align-items-center">
+    <a appGoBack class="d-flex flex-row align-items-center">
+      <i class="fas fa-angle-left header-icon-back"></i>
+    </a>
+    <h5>
+      <i class="fas fa-poll header-icon"></i><span>Facility Summary</span>
+    </h5>
+  </div>
+</div>
+<div class="d-flex flex-row width-100">
+  <ng-container *ngIf="facilityPaperReviewDetail.displayName">
+    <ng-container>
+      <div class="d-flex flex-row w-100-p mt-2 facility-details-s1">
+        <div class="d-flex flex-column item-box">
+          <div class="d-flex flex-row ">
+            <h4 class="w-40">APPROVED USER</h4>
+            <h4>:</h4>
+            <h4 class="w-20 facility-data-lbl">{{facilityPaperReviewDetail.displayName}}</h4>
+          </div>
+          <div class="d-flex flex-row">
+            <h4 class="w-40">TOTAL EXPOSURE (DIRECT)</h4>
+            <h4>:</h4>
+            <h4
+              class="w-20 facility-data-lbl">{{this.getCurrencyFormat(facilityPaperReviewDetail.totalDirectExposureAmount) }}</h4>
+          </div>
+          <div class="d-flex flex-row">
+            <h4 class="w-40">TOTAL EXPOSURE (INDIRECT)</h4>
+            <h4>:</h4>
+            <h4
+              class="w-20 facility-data-lbl">{{this.getCurrencyFormat(facilityPaperReviewDetail.totalIndirectExposureAmount) }}</h4>
+          </div>
+          <div class="d-flex flex-row">
+            <h4 class="w-40">TOTAL EXPOSURE (DIRECT/INDIRECT)</h4>
+            <h4>:</h4>
+            <h4
+              class="w-20 facility-data-lbl">{{this.getCurrencyFormat(facilityPaperReviewDetail.totalFacilityAmount) }}</h4>
+          </div>
+          <div class="d-flex flex-row">
+            <h4 class="w-40">NUMBER OF PAPERS</h4>
+            <h4>:</h4>
+            <h4 class="w-20 facility-data-lbl">{{facilityPaperReviewDetail.numberOfFacilities}}</h4>
+          </div>
+
+          <div class="d-flex flex-row">
+            <h4 class="w-40">NO OF DAYS</h4>
+            <h4>:</h4>
+            <h4 class="w-20 facility-data-lbl ">{{facilityPaperReviewDetail.noOfDays}}</h4>
+          </div>
+
+          <div class="d-flex flex-row">
+            <h4 class="w-40">AVERAGE</h4>
+            <h4>:</h4>
+            <h4 class="w-20 facility-data-lbl">{{this.getCurrencyFormat(facilityPaperReviewDetail.average)}}</h4>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+  </ng-container>
+</div>
+<div>
+  <app-facility-list>
+  </app-facility-list>
+</div>
+

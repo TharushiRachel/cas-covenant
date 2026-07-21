@@ -1,0 +1,316 @@
+<div class="d-flex flex-column justify-content-center align-items-center">
+  <form [formGroup]="componentForm" class="w-100-p">
+    <div class="d-flex flex-column justify-content-center w-100-p">
+      <table class="table table-bordered" style="border-collapse: initial !important; border-spacing: 0px !important;">
+        <!-- <tr>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr> -->
+        <tr>
+          <th class="text-align-center" style="width: 110px;">Existing Limit (Rs Mn)</th>
+          <th class="text-align-center" style="width: 110px;">O/s as at {{facilityPaper.outstandingDateStr}} (Rs Mn)
+          </th>
+          <th class="text-align-center">
+            <ng-container *appHasAnyPrivilege="masterDataPrivilege.ICAS_SETTINGS_FACILITY_PAPER_EDIT">
+              <ng-container *ngIf="isAbelToEdit()">
+                <button class="action-button-padding btn-sm" type="button" mdbBtn color="light" (click)="recalculate()"
+                  mdbWavesEffect>Calculate
+                </button>
+              </ng-container>
+            </ng-container>
+          </th>
+          <th class="text-align-center" style="width: 110px;">Proposed Limit (Rs Mn)</th>
+        </tr>
+        <tr>
+          <td>
+            <div class="d-flex md-form w-100-p justify-content-center">
+              <input mdbValidate placeholder="" type="text" maxlength="100"
+                class="form-control text-right width-80 border-0 m-0 p-0" formControlName="totalDirectExposureExisting"
+                (keydown)="validateNumber($event)" (focusout)="setCurrencyFormatValue('totalDirectExposureExisting')"
+                mdbInput>
+            </div>
+          </td>
+          <td>
+            <div class="d-flex md-form w-100-p justify-content-center">
+              <input mdbValidate placeholder="" type="text" maxlength="100"
+                class="form-control text-right width-80 border-0 m-0 p-0" formControlName="totalDirectExposurePrevious"
+                (keydown)="validateNumber($event)" (focusout)="setCurrencyFormatValue('totalDirectExposurePrevious')"
+                mdbInput>
+            </div>
+          </td>
+          <td class="text-align-center">Total Funded Exposure</td>
+          <td>
+            <div class="d-flex md-form w-100-p justify-content-center">
+              <input mdbValidate placeholder="" type="text" maxlength="100"
+                class="form-control text-right width-80 border-0 m-0 p-0" formControlName="totalDirectExposureNew"
+                (keydown)="validateNumber($event)" (focusout)="setCurrencyFormatValue('totalDirectExposureNew')"
+                mdbInput>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <div class="d-flex md-form w-100-p justify-content-center">
+              <input mdbValidate placeholder="" type="text" maxlength="100"
+                class="form-control text-right width-80 border-0 m-0 p-0"
+                formControlName="totalIndirectExposureExisting" (keydown)="validateNumber($event)"
+                (focusout)="setCurrencyFormatValue('totalIndirectExposureExisting')" mdbInput>
+            </div>
+          </td>
+          <td>
+            <div class="d-flex md-form w-100-p justify-content-center">
+              <input mdbValidate placeholder="" type="text" maxlength="100"
+                class="form-control text-right width-80 border-0 m-0 p-0"
+                formControlName="totalIndirectExposurePrevious" (keydown)="validateNumber($event)"
+                (focusout)="setCurrencyFormatValue('totalIndirectExposurePrevious')" mdbInput>
+            </div>
+          </td>
+          <td class="text-align-center">Total Non-Funded Exposure</td>
+          <td>
+            <div class="d-flex md-form w-100-p justify-content-center">
+              <input mdbValidate placeholder="" type="text" maxlength="100"
+                class="form-control text-right width-80 border-0 m-0 p-0" formControlName="totalIndirectExposureNew"
+                (keydown)="validateNumber($event)" (focusout)="setCurrencyFormatValue('totalIndirectExposureNew')"
+                mdbInput>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <div class="d-flex md-form w-100-p justify-content-center">
+              <input mdbValidate placeholder="" type="text" maxlength="100"
+                class="form-control text-right width-80 border-0 m-0 p-0" formControlName="totalExposureExisting"
+                (keydown)="validateNumber($event)" (focusout)="setCurrencyFormatValue('totalExposureExisting')"
+                mdbInput>
+            </div>
+          </td>
+          <td>
+            <div class="d-flex md-form w-100-p justify-content-center">
+              <input mdbValidate placeholder="" type="text" maxlength="100"
+                class="form-control text-right width-80 border-0 m-0 p-0" formControlName="totalExposurePrevious"
+                (keydown)="validateNumber($event)" (focusout)="setCurrencyFormatValue('totalExposurePrevious')"
+                mdbInput>
+            </div>
+          </td>
+          <td class="text-align-center">Total Exposure - Company</td>
+          <td>
+            <div class="d-flex md-form w-100-p justify-content-center">
+              <input mdbValidate placeholder="" type="text" maxlength="100"
+                class="form-control text-right width-80 border-0 m-0 p-0" formControlName="totalExposureNew"
+                (keydown)="validateNumber($event)" (focusout)="setCurrencyFormatValue('totalExposureNew')" mdbInput>
+            </div>
+          </td>
+        </tr>
+
+        <tr>
+          <td>
+            <div class="d-flex md-form w-100-p justify-content-center">
+              <input mdbValidate placeholder="" type="text" maxlength="100"
+                class="form-control text-right width-80 border-0 m-0 p-0" formControlName="existingCashMargin"
+                (keydown)="validateNumber($event)" (focusout)="setCurrencyFormatValue('existingCashMargin')" mdbInput>
+            </div>
+          </td>
+          <td>
+            <div class="d-flex md-form w-100-p justify-content-center">
+              <input mdbValidate placeholder="" type="text" maxlength="100"
+                class="form-control text-right width-80 border-0 m-0 p-0" formControlName="outstandingCashMargin"
+                (keydown)="validateNumber($event)" (focusout)="setCurrencyFormatValue('outstandingCashMargin')"
+                mdbInput>
+            </div>
+          </td>
+          <td class="text-align-center">Less: Cash margin</td>
+          <td>
+            <div class="d-flex md-form w-100-p justify-content-center">
+              <input mdbValidate placeholder="" type="text" maxlength="100"
+                class="form-control text-right width-80 border-0 m-0 p-0" formControlName="proposedCashMargin"
+                (keydown)="validateNumber($event)" (focusout)="setCurrencyFormatValue('proposedCashMargin')" mdbInput>
+            </div>
+          </td>
+        </tr>
+
+        <tr>
+          <td>
+            <div class="d-flex md-form w-100-p justify-content-center">
+              <input mdbValidate placeholder="" type="text" maxlength="100"
+                class="form-control text-right width-80 border-0 m-0 p-0" formControlName="netTotalExposureExisting"
+                (keydown)="validateNumber($event)" (focusout)="setCurrencyFormatValue('netTotalExposureExisting')"
+                mdbInput>
+            </div>
+          </td>
+          <td>
+            <div class="d-flex md-form w-100-p justify-content-center">
+              <input mdbValidate placeholder="" type="text" maxlength="100"
+                class="form-control text-right width-80 border-0 m-0 p-0" formControlName="netTotalExposurePrevious"
+                (keydown)="validateNumber($event)" (focusout)="setCurrencyFormatValue('netTotalExposurePrevious')"
+                mdbInput>
+            </div>
+          </td>
+          <td class="text-align-center">Net - Total Company Exposure</td>
+          <td>
+            <div class="d-flex md-form w-100-p justify-content-center">
+              <input mdbValidate placeholder="" type="text" maxlength="100"
+                class="form-control text-right width-80 border-0 m-0 p-0" formControlName="netTotalExposureNew"
+                (keydown)="validateNumber($event)" (focusout)="setCurrencyFormatValue('netTotalExposureNew')" mdbInput>
+            </div>
+          </td>
+        </tr>
+        <!-- Group -->
+        <tr>
+          <td>
+            <div class="d-flex md-form w-100-p justify-content-center">
+              <input mdbValidate placeholder="" type="text" maxlength="100"
+                class="form-control text-right width-80 border-0 m-0 p-0"
+                formControlName="groupTotalDirectExposureExisting" (keydown)="validateNumber($event)"
+                (focusout)="setCurrencyFormatValue('groupTotalDirectExposureExisting')" mdbInput>
+            </div>
+          </td>
+          <td>
+            <div class="d-flex md-form w-100-p justify-content-center">
+              <input mdbValidate placeholder="" type="text" maxlength="100"
+                class="form-control text-right width-80 border-0 m-0 p-0"
+                formControlName="groupTotalDirectExposurePrevious" (keydown)="validateNumber($event)"
+                (focusout)="setCurrencyFormatValue('groupTotalDirectExposurePrevious')" mdbInput>
+            </div>
+          </td>
+          <td class="text-align-center">Total Funded Group Exposure</td>
+          <td>
+            <div class="d-flex md-form w-100-p justify-content-center">
+              <input mdbValidate placeholder="" type="text" maxlength="100"
+                class="form-control text-right width-80 border-0 m-0 p-0" formControlName="groupTotalDirectExposureNew"
+                (keydown)="validateNumber($event)" (focusout)="setCurrencyFormatValue('groupTotalDirectExposureNew')"
+                mdbInput>
+            </div>
+          </td>
+        </tr>
+
+        <tr>
+          <td>
+            <div class="d-flex md-form w-100-p justify-content-center">
+              <input mdbValidate placeholder="" type="text" maxlength="100"
+                class="form-control text-right width-80 border-0 m-0 p-0"
+                formControlName="groupTotalIndirectExposureExisting" (keydown)="validateNumber($event)"
+                (focusout)="setCurrencyFormatValue('groupTotalIndirectExposureExisting')" mdbInput>
+            </div>
+          </td>
+          <td>
+            <div class="d-flex md-form w-100-p justify-content-center">
+              <input mdbValidate placeholder="" type="text" maxlength="100"
+                class="form-control text-right width-80 border-0 m-0 p-0"
+                formControlName="groupTotalIndirectExposurePrevious" (keydown)="validateNumber($event)"
+                (focusout)="setCurrencyFormatValue('groupTotalIndirectExposurePrevious')" mdbInput>
+            </div>
+          </td>
+          <td class="text-align-center">Total Non-Funded Group Exposure</td>
+          <td>
+            <div class="d-flex md-form w-100-p justify-content-center">
+              <input mdbValidate placeholder="" type="text" maxlength="100"
+                class="form-control text-right width-80 border-0 m-0 p-0"
+                formControlName="groupTotalIndirectExposureNew" (keydown)="validateNumber($event)"
+                (focusout)="setCurrencyFormatValue('groupTotalIndirectExposureNew')" mdbInput>
+            </div>
+          </td>
+        </tr>
+
+        <tr>
+          <td>
+            <div class="d-flex md-form w-100-p justify-content-center">
+              <input mdbValidate placeholder="" type="text" maxlength="100"
+                class="form-control text-right width-80 border-0 m-0 p-0" formControlName="groupTotalExposureExisting"
+                (keydown)="validateNumber($event)" (focusout)="setCurrencyFormatValue('groupTotalExposureExisting')"
+                mdbInput>
+            </div>
+          </td>
+          <td>
+            <div class="d-flex md-form w-100-p justify-content-center">
+              <input mdbValidate placeholder="" type="text" maxlength="100"
+                class="form-control text-right width-80 border-0 m-0 p-0" formControlName="groupTotalExposurePrevious"
+                (keydown)="validateNumber($event)" (focusout)="setCurrencyFormatValue('groupTotalExposurePrevious')"
+                mdbInput>
+            </div>
+          </td>
+          <td class="text-align-center">Total Exposure - Group</td>
+          <td>
+            <div class="d-flex md-form w-100-p justify-content-center">
+              <input mdbValidate placeholder="" type="text" maxlength="100"
+                class="form-control text-right width-80 border-0 m-0 p-0" formControlName="groupTotalExposureNew"
+                (keydown)="validateNumber($event)" (focusout)="setCurrencyFormatValue('groupTotalExposureNew')"
+                mdbInput>
+            </div>
+          </td>
+        </tr>
+
+        <tr>
+          <td>
+            <div class="d-flex md-form w-100-p justify-content-center">
+              <input mdbValidate placeholder="" type="text" maxlength="100"
+                class="form-control text-right width-80 border-0 m-0 p-0" formControlName="groupExistingCashMargin"
+                (keydown)="validateNumber($event)" (focusout)="setCurrencyFormatValue('groupExistingCashMargin')"
+                mdbInput>
+            </div>
+          </td>
+          <td>
+            <div class="d-flex md-form w-100-p justify-content-center">
+              <input mdbValidate placeholder="" type="text" maxlength="100"
+                class="form-control text-right width-80 border-0 m-0 p-0" formControlName="groupOutstandingCashMargin"
+                (keydown)="validateNumber($event)" (focusout)="setCurrencyFormatValue('groupOutstandingCashMargin')"
+                mdbInput>
+            </div>
+          </td>
+          <td class="text-align-center">Less: Cash margin</td>
+          <td>
+            <div class="d-flex md-form w-100-p justify-content-center">
+              <input mdbValidate placeholder="" type="text" maxlength="100"
+                class="form-control text-right width-80 border-0 m-0 p-0" formControlName="groupProposedCashMargin"
+                (keydown)="validateNumber($event)" (focusout)="setCurrencyFormatValue('groupProposedCashMargin')"
+                mdbInput>
+            </div>
+          </td>
+        </tr>
+
+        <tr>
+          <td>
+            <div class="d-flex md-form w-100-p justify-content-center">
+              <input mdbValidate placeholder="" type="text" maxlength="100"
+                class="form-control text-right width-80 border-0 m-0 p-0"
+                formControlName="groupNetTotalExposureExisting" (keydown)="validateNumber($event)"
+                (focusout)="setCurrencyFormatValue('groupNetTotalExposureExisting')" mdbInput>
+            </div>
+          </td>
+          <td>
+            <div class="d-flex md-form w-100-p justify-content-center">
+              <input mdbValidate placeholder="" type="text" maxlength="100"
+                class="form-control text-right width-80 border-0 m-0 p-0"
+                formControlName="groupNetTotalExposurePrevious" (keydown)="validateNumber($event)"
+                (focusout)="setCurrencyFormatValue('groupNetTotalExposurePrevious')" mdbInput>
+            </div>
+          </td>
+          <td class="text-align-center">Net - Total Group Exposure</td>
+          <td>
+            <div class="d-flex md-form w-100-p justify-content-center">
+              <input mdbValidate placeholder="" type="text" maxlength="100"
+                class="form-control text-right width-80 border-0 m-0 p-0" formControlName="groupNetTotalExposureNew"
+                (keydown)="validateNumber($event)" (focusout)="setCurrencyFormatValue('groupNetTotalExposureNew')"
+                mdbInput>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td></td>
+          <td></td>
+          <td class="text-align-center">
+            <ng-container *appHasAnyPrivilege="masterDataPrivilege.ICAS_SETTINGS_FACILITY_PAPER_EDIT">
+              <ng-container *ngIf="isAbelToEdit()">
+                <button class="action-button-padding btn-sm" [disabled]="!isValid()" type="button"
+                  (click)="updateFacilityPaperExposure()" mdbBtn color="light" mdbWavesEffect>Update
+                </button>
+              </ng-container>
+            </ng-container>
+          </td>
+          <td></td>
+        </tr>
+      </table>
+    </div>
+  </form>
+</div>

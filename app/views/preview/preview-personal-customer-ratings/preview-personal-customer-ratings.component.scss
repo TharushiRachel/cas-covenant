@@ -1,0 +1,108 @@
+.cft-btn {
+  padding: 0px;
+  margin-left: 50px;
+  height: 25px;
+  float: left;
+}
+
+.header-facility-data {
+  background: #dcdfe2f2;
+  color: black;
+  border-radius: 5px;
+  height: 2ch;
+  margin-bottom: 5px;
+  font-size: 6ch;
+  font-family: initial;
+
+  span {
+    &.tab-title {
+      color: black;
+    }
+  }
+}
+
+.page-section {
+  border: 1px solid #6a9ed3;
+  margin: 0.5rem 0;
+
+  &:first-child {
+    margin-top: 1rem;
+  }
+
+  .info-section {
+    margin: 3px 15px 3px 0;
+    min-width: 220px;
+
+    .info-caption {
+      margin-right: 5px;
+    }
+  }
+}
+
+.icon-margin {
+  margin-right: 10px !important;
+}
+
+.badge-margin {
+  margin-top: 10px !important;
+  margin-left: 20px !important;
+  align-self: center;
+  background-color: white;
+  color: #626262;
+}
+
+mdb-accordion-item-body {
+  background-color: #edeeee;
+}
+
+mdb-accordion-item-head {
+  background-color: #dcdfe2f2;
+
+  &.active {
+    color: black;
+  }
+}
+
+.jumbo-padding {
+  padding: 1em;
+}
+
+.bordered-card {
+  border: 1px solid #eeeeee !important;
+  box-shadow: none;
+}
+
+.cta-btn {
+  padding: .4rem .7rem;
+  font-size: .8rem;
+  color: #15181bb3;
+}
+
+.delete-button {
+  background-color: #ff354785 !important;
+}
+
+.info-caption {
+  margin: 10px;
+  width: 25%;
+}
+
+.margin-10 {
+  margin: 10px;
+}
+
+.w-42-p {
+  width: 42% !important;
+}
+
+.btn-width {
+  width: 97px;
+}
+
+.w-5 {
+  width: 5% !important;
+}
+
+/*.input-border{
+  border: 1px solid #c9c5c5;
+}*/

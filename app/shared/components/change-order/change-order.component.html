@@ -1,0 +1,34 @@
+<div class="modal-header modal-topic">
+  <button type="button" class="close pull-right" aria-label="Close" (click)="onNoClick()">
+    <span aria-hidden="true">×</span>
+  </button>
+  <h4 class="modal-title w-100 heading-align font-weight-bold" id="myModalLabel">{{heading}}</h4>
+</div>
+<div class="modal-body">
+  <ngx-sortable [items]="dataList"
+                [name]="'List'"
+                [showHeader]="false"
+                [listStyle]="listStyle"
+                (listSorted)="listOrderChanged($event)"
+                class="w-95-p">
+    <ng-template let-item>
+      <div class="d-flex flex-row w-100-p clickable-row justify-content-between custom-record">
+        <div>{{dataList.indexOf(item) + 1}}</div>
+        <div *ngIf="keyData.keyOne">{{item[keyData.keyOne]}}</div>
+        <div *ngIf="keyData.keyOne">{{item[keyData.keyTwo]}}</div>
+        <div *ngIf="keyData.keyOne">{{item[keyData.keyThree]}}</div>
+      </div>
+    </ng-template>
+  </ngx-sortable>
+</div>
+<div class="modal-footer modal-end">
+  <button
+    type="button" mdbBtn color="light" class="btn-sm relative waves-light" mdbWavesEffect
+    (click)="onNoClick()">Cancel
+  </button>
+  <button
+    type="button" mdbBtn color="info" class="btn-sm relative waves-light" mdbWavesEffect
+    (click)="update()">{{actionName ? actionName : 'Update'}}
+  </button>
+</div>
+

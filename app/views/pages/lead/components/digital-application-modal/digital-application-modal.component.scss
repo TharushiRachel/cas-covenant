@@ -1,0 +1,153 @@
+.card {
+  border: 1px solid #eef2f6 !important;
+  border-radius: 5px !important;
+}
+
+tr {
+  border-bottom: 10px solid #fff;
+}
+
+td {
+  padding: 4px;
+  border: none;
+  background-color: #f5fcff;
+  border-radius: 4px;
+}
+
+.label-td {
+  width: 300px;
+  max-width: 350px;
+  vertical-align: middle;
+}
+
+label {
+  color: #383838;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+}
+
+.form-control {
+  font-size: 13px !important;
+}
+
+mdb-select {
+  background-color: #fff !important;
+}
+
+.consent-text {
+  font-size: 13px !important;
+}
+
+.asset {
+  border-radius: 5px !important;
+}
+
+.dropdown-content li.select-all {
+  display: none !important;
+}
+
+.section-head {
+  font-weight: bold;
+  font-size: 12px;
+  margin: 10px 0 6px 0;
+}
+
+/* Container scroll behavior */
+.facility-table-wrapper {
+  overflow-x: auto;
+}
+
+/* Base table: fixed layout ensures consistent column widths */
+.facility-table {
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: separate;
+  /* allows rounded corners & spacing */
+  border-spacing: 0;
+  /* no gaps between cells */
+  background: #fff;
+}
+
+/* Header styling: sticky for long lists */
+.facility-table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: #f8fafc;
+  /* soft gray */
+  color: #263238;
+  font-weight: 600;
+  text-align: left;
+  padding: 10px 12px;
+  border-bottom: 1px solid #e3e8ef;
+  line-height: 1.4;
+}
+
+/* Body cells: match header padding & vertical alignment */
+.facility-table tbody td {
+  padding: 10px 12px;
+  background-color: #f5fcff;
+  /* matches your palette */
+  border-bottom: 1px solid #eef2f6;
+  vertical-align: text-top;
+}
+
+/* Remove the heavy row divider; use subtle lines instead */
+.facility-table tbody tr {
+  border-bottom: none;
+  /* your old '10px solid #fff' causes misalignment */
+}
+
+/* Right-alignment helper (also used in TH for numeric columns) */
+.facility-table .text-end {
+  text-align: right;
+}
+
+/* Inputs: full-width, consistent border & radius */
+.facility-table .cell-input,
+.facility-table .form-control,
+.facility-table mdb-select,
+.facility-table .mdb-select {
+  width: 100%;
+  min-height: 32px;
+  border: 1px solid #e3e8ef !important;
+  border-radius: 6px !important;
+  padding: 6px 8px;
+  box-sizing: border-box;
+  background: #fff;
+}
+
+/* Reduce vertical jitter: small controls */
+.facility-table .form-control-sm {
+  padding: 4px 8px;
+  min-height: 30px;
+}
+
+/* Focus state for accessibility */
+.facility-table input.form-control:focus,
+.facility-table .cell-input:focus {
+  outline: 2px solid #cce6ff;
+  border-color: #80bdff !important;
+  box-shadow: none;
+}
+
+/* If MDB Select renders an inner control, normalize it too */
+.facility-table .mdb-select .select-input,
+.facility-table .mdb-select .single.selected {
+  height: 30px;
+  line-height: 30px;
+}
+
+/* Optional: zebra rows for readability */
+.facility-table tbody tr:nth-child(odd) td {
+  background-color: #f9fdff;
+}
+
+/* Optional: small screen adjustments */
+@media (max-width: 992px) {
+
+  .facility-table thead th,
+  .facility-table tbody td {
+    padding: 8px 10px;
+  }
+}

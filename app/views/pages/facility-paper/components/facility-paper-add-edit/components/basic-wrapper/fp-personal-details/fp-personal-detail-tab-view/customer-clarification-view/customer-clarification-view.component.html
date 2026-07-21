@@ -1,0 +1,73 @@
+<div class="row d-flex mx-0" *ngIf="clarificationList.length > 0">
+
+    <div class="col-md-12 my-2" *ngFor="let parentItem of clarificationList">
+
+        <strong *ngIf="isNotEmptyPreview()">{{parentItem.description}}</strong>
+
+        <div class="row d-flex flex-column mx-0 my-2" *ngIf="isNotEmptyPreview()">
+            <ng-container *ngFor="let childItem of getFilteredData(parentItem.children)">
+                <ng-container *ngIf="childItem.children.length > 0;else emptyGrandChild">
+                    <div class="col-md-12 d-flex align-items-center mx-0 px-0">
+                        <mdb-checkbox [checked]="childItem.isSelected" [(ngModel)]="childItem.isSelected"
+                            [disabled]="!isActionEnabled()">
+                            {{ childItem.description }}
+                        </mdb-checkbox>
+                    </div>
+                    <ng-container *ngIf="childItem.isSelected">
+                        <div class="mr-0 my-2 border rounded px-2" style="margin-left: 35px;">
+                            <div class="row d-flex mx-0 p-2 my-2"
+                                *ngFor="let grandChildItem of getFilteredData(childItem.children)">
+                                <div class="col-md-12 d-flex align-items-center mx-0 my-1 px-0">
+                                    <mdb-checkbox [checked]="grandChildItem.isSelected"
+                                        [(ngModel)]="grandChildItem.isSelected" [disabled]="!isActionEnabled()">
+                                        {{ grandChildItem.description }}
+                                    </mdb-checkbox>
+                                </div>
+                                <div class="col-md-12 pr-0" style="padding-left: 35px;">
+                                    <ng-container *ngIf="isEditEnabled">
+                                        <textarea class="form-control w-100 custom-textarea"
+                                            [disabled]="!grandChildItem.isSelected || !isActionEnabled()"
+                                            [(ngModel)]="grandChildItem.comment" placeholder="Describe if any..."
+                                            appTextAreaAutoHeight mdbInput></textarea>
+                                    </ng-container>
+                                    <ng-container *ngIf="!isEditEnabled">
+                                        <pre class="custom-pre-tag-with-spaces mx-0">{{grandChildItem.comment}}</pre>
+                                    </ng-container>
+                                </div>
+                            </div>
+                        </div>
+                    </ng-container>
+                </ng-container>
+                <ng-template #emptyGrandChild>
+                    <div class="row d-flex mx-0 my-2">
+                        <div class="col-md-12 d-flex align-items-center mx-0 my-1 px-0">
+                            <mdb-checkbox [checked]="childItem.isSelected" [(ngModel)]="childItem.isSelected"
+                                [disabled]="!isActionEnabled()">
+                                {{ childItem.description }}
+                            </mdb-checkbox>
+                        </div>
+                        <div class="col-md-12 pr-0" style="padding-left: 35px;">
+                            <ng-container *ngIf="isEditEnabled">
+                                <textarea class="form-control w-100 custom-textarea"
+                                    [disabled]="!childItem.isSelected || !isActionEnabled()"
+                                    [(ngModel)]="childItem.comment" placeholder="Describe if any..."
+                                    appTextAreaAutoHeight mdbInput></textarea>
+                            </ng-container>
+                            <ng-container *ngIf="!isEditEnabled">
+                                <pre class="custom-pre-tag-with-spaces mx-0">{{childItem.comment}}</pre>
+                            </ng-container>
+                        </div>
+                    </div>
+                </ng-template>
+            </ng-container>
+        </div>
+    </div>
+
+    <div class="col-md-12 text-align-end" *ngIf="isActionEnabled()">
+        <button class="btn btn-sm btn-info" (click)="handleSave()">Save</button>
+    </div>
+</div>
+
+<div class="width-100 m-top-25px" *ngIf="!isNotEmptyPreview()">
+    <p class="not-auth-message ng-star-inserted"> No Records Available </p>
+</div>

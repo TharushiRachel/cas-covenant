@@ -1,0 +1,249 @@
+<div mdbSticky class="d-flex flex-row justify-content-between page-header">
+  <div class="d-flex flex-row align-items-center">
+    <h5 mdbTooltip="Approval Covering Authorization for Exceeding" placement="bottom">
+      <i class="fas fa-newspaper header-icon"></i> ACAE Dashboard
+    </h5>
+  </div>
+</div>
+
+<div class="card mt-1r default-box-styles">
+  <div class="card-body">
+    <div class="w-100-p mt-10p mb-10p display-flex flex-row jc-space-around ai-center">
+      <app-acae-count-box class="box-width" [selectedStatus]="acaeTabStatus" [count]="acaeCounts.newACAECount"
+        [status]="acaeStatusConst.NEW" (onClick)="loadChanges($event)"></app-acae-count-box>
+      <app-acae-count-box class="box-width" [selectedStatus]="acaeTabStatus" [count]="acaeCounts.forwardCount"
+        [status]="acaeStatusConst.FORWARDED" (onClick)="loadChanges($event)"></app-acae-count-box>
+      <app-acae-count-box class="box-width" [selectedStatus]="acaeTabStatus" [count]="acaeCounts.approvedCount"
+        [status]="acaeStatusConst.APPROVED" (onClick)="loadChanges($event)"></app-acae-count-box>
+      <app-acae-count-box class="box-width" [selectedStatus]="acaeTabStatus" [count]="acaeCounts.returnCount"
+        [status]="acaeStatusConst.RETURNED" (onClick)="loadChanges($event)"></app-acae-count-box>
+      <app-acae-count-box class="box-width" [selectedStatus]="acaeTabStatus" [count]="acaeCounts.toBeResubmitCount"
+        [status]="acaeStatusConst.TO_BE_RESUBMIT" (onClick)="loadChanges($event)"
+        *ngIf='isEnableToBeResubmittedCountBox()'>
+      </app-acae-count-box>
+    </div>
+  </div>
+</div>
+<br />
+
+<ng-container *ngIf='isEnableACAEBatchForward()'>
+  <div class="card p-3 bg-white">
+    <div class="forward-batch-message">
+      <h6><b>You have completed, adding comments on all the records! Please do select one name of the Bank officers —
+          from
+          the drop down list and you may forward the entire records list.</b></h6>
+      <br />
+    </div>
+    <form class="d-flex flex-column justify-content-start align-items-start w-100-p"
+      [formGroup]="forwardBatchWiseACAEForm">
+      <div class="d-flex m-top-10px flex-row flex-wrap w-100-p justify-content-between">
+        <ng-container>
+          <div class="md-form m-top-10px m-bottom-10px w-48-p">
+            <mdb-select [options]="forwardUserGroupLOV" [filterEnabled]="true" formControlName="forwardUserGroup"
+              id="forwardUserGroup" label="Select User Group">
+            </mdb-select>
+
+          </div>
+          <div class="md-form m-top-10px m-bottom-10px w-48-p">
+            <mdb-select [options]="forwardUserLOV" [filterEnabled]="true" formControlName="forwardUser" id="forwardUser"
+              label="Select User"></mdb-select>
+          </div>
+        </ng-container>
+        <div class="display-flex flex-1 flex-row jc-end ai-center">
+          <button (click)="doForwardACAEBatch()" type="button" class="medium-button btn btn-info" mdbBtn>
+            Forward
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</ng-container>
+
+<ng-container *ngIf='isEnableBulkComment()'>
+  <div class="float-right d-flex flex-row justify-content-between">
+    <!-- <div class="align-items-center"> -->
+      <button mdbBtn type="button" class="action-button-padding btn-outline-info btn-sm btn-size" outline="true"
+        data-toggle="tooltip" data-placement="bottom" [title]="'Back to a Initial Level'" mdbWavesEffect 
+        (click)="modalOpenBulkComment('sdsd')" >
+        <span>Batch Comment</span>
+      </button>
+    <!-- </div> -->
+  </div>
+  </ng-container>
+<br />
+
+<ng-container *ngFor="let acaeItem of this.acaeSearchData | keyvalue">
+  <label class="font-weight-bold status-sub">
+    {{acaeItem.key.replaceAll("_"," ")}}
+  </label>
+
+  <ng-container *ngIf="acaeItem.value.length === 0">
+    <div class="alert alert-warning" role="alert">
+      No records found!
+    </div>
+  </ng-container>
+  <ng-container *ngIf="acaeItem.value.length > 0">
+    <div class="section mb-15p">
+      <table class="table">
+        <thead>
+          <tr >
+            <th *ngIf='isEnableBulkComment() && acaeItem.key==="DRAFT"' scope="col" mdbTooltip="Select for Batch Comment" placement="right">...</th>
+            <th scope="col" >SOL Id/User Id</th>
+            <th scope="col" >SOL Name/User Name</th>
+            <th scope="col" >Account Number</th>
+            <th scope="col" >Customer 's Name</th>
+            <th scope="col" >Assigned User</th>
+            <th scope="col" style="text-align: center;  width: 150px;">Max. O/D for the Period</th>
+            <th scope="col" style="text-align: right;  width: 150px;">Recieved Date</th>
+            <th scope="col" >Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <ng-container *ngFor="let item of acaeItem.value">
+            <tr class="table-clickable-row" >
+              <td  scope="col" class="width-5" *ngIf='isEnableBulkComment() && acaeItem.key==="DRAFT"' >
+                <!-- <ng-container *ngIf="rec['isSelectEnable']"> -->
+                  <mdb-checkbox (click)="onSelectACAERecords($event,item,acaeItem,acaeItem.key)"
+                  >
+                  </mdb-checkbox>
+                  <!-- <mdb-checkbox (click)="onSelectACAERecords($event, userDetails.userNo,item.refNo,rec)"
+                    [value]="rec.isSelected" [checked]="rec['isSelected']">
+                  </mdb-checkbox> -->
+                <!-- </ng-container> -->
+              </td>
+              <td (click)='openModalACAEDetails(item,item.attended,acaeItem.key)' scope="col">{{ item.solUserId ||"-" }}</td>
+              <td (click)='openModalACAEDetails(item,item.attended,acaeItem.key)' scope="col">{{ item.solUserName ||"-" }}</td>
+              <td (click)='openModalACAEDetails(item,item.attended,acaeItem.key)' scope="col">{{ item.accountNumber ||"-" }}</td>
+              <td (click)='openModalACAEDetails(item,item.attended,acaeItem.key)' scope="col">{{ item.customerName ||"-" }}</td>
+              <td (click)='openModalACAEDetails(item,item.attended,acaeItem.key)' scope="col">{{ item.currentUserName ||"-" }}</td>
+              <td style="text-align: right;  width: 150px;"(click)='openModalACAEDetails(item,item.attended,acaeItem.key)'>{{ getCurrencyFormat(item.minBal) ||"-" }}</td>
+              <td style="text-align: right;  width: 150px;" (click)='openModalACAEDetails(item,item.attended,acaeItem.key)' scope="col">{{ item.recievedDate||"-" }}</td>
+              <!-- new papers -->
+              <td  *ngIf="acaeStatusNo === 0" class="status-icon">
+                <a *ngIf="item.attended ==='N'" data-toggle="tooltip" data-placement="left" class="icon-padding">
+                  <img class="status-img-width" src="assets/media/images/fpstatusicon/inprogress.png" alt="First slide">
+                </a>
+                <a *ngIf="item.attended ==='Y'" data-toggle="tooltip" data-placement="left" class="icon-padding">
+                  <img class="status-img-width" src="assets/media/images/fpstatusicon/draft.png" alt="First slide">
+                </a>
+              </td>
+              <!-- forward papers -->
+              <td  *ngIf="acaeStatusNo === 1" class="status-icon">
+                <a data-toggle="tooltip" data-placement="left" class="icon-padding">
+                  <img class="status-img-width" src="assets/media/images/fpstatusicon/papercreated.png"
+                    alt="First slide">
+                </a>
+              </td>
+              <!-- rejected papers -->
+              <td *ngIf="acaeStatusNo ===3" class="status-icon">
+                <a data-toggle="tooltip" data-placement="left" class="icon-padding">
+                  <img class="status-img-width" src="assets/media/images/fpstatusicon/decline.png" alt="First slide">
+                </a>
+              </td>
+              <!-- Approved papers -->
+              <td *ngIf="acaeStatusNo ===4" class="status-icon">
+                <a data-toggle="tooltip" data-placement="left" class="icon-padding">
+                  <img class="status-img-width" src="assets/media/images/fpstatusicon/approved.png" alt="First slide">
+                </a>
+              </td>
+              <!-- TOBERESUBMITTED papers -->
+              <td *ngIf="acaeStatusNo ===7" class="status-icon">
+                <a data-toggle="tooltip" data-placement="left" class="icon-padding">
+                  <img class="status-img-width" src="assets/media/images/fpstatusicon/return.png" alt="First slide">
+                </a>
+              </td>
+            </tr>
+          </ng-container>
+        </tbody>
+      </table>
+      <app-paginator [pageIndex]="acaeSearchPageData[acaeItem.key].currentPageNo - 1"
+        [length]="acaeSearchPageData[acaeItem.key].totalNoOfRecords" [pageSize]="paginationData.pageSize"
+        [pageSizeOptions]="pageSize.pageSizeOptions" (page)="onPageEvent($event)">
+      </app-paginator>
+    </div>
+  </ng-container>
+</ng-container>
+
+
+<ng-container *ngIf='isACAEPaperSummaryEnable()'>
+  <div class="d-flex flex-row align-items-center">
+    <label class="font-weight-bold status-sub">
+      ACAE Paper Summary
+    </label>
+  </div>
+  <div *ngIf="acaePaperSummaryDetails.length == 0" class="alert alert-warning" role="alert">
+    No records found!
+  </div>
+  <br />
+  <ng-container *ngIf="acaePaperSummaryDetails.length > 0">
+    <br />
+    <div class="card p-3 bg-white">
+      <ng-container *ngFor="let user of acaePaperSummaryDetails">
+        <br />
+        <p><b>Current User</b> : {{user.firstName}} {{user.lastName}}</p>
+        <div class="card p-3 bg-white">
+          <div class="section table-responsive mb-15p">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th scope="col">Account Number</th>
+                  <th scope="col">Customer 's Name</th>
+                  <th scope="col">Recieved Date</th>
+                  <th scope="col">Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <ng-container *ngIf="user.acaeSearchByStatusDTOList.length > 0">
+                  <ng-container *ngFor="let item of user.acaeSearchByStatusDTOList">
+                    <tr class="table-clickable-row" (click)="openModalACAEDetails(item,item.attended,acaeTabStatus)">
+                      <td>{{ item.accountNumber ||"-" }}</td>
+                      <td>{{ item.customerName ||"-" }}</td>
+                      <td>{{ item.recievedDate||"-" }}</td>
+                      <!-- forward papers -->
+                      <td *ngIf="acaeStatusNo ==1" class="status-icon">
+                        <a data-toggle="tooltip" data-placement="left" class="icon-padding">
+                          <img class="status-img-width" src="assets/media/images/fpstatusicon/papercreated.png"
+                            alt="First slide">
+                        </a>
+                      </td>
+                      <!-- rejected papers -->
+                      <td *ngIf="acaeStatusNo ==3" class="status-icon">
+                        <a data-toggle="tooltip" data-placement="left" class="icon-padding">
+                          <img class="status-img-width" src="assets/media/images/fpstatusicon/decline.png"
+                            alt="First slide">
+                        </a>
+                      </td>
+                      <!-- Approved papers -->
+                      <td *ngIf="acaeStatusNo ==4" class="status-icon">
+                        <a data-toggle="tooltip" data-placement="left" class="icon-padding">
+                          <img class="status-img-width" src="assets/media/images/fpstatusicon/approved.png"
+                            alt="First slide">
+                        </a>
+                      </td>
+                      <!-- TOBERESUBMITTED papers -->
+                      <td *ngIf="acaeStatusNo ==7" class="status-icon">
+                        <a data-toggle="tooltip" data-placement="left" class="icon-padding">
+                          <img class="status-img-width" src="assets/media/images/fpstatusicon/return.png"
+                            alt="First slide">
+                        </a>
+                      </td>
+                    </tr>
+                  </ng-container>
+                </ng-container>
+                <div *ngIf="user.acaeSearchByStatusDTOList.length == 0" class="alert alert-warning" role="alert">
+                  No records found!
+                </div>
+              </tbody>
+            </table>
+            <app-paginator [pageIndex]="summaryPageArr[0].pageSize.pageIndex"
+              [length]="summaryPageArr[0].pageSize.length" [pageSize]="summaryPageArr[0].pageSize.pageSize"
+              [pageSizeOptions]="pageSize.pageSizeOptions"
+              (page)='onSummaryPageEvent($event,acaePaperSummaryDetails.indexOf(user))'>
+            </app-paginator>
+          </div>
+        </div>
+      </ng-container>
+      <br />
+    </div>
+  </ng-container>
+</ng-container>

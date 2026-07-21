@@ -1,0 +1,64 @@
+<div class="modal-header modal-topic flex-center">
+  <h4 class="modal-title w-100 font-weight-bold">
+    {{isAccept ? "Accept" : "Approve"}} Lead
+  </h4>
+  <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="mdbModalRef.hide()">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
+<div class="modal-body mx-3 modal-detail form-margin">
+
+  <p>
+    Do you want to {{isAccept ? "accept" : "approve"}} the lead ?
+  </p>
+
+  <form class="d-flex flex-column justify-content-start align-items-start w-100-p" [formGroup]="componentForm">
+
+    <div class="md-form mb-15p mt-15p width-100">
+      <input type="text"
+             id="customerBankAccountNumber"
+             formControlName="customerBankAccountNumber"
+             class="form-control"
+             required
+             maxlength="50"
+             mdbValidate
+             mdbInput>
+      <label for="customerBankAccountNumber">Customer Bank Account No *</label>
+
+      <mdb-error *ngIf="formErrors.customerBankAccountNumber.maxlength">Maximum length for Customer Bank Account No
+        is {{formErrors.customerBankAccountNumber.maxlength.requiredLength}}</mdb-error>
+
+      <mdb-error *ngIf="formErrors.customerBankAccountNumber.required">Customer Bank Account No required</mdb-error>
+    </div>
+
+    <div class="d-flex flex-row w-100-p mt-10p">
+      <div class="md-form m-top-10px m-bottom-10px w-100-p ">
+        <textarea type="text"
+                  class="form-control custom-text-area"
+                  id="remark"
+                  appTextAreaAutoHeight
+                  formControlName="remark"
+                  maxlength="4000"
+                  mdbValidate
+                  mdbInput></textarea>
+
+        <label for="remark" class="text-area-label">Remark *</label>
+
+        <mdb-error *ngIf="formErrors.remark.maxlength">Maximum length for Remark
+          is {{formErrors.remark.maxlength.requiredLength}}</mdb-error>
+      </div>
+    </div>
+  </form>
+</div>
+<div class="modal-footer modal-end">
+  <button
+    type="button" mdbBtn color="light" class="btn-sm relative waves-light" mdbWavesEffect
+    (click)="mdbModalRef.hide()">Cancel
+  </button>
+  <button
+    type="button" mdbBtn color="secondary" class="btn-sm relative waves-light" mdbWavesEffect
+    [disabled]="!isValid()" (click)="onApprove()">{{isAccept ? "Accept" : "Approve"}}
+  </button>
+
+</div>

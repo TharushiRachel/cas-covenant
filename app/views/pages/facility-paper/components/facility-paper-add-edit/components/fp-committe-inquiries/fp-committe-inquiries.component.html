@@ -1,0 +1,105 @@
+<div class="d-flex flex-column w-100-p">
+    <!-- Always show Add Inquiry button -->
+    <div class="d-flex justify-content-end mb-2">
+        <button type="button" mdbTooltip="Add new Committee Inquiry" placement="right"
+            (click)="openAddCommitteInquires($event)" class="medium-button btn-sm btn-info" mdbBtn
+            *ngIf="showCommitteeButton()">
+            Add Committee Inquiry
+        </button>
+    </div>
+
+    <!-- Inquiry List -->
+    <!-- <ng-container *ngIf="isMember !== null"> -->
+    <ng-container *ngIf="inquiries?.length > 0; else noInquiries ">
+        <div *ngFor="let inquiry of inquiries" class="d-flex flex-column mx-0 border rounded p-2 my-2">
+            <div class="row d-flex mx-0 justify-content-end align-items-center">
+                <!-- <div class="mr-auto">
+                    <span class="badge p-2" [ngClass]="{
+                        'badge-secondary': inquiry.inquiryStatus === inquiryStatus.REQ_DRAFTED,
+                        'badge-primary': inquiry.inquiryStatus === inquiryStatus.REQ_SUBMITTED,
+                        'badge-success': inquiry.inquiryStatus === inquiryStatus.RES_CONFIRMED
+                        
+                      }">
+                        {{ inquiryConst[inquiry.inquiryStatus] }}
+                    </span>
+                </div> -->
+                <!-- <div class="mr-auto"> -->
+                <button type="button" class="btn btn-sm btn-outline-info" (click)="editInquiry(inquiry)"
+                    *ngIf="inquiry.inquiryStatus === 'REQ_DRAFTED'">
+                    <mdb-icon fas icon="pencil-alt" [mdbTooltip]="'Edit'" style="cursor: pointer;">
+                    </mdb-icon>
+                </button>
+                <button type="button" class="btn btn-sm btn-outline-danger" (click)="deleteInquiry(inquiry)"
+                    *ngIf="inquiry.inquiryStatus === 'REQ_DRAFTED'">
+                    <mdb-icon class="text-danger" fas icon="trash-alt" [mdbTooltip]="'Delete Inquiry'"
+                        style="cursor: pointer;"></mdb-icon>
+                </button>
+                <!-- </div> -->
+
+                <button mdbBtn type="button"  class="btn btn-sm btn-outline-info" size="sm" mdbWavesEffect (click)="openAddResponse(inquiry, inquiry.response)"
+                    *ngIf="showResponseButton(inquiry) ">
+                    Add Response
+                </button>
+                <button mdbBtn type="button" class="btn btn-sm btn-outline-success" size="sm" mdbWavesEffect *ngIf="showConfirmButton(inquiry)"
+                    (click)="openConfirmResponse(inquiry)">
+                    Confirm Response
+                </button>
+
+
+            </div>
+
+            <div [innerHTML]="inquiry.comment" style="font-weight: bold;"></div>
+            <div class="text-muted mt-1" *ngIf="inquiry.inquiryStatus != 'REQ_DRAFTED'">
+                Inquired by
+                {{ inquiry.committeeInqReqResDTOList[0]?.createdUserDisplayName ?
+                inquiry.committeeInqReqResDTOList[0]?.createdUserDisplayName :
+                inquiry.committeeInqReqResDTOList[0]?.createdBy }}
+                Assigned for {{ inquiry.assignUserDisplayName }}
+                on {{ inquiry.createdAt | date:'dd-MM-yyyy HH:mm:ss' }}
+            </div>
+
+            <!-- response -->
+
+            <div *ngIf="canShowResponse(inquiry)" class="pl-5 pr-0 mt-2">
+                <div class="d-flex flex-column mx-0 border rounded p-2">
+                    <div class="d-flex justify-content-end align-items-center gap-2">
+                        <mdb-icon fas icon="pencil-alt" class="ml-auto" (click)="editResponse(inquiry,inquiry.response)"
+                            [mdbTooltip]="'Edit'" style="cursor: pointer; margin-right: 10px; font-size: 15px;"
+                            *ngIf="inquiry.response.inquiryStatus === 'RES_DRAFTED'">
+                        </mdb-icon>
+                        <mdb-icon class="text-danger" fas icon="trash-alt"
+                            (click)="deleteResponse(inquiry,inquiry.response)" [mdbTooltip]="'Delete Response'"
+                            style="cursor: pointer; margin-right: 12px; font-size: 15px;"
+                            *ngIf="inquiry.response.inquiryStatus === 'RES_DRAFTED'"></mdb-icon>
+                    </div>
+
+                    <div [innerHTML]="inquiry.response.inquiryRequestResponseText1"></div>
+                    <div class="d-flex flex-column m-0" *ngIf="inquiry.latestForwardInfo" class="text-muted">
+                        <span class="text-muted">
+                            {{ inquiry.latestForwardInfo.displayLabel }}
+                            on {{ inquiry.latestForwardInfo.createdDate | date: 'dd-MM-yyyy HH:mm:ss' }}
+                    
+                    </span>
+                </div>
+
+
+
+                    <div class="d-flex flex-column m-0"
+                        *ngIf="!inquiry.latestForwardInfo && inquiry.committeeInqReqResAuditDTOList && inquiry.response.inquiryStatus === 'RES_CONFIRMED'">
+                        <span *ngFor="let audit of inquiry.committeeInqReqResAuditDTOList" class="text-muted">
+                            {{ audit.displayLabel }} on {{ audit.createdDate | date: 'dd-MM-yyyy HH:mm:ss' }}
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <!-- </ng-container> -->
+</ng-container>
+
+    <!-- Empty State -->
+    <ng-template #noInquiries>
+        <div class="text-muted text-center mt-3">
+            No committee inquiries found for this Facility Paper.
+        </div>
+    </ng-template>
+</div>

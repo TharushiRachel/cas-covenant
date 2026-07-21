@@ -1,0 +1,99 @@
+<div mdbSticky class="d-flex flex-row justify-content-between page-header">
+  <div class="d-flex flex-row align-items-center">
+    <a appGoBack
+       class="d-flex flex-row align-items-center">
+      <i class="fas fa-angle-left header-icon-back"></i>
+    </a>
+    <h5><i class="fas fa-money-bill header-icon"></i>
+      <span *ngIf="pageType=='new'">Add Credit Facility Type</span>
+      <span *ngIf="pageType=='edit'">Edit Credit Facility Type</span>
+    </h5>
+  </div>
+  <div class="d-flex  justify-content-end">
+    <ng-container *ngIf="isApproveOrRejectValid()">
+      <ng-container *appHasAnyPrivilege="masterDataPrivilege.ADMIN_MASTER_DATA_APPROVE_OR_REJECT">
+        <button (click)="approve()"
+                mdbBtn
+                class="custom-button"
+                type="button"
+                color="success"
+                outline=true;
+                [disabled]="isDirty()"
+                mdbWavesEffect>
+          <span *ngIf="pageType=='edit'">Approve</span>
+        </button>
+        <button (click)="reject()"
+                mdbBtn
+                type="button"
+                class="custom-button"
+                color="danger"
+                outline="true"
+                [disabled]="isDirty()"
+                mdbWavesEffect>
+          <span *ngIf="pageType=='edit'">Reject</span>
+        </button>
+      </ng-container>
+    </ng-container>
+    <ng-container *appHasAnyPrivilege="masterDataPrivilege.ICAS_SETTINGS_CREDIT_FACILITY_TYPE_ADD">
+      <button *ngIf="pageType=='new'" (click)="saveUpdate() "
+              class="custom-button"
+              mdbBtn
+              type="button"
+              color="secondary"
+              outline="true"
+              [disabled]="!isValid() || !isDirty()"
+              mdbWavesEffect>
+        <span>SAVE</span>
+      </button>
+    </ng-container>
+
+    <ng-container *appHasAnyPrivilege="masterDataPrivilege.ICAS_SETTINGS_CREDIT_FACILITY_TYPE_EDIT">
+      <button *ngIf="pageType=='edit'" (click)="saveUpdate()"
+              class="custom-button"
+              mdbBtn
+              type="button"
+              color="secondary"
+              outline="true"
+              [disabled]="!isValid() || !isDirty()"
+              mdbWavesEffect>
+        <span>UPDATE</span>
+      </button>
+    </ng-container>
+  </div>
+
+</div>
+
+<div class="page-search-section d-flex p-2 flex-column justify-content-start align-items-start">
+  <form class="d-flex p-2 flex-column justify-content-start align-items-start w-100-p" [formGroup]="componentForm">
+    <div class="md-form m-top-10px m-bottom-10px w-100-p">
+      <input mdbValidate type="text" id="facilityTypeName" maxlength="200" formControlName="facilityTypeName"
+             class="form-control"
+             mdbInput>
+      <label for="facilityTypeName">Facility Type *</label>
+      <mdb-error *ngIf="formErrors.facilityTypeName.required">Credit Facility required</mdb-error>
+      <mdb-error *ngIf="formErrors.facilityTypeName.maxlength">Maximum length for Facility Facility Type
+        is {{formErrors.facilityTypeName.maxlength.requiredLength}}</mdb-error>
+    </div>
+    <div class="md-form m-top-10px m-bottom-10px w-100-p">
+      <input mdbValidate type="text" id="description" maxlength="200" formControlName="description" class="form-control"
+             (keydown)="tabPressDisabled($event)"
+             mdbInput>
+      <label for="description">Description *</label>
+      <mdb-error *ngIf="formErrors.description.required">Description required</mdb-error>
+    </div>
+    <div class="md-form m-top-10px m-bottom-10px w-100-p">
+      <mdb-select
+        [options]="optionsSelect"
+        formControlName="status"
+        id="status"
+        placeholder="Status"></mdb-select>
+      <label for="status">Status</label>
+      <mdb-error *ngIf="formErrors.status.required">Status required</mdb-error>
+    </div>
+    <ng-container *ngIf="pageType=='edit'" class="w-100-p">
+      <app-trackeble-info class="w-100-p"
+                          [updateDTO]="creditFacilityTypeUpdateDTO">
+      </app-trackeble-info>
+    </ng-container>
+  </form>
+</div>

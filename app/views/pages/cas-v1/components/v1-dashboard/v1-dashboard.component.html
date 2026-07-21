@@ -1,0 +1,51 @@
+<div class="container-fluid">
+    <div mdbSticky class="d-flex flex-row justify-content-between page-header">
+        <div class="d-flex flex-row align-items-center">
+            <h5><i class="fas fa-dice-d20 header-icon"></i> CASV1</h5>
+        </div>
+    </div>
+
+    <div class="row d-flex mx-0 my-2 px-2" *ngIf="!isPaperOpened && !isDataLoaded">
+        <div class="md-form w-24-p min-width-120">
+            <input type="text" id="accNo" [(ngModel)]="accNo" class="form-control" mdbInput>
+            <label for="accNo">Account Number</label>
+        </div>
+        <div class="md-form w-24-p min-width-120">
+            <button (click)="handleSearch()" type="button" class=" medium-button btn btn-info" mdbBtn
+                [disabled]="!accNo">
+                Search
+            </button>
+        </div>
+    </div>
+
+    <div class="row d-flex mx-0 my-2">
+        <button (click)="clearData()" type="button" class=" medium-button btn btn-info" mdbBtn *ngIf="isDataLoaded">
+            Back
+        </button>
+    </div>
+
+    <!-- Customer tabs if there are more than one customer -->
+    <div class="mx-0 px-2 my-3" *ngIf="isDataLoaded && customerLoans.length > 1">
+        <ul class="nav nav-tabs">
+            <li class="nav-item" style="box-shadow: none;" *ngFor="let tab of tabs">
+                <button [class]="currentIndex == tab.index ? 'nav-link active' : 'nav-link'"
+                    style="box-shadow: none;outline: none;min-width: 150px;" type="button" role="tab"
+                    (click)="handleCustomer(tab.index)">
+                    {{tab.title}}
+                </button>
+            </li>
+        </ul>
+    </div>
+
+    <div class="row d-flex mx-0 my-2" *ngIf="facilityPapers.length > 0">
+        <span class="w-100 mb-2 px-2"><strong>Other Papers</strong></span>
+        <span class="badge badge-pill badge-light border border-light m-2" style="cursor: pointer;padding: 10px 16px;"
+            *ngFor="let paper of facilityPapers" (click)="viewPaper(paper.date)">
+            {{paper.date}}
+        </span>
+    </div>
+
+    <ng-container *ngIf="isDataLoaded">
+        <app-customer-details [customer]="customer"></app-customer-details>
+    </ng-container>
+</div>

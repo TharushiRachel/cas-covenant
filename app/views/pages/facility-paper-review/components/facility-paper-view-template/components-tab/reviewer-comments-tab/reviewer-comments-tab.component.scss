@@ -1,0 +1,15 @@
+$roboto-font-family: 'Roboto', sans-serif !default;
+
+.custom-pre-tag {
+  white-space: pre-line;
+  overflow-x: auto;
+  font-family: $roboto-font-family;
+  margin-bottom: 2px;
+}
+
+.heading-topics {
+  font-size: small;
+  margin-left: 3% !important;
+  font-weight: bold !important;
+}
+

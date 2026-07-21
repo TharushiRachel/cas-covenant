@@ -1,0 +1,88 @@
+<div class="d-flex flex-column justify-content-start align-items-start w-100-p mt-20p">
+  <div class="d-flex flex-row w-100-p mb-3 flex-wrap justify-content-between">
+    <div class="padding-4px">
+      <label class="font-weight-bold mr-auto">Director/Shareholder Detail(s)</label>
+    </div>
+    <div>
+      <ng-container *appHasAnyPrivilege="masterDataPrivilege.ICAS_SETTINGS_FACILITY_PAPER_EDIT">
+        <ng-container *ngIf="isEqualLoginAndAssignUser() && !isApproveStatus() && !isRejected()">
+          <button
+            type="button"
+            class="btn btn-sm btn-info cta-btn "
+            mdbTooltip="Add Director/Shareholder" placement="left"
+            (click)="openModalAddDirectorDetails(facilityPaper,{}, {})">
+            <i class="fas fa-plus" aria-hidden="true"></i>
+          </button>
+        </ng-container>
+      </ng-container>
+    </div>
+  </div>
+
+  <div class="table-responsive">
+    <table class="table">
+      <thead>
+      <tr>
+        <ng-container *ngFor="let col of tableColumns">
+          <th scope="col">{{col}}</th>
+        </ng-container>
+      </tr>
+      </thead>
+      <tbody>
+      <ng-container *ngFor="let item of facilityPaper.fpDirectorDetailDTOList">
+        <tr class="table-clickable-row">
+          <td>{{item.directorName}} {{item.fullName}} </td>
+          <td>Director</td>
+          <!-- <td>{{item.address}}</td> -->
+          <!-- <td>{{item.dateOfBirthStr}}</td> -->
+          <td *ngIf="item.dateOfBirthStr">{{getCalculatedAge(item.dateOfBirthStr)}} Years</td>
+          <td *ngIf="!item.dateOfBirthStr">-</td>
+          <!-- <td>
+            {{civilStatus[item.civilStatus]}}
+          </td> -->
+          <td>{{item.nic || '-'}}</td>
+          <td>{{getFormattedValue(item.shareHolding) || '-'}}</td>
+          <ng-container *appHasAnyPrivilege="masterDataPrivilege.ICAS_SETTINGS_FACILITY_PAPER_EDIT">
+            <td>
+              <button class="btn btn-sm btn-secondary cta-btn" type="button" mdbWavesEffect
+                      (click)="openModalAddDirectorDetails(facilityPaper, item, {})"
+                      mdbTooltip="Edit Director"
+                      [disabled]="!isEqualLoginAndAssignUser() || isApproveStatus() || isRejected()"
+                      placement="left">
+                <mdb-icon fas icon="pencil-alt" aria-hidden="true"></mdb-icon>
+              </button>
+            </td>
+          </ng-container>
+        </tr>
+      </ng-container>
+      <ng-container *ngFor="let item of facilityPaper.fpShareHolderDetailDTOList">
+        <tr class="table-clickable-row">
+            <td>{{item.shareHolderName}}</td>
+            <td>Shareholder</td>
+            <td>-</td>
+            <td>-</td>
+            <td>{{getFormattedValue(item.shareHolding)}}</td>
+            <ng-container *appHasAnyPrivilege="masterDataPrivilege.ICAS_SETTINGS_FACILITY_PAPER_EDIT">
+                <td>
+                    <button class="btn btn-sm btn-secondary cta-btn" type="button" mdbWavesEffect
+                            (click)="openModalAddDirectorDetails(facilityPaper,{}, item)"
+                            mdbTooltip="Edit Shareholder"
+                            [disabled]="!isEqualLoginAndAssignUser() || isApproveStatus() || isRejected()"
+                            placement="left">
+                        <mdb-icon fas icon="pencil-alt" aria-hidden="true"></mdb-icon>
+                    </button>
+                </td>
+            </ng-container>
+        </tr>
+    </ng-container>
+    <tr class="total">
+        <td>Total</td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td>{{getFormattedValue(calculateTotalShareHolding())}}</td>
+        <td></td>
+    </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

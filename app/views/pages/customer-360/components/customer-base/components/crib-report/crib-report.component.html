@@ -1,0 +1,180 @@
+<div class="w-100-p">
+
+    <app-tabs [selectedTabIndex]="selectedTabIndex" class="w-100-p customer-stat-tab"
+        (onTabSelect)="onTabSelect($event)">
+        <app-tab [tabTitle]="'Personal'">
+            <div class="row d-flex flex-row mx-0">
+
+                <div class="col-md-3 my-3">
+                    <div class="md-form">
+                        <mdb-select [options]="personalIDOptions" [(ngModel)]="formData.identificationType"
+                            placeholder="Select Identification Type" id="identificationType"></mdb-select>
+                        <label for="identificationType">Identification Type *</label>
+                        <mdb-error *ngIf="formErrors.identificationType">{{formErrors.identificationType}}</mdb-error>
+                    </div>
+                </div>
+
+                <div class="col-md-3 my-3">
+                    <div class="md-form">
+                        <input type="text" id="identificationNumber" [(ngModel)]="formData.identificationNumber"
+                            class="form-control input-margin" mdbInput>
+                        <label
+                            for="identificationNumber">{{getIdentificationType(customerType.PERSONAL,formData.identificationType)}}
+                            *</label>
+                        <mdb-error
+                            *ngIf="formErrors.identificationNumber">{{formErrors.identificationNumber}}</mdb-error>
+                    </div>
+                </div>
+
+                <div class="col-md-3 my-3">
+                    <div class="md-form">
+                        <input type="text" id="fullName" [(ngModel)]="formData.fullName"
+                            class="form-control input-margin" mdbInput>
+                        <label for="fullName">Full Name *</label>
+                        <mdb-error *ngIf="formErrors.fullName">{{formErrors.fullName}}</mdb-error>
+                    </div>
+                </div>
+
+                <div class="col-md-3 my-3">
+                    <div class="md-form">
+                        <mdb-select [options]="genderOptions" [(ngModel)]="formData.gender" placeholder="Select Gender"
+                            id="gender"></mdb-select>
+                        <label for="gender">Gender *</label>
+                        <mdb-error *ngIf="formErrors.gender">{{formErrors.gender}}</mdb-error>
+                    </div>
+                </div>
+
+                <div class="col-md-3 my-3">
+                    <div class="md-form">
+                        <input type="text" id="facilityAmount" [(ngModel)]="formData.facilityAmount"
+                            class="form-control input-margin" mdbInput>
+                        <label for="facilityAmount">Facility Amount (LKR) *</label>
+                        <mdb-error *ngIf="formErrors.facilityAmount">{{formErrors.facilityAmount}}</mdb-error>
+                    </div>
+                </div>
+
+                <div class="col-md-3 my-3">
+                    <div class="md-form">
+                        <mdb-select [options]="inquiryReasonSelect" [(ngModel)]="formData.inquiryReason"
+                            placeholder="Select Reason" id="inquiryReason"></mdb-select>
+                        <label for="inquiryReason">Inquiry Reason *</label>
+                        <mdb-error *ngIf="formErrors.inquiryReason">{{formErrors.inquiryReason}}</mdb-error>
+                    </div>
+                </div>
+
+                <div class="col-md-6 my-3">
+                    <div class="md-form">
+                        <input type="text" id="remark" [(ngModel)]="formData.remark" class="form-control input-margin"
+                            mdbInput>
+                        <label for="remark">Remark</label>
+                    </div>
+                </div>
+
+                <div class="col-md-12 row d-flex flex-row justify-content-end mx-0">
+                    <button class="btn btn-sm btn-info" mdbTooltip="Retrive Crib Report" placement="bottom"
+                        (click)="doSearch(customerType.PERSONAL)" [disabled]="reportList.length > 0">
+                        Search
+                    </button>
+                    <button (click)="clearSearch()" class=" medium-button btn btn-outline-info clear-btn" type="button">
+                        Clear
+                    </button>
+                </div>
+            </div>
+        </app-tab>
+
+        <app-tab [tabTitle]="'Business'">
+            <div class="row d-flex flex-row mx-0">
+
+                <div class="col-md-3 my-3">
+                    <div class="md-form">
+                        <input type="text" id="brNumber" [(ngModel)]="formData.identificationNumber"
+                            class="form-control" mdbInput>
+                        <label for="brNumber">BRN *</label>
+                        <mdb-error
+                            *ngIf="formErrors.identificationNumber">{{formErrors.identificationNumber}}</mdb-error>
+                    </div>
+                </div>
+
+                <div class="col-md-3 my-3">
+                    <div class="md-form">
+                        <input type="text" id="fullName" [(ngModel)]="formData.fullName" class="form-control" mdbInput>
+                        <label for="fullName">Company Name *</label>
+                        <mdb-error *ngIf="formErrors.fullName">{{formErrors.fullName}}</mdb-error>
+                    </div>
+                </div>
+
+                <div class="col-md-3 my-3">
+                    <div class="md-form">
+                        <input type="text" id="facilityAmount" [(ngModel)]="formData.facilityAmount"
+                            class="form-control" mdbInput>
+                        <label for="facilityAmount">Facility Amount (LKR) </label>
+                        <mdb-error *ngIf="formErrors.facilityAmount">{{formErrors.facilityAmount}}</mdb-error>
+                    </div>
+                </div>
+
+                <div class="col-md-3 my-3">
+                    <div class="md-form">
+                        <mdb-select [options]="inquiryReasonSelect" [(ngModel)]="formData.inquiryReason"
+                            placeholder="Select Reason" id="inquiryReason"></mdb-select>
+                        <label for="inquiryReason">Inquiry Reason *</label>
+                        <mdb-error *ngIf="formErrors.inquiryReason">{{formErrors.inquiryReason}}</mdb-error>
+                    </div>
+                </div>
+
+                <div class="col-md-6 my-3">
+                    <div class="md-form">
+                        <input type="text" id="remark" [(ngModel)]="formData.remark" class="form-control" mdbInput>
+                        <label for="remark">Remark</label>
+                    </div>
+                </div>
+
+                <div class="col-md-12 row d-flex flex-row jc-end mx-0">
+                    <button class="btn btn-sm btn-info view-button" type="button" mdbTooltip="Retrive Crib Report"
+                        placement="left" (click)="doSearch(customerType.BUSINESS)" [disabled]="reportList.length > 0">
+                        Search
+                    </button>
+                    <button (click)="clearSearch()" class=" medium-button btn btn-outline-info clear-btn" mdbBtn
+                        type="button">
+                        Clear
+                    </button>
+                </div>
+            </div>
+        </app-tab>
+    </app-tabs>
+
+
+    <div class="row d-flex flex-row mx-0 my-3 p-0 w-100">
+        <div class="col-12" *ngIf="reportList.length <= 0">
+            <div class="alert alert-warning" role="alert">
+                No records found!
+            </div>
+        </div>
+
+        <div class="col-12" *ngIf="reportList.length > 0">
+            <table class="custom-bordered-table width-100">
+                <thead class="table-heading-color" style="height: 30px">
+                    <th>Identification Number</th>
+                    <th>Full Name</th>
+                    <th>Created Date & Time</th>
+                    <th>Action</th>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let report of reportList">
+                        <td style="text-align: left; width: 200px;">{{report.identificationNumber}}</td>
+                        <td style="text-align: left;  width: 400px;">{{report.fullName}}</td>
+                        <td style="text-align: left;  width: 200px;">{{report.createdDate}}</td>
+                        <td style="vertical-align: middle;  width: 200px;">
+                            <button class="btn btn-sm btn-secondary ml-0" type="button" mdbWavesEffect
+                                (click)="viewReport(report)" mdbTooltip="View Crib Report" placement="left">
+                                <mdb-icon fas icon="fas fa-eye" aria-hidden="true"></mdb-icon>
+                            </button>
+                            <button class="btn btn-sm btn-success" type="button" mdbWavesEffect
+                                (click)="downloadReport(report)" mdbTooltip="Download Crib Report" placement="left">
+                                <mdb-icon fas icon="fa fa-download" aria-hidden="true"></mdb-icon>
+                            </button>
+                        </td>
+                    </tr>
+            </table>
+        </div>
+    </div>
+</div>

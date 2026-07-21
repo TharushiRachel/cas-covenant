@@ -1,0 +1,41 @@
+.table-light th {
+  border-color: #dee2e6a1;
+}
+
+.table {
+  width: 100%;
+  margin-top: 10px;
+}
+
+.table th,
+.table td {
+  text-align: left;
+}
+
+
+.roman-list {
+  list-style-type: lower-roman;
+}
+
+.info-table-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.info-fields {
+  width: 60%;
+}
+
+.info-table {
+  width: 35%;
+  min-width: 200px;
+}
+
+.small-table {
+  font-size: 0.8rem;
+  width: 100%;
+  border-radius: 8px;
+}

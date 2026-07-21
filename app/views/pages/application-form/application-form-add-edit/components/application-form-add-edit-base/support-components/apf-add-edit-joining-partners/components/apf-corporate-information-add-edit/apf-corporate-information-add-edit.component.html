@@ -1,0 +1,151 @@
+<mdb-card>
+  <mdb-card-header class="custom-card-header">
+    CORPORATE INFORMATION
+  </mdb-card-header>
+  <mdb-card-body class="custom-card-body">
+    <form [formGroup]="corporateInformationForm" class="width-100">
+      <div class="d-flex flex-column justify-content-between w-100-p">
+        <div class="d-flex flex-row justify-content-between width-100 m-bottom-10px">
+          <div class="md-form width-50 m-top-12px">
+            <input mdbValidate
+                   type="text"
+                   id="nameOfBusiness"
+                   maxlength="200"
+                   formControlName="nameOfBusiness"
+                   class="form-control"
+                   mdbInput
+            >
+            <label for="nameOfBusiness">Name of Business *</label>
+          </div>
+
+          <div class="md-form width-50 m-top-12px">
+            <input mdbValidate
+                   type="text"
+                   id="registrationNo"
+                   maxlength="200"
+                   formControlName="registrationNo"
+                   class="form-control"
+                   mdbInput
+            >
+            <label for="registrationNo">Registration No *</label>
+          </div>
+        </div>
+
+        <div class="d-flex flex-row justify-content-between width-100 m-bottom-10px">
+          <div class="md-form width-50">
+            <mdb-date-picker class="form-control"
+                             id="dateOfIncorporateStr"
+                             formControlName="dateOfIncorporateStr"
+                             [options]="dateOfIncorporateOptions"
+                             [inline]="true"
+                             label="Date Of Incorporate *"
+            ></mdb-date-picker>
+            <mdb-error *ngIf="formErrors.dateOfIncorporateStr.required">Required</mdb-error>
+          </div>
+
+          <div class="md-form width-50 m-top-12px">
+            <input mdbValidate
+                   type="text"
+                   id="citizenship"
+                   maxlength="200"
+                   formControlName="citizenship"
+                   class="form-control"
+                   mdbInput
+            >
+            <label for="citizenship">Citizenship *</label>
+          </div>
+        </div>
+
+        <div class="d-flex flex-row justify-content-between width-100 m-bottom-10px">
+          <div class="md-form width-50">
+            <mdb-select
+              [options]="optionsSelectConstitution"
+              class="m-top-8px"
+              label="Constitution"
+              formControlName="constitution"
+              id="constitution"></mdb-select>
+            <mdb-error *ngIf="formErrors.constitution.required">Required</mdb-error>
+          </div>
+
+          <div class="md-form width-50 m-top-12px">
+            <input mdbValidate
+                   type="text"
+                   id="officialAddress"
+                   maxlength="200"
+                   formControlName="officialAddress"
+                   class="form-control"
+                   mdbInput
+            >
+            <label for="officialAddress">Official Address *</label>
+          </div>
+        </div>
+
+        <div class="d-flex flex-row justify-content-between width-100 m-bottom-10px">
+          <div class="md-form width-50 m-top-12px">
+            <input mdbValidate
+                   type="text"
+                   id="natureOfBusiness"
+                   maxlength="200"
+                   formControlName="natureOfBusiness"
+                   class="form-control"
+                   mdbInput
+            >
+            <label for="natureOfBusiness">Nature of Business *</label>
+          </div>
+
+          <div class="md-form width-50">
+            <mdb-date-picker class="form-control"
+                             id="dateOfCommencementStr"
+                             formControlName="dateOfCommencementStr"
+                             [options]="dateOfCommencementOptions"
+                             [inline]="true"
+                             label="Date Of Commencement of the Business *"
+            ></mdb-date-picker>
+            <mdb-error *ngIf="formErrors.dateOfCommencementStr.required">Required</mdb-error>
+          </div>
+        </div>
+        <ng-container *ngIf="isPrivateLTD()">
+          <div class="d-flex flex-row justify-content-between width-100 m-bottom-10px">
+            <div class="md-form m-top-12px m-bottom-10px width-50">
+              <input mdbValidate
+                     type="text"
+                     id="capitalIssued"
+                     maxlength="200"
+                     formControlName="capitalIssued"
+                     class="form-control"
+                     (focusout)="setCurrencyFormatValue('capitalIssued')"
+                     mdbInput>
+              <label for="capitalIssued">Capital Issued</label>
+            </div>
+
+            <div class="md-form m-top-12px m-bottom-10px width-50">
+              <input mdbValidate
+                     type="text"
+                     id="capitalPaidUp"
+                     maxlength="200"
+                     formControlName="capitalPaidUp"
+                     class="form-control"
+                     (focusout)="setCurrencyFormatValue('capitalPaidUp')"
+                     mdbInput>
+              <label for="capitalPaidUp">Capital Paid Up</label>
+            </div>
+          </div>
+
+          <div class="d-flex flex-row justify-content-between width-100 m-bottom-10px">
+            <div class="md-form m-top-12px m-bottom-10px width-50">
+              <input mdbValidate
+                     type="text"
+                     id="capitalAuthorized"
+                     maxlength="200"
+                     formControlName="capitalAuthorized"
+                     class="form-control"
+                     (focusout)="setCurrencyFormatValue('capitalAuthorized')"
+                     mdbInput>
+              <label for="capitalAuthorized">Capital Authorized</label>
+            </div>
+          </div>
+        </ng-container>
+      </div>
+    </form>
+  </mdb-card-body>
+</mdb-card>

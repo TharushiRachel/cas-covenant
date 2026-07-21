@@ -1,0 +1,77 @@
+<div class="text-align-center topic" *ngIf="!isCommitteePaper">
+    <h5 class="font-weight-400">ESG Summary</h5>
+</div>
+<div class="row d-flex mx-0 my-4 p-2" [class.box-shadow]="!isCommitteePaper">
+    <h6 class="mb-2 w-100 font-weight-500">ESG Risk Rating Categorization</h6>
+    <ng-container *ngFor="let category of selectedRiskCategories;let i=index;">
+        <div class="col-md-3 border rounded m-2 p-2 row d-flex flex-row align-items-center">
+            <h5 class="category-txt">{{category.description}}</h5>
+            <ng-container *ngIf="category.score">
+                <mdb-badge [default]="false" [style.background-color]="getRiskGradingBg(category.score)"
+                    style="color: #fff !important; font-size: 16px;border-radius: 4px; margin-left: 6px;">
+                    {{category.score}}
+                </mdb-badge>
+            </ng-container>
+        </div>
+        <div class="row d-flex justify-content-center align-items-center p-0 w-fit-content mx-0"
+            *ngIf="i < selectedRiskCategories.length - 1">
+            <mdb-icon fas icon="arrow-right"></mdb-icon>
+        </div>
+    </ng-container>
+    <div class="col-md-12" *ngIf="approvedESGScore"></div>
+    <div class="col-md-3 border rounded m-2 p-2 row d-flex flex-row align-items-center"
+        style="border-width: 3px !important;" *ngIf="approvedESGScore">
+        <span class="ml-0 mr-2" style="font-weight: 400;font-size: 16px;">Finalized ESG Risk Score</span>
+        <mdb-badge [default]="false" [style.background-color]="getRiskGradingBg(approvedESGScore)"
+            style="color: #fff !important; font-size: 16px;border-radius: 4px;">
+            {{approvedESGScore}}
+        </mdb-badge>
+    </div>
+</div>
+
+<ng-container *ngIf="buComment">
+    <div class="row d-flex mx-0 my-4 p-2" [class.box-shadow]="!isCommitteePaper">
+        <h6 class="mb-2 w-100 font-weight-500">BU's Comment</h6>
+        <div class="col-md-12 p-0 m-0">
+            <pre class="custom-pre-tag-with-spaces m-0">{{buComment}}</pre>
+        </div>
+    </div>
+</ng-container>
+
+<ng-container *ngIf="opinions && opinions.length > 0">
+    <div class="row d-flex mx-0 my-4 p-2" [class.box-shadow]="!isCommitteePaper">
+        <h6 class="mb-2 w-100 font-weight-500">ESG Risk Comments</h6>
+        <ng-container *ngFor="let item of opinions;">
+            <div class="mx-0 my-2">
+                <p-fieldset [legend]="item.tabTitle">
+                    <div class="m-0 p-0">
+                        <div class="row d-flex mx-0" *ngIf="!isCommitteePaper">
+                            <div class="col-md-4 p-0 d-flex align-items-center mx-0">
+                                <span style="font-size: 13px; color: #9fa0ae;">
+                                    {{getActionBy(item)}}
+                                </span>
+                            </div>
+                        </div>
+                        <div class="my-1">
+                            <span [innerHTML]="item.opinion | safeHtml"></span>
+                        </div>
+
+                        <div class="m-0 p-0" style="border-top: 0.5px solid #efefef;">
+                            <div class="row d-flex align-items-center mx-0 mt-2">
+                                <h6><strong>ESG Risk Reply</strong></h6>
+                            </div>
+                            <div class="my-1 p-1" *ngIf="item.riskOpinionReply && !isCommitteePaper">
+                                <span style="font-size: 13px; color: #9fa0ae;">
+                                    {{getActionBy(item.riskOpinionReply)}}
+                                </span>
+                            </div>
+                            <div class="my-1 px-1" *ngIf="item.riskOpinionReply">
+                                <span [innerHTML]="item.riskOpinionReply.reply | safeHtml"></span>
+                            </div>
+                        </div>
+                    </div>
+                </p-fieldset>
+            </div>
+        </ng-container>
+    </div>
+</ng-container>

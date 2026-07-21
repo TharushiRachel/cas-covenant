@@ -1,0 +1,72 @@
+<div class="d-flex flex-row w-100-p" *ngIf="!defualtTemplate">
+  <form class="d-flex justify-content-start w-100-p" [formGroup]="searchForm">
+    <div class="d-flex flex-row justify-content-start width-30" *ngIf="!hasFptemplates">
+      <div class="md-form width-100" *ngIf="upcTemplateListOpt && upcTemplateListOpt.length > 0">
+        <mdb-select mdbValidate class="form-control" required label="Select upc template" id="upcTemplateID"
+          [options]="upcTemplateListOpt" (selected)="onUpdateTree($event)" formControlName="upcTemplateID">
+        </mdb-select>
+      </div>
+    </div>
+    <div class="mt-8p" *ngIf="!hasFptemplates">
+      <!-- <button
+        [disabled]="!isAbelToEdit() || !this.searchForm.valid"
+        type="button" mdbBtn
+        mdbWavesEffect
+        class=" btn-info"
+        (click)="onUpdateTree({})">Add
+      </button> -->
+
+      <button *ngIf="isAbelToEdit()" type="button" mdbBtn class="btn-info" mdbWavesEffect
+        (click)="onViewPreviousPaperTemplates({})">Copy From Previous Papers
+      </button>
+
+      <!-- <button *ngIf="isAbelToEdit()"
+        type="button"  mdbBtn
+        class="btn-info"
+        mdbWavesEffect
+        (click)="loadDataComponent()" >Personal Scorecard
+      </button> -->
+
+    </div>
+  </form>
+</div>
+
+<div class="w-100-p">
+  <ng-container class="w-100-p">
+    <app-upc-template-structure [allUpcSectionData]="allUpcSectionData"
+      [alreadyAddedUpcSectionIDs]="alreadyAddedUpcSectionIDs" [initNodeRowData]="initNodeRowData"
+      [initNodeData]="initNodeData" [upcTemplateName]="upcTemplateName" [upcTemplateId]="upcTemplateId"
+      [hasFptemplates]="hasFptemplates" (onAddData)="onUpdateData($event)" (onUpdate)="onUpdateTree($event)"
+      (onRemove)="onRemoveNode($event)" (onDeleteTemplate)="onDeleteTemplate($event)" [facilityPaper]="facilityPaper">
+    </app-upc-template-structure>
+  </ng-container>
+</div>
+
+<!-- <ng-container class="w-100-p"  *ngIf="showComponentB">
+  <button type="button" class="btn btn-sm btn-danger cta-btn delete-button cust-evl-btn"
+  mdbWavesEffect
+  mdbTooltip="Remove template"
+  placement="right"
+  (click)="closeDataComponent()">
+    <mdb-icon fas icon="trash-alt" aria-hidden="true"></mdb-icon>
+  </button>
+    <app-scorecard-template>
+    </app-scorecard-template>
+
+</ng-container>
+
+<div *ngIf="showDataComponent">
+
+  <app-customer-evaluation></app-customer-evaluation>
+
+  <button type="button" class="btn btn-sm btn-danger cta-btn delete-button"
+  mdbWavesEffect
+  mdbTooltip="Remove template"
+  placement="right"
+  (click)="closeDataComponent()">
+    <mdb-icon fas icon="trash-alt" aria-hidden="true"></mdb-icon>
+  </button>
+
+</div> -->
+
+<app-scroll-to-top></app-scroll-to-top>

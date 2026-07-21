@@ -1,0 +1,49 @@
+<div>
+    <div class="modal-header modal-topic flex-center">
+        <button type="button" class="close pull-right" aria-label="Close" (click)="onClose()">
+            <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-title w-100 heading-align" id="myModalLabel" style="font-size: 1rem ; font-weight: bold">Add
+            Comparable Statement
+        </h4>
+    </div>
+    <div class="modal-body modal-detail form-margin mt-0 px-3" style="max-height: 88vh;">
+
+        <div class="tab-view">
+            <app-tabs [selectedTabIndex]="selectedTabIndex" class="w-100-p" (onTabSelect)="onTabSelect($event)">
+
+                <ng-container>
+                    <app-tab [tabTitle]="'Loans'">
+                        <ng-container *ngIf="loadedTabs.has(0) && !isSectorLoading">
+                            <app-loan-comp-statement [riskRatingOptions]="riskRatingOptions" [sectorList]="sectorList"
+                                [sectorOptions]="sectorOptions"
+                                (handleSubmitLoan)="handleSubmitLoan($event)"></app-loan-comp-statement>
+                        </ng-container>
+                    </app-tab>
+
+                    <app-tab [tabTitle]="'Commissions'">
+                        <ng-container *ngIf="loadedTabs.has(1) && !isSectorLoading">
+                            <app-commission-comp-statement [riskRatingOptions]="riskRatingOptions"
+                                [sectorList]="sectorList" [sectorOptions]="sectorOptions"
+                                (handleSubmitCommission)="handleSubmitCommission($event)"></app-commission-comp-statement>
+                        </ng-container>
+                    </app-tab>
+
+                    <app-tab [tabTitle]="'Preview'">
+                        <ng-container *ngIf="loadedTabs.has(2)">
+                            <app-preview-comp-statement [reportingDataList]="reportingDataList">
+                            </app-preview-comp-statement>
+                        </ng-container>
+                    </app-tab>
+                </ng-container>
+
+            </app-tabs>
+        </div>
+    </div>
+    <div class="modal-footer modal-end pt-0 border border-top-1" *ngIf="isGenerateBtnEnabled()">
+        <button type="button" mdbBtn color="success" size="sm" class="waves-light" aria-label="Close" mdbWavesEffect
+            (click)=" generateReport()">
+            Generate Report
+        </button>
+    </div>
+</div>

@@ -1,0 +1,22 @@
+.cta-btn {
+  padding: .4rem .7rem;
+  font-size: .8rem;
+  color: unset;
+  margin: 2px;
+  box-shadow: unset !important;
+}
+
+.delete-button {
+  background-color: unset !important;
+
+  mdb-icon {
+    color: #ff354785;
+  }
+}
+
+.no-data-message {
+  margin: 6px !important;
+  font-weight: 500;
+  color: #ff7d00;
+}
+

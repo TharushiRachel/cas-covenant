@@ -1,0 +1,50 @@
+<div class="modal-header flex-center modal-topic">
+  <h4 class="modal-title w-100 font-weight-bold" *ngIf="isCooperate">Add Company ROA Details</h4>
+  <h4 class="modal-title w-100 font-weight-bold" *ngIf="!isCooperate">Add Individual ROA Details</h4>
+  <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="mdbModalRef.hide()">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
+<div class="modal-body mx-3 modal-detail form-margin">
+  <form class="d-flex flex-column justify-content-start align-items-start w-100-p" [formGroup]="componentForm">
+
+    <div class="md-form m-top-10px m-bottom-10px w-100-p">
+      <input mdbValidate required
+             type="text" id="description"
+             maxlength="200" formControlName="description"
+             class="form-control"
+             mdbInput>
+      <label for="description" *ngIf="isCooperate">Company ROA (%)</label>
+      <label for="description" *ngIf="!isCooperate">Individual ROA (%)</label>
+      <mdb-error *ngIf="formErrors.description.required">Required</mdb-error>
+      <mdb-error *ngIf="formErrors.description.percentageValueError && !formErrors.description.required">Invalid
+        percentage value
+      </mdb-error>
+    </div>
+    <div class="md-form m-top-10px m-bottom-10px w-100-p">
+      <input mdbValidate
+             type="text"
+             id="comment"
+             maxlength="200"
+             formControlName="comment"
+             class="form-control"
+             mdbInput>
+      <label for="comment">Comment</label>
+    </div>
+  </form>
+</div>
+<div class="modal-footer modal-end">
+  <button *ngIf="!isNewCompanyROA()" type="button" mdbBtn color="secondary" size="sm" class="relative waves-light"
+          mdbWavesEffect
+          [disabled]="componentForm.invalid" (click)="onRemove()">Remove
+  </button>
+  <button *ngIf="!isNewCompanyROA()" type="button" mdbBtn color="secondary" size="sm" class="relative waves-light"
+          mdbWavesEffect
+          [disabled]="componentForm.invalid" (click)="onAdd()">Update
+  </button>
+  <button *ngIf="isNewCompanyROA()" type="button" mdbBtn color="secondary" size="sm" class="relative waves-light"
+          mdbWavesEffect
+          [disabled]="componentForm.invalid" (click)="onAdd()">Save
+  </button>
+</div>

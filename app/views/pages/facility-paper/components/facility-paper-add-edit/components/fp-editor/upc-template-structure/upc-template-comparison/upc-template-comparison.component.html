@@ -1,0 +1,28 @@
+<div class="modal-header flex-center modal-topic">
+  <h4 class="modal-title w-100 font-weight-bold">UPC Template History</h4>
+  <mdb-icon class="header-icon" fas icon="sync" style="color: #198ddb;" (click)="refreshComments()"></mdb-icon>
+  <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="onCloseModel()">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
+<div class="modal-body mx-3 form-margin">
+  <div class="tab-view">
+    <app-tabs [selectedTabIndex]="selectedTabIndex" class="w-100-p" (onTabSelect)="onTabSelect($event)">
+
+      <app-tab tabTitle="Comments">
+        <ng-container *ngIf="isTabSelected(commentTabIndex)">
+          <app-upc-template-comment-section #child [nodeData]="nodeData" (onCloseModel)="onCloseModel()">
+          </app-upc-template-comment-section>
+        </ng-container>
+      </app-tab>
+
+      <app-tab tabTitle="History">
+        <ng-container *ngIf="isTabSelected(comparisonTabIndex)">
+          <app-upc-template-history-section [nodeData]="nodeData">
+          </app-upc-template-history-section>
+        </ng-container>
+      </app-tab>
+    </app-tabs>
+  </div>
+</div>

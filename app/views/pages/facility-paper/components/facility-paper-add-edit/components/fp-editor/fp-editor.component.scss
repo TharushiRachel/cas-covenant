@@ -1,0 +1,35 @@
+.page-section {
+  margin: 0.5rem 0;
+
+  &:first-child {
+    margin-top: 1rem;
+  }
+
+  .info-section {
+    margin: 3px 15px 3px 0;
+    min-width: 220px;
+
+    .info-caption {
+      margin-right: 5px;
+    }
+  }
+}
+
+.read-view-btn {
+  min-width: 135px;
+  padding: 0.4rem 1rem !important;
+}
+
+.editor-container {
+  height: 500px;
+}
+
+.scorecard-btn{
+  background-color: #33b5e5!important;
+  color: #fff;
+  border: none;
+}
+
+.cust-evl-btn{
+  float: right;
+}

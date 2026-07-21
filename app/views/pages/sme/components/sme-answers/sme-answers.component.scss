@@ -1,0 +1,60 @@
+/* filepath: c:\Sampath Bank Project\cas2020\src\main\angular\src\app\views\pages\sme\components\sme-answers\sme-answers.component.scss */
+
+/* General container styling */
+:host {
+  display: block;
+  padding: 20px;
+//   background-color: #f9f9f9;
+//   border-radius: 8px;
+//   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Styling for each key block */
+.key-block {
+  margin-bottom: 20px;
+  padding: 15px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #ffffff;
+}
+
+/* Key title */
+.key-block h3 {
+  margin-bottom: 15px;
+  font-size: small;
+  font-weight: 700;
+}
+
+/* Styling for each answer block */
+.answer-block {
+  margin-bottom: 15px;
+//   padding: 10px;
+//   border: 1px solid #e0e0e0;
+//   border-radius: 6px;
+//   background-color: #fdfdfd;
+}
+
+/* Question title */
+.answer-block h4 {
+  margin-bottom: 8px;
+  font-size: small;
+  font-weight: bold;
+}
+
+/* Answer details */
+.answer-block p {
+  margin: 4px 0;
+  font-size: small;
+}
+
+/* Highlight for labels */
+.answer-block p strong {
+  color: #333;
+}
+
+/* No data message */
+.no-data {
+  text-align: center;
+  font-size: small;
+  margin-top: 20px;
+}

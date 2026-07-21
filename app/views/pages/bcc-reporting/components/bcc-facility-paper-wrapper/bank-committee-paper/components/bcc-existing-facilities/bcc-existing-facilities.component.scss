@@ -1,0 +1,30 @@
+.facility-table {
+  td {
+    vertical-align: unset !important;
+  }
+}
+
+.new-record {
+  //background-color: #d2e1ff !important;
+}
+
+.cta-btn {
+  padding: .4rem .7rem;
+  font-size: .8rem;
+  color: unset;
+  margin: 2px;
+  box-shadow: unset !important;
+}
+
+.delete-button {
+  background-color: unset !important;
+
+  mdb-icon {
+    color: #ff354785;
+  }
+}
+
+.add-record {
+  border-bottom: 2px solid #9d9ea0 !important;
+}
+

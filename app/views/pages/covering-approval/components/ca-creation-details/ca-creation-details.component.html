@@ -1,0 +1,59 @@
+<div class="ca-creation-container-fluid">
+  <div mdbSticky id="covering-approval-detail" class="d-flex flex-row justify-content-between page-header">
+    <div class="d-flex flex-row align-items-center">
+      <a appGoBack class="d-flex flex-row align-items-center">
+        <i class="fas fa-angle-left header-icon-back"></i>
+      </a>
+      <h5>
+        <i class="fas fa-edit header-icon"></i>
+        <span>Covering Approval Details - Ref No : {{coveringApprovals?.covAppRefNumber}} </span>
+
+      </h5>
+    </div>
+    <div class="float-right">
+      <div class="d-flex flex-row align-items-center">
+        <button mdbBtn type="button" class="action-button-padding btn-outline-info btn-sm" data-toggle="tooltip"
+          data-placement="bottom" [title]="'For a New Reference'" outline="true" mdbWavesEffect>
+          <span>COPY</span>
+        </button>
+
+
+        <button data-placement="bottom" mdbBtn type="button" mdbTooltip="Forward Application Form"
+          class="action-button-padding btn-outline-success btn-sm" outline="true" mdbWavesEffect
+          (click)="changeStatusCOV($event,covStatusConst.IN_PROGRESS)">
+          <span>Forward</span>
+        </button>
+
+        <button mdbBtn type="button" color="danger" data-toggle="tooltip" data-placement="bottom"
+          [title]="'Paper will be permanently rejected'" class="btn-width" size="sm" mdbWavesEffect>
+          <span>Decline</span>
+        </button>
+      </div>
+    </div>
+
+  </div>
+  <div class="tab-view">
+    <app-tabs [selectedTabIndex]="selectedTabIndex" class="w-100-p" (onTabSelect)="onTabSelect($event)">
+      <app-tab [tabTitle]="'About'">
+        <ng-container *ngIf="isTabSelected(aboutTabIndex)">
+          <app-ca-details-about class="w-100-p" [coveringApproval]="coveringApprovals">
+
+          </app-ca-details-about>
+        </ng-container>
+
+      </app-tab>
+      <app-tab [tabTitle]="'Comment'">
+        <ng-container *ngIf="isTabSelected(commentTabIndex)">
+          <div class="padding-4px">
+            <app-ca-details-comment class="w-100-p" [commentDetails]="commentDetails">
+
+            </app-ca-details-comment>
+          </div>
+        </ng-container>
+
+      </app-tab>
+    </app-tabs>
+  </div>
+
+
+</div>

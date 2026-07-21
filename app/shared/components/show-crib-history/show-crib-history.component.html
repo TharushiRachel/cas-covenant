@@ -1,0 +1,92 @@
+<div class="modal-header modal-topic">
+  <h4 class="modal-title w-100 font-weight-bold">Previous CRIB Reports</h4>
+  <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="onNoClick()">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
+<div class="modal-body mx-3 modal-detail form-margin" style="max-height: 75vh;overflow-y: auto;">
+  <div class="d-flex d-flex-row justify-content-center">
+    <table class="table custom-crib-report-table width-100">
+      <thead>
+        <ng-container *ngFor="let col of tableColumns">
+          <th scope="col">{{col}}</th>
+        </ng-container>
+      </thead>
+      <tbody>
+
+        <!-- <tr *ngFor="let report of previousCribReports">
+          <td class="width-20"
+              [class.selected-data]="isSelectedCribReport(report)">{{report.nic ? report.nic : report.brn}}</td>
+          <td class="width-20" [class.selected-data]="isSelectedCribReport(report)">{{report.createdDateStr}}</td>
+          <td class="text-align-center width-20">
+
+            <button type="button" mdbBtn color="success" size="sm" class="relative waves-light"
+                    mdbTooltip="View Crib Report" (click)="viewReport(report.customerCribReportID,report.pdfReport)"
+                    mdbWavesEffect>View Report
+            </button>
+            <ng-container *ngIf="enableActions">
+              <button type="button" mdbBtn color="info" size="sm" class="relative waves-light"
+                      mdbTooltip="Proceed with this" (click)="proceedWithResponse(report)"
+                      [disabled]="!isSelectedCribReport(report)"
+                      mdbWavesEffect> Proceed
+              </button>
+            </ng-container>
+          </td>
+        </tr> -->
+
+        <tr *ngFor="let cribItem of cribReportHistory">
+          <td>
+            {{cribItem.fullName}}
+          </td>
+          <td>
+            <span [class.color-red]="cribItem.cribStatus === cribStatusConst.NOT_ENTERED"
+              [class.color-blue]="cribItem.cribStatus === cribStatusConst.PENDING"
+              [class.color-green]="cribItem.cribStatus === cribStatusConst.NO_IRREGULAR_ADVANCES || cribItem.cribStatus === cribStatusConst.REPORTED_AS_IRREGULAR">
+
+              {{cribStatus[cribItem.cribStatus]}}
+            </span>
+          </td>
+          <td>
+            {{cribItem.documentName ? cribItem.documentName : '-'}}
+          </td>
+          <td class="text-align-center">{{cribItem.cribIssueDateStr | date:'mediumDate'}}</td>
+          <td class="text-align-center">{{cribItem.uploadOn | date:'mediumDate'}}</td>
+          <td class="text-align-center min-width-150">
+            <button class="btn btn-sm btn-info" type="button" mdbWavesEffect mdbTooltip="View Crib Report"
+              placement="left" (click)="viewDocument(cribItem)">
+              <mdb-icon fas icon="fas fa-eye" aria-hidden="true"></mdb-icon>
+            </button>
+            <button class="btn btn-sm btn-success" type="button" mdbWavesEffect mdbTooltip="Download Crib Report"
+              placement="left" (click)="downloadDocument(cribItem)">
+              <mdb-icon fas icon="fas fa-download" aria-hidden="true"></mdb-icon>
+            </button>
+          </td>
+        </tr>
+
+        <ng-container *ngIf="cribReportHistory.length==0">
+          <tr>
+            <th colspan="6">
+              <p class="not-auth-message margin-unset">
+                No Previous Crib Reports
+              </p>
+            </th>
+          </tr>
+        </ng-container>
+        <!-- <tr>
+            <td colspan="5" class="text-align-start" style="font-weight: bold; font-size: 15px">
+              Do you want to view the latest Crib Report for {{this.content.identificationNumber}} ? This service will
+              add
+              charges
+              <span>
+                <button type="button" mdbBtn color="warning" size="sm" class="relative waves-light"
+                  (click)="onYesClick()" mdbWavesEffect>Yes
+                </button>
+              </span>
+            </td>
+          </tr> -->
+      </tbody>
+    </table>
+  </div>
+</div>
+<a class="download-link" #downloadLink></a>

@@ -1,0 +1,14 @@
+<ul class="nav nav-tabs">
+  <li *ngFor="let tab of tabs; let i=index;" (click)="selectTab(tab, i)" [class.active-tab]="tab.active">
+    <span class="tab-title" [ngClass]="{'warning-title' : tab.warningTitle}">
+      <ng-container *ngIf="tab.showIcon">
+        <mdb-icon fas icon="{{tab.iconName}}"
+                  [ngClass]="{'icon-color' : tab.isPrimary, 'text-black-50': !tab.isPrimary}"></mdb-icon>
+      </ng-container>
+      <ng-container *ngIf="tab.showBadge">
+        <mdb-badge color="{{tab.badgeColor}}">{{tab.badgeContent}}</mdb-badge>
+      </ng-container>
+      {{tab.title}}</span>
+  </li>
+</ul>
+<ng-content></ng-content>

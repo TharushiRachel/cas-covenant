@@ -1,0 +1,79 @@
+.text-right {
+  position: relative;
+  right: 50px;
+}
+
+.current-designation-style {
+  font-weight: bold;
+  font-size: large;
+  position: relative;
+  left: 40px;
+}
+
+.da-table {
+  width: 100%;
+  height: 200px;
+  text-align: center;
+  border-collapse: collapse;
+}
+
+.da-table th,
+.da-table td {
+  border: 1px solid #ccc;
+  padding: 2px;
+  max-width: 120px;
+}
+
+.no-border {
+  border: none;
+}
+
+.header {
+  font-weight: bold;
+  text-align: center;
+  margin: 10px;
+}
+
+.designation-add-dropdown {
+  padding-left: 40px;
+}
+
+.designation-add-dropdown {
+  width: 100%;
+}
+
+.designation-add-dropdown select {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  outline: none;
+  box-sizing: border-box;
+  appearance: none;
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 15px;
+  cursor: pointer;
+}
+
+.designation-add-dropdown select option {
+  padding: 10px;
+}
+
+.designation-add-dropdown select option:checked {
+  background-color: #f0f0f0;
+}
+
+.modifiyDetails {
+  margin-left: 1%;
+  color: rgb(39, 186, 231);
+  font-size: 15px;
+}
+
+.highlighted {
+  background-color: rgba(168, 178, 189, 0.3);
+}
+
+.error {
+  color: red;
+}

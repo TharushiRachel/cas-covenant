@@ -1,0 +1,128 @@
+<div mdbSticky class="d-flex flex-row justify-content-between page-header">
+  <div class="d-flex flex-row align-items-center">
+    <a appGoBack class="d-flex flex-row align-items-center">
+      <i class="fas fa-angle-left header-icon-back"></i>
+    </a>
+    <h5><i class="fas fa-dice-d20 header-icon"></i>
+      <span *ngIf="pageType=='new'">Add Role</span>
+      <span *ngIf="pageType=='edit'">Edit Role</span>
+    </h5>
+  </div>
+  <div class="d-flex  justify-content-end">
+    <ng-container *ngIf="isApproveOrRejectValid()">
+      <ng-container *appHasAnyPrivilege="masterDataPrivilege.ADMIN_MASTER_DATA_APPROVE_OR_REJECT">
+        <button (click)="approve()"
+                mdbBtn
+                class="custom-button"
+                type="button"
+                color="success"
+                outline="true"
+                [disabled]="isDirty()"
+                mdbWavesEffect>
+          <span *ngIf="pageType=='edit'">Approve</span>
+        </button>
+        <button (click)="reject()"
+                mdbBtn
+                type="button"
+                class="custom-button"
+                color="danger"
+                outline="true"
+                [disabled]="isDirty()"
+                mdbWavesEffect>
+          <span *ngIf="pageType=='edit'">Reject</span>
+        </button>
+      </ng-container>
+    </ng-container>
+    <ng-container *appHasAnyPrivilege="masterDataPrivilege.ICAS_SETTINGS_ROLE_EDIT">
+      <button *ngIf="pageType=='edit'" (click)="saveUpdate()"
+              class="custom-button"
+              mdbBtn
+              type="button"
+              color="secondary"
+              outline="true"
+              [disabled]="!isValid() || !isDirty()"
+              mdbWavesEffect>
+        <span>UPDATE</span>
+      </button>
+    </ng-container>
+    <ng-container *appHasAnyPrivilege="masterDataPrivilege.ICAS_SETTINGS_ROLE_ADD">
+      <button *ngIf="pageType=='new'" (click)="saveUpdate()"
+              class="custom-button"
+              mdbBtn
+              type="button"
+              color="secondary"
+              outline="true"
+              [disabled]="!isValid() || !isDirty()"
+              mdbWavesEffect>
+        <span>SAVE</span>
+      </button>
+    </ng-container>
+  </div>
+</div>
+
+<div class="page-search-section d-flex p-2 flex-column justify-content-start align-items-start section">
+  <form class="d-flex p-2 flex-column justify-content-start align-items-start w-100-p" [formGroup]="componentForm">
+
+    <div class="md-form m-top-10px m-bottom-10px w-100-p">
+      <input mdbValidate type="text" id="roleName" maxlength="200" formControlName="roleName" class="form-control"
+             mdbInput>
+      <label for="roleName">Role Name</label>
+      <mdb-error *ngIf="formErrors.roleName.required">Required</mdb-error>
+      <mdb-error *ngIf="formErrors.roleName.maxlength">Maximum length for Role Name
+        is {{formErrors.roleName.maxlength.requiredLength}}</mdb-error>
+    </div>
+
+    <div class="md-form m-top-10px m-bottom-10px w-100-p">
+      <input mdbValidate type="text" id="upmPrivilegeCode" maxlength="200" formControlName="upmPrivilegeCode"
+             (keydown)="tabPressDisabled($event)"
+             class="form-control"
+             mdbInput>
+      <label for="upmPrivilegeCode">UPM Privilege Code</label>
+      <mdb-error *ngIf="formErrors.upmPrivilegeCode.maxlength">Maximum length for UPM Privilege Code
+        is {{formErrors.upmPrivilegeCode.maxlength.requiredLength}}</mdb-error>
+      <mdb-error *ngIf="formErrors.upmPrivilegeCode.required">Required</mdb-error>
+    </div>
+
+    <div class="md-form m-top-10px m-bottom-10px w-100-p">
+      <mdb-select
+        [options]="optionsSelect"
+        formControlName="status"
+        id="status"
+        placeholder="Status"></mdb-select>
+      <label for="status">Status</label>
+      <mdb-error *ngIf="formErrors.status.required">Status required</mdb-error>
+    </div>
+    <ng-container *ngIf="pageType=='edit'" class="w-100-p">
+      <app-trackeble-info class="w-100-p"
+                          [updateDTO]="roleUpdateDTO">
+      </app-trackeble-info>
+    </ng-container>
+  </form>
+
+  <h6 class="font-weight-normal">Privileges</h6>
+
+  <div
+    class="privileges-selection-sections d-flex flex-wrap p-2 flex-column justify-content-start align-items-start w-100-p section">
+    <ng-container *ngFor="let privilegeCategory of privilegeCategories">
+      <div class="privilege-category-box w-100-p">
+        <div class="category-name">
+          {{privilegeCategory}}
+        </div>
+
+        <div class="privileges-selection-sections d-flex flex-wrap">
+          <ng-container *ngFor="let privilege of systemPrivileges[privilegeCategory]">
+            <mdb-checkbox
+              class="mr-4 check-box-size"
+              [default]="true"
+              (click)="onCheckboxChange($event, privilege.privilegeID)"
+              [value]="privilege.privilegeID"
+              [checked]="isPrivilegeChecked(privilege.privilegeID)">
+              {{privilege.privilegeName}}
+            </mdb-checkbox>
+          </ng-container>
+        </div>
+      </div>
+    </ng-container>
+  </div>
+</div>
+

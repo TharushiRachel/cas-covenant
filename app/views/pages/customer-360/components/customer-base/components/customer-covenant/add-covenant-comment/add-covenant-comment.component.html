@@ -1,0 +1,46 @@
+<div class="modal-header modal-topic">
+  <h4 class="modal-title w-100 font-weight-bold">Add Comment</h4>
+  <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="closeModal()">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
+<div class="modal-body mx-3 modal-detail form-margin">
+  <form class="d-flex p-2 flex-column justify-content-start align-items-start w-100-p">
+    <div class="md-form m-top-10px m-bottom-10px w-100-p">
+      <textarea
+        id="comment"
+        name="comment" 
+        class="form-control rounded-0 comment-area"
+        maxlength="4000"
+        placeholder="Comment here..."
+        [(ngModel)]="comment"
+        rows="4"
+      ></textarea>
+    </div>
+  </form>
+</div>
+
+<div class="modal-footer modal-end">
+  <button
+    type="button"
+    mdbBtn
+    color="light"
+    class="btn-sm relative waves-light"
+    mdbWavesEffect
+    (click)="closeModal()"
+  >
+    Cancel
+  </button>
+  <button
+    type="button"
+    mdbBtn
+    color="info"
+    class="btn-sm relative waves-light"
+    mdbWavesEffect
+    (click)="saveComment()"
+  >
+    Save
+  </button>
+</div>
+

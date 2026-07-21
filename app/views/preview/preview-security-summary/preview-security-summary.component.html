@@ -1,0 +1,229 @@
+<mdb-card class="w-100-p border-none-card mt-5p">
+  <div class="text-align-center topic" *ngIf="!isCommitteeTab">
+    <h5> Security Summary</h5>
+  </div>
+
+  <form [formGroup]="componentForm">
+    <table class="custom-bordered-table width-100 mt-5p">
+      <thead>
+        <tr>
+          <th rowspan="2" colspan="2">Security Type</th>
+          <th colspan="2">Company (LKR)</th>
+          <th colspan="2" *ngIf="isGroupSecuritySummary()">
+            Group (LKR)
+          </th>
+        </tr>
+        <tr>
+          <th class="text-align-end">Value (Rs. Mn)</th>
+          <th>%</th>
+          <th *ngIf="isGroupSecuritySummary()" class="text-align-end">Value (Rs. Mn)
+          </th>
+          <th *ngIf="isGroupSecuritySummary()">%</th>
+        </tr>
+        <tr>
+          <th class="text-align-start" colspan="2">
+            <div class="d-flex flex-row justify-content-between" style="padding-left: 4px !important;">
+              <div class="width-20">First Class</div>
+              <div class="width-80">
+              </div>
+            </div>
+
+          </th>
+          <th colspan="4"></th>
+        </tr>
+      </thead>
+
+      <tbody formArrayName="firstClassSecuritySummaryTopicsDTOs">
+        <tr *ngFor="let item of componentForm.get('firstClassSecuritySummaryTopicsDTOs')['controls'];
+           let i = index;" [formGroupName]="i">
+          <td class="text-align-center width-60 justify-content-between" colspan="2">
+            <div class="d-flex flex-row justify-content-between w-100-p">
+              <p class="security-type">{{item.value.securityType}}</p>
+            </div>
+          </td>
+          <td style="text-align: end;">
+            <span style="padding-right: 4px !important;" *ngIf="isView">{{item.controls['companyValue'].value}}</span>
+            <input mdbValidate type="text" id="companyValue" (keydown)="validateNumber($event)"
+              formControlName="companyValue" class="custom-text-input text-align-end"
+              (focusout)="mnCurrencyService.patchFormControllerValue(item, 'companyValue')" *ngIf="!isView" mdbInput>
+          </td>
+          <td>
+            {{getGroupPercentage(item, 'companyValue', 'COMPANY')}}
+          </td>
+          <td *ngIf="isGroupSecuritySummary()" style="text-align: end;">
+            <span style="padding-right: 4px !important;" *ngIf="isView">{{item.controls['groupValue'].value}}</span>
+            <input mdbValidate type="text" id="groupValue" (keydown)="validateNumber($event)"
+              formControlName="groupValue" class="custom-text-input text-align-end"
+              [ngClass]="{'group-disabled': !isGroupSecuritySummary()}"
+              (focusout)="mnCurrencyService.patchFormControllerValue(item, 'groupValue')" *ngIf="!isView" mdbInput>
+          </td>
+          <td *ngIf="isGroupSecuritySummary()">
+            {{getGroupPercentage(item, 'groupValue', 'GROUP')}}
+          </td>
+
+        </tr>
+        <tr>
+          <td colspan="2" class="text-align-start font-weight-bold pdf-font-bold" style="padding-left: 6px !important;">
+            Sub Total -
+            First Class
+          </td>
+          <td class="text-align-end font-weight-bold" style="padding-right: 6px !important;">
+            {{getCurrencyFormat(subTotalFirstClassCompany)}}</td>
+          <td class="font-weight-bold">{{subTotalFirstClassCompanyPercentage}}</td>
+          <td class="text-align-end font-weight-bold" style="padding-right: 6px !important;"
+            *ngIf="isGroupSecuritySummary()">{{getCurrencyFormat(subTotalFirstClassGroup)}}</td>
+          <td *ngIf="isGroupSecuritySummary()" class="font-weight-bold">{{subTotalFirstClassGroupPercentage}}</td>
+        </tr>
+      </tbody>
+
+      <thead>
+        <tr>
+          <th class="text-align-start" colspan="2">
+            <div class="d-flex flex-row justify-content-between">
+              <div class="width-20" style="padding-left: 4px !important;">Other Securities</div>
+              <div class="width-80">
+              </div>
+            </div>
+          </th>
+          <th colspan="4"></th>
+        </tr>
+      </thead>
+
+      <tbody formArrayName="otherSecuritySummaryTopicsDTOs">
+        <tr *ngFor="let item of componentForm.get('otherSecuritySummaryTopicsDTOs')['controls'];
+           let i = index;" [formGroupName]="i">
+          <td class="text-align-center width-60 justify-content-between" colspan="2">
+            <div class="d-flex flex-row justify-content-between w-100-p">
+              <p class="security-type">{{item.value.securityType}}</p>
+            </div>
+          </td>
+          <td style="text-align: end;">
+            <span style="padding-right: 4px !important;" *ngIf="isView">{{item.controls['companyValue'].value}}</span>
+            <input mdbValidate type="text" id="otherCompanyValue" (keydown)="validateNumber($event)"
+              formControlName="companyValue"
+              (focusout)="mnCurrencyService.patchFormControllerValue(item, 'companyValue')"
+              class="custom-text-input text-align-end" *ngIf="!isView" mdbInput>
+
+          </td>
+          <td>
+            {{getGroupPercentage(item, 'companyValue', 'COMPANY')}}
+          </td>
+          <td *ngIf="isGroupSecuritySummary()" style="text-align: end;">
+            <span style="padding-right: 4px !important;" *ngIf="isView">{{item.controls['groupValue'].value}}</span>
+            <input mdbValidate type="text" id="otherGroupValue" (keydown)="validateNumber($event)"
+              formControlName="groupValue" (focusout)="mnCurrencyService.patchFormControllerValue(item, 'groupValue')"
+              class="custom-text-input text-align-end" [ngClass]="{'group-disabled': !isGroupSecuritySummary()}"
+              *ngIf="!isView" mdbInput>
+          </td>
+          <td *ngIf="isGroupSecuritySummary()">
+            {{getGroupPercentage(item, 'groupValue', 'GROUP')}}
+          </td>
+        </tr>
+
+        <tr>
+          <td colspan="2" class="text-align-start font-weight-bold custom-td-height pdf-font-bold"
+            style="padding-left: 6px !important;">Sub Total -
+            Other Securities
+          </td>
+          <td class="text-align-end font-weight-bold" style="padding-right: 6px !important;">
+            {{getCurrencyFormat(subTotalOtherCompany)}}</td>
+          <td class="font-weight-bold">{{subTotalOtherCompanyPercentage}}</td>
+          <td class="text-align-end font-weight-bold" style="padding-right: 6px !important;"
+            *ngIf="isGroupSecuritySummary()">{{getCurrencyFormat(subTotalOtherCompanyGroup)}}</td>
+          <td *ngIf="isGroupSecuritySummary()" class="font-weight-bold">{{subTotalOtherCompanyGroupPercentage}}
+          </td>
+        </tr>
+
+        <tr>
+          <td colspan="2" class="text-align-start font-weight-bold pdf-font-bold" style="padding-left: 6px !important;">
+            Sub Total - ( 1st class + Other Securities )
+          </td>
+          <td class="text-align-end font-weight-bold" style="padding-right: 6px !important;">
+            {{getCurrencyFormat(subTotalFirstClassPlusOthersCompany)}}</td>
+          <td class="font-weight-bold">{{subTotalFirstClassPlusOthersCompanyPercentage}}</td>
+          <td class="text-align-end font-weight-bold" style="padding-right: 6px !important;"
+            *ngIf="isGroupSecuritySummary()">{{getCurrencyFormat(subTotalFirstClassPlusOthersGroup)}}</td>
+          <td *ngIf="isGroupSecuritySummary()" class="font-weight-bold">
+            {{subTotalFirstClassPlusOthersGroupPercentage}}
+          </td>
+        </tr>
+      </tbody>
+      <thead>
+        <tr>
+          <th class="text-align-start" colspan="2">
+            <div class="d-flex flex-row justify-content-between">
+              <div class="width-20" style="padding-left: 4px !important;"></div>
+              <div class="width-80">
+              </div>
+            </div>
+          </th>
+          <th colspan="4"></th>
+        </tr>
+      </thead>
+
+      <tbody formArrayName="defaultSecuritySummaryTopicsDTOs">
+        <tr *ngFor="let item of componentForm.get('defaultSecuritySummaryTopicsDTOs')['controls'];
+           let i = index;" [formGroupName]="i">
+          <td class="text-align-center width-60 justify-content-between" colspan="2">
+            <div class="d-flex flex-row justify-content-between w-100-p">
+              <p class="security-type">{{item.value.securityType}}</p>
+            </div>
+          </td>
+          <td style="text-align: end;">
+            <span style="padding-right: 4px !important;" *ngIf="isView">{{item.controls['companyValue'].value}}</span>
+            <input mdbValidate type="text" id="defaultCompanyValue" (keydown)="validateNumber($event)"
+              formControlName="companyValue"
+              (focusout)="mnCurrencyService.patchFormControllerValue(item, 'companyValue')"
+              class="custom-text-input text-align-end" *ngIf="!isView" mdbInput>
+          </td>
+          <td>
+            {{getGroupPercentage(item, 'companyValue', 'COMPANY')}}
+          </td>
+          <td *ngIf="isGroupSecuritySummary()" style="text-align: end;">
+            <span style="padding-right: 4px !important;" *ngIf="isView">{{item.controls['groupValue'].value}}</span>
+            <input mdbValidate type="text" id="defaultGroupValue" (keydown)="validateNumber($event)"
+              formControlName="groupValue" (focusout)="mnCurrencyService.patchFormControllerValue(item, 'groupValue')"
+              class="custom-text-input text-align-end" [ngClass]="{'group-disabled': !isGroupSecuritySummary()}"
+              *ngIf="!isView" mdbInput>
+          </td>
+          <td *ngIf="isGroupSecuritySummary()" class="padding-right-6px">
+            {{getGroupPercentage(item, 'groupValue', 'GROUP')}}
+          </td>
+        </tr>
+
+        <tr>
+          <td colspan="2" class="text-align-start font-weight-bold custom-td-height pdf-font-bold"
+            style="padding-left: 6px !important;">
+            Sub Total - Clean
+          </td>
+          <td class="text-align-end font-weight-bold" style="padding-right: 6px !important;">
+            {{getCurrencyFormat(subTotalClean)}}</td>
+          <td class="font-weight-bold">{{subTotalCleanPercentage}}</td>
+          <td class="text-align-end font-weight-bold" style="padding-right: 6px !important;"
+            *ngIf="isGroupSecuritySummary()">{{getCurrencyFormat(subTotalCleanGroup)}}</td>
+          <td *ngIf="isGroupSecuritySummary()" class="font-weight-bold">{{subTotalCleanGroupPercentage}}</td>
+        </tr>
+
+        <tr>
+          <td colspan="2" class="text-align-start font-weight-bold pdf-font-bold" style="padding-left: 6px !important;">
+            Grand Total
+          </td>
+          <td class="text-align-end font-weight-bold" style="padding-right: 6px !important;">
+            {{getCurrencyFormat(totalCompany)}}</td>
+          <td class="font-weight-bold">{{totalCompanyPercentage}}</td>
+          <td class="text-align-end font-weight-bold" style="padding-right: 6px !important;"
+            *ngIf="isGroupSecuritySummary()">{{getCurrencyFormat(totalGroup)}}</td>
+          <td *ngIf="isGroupSecuritySummary()" class="font-weight-bold">{{totalGroupPercentage}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </form>
+  <div class="security-summary-content">
+    <div class="d-flex justify-content-start security-summary-heading pdf-font-bold">
+      Summary Remark
+    </div>
+    <div
+      [innerHTML]="getDataWithPreTag(fpSecuritySummeryDTO.limitSummery ? fpSecuritySummeryDTO.limitSummery : '') | safeHtml">
+    </div>
+  </div>
+</mdb-card>

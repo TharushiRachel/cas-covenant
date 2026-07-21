@@ -1,0 +1,92 @@
+<button (click)="mdbModalRef.hide()" aria-label="Close" class="close" data-dismiss="modal" type="button">
+  <span aria-hidden="true">&times;</span>
+</button>
+
+<div class="modal-header modal-topic">
+  <h4 class="modal-title w-100 font-weight-bold">Edit Covenant</h4>
+</div>
+
+<div class="modal-body mx-3 modal-detail form-margin">
+  <form [formGroup]="covenantForm" class="d-flex p-2 flex-column justify-content-start align-items-start w-100-p">
+    <div class="d-flex flex-row justify-content-between w-100-p">
+      <div class="md-form w-100-p m-right-left-2px">
+        <input type="hidden" name="custId" [value]="custId" />
+        <input type="hidden" name="casReference" [value]="casReference" />
+        <input type="hidden" name="RequestUUID" [value]="RequestUUID" />
+
+        <div>
+          <mdb-select formControlName="creditFacilityName" id="creditFacilityName" [label]="'Select facility *'"
+            [options]="dropdownOptionsForFacilities" [multiple]="true">
+          </mdb-select>
+        </div>
+
+        <div>
+          <input class="custom-mdb-select form-control" label="Select Covenant Type*" data-size="7"
+            formControlName="covenantType" id="covenantType" readonly="readonly" required />
+        </div>
+
+        <div>
+          <input *ngIf="!isOtherSelected" class="custom-mdb-select form-control" label="Select Covenant *" data-size="7"
+            [value]="getDisplayCovenantDescription()" id="covenantDescriptionDisplay" readonly="readonly" required />
+          <input *ngIf="!isOtherSelected" type="hidden" formControlName="covenantDescription" id="covenantDescription" />
+        </div>
+
+        <div *ngIf="isOtherSelected">
+          <textarea class="form-control text-other" name="otherCovenantDescription"
+            placeholder="Enter other covenant description..." formControlName="covenantDescription" id="covenantDescription"></textarea>
+        </div>
+
+        <p *ngIf="isOtherSelected && (covenantForm.get('covenantDescription').dirty || covenantForm.get('covenantDescription').touched) && covenantForm.get('covenantDescription').hasError('pattern')"
+          class="text-danger">
+          Only letters, numbers, spaces, and . , / ( ) &amp; % \ ' are allowed.
+        </p>
+
+        <div class="d-flex flex-row jc-start ai-center w-100-p">
+          <div class="md-form w-50-p">
+            <mdb-select [allowClear]="true" [options]="covenantFrequencyOptions" label="Frequency *"
+              class="form-control" formControlName="covenantFrequency" id="covenantFrequency"
+              (ngModelChange)="onFrequencyChange($event)" mdbValidate required></mdb-select>
+          </div>
+
+          <div class="date-picker-covenant md-form w-49-p">
+            <mdb-date-picker [label]="dueDateLabel" formControlName="covenantDueDate" class="form-control"
+              id="covenantDueDate" [options]="myDatePickerOptionsForBirthDay"
+              [ngModel]="covenantForm.controls['covenantDueDate'].value" [inline]="true" mdbValidate required>
+            </mdb-date-picker>
+          </div>
+        </div>
+
+        <div class="d-flex flex-row w-100-p mx-0">
+          <div class="d-flex flex-row w-50-p mx-0">
+            <div class="form-check mr-3">
+              <input type="checkbox" formControlName="preDisbursement" id="preDisbursement" class="form-check-input"
+                (change)="onDisbursementTypeChange('preDisbursement')"
+                [disabled]="covenantForm.get('postDisbursement').value" />
+              <label class="form-check-label" for="preDisbursement">Pre Disbursement</label>
+            </div>
+
+            <div class="form-check">
+              <input type="checkbox" formControlName="postDisbursement" id="postDisbursement" class="form-check-input"
+                (change)="onDisbursementTypeChange('postDisbursement')"
+                [disabled]="covenantForm.get('preDisbursement').value" />
+              <label class="form-check-label" for="postDisbursement">Post Disbursement</label>
+            </div>
+          </div>
+
+          <div class="d-flex flex-row w-50-p mx-0">
+            <div class="form-check">
+              <input type="checkbox" formControlName="applicableTypeAC" id="applicableTypeAC" class="form-check-input"
+                mdbValidate />
+              <label class="form-check-label" for="applicableTypeAC">Applicable to Customer</label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <button (click)="onSubmit(); mdbModalRef.hide()" [disabled]="!covenantForm.valid"
+      class="save-btn relative waves-light modal-footer modal-end" color="secondary" mdbBtn mdbWavesEffect
+      type="button">
+      Save
+    </button>
+  </form>
+</div>

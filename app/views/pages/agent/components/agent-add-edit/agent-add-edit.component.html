@@ -1,0 +1,209 @@
+ <div mdbSticky class="d-flex flex-row justify-content-between page-header">
+  <div class="d-flex flex-row align-items-center">
+    <a appGoBack class="d-flex flex-row align-items-center">
+      <i class="fas fa-angle-left header-icon-back"></i>
+    </a>
+    <h5><i class="fas fa-users header-icon"></i>
+      <span *ngIf="pageType=='new'">Add Agent</span>
+      <span *ngIf="pageType=='edit'">Edit Agent</span>
+    </h5>
+  </div>
+
+  <div class="d-flex  justify-content-end">
+    <ng-container *appHasAnyPrivilege="masterDataPrivilege.ICAS_SETTINGS_AGENT_ADD">
+      <button *ngIf="pageType=='new'" (click)="saveUpdate() "
+              mdbBtn
+              type="button"
+              class="medium-button btn btn-info btn-sm"
+              [disabled]="!isValid() || !isDirty()"
+              mdbWavesEffect>
+        <span>SAVE</span>
+      </button>
+    </ng-container>
+
+    <ng-container *appHasAnyPrivilege="masterDataPrivilege.ICAS_SETTINGS_AGENT_EDIT">
+      <button *ngIf="pageType=='edit'" (click)="saveUpdate()"
+              class="medium-button btn btn-info btn-sm"
+              mdbBtn
+              type="button"
+              [disabled]="!isValid() || !isDirty()"
+              mdbWavesEffect>
+        <span>UPDATE</span>
+      </button>
+    </ng-container>
+  </div>
+</div>
+
+<div class="page-search-section section d-flex p-4 flex-column justify-content-start align-items-start">
+
+  <form class="d-flex flex-column justify-content-start align-items-start w-100-p" [formGroup]="componentForm">
+
+    <div class="d-flex justify-content-between w-100-p p-2">
+
+      <div class="md-form w-24-p">
+        <mdb-select
+          [options]="optionsSelectTitle"
+          placeholder="Title"
+          formControlName="title"
+          id="title"></mdb-select>
+        <label for="title">Title</label>
+        <mdb-error *ngIf="formErrors.title.required">Title is required</mdb-error>
+      </div>
+
+      <div class="md-form w-70-p">
+        <input mdbValidate
+               type="text"
+               id="userName"
+               maxlength="100"
+               formControlName="userName"
+               class="form-control"
+               autocomplete="off"
+               mdbInput>
+        <label for="userName">User Name *</label>
+        <mdb-error *ngIf="formErrors.userName.required">User Name is required</mdb-error>
+      </div>
+
+
+      <!--      <div class="md-form w-24-p">-->
+      <!--        <mdb-select-->
+      <!--          [options]="optionsSelectGender"-->
+      <!--          placeholder="Gender"-->
+      <!--          formControlName="gender"-->
+      <!--          id="gender"></mdb-select>-->
+      <!--        <label for="gender">Gender</label>-->
+      <!--        <mdb-error *ngIf="formErrors.gender.required">Required</mdb-error>-->
+      <!--      </div>-->
+
+    </div>
+
+    <div class="d-flex justify-content-between w-100-p p-2">
+
+      <div class="md-form w-49-p">
+        <input mdbValidate
+               type="text"
+               id="firstName"
+               maxlength="100"
+               formControlName="firstName"
+               class="form-control"
+               mdbInput>
+        <label for="firstName">First Name *</label>
+        <mdb-error *ngIf="formErrors.firstName.required">First Name is required</mdb-error>
+      </div>
+
+      <div class="md-form w-49-p">
+        <input mdbValidate
+               type="text"
+               id="lastName"
+               maxlength="100"
+               formControlName="lastName"
+               class="form-control"
+               mdbInput>
+        <label for="lastName">Last Name *</label>
+        <mdb-error *ngIf="formErrors.lastName.required">Last Name is required</mdb-error>
+      </div>
+
+    </div>
+
+    <div class="d-flex justify-content-between w-100-p p-2">
+
+      <div class="md-form w-49-p">
+        <input mdbValidate type="text"
+               id="emailAddress"
+               maxlength="200"
+               formControlName="email"
+               class="form-control"
+               mdbInput>
+        <label for="emailAddress">Email Address</label>
+        <mdb-error *ngIf="formErrors.email.maxlength"> Maximum length for Email
+          is {{formErrors.email.maxlength.requiredLength}}</mdb-error>
+      </div>
+
+      <div class="md-form w-49-p">
+        <input mdbValidate
+               type="text"
+               id="nic"
+               maxlength="50"
+               formControlName="nic"
+               class="form-control"
+               mdbInput>
+        <label for="nic">NIC</label>
+      </div>
+
+    </div>
+
+    <div class="d-flex justify-content-between w-100-p p-2">
+
+      <div class="md-form w-49-p">
+        <input mdbValidate
+               type="text" id="mobileNumber" maxlength="200"
+               formControlName="mobileNumber" class="form-control"
+               placeholder="Mobile Number *"
+               mdbInput>
+        <!--        <label for="mobileNumber">Mobile Number *</label>-->
+        <mdb-error *ngIf="formErrors.mobileNumber.required">Mobile Number required</mdb-error>
+        <mdb-error *ngIf="formErrors.mobileNumber.pattern">Please, Enter 10 digit Mobile Number.</mdb-error>
+      </div>
+
+      <div class="md-form w-49-p">
+        <input mdbValidate type="text" id="supervisorADUserID" maxlength="200" formControlName="supervisorADUserID"
+               class="form-control"
+               mdbInput>
+        <label for="supervisorADUserID">Relationship Manager AD User ID</label>
+      </div>
+
+    </div>
+
+    <div
+      *ngIf="isNew"
+      class="d-flex justify-content-between w-100-p p-2">
+      <div class="md-form w-49-p">
+        <input mdbValidate type="password"
+               id="password"
+               formControlName="password"
+               class="form-control"
+               mdbInput>
+        <label for="password">Password * </label>
+        <mdb-error *ngIf="formErrors.password.required">Password required</mdb-error>
+        <mdb-error *ngIf="formErrors.password.passwordMistMatch">Password and Confirm Password must be same</mdb-error>
+        <mdb-error *ngIf="formErrors.password.needNumber">At least one Number</mdb-error>
+        <mdb-error *ngIf="formErrors.password.needUpperCase">At least one Upper Case Character</mdb-error>
+        <mdb-error *ngIf="formErrors.password.needLowerCase">At least one Lower Case Character</mdb-error>
+        <mdb-error *ngIf="formErrors.password.needMoreLength">At least {{formErrors.password.passwordMinLength}}
+          Characters needed
+        </mdb-error>
+        <mdb-error *ngIf="formErrors.password.needSpecialCharacter">At least one Special Character</mdb-error>
+        <mdb-error *ngIf="formErrors.password.needLessThan"> Maximum length for Password
+          is {{formErrors.password.passwordMaxLength}}</mdb-error>
+      </div>
+
+      <div class="md-form w-49-p">
+        <input mdbValidate type="password"
+               id="passwordConfirm"
+               maxlength="50"
+               formControlName="passwordConfirm"
+               class="form-control"
+               mdbInput>
+        <label for="passwordConfirm">Password Confirm *</label>
+        <mdb-error *ngIf="formErrors.passwordConfirm.required">Password Confirm required</mdb-error>
+        <mdb-error *ngIf="formErrors.passwordConfirm.passwordMistMatch">Password and Confirm Password must be same
+        </mdb-error>
+      </div>
+
+    </div>
+
+    <div class="d-flex justify-content-between w-100-p p-2">
+      <div class="md-form w-100-p">
+        <input mdbValidate
+               type="text"
+               id="remark"
+               maxlength="4000"
+               formControlName="remark"
+               class="form-control"
+               mdbInput>
+        <label for="remark">Remark</label>
+      </div>
+    </div>
+  </form>
+</div>
+
+<a class="download-link" #downloadLink></a>

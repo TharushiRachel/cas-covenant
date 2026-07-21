@@ -1,0 +1,33 @@
+.form-control-covenant{
+    height: 24px;
+    box-sizing: content-box;
+    width: 100%;
+}
+
+
+.custom-mdb-select  {
+    max-height:800px !important; /* Adjust the height to your desired value */
+}
+
+
+.date-picker-covenant{
+    margin-top: 2px;
+}
+
+.text-other{
+    border: solid 1px gray;
+    padding: 10px;
+}
+
+.save-btn{
+    //margin: 230px 100px 0px 1147px;
+    //width: 5.5%;
+    height: 7%;
+    overflow: auto;
+    margin: auto;
+    position: absolute;    
+    bottom: 5%;
+    right: 3%;
+    justify-content: center;
+    align-items: center;
+}

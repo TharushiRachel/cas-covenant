@@ -1,0 +1,84 @@
+@import "../../../../../../scss/mixins";
+
+.box-item-wrapper {
+  max-width: 100%;
+  padding: 15px 0;
+  @include border-radius(5px);
+  @include box-shadow(0, 1px, 2px, #e6e6e6);
+
+  color: #ffffff;
+
+  .word {
+    font-size: 1.2rem;
+    font-weight: 500;
+    @include text-shadow(1px, 1px, 1px, rgba(0, 0, 0, .25));
+  }
+
+  .count {
+    margin-top: 0;
+    font-size: 3rem;
+    font-weight: 300;
+  }
+
+  &:hover {
+    cursor: pointer;
+  }
+}
+
+.status {
+  &-INBOX {
+    background-color: #ffbb33a6;
+  }
+
+  &-DRAFT {
+    background-color: #ffbb33a6;
+  }
+
+  &-RECEIVED_TO_ME {
+    background-color: #ffbb33a6;
+  }
+
+  &-RETURNED_TO_ME {
+    background-color: #ffbb33a6;
+  }
+
+  &-IN_PROGRESS {
+    background-color: #0099cc94;
+  }
+
+  &-ACCEPTED {
+    background-color: #007e338a;
+  }
+
+  &-APPROVED {
+    background-color: #007e338a;
+  }
+
+  &-RETURN {
+    background-color: #cc000073;
+  }
+
+  &-CANCEL {
+    background-color: #cc000073;
+  }
+
+  &-DECLINED {
+    background-color: #cc0000a6;
+  }
+
+  &-REJECTED {
+    background-color: #cc0000a6;
+  }
+
+  &-PAPER_APPROVED {
+    background-color: #585555;
+  }
+
+}
+
+.selected-indicator {
+  position: relative;
+  top: 10px;
+  width: 100%;
+  height: 2px;
+}

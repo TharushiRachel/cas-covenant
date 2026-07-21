@@ -1,0 +1,36 @@
+<div>
+    <div class="modal-header modal-topic flex-center">
+        <button type="button" class="close pull-right" aria-label="Close" (click)="onNoClick()">
+            <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-title w-100 heading-align" id="myModalLabel">Update Document Covenants</h4>
+    </div>
+    <div class="modal-body mx-3 modal-detail form-margin">
+
+        <ng-container *ngIf="covenantsList.length > 0">
+            <ngx-sortable class="sortable-wrapper" [items]="covenantsList" [showHeader]="false"
+                (listSorted)="listOrderChanged($event)" [listStyle]="'{ widith: 100%; height: fit-content;}'">
+                <ng-template let-item>
+                    <div class="sortable-list-item my-2">
+                        <mdb-checkbox [value]="item.id" [checked]="item.isSelected"
+                            (change)="handleCovenantSelect($event,item.id)">
+                            {{item.name}}
+                            <b *ngIf="item.applicableType">({{item.applicableType}})</b>
+                        </mdb-checkbox>
+                    </div>
+                </ng-template>
+            </ngx-sortable>
+        </ng-container>
+        <ng-container *ngIf="covenantsList.length == 0">
+            <div style="text-align: center; width: 100%;">
+                <strong>There are no data found.</strong>
+            </div>
+        </ng-container>
+    </div>
+    <div class="modal-footer modal-end">
+        <button type="button" mdbBtn color="secondary" class="relative waves-light" mdbWavesEffect
+            (click)="handleSave()" [disabled]="covenantsList.length == 0">
+            Save
+        </button>
+    </div>
+</div>

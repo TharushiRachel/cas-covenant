@@ -1,0 +1,79 @@
+ul.stepper.horizontal .step .step-title::before {
+  font-weight: 900;
+  font-family: "Font Awesome 5 Free";
+}
+
+ul.stepper.horizontal .step:nth-of-type(1) .step-title {
+  &:before {
+    content: "\f007";
+  }
+}
+
+ul.stepper.horizontal .step:nth-of-type(2) .step-title {
+  &:before {
+    content: "\f004";
+  }
+}
+
+ul.stepper.horizontal .step:nth-of-type(3) .step-title {
+  &:before {
+    content: "\f005";
+  }
+}
+
+.mainChip {
+  height: 70px;
+  width: 45%;
+  margin-right: 40px;
+  margin-left: 20px;
+  font-size: 18px;
+}
+
+.subChip {
+  background-color: white;
+  margin-top: 3%;
+  font-size: 18px;
+  margin-left: 30%;
+}
+
+.flex-container {
+  //display: flex;
+  border-radius: 25px;
+  display: inline-flex;
+  width: 49%;
+  margin-left: 1%;
+}
+
+.flex-container > div {
+  width: 50%;
+  margin: 10px;
+  padding: 20px;
+  font-size: .9rem;
+  border-radius: 25px;
+}
+
+.font-deco {
+  font-weight: 500;
+}
+
+.btn-float-right {
+  float: right;
+}
+
+.text-align-right {
+  text-align: right !important;
+}
+
+.div-margin {
+  margin-left: 5%;
+}
+
+.text-align-right-margin-right {
+  text-align: right;
+  margin-right: 30%;
+}
+
+.yellow-background {
+  background-color: yellow;
+  color: red;
+}

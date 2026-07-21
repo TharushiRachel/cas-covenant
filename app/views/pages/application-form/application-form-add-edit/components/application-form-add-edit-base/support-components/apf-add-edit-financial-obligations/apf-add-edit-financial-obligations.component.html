@@ -1,0 +1,140 @@
+<div class="modal-header modal-topic">
+  <h4 class="modal-title w-100 font-weight-bold">
+    EXISTING FINANCIAL OBLIGATIONS
+  </h4>
+  <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="mdbModalRef.hide()">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
+<div class="modal-body mx-3 modal-detail form-margin">
+  <mdb-card>
+    <mdb-card-body class="custom-card-body">
+      <ng-container>
+        <form [formGroup]="financialObligationForm">
+          <div class="d-flex flex-row justify-content-between w-100-p">
+            <div class="md-form m-top-12px width-50">
+              <input mdbValidate
+                     type="text"
+                     id="identificationType"
+                     maxlength="200"
+                     formControlName="identificationType"
+                     class="form-control"
+                     mdbInput
+              >
+              <label for="identificationType">Identification Type</label>
+            </div>
+            <div class="md-form m-top-12px width-50">
+              <input mdbValidate
+                     type="text"
+                     id="identificationNumber"
+                     maxlength="200"
+                     formControlName="identificationNumber"
+                     class="form-control"
+                     mdbInput
+              >
+              <label for="identificationNumber">Identification Number</label>
+            </div>
+          </div>
+
+          <div class="d-flex flex-row justify-content-between w-100-p">
+            <div class="md-form m-top-12px width-50">
+              <input mdbValidate
+                     type="text"
+                     id="financialInstitution"
+                     maxlength="200"
+                     formControlName="financialInstitution"
+                     class="form-control"
+                     mdbInput
+              >
+              <label for="financialInstitution">Name Of Financial Institution</label>
+            </div>
+            <div class="md-form m-top-12px width-50">
+              <input mdbValidate
+                     type="text"
+                     id="signedAs"
+                     maxlength="200"
+                     formControlName="signedAs"
+                     class="form-control"
+                     mdbInput
+              >
+              <label for="signedAs">Signed As *</label>
+            </div>
+          </div>
+
+          <div class="d-flex flex-row justify-content-between w-100-p">
+            <div class="md-form m-top-12px width-50">
+              <input mdbValidate
+                     type="text"
+                     id="securities"
+                     maxlength="200"
+                     formControlName="securities"
+                     class="form-control"
+                     mdbInput
+              >
+              <label for="securities">Securities</label>
+            </div>
+            <div class="md-form m-top-12px width-50">
+              <input mdbValidate
+                     type="text"
+                     id="originalAmount"
+                     maxlength="200"
+                     formControlName="originalAmount"
+                     (focusout)="setCurrencyFormatValue('originalAmount')"
+                     (keydown)="validateNumber($event)"
+                     class="form-control"
+                     mdbInput
+              >
+              <label for="originalAmount">Original Amount (Rs)</label>
+            </div>
+          </div>
+
+          <div class="d-flex flex-row justify-content-between w-100-p">
+            <div class="md-form m-top-12px width-50">
+              <input mdbValidate
+                     type="text"
+                     id="presentOutstanding"
+                     maxlength="200"
+                     formControlName="presentOutstanding"
+                     (focusout)="setCurrencyFormatValue('presentOutstanding')"
+                     (keydown)="validateNumber($event)"
+                     class="form-control"
+                     mdbInput
+              >
+              <label for="presentOutstanding">Present Outstanding (Rs)</label>
+            </div>
+
+            <div class="md-form m-top-12px width-50">
+              <input mdbValidate
+                     type="text"
+                     id="arrears"
+                     maxlength="200"
+                     formControlName="arrears"
+                     class="form-control"
+                     (focusout)="setCurrencyFormatValue('arrears')"
+                     (keydown)="validateNumber($event)"
+                     mdbInput
+              >
+              <label for="arrears">Arrears if any</label>
+            </div>
+          </div>
+        </form>
+      </ng-container>
+    </mdb-card-body>
+  </mdb-card>
+</div>
+
+<div class="modal-footer modal-end">
+  <button
+    type="button" mdbBtn color="secondary" size="sm" class="relative waves-light" mdbWavesEffect
+    [hidden]="financialObligation.financialObligationID"
+    (click)="save()"
+  >ADD
+  </button>
+  <button
+    type="button" mdbBtn color="secondary" size="sm" class="relative waves-light" mdbWavesEffect
+    [hidden]="!financialObligation.financialObligationID"
+    (click)="save()"
+  >Update
+  </button>
+</div>

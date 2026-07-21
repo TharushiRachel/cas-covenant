@@ -1,0 +1,31 @@
+<div>
+  <div class="modal-header modal-topic flex-center">
+    <button type="button" class="close pull-right" aria-label="Close" (click)="onNoClick()">
+      <span aria-hidden="true">×</span>
+    </button>
+    <h4 class="modal-title w-100 heading-align" id="myModalLabel">{{heading}}</h4>
+  </div>
+  <div class="modal-body mx-3 modal-detail form-margin">
+    <h5>{{message}}</h5>
+  </div>
+  <div class="modal-footer modal-end">
+
+    <ng-container *ngIf="applicationService.isAgent() ; else admin">
+      <button type="button" mdbBtn color="light" size="sm" class="relative waves-light mr-10p" (click)="onNoClick()"
+              mdbWavesEffect>Ok
+      </button>
+    </ng-container>
+
+    <ng-template #admin>
+      <button type="button" mdbBtn color="light" size="sm" class="relative waves-light mr-10p" (click)="onNoClick()"
+              mdbWavesEffect>Cancel
+      </button>
+      <ng-container *ngIf="showConfirm">
+        <button type="button" mdbBtn color="success" size="sm" class="relative waves-light" (click)="onYesClick()"
+            mdbWavesEffect>Confirm
+        </button>
+      </ng-container>
+
+    </ng-template>
+  </div>
+</div>

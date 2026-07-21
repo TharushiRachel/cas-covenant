@@ -1,0 +1,18 @@
+<button
+  mdbBtn
+  ngxPrint
+  type="button"
+  color="success"
+  class="btn-width"
+  size="sm"
+  mdbWavesEffect
+  data-toggle="tooltip"
+  data-placement="bottom"
+  [title]="toolTipMessage"
+  [printTitle]="PDFPaperTitle"
+  [styleSheetFile]="styleSheetFileUrl"
+  [useExistingCss]="useExistingCss"
+  [printSectionId]="printSectionId"
+>
+  {{actionMessage}}
+</button>

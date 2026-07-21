@@ -1,0 +1,94 @@
+<div class="modal-header modal-topic">
+  <!--  <div class="modal-header text-center">-->
+  <h6 class="modal-title w-100 font-weight-bold">Customer Search</h6>
+  <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="mdbModalRef.hide()">
+    <span aria-hidden="true">&times;</span>
+  </button>
+  <!--  </div>-->
+</div>
+
+<div class="modal-body modal-detail form-margin mx-3">
+  <form class="d-flex p-2 flex-column justify-content-start align-items-start w-100-p" [formGroup]="searchForm">
+
+    <div class="d-flex w-100-p p-2">
+      <div class="md-form w-15-p mr-3 min-width-120">
+        <input type="text" id="customerName" formControlName="customerName" class="form-control" mdbInput>
+        <label for="customerName">Customer Name</label>
+      </div>
+
+      <div class="md-form w-15-p mr-3 min-width-120">
+        <input type="text" id="contactNumber" formControlName="contactNumber" class="form-control" mdbInput>
+        <label for="contactNumber">Contact Number</label>
+      </div>
+      <div class="md-form w-15-p min-width-120 mr-3">
+        <mdb-select
+          [options]="optionsSelect"
+          formControlName="identificationType"
+          id="identificationType"
+          placeholder="Type"></mdb-select>
+        <label for="identificationType">Identification Type</label>
+      </div>
+
+      <div class="md-form w-15-p mr-3 min-width-120">
+        <input type="text" id="identificationNumber" formControlName="identificationNumber" class="form-control"
+               mdbInput>
+        <label for="identificationNumber">Identification No</label>
+      </div>
+
+      <div class="md-form w-15-p mr-3 min-width-120">
+        <input type="text" id="customerFinancialID"
+               formControlName="customerFinancialID" class="form-control"
+               mdbInput>
+        <label for="customerFinancialID">CIF ID</label>
+      </div>
+
+      <div class="mr-3 d-flex p-2 flex-row">
+        <button (click)="doSearch()" class="medium-button" type="button" mdbBtn color="light" mdbWavesEffect>Search
+        </button>
+        <button (click)="clearSearch()" class="medium-button" type="button" mdbBtn color="light" mdbWavesEffect>Clear
+        </button>
+      </div>
+    </div>
+    <div class="w-100-p">
+      <ng-container *ngIf="customers.length > 0">
+        <div class="table-responsive">
+          <table class="table">
+            <thead>
+            <tr>
+              <ng-container *ngFor="let col of tableColumns">
+                <th scope="col">{{col}}</th>
+              </ng-container>
+            </tr>
+            </thead>
+            <tbody>
+            <ng-container *ngFor="let item of customers">
+              <tr (click)="getSelectedCustomerDetails(item)" class="table-clickable-row">
+                <td>{{item.customerName}}</td>
+                <td>{{item.customerFinancialID}}</td>
+                <td>{{civilStatus[item.civilStatus]}}</td>
+<!--                <td>{{item.telephoneNumber}}</td>-->
+<!--                <td>{{item.bankAccNumber}}</td>-->
+                <td>
+                  <i mdbTooltip="Add customer" placement="top"
+                     class="fas fa-plus color-primary icon-button ml-2" aria-hidden="true"></i>
+                </td>
+              </tr>
+            </ng-container>
+            </tbody>
+          </table>
+        </div>
+        <app-paginator
+          [pageIndex]="pageSize.pageIndex"
+          [length]="pageSize.length"
+          [pageSize]="pageSize.pageSize"
+          [pageSizeOptions]="pageSize.pageSizeOptions"
+          (page)="onPageEvent($event)"
+        ></app-paginator>
+      </ng-container>
+      <ng-container *ngIf="customers.length == 0">
+        No Result found
+      </ng-container>
+
+    </div>
+  </form>
+</div>

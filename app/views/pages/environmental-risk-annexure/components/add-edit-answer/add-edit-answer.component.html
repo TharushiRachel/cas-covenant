@@ -1,0 +1,31 @@
+<div class="modal-header modal-topic flex-center">
+    <button type="button" class="close pull-right" aria-label="Close" (click)="onClose()">
+        <span aria-hidden="true">×</span>
+    </button>
+    <h4 class="modal-title w-100 heading-align" id="myModalLabel" style="font-size: 1rem ; font-weight: bold">
+        Add / Edit {{isSubQuestion ? "Sub Question" : "Answer"}}
+    </h4>
+</div>
+<div class="modal-body modal-detail form-margin mt-0 px-3"
+    style="min-height: 20vh; max-height: 80vh; overflow-y: auto;">
+    <div class="row d-flex mx-0">
+        <div class="col-md-12 mb-3" *ngIf="selectedQuestion">
+            <span style="font-size: 15px;"><strong>Question</strong> :- {{selectedQuestion}}</span>
+        </div>
+        <div class="col-md-12 mt-2">
+            <label for="answer">{{isSubQuestion ? "Sub Question" : "Answer"}} *</label>
+            <div class="md-form">
+                <textarea class="form-control comment-area" id="answer" type="text" mdbInput style="margin-top: 2px;"
+                    [(ngModel)]="newAnswer.answer"></textarea>
+                <mdb-error *ngIf="errors.answer">{{errors.answer}}</mdb-error>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal-footer modal-end pt-0 border border-top-1">
+    <button type="button" mdbBtn color="info" size="sm" class="waves-light" aria-label="Close" mdbWavesEffect
+        [disabled]="!isSaveEnabled()" (click)="addAnswer()">
+        Save
+    </button>
+</div>

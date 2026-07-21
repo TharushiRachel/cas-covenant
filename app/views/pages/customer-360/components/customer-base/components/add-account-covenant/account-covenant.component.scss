@@ -1,0 +1,52 @@
+.save-btn{
+    height: 5%;
+    overflow: auto;
+    margin: 3% 4% 5% 91.5%;
+    bottom: 5%;
+    right: 3%;
+    justify-content: center;
+    align-items: center;
+    position: static;
+}
+.text-other{
+    border: solid 1px gray;
+    padding: 10px;
+}
+
+.add-btn{
+    height: 5%;
+    overflow: auto;
+    margin: 3% 4% 5% 93.5%;
+    bottom: 5%;
+    right: 3%;
+    justify-content: center;
+    align-items: center;
+    position: static;
+}
+
+.description-width{
+    width: 1000px;
+}
+
+::ng-deep mdb-select#covenantDescription mdb-select-dropdown .options {
+    max-height: 690px !important;
+}
+
+::ng-deep mdb-select#covenantDescription mdb-select-dropdown .options ul.select-dropdown li {
+    height: auto !important;
+    min-height: 42px !important;
+    line-height: normal !important;
+    padding-top: 4px;
+    padding-bottom: 4px;
+}
+
+::ng-deep mdb-select#covenantDescription mdb-select-dropdown .deselect-option {
+    display: block;
+    height: auto !important;
+    line-height: 1.35 !important;
+    white-space: normal !important;
+    word-break: break-word;
+    font-size: 13px;
+    color: #243447;
+    padding: 2px 10px;
+}

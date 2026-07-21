@@ -1,0 +1,126 @@
+<form [formGroup]="costOfFunds">
+
+  <table>
+    <thead>
+    <tr>
+      <th style="width: 51%">
+        Financial Cost of Funds
+      </th>
+      <th class="text-align-end">
+        <div class="md-form w-30-p min-width-120 ">
+          <select id="costOfFundMonth" formControlName="costOfFundMonth" class="custom-select-input">
+            <option *ngFor="let item of monthsOptions" [value]="item.value">{{item.label}}</option>
+          </select>
+        </div>
+      </th>
+      <th>
+        <div class="md-form w-24-p min-width-120 ">
+          <select id="costOfFundYear" formControlName="costOfFundYear" class="custom-select-input">
+            <option *ngFor="let item of yearOptions" [value]="item.value">{{item.label}}</option>
+          </select>
+        </div>
+      </th>
+    </tr>
+    </thead>
+  </table>
+
+
+  <table class="table custom-bordered-table">
+    <thead>
+    <tr>
+      <th style="width: 50%"></th>
+      <th class="text-align-end">LKR (%)</th>
+      <th class="text-align-end">FCY (%)</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+      <td class="text-align-start">Monthly Cost of Funds</td>
+      <td>
+        <input mdbValidate
+               type="text"
+               id="monthlyCostOfFundsLkr"
+               maxlength="6"
+               formControlName="monthlyCostOfFundsLkr"
+               class="custom-text-input text-align-end"
+               placeholder="0.0%"
+               (keydown)="validateNumber($event)"
+               [class.custom-text-input-error]="costOfFunds.get('monthlyCostOfFundsLkr') && costOfFunds.get('monthlyCostOfFundsLkr').dirty && !costOfFunds.get('monthlyCostOfFundsLkr').valid ? costOfFunds.get('monthlyCostOfFundsLkr').errors.percentageValueError: false"
+               (focusout)="currencyService.patchFormControllerValue(costOfFunds, 'monthlyCostOfFundsLkr')"
+               mdbInput>
+      </td>
+      <td>
+        <input mdbValidate
+               type="text"
+               id="monthlyCostOfFundsFcy"
+               maxlength="6"
+               formControlName="monthlyCostOfFundsFcy"
+               class="custom-text-input text-align-end"
+               placeholder="0.0%"
+               (keydown)="validateNumber($event)"
+               [class.custom-text-input-error]="costOfFunds.get('monthlyCostOfFundsFcy') && costOfFunds.get('monthlyCostOfFundsFcy').dirty && !costOfFunds.get('monthlyCostOfFundsFcy').valid ? costOfFunds.get('monthlyCostOfFundsFcy').errors.percentageValueError: false"
+               (focusout)="currencyService.patchFormControllerValue(costOfFunds, 'monthlyCostOfFundsFcy')"
+               mdbInput>
+      </td>
+    </tr>
+    <tr>
+      <td class="text-align-start">Cumulative Cost of Funds</td>
+      <td>
+        <input mdbValidate
+               type="text"
+               id="cumulativeCostOfFundsLkr"
+               maxlength="6"
+               formControlName="cumulativeCostOfFundsLkr"
+               class="custom-text-input text-align-end"
+               placeholder="0.0%"
+               (keydown)="validateNumber($event)"
+               [class.custom-text-input-error]="costOfFunds.get('cumulativeCostOfFundsLkr') && costOfFunds.get('cumulativeCostOfFundsLkr').dirty && !costOfFunds.get('cumulativeCostOfFundsLkr').valid ? costOfFunds.get('cumulativeCostOfFundsLkr').errors.percentageValueError: false"
+               (focusout)="currencyService.patchFormControllerValue(costOfFunds, 'cumulativeCostOfFundsLkr')"
+               mdbInput>
+      </td>
+      <td>
+        <input mdbValidate
+               type="text"
+               id="cumulativeCostOfFundsFcy"
+               maxlength="6"
+               formControlName="cumulativeCostOfFundsFcy"
+               class="custom-text-input text-align-end"
+               placeholder="0.0%"
+               (keydown)="validateNumber($event)"
+               [class.custom-text-input-error]="costOfFunds.get('cumulativeCostOfFundsFcy') && costOfFunds.get('cumulativeCostOfFundsFcy').dirty && !costOfFunds.get('cumulativeCostOfFundsFcy').valid ? costOfFunds.get('cumulativeCostOfFundsFcy').errors.percentageValueError: false"
+               (focusout)="currencyService.patchFormControllerValue(costOfFunds, 'cumulativeCostOfFundsFcy')"
+               mdbInput>
+      </td>
+    </tr>
+    <tr>
+      <td class="text-align-start">Incremental Cost of Funds</td>
+      <td>
+        <input mdbValidate
+               type="text"
+               id="incrementalCostOfFundsLkr"
+               maxlength="6"
+               formControlName="incrementalCostOfFundsLkr"
+               class="custom-text-input text-align-end"
+               placeholder="0.0%"
+               (keydown)="validateNumber($event)"
+               [class.custom-text-input-error]="costOfFunds.get('incrementalCostOfFundsLkr') && costOfFunds.get('incrementalCostOfFundsLkr').dirty && !costOfFunds.get('incrementalCostOfFundsLkr').valid ? costOfFunds.get('incrementalCostOfFundsLkr').errors.percentageValueError: false"
+               (focusout)="currencyService.patchFormControllerValue(costOfFunds, 'incrementalCostOfFundsLkr')"
+               mdbInput>
+      </td>
+      <td>
+        <input mdbValidate
+               type="text"
+               id="incrementalCostOfFundsFcy"
+               maxlength="6"
+               formControlName="incrementalCostOfFundsFcy"
+               class="custom-text-input text-align-end"
+               placeholder="0.0%"
+               (keydown)="validateNumber($event)"
+               [class.custom-text-input-error]="costOfFunds.get('incrementalCostOfFundsFcy') && costOfFunds.get('incrementalCostOfFundsFcy').dirty && !costOfFunds.get('incrementalCostOfFundsFcy').valid ? costOfFunds.get('incrementalCostOfFundsFcy').errors.percentageValueError: false"
+               (focusout)="currencyService.patchFormControllerValue(costOfFunds, 'incrementalCostOfFundsFcy')"
+               mdbInput>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</form>

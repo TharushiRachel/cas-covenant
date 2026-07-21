@@ -1,0 +1,53 @@
+<div mdbSticky class="d-flex flex-row justify-content-between page-header">
+    <div class="d-flex flex-row align-items-center">
+        <h5><i class="fas fa-dice-d20 header-icon"></i> Deviation Type(s)</h5>
+    </div>
+
+    <div class="d-flex flex-row align-items-center">
+        <ng-container>
+            <button (click)="openAddEditModal()" class="custom-button" mdbBtn type="button" color="default"
+                outline="true" mdbWavesEffect>
+                Add New Type
+            </button>
+        </ng-container>
+    </div>
+</div>
+
+<ng-container *ngIf="types.length > 0;else emptyView">
+    <div class="section table-responsive mb-15p pool-table">
+        <table class="table">
+            <thead>
+                <tr>
+                    <ng-container *ngFor="let col of tableColumns">
+                        <th scope="col">{{col}}</th>
+                    </ng-container>
+                </tr>
+            </thead>
+            <tbody>
+                <ng-container *ngFor="let type of types">
+                    <tr class="table-clickable-row deviation-type-item">
+                        <td>{{type.deviationType}}</td>
+                        <td>
+                            <span [class.color-green]="type.status === statusConst.ACT"
+                                [class.color-red]="type.status === statusConst.INA">
+                                {{status[type.status]}}
+                            </span>
+                        </td>
+                        <td>
+                            <div class="row d-flex mx-0">
+                                <button class="btn" mdbTooltip="Edit" (click)="openAddEditModal(type)">
+                                    <mdb-icon fas icon="pencil-alt"></mdb-icon>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                </ng-container>
+            </tbody>
+        </table>
+    </div>
+</ng-container>
+<ng-template #emptyView>
+    <div class="row d-flex mx-0 justify-content-center">
+        There are no data found.
+    </div>
+</ng-template>

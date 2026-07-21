@@ -1,0 +1,128 @@
+<div mdbSticky class="d-flex flex-row justify-content-between page-header">
+  <div class="d-flex flex-row align-items-center">
+    <h5><i class="fab fa-autoprefixer header-icon"></i> Application Form Topic(s)</h5>
+  </div>
+
+  <div class="d-flex flex-row align-items-center">
+    <ng-container *appHasAnyPrivilege="masterDataPrivilege.ICAS_SETTINGS_APPLICATION_TOPIC_ADD">
+      <button (click)="loadSelectedItem(null)"
+              class="custom-button"
+              mdbBtn
+              type="button"
+              color="default"
+              outline="true"
+              mdbWavesEffect>New Application Form Topic
+      </button>
+    </ng-container>
+  </div>
+</div>
+
+<div class="page-search-section section display-flex flex-column jc-start p-2 pt-3 pb-3 default-box-styles">
+  <form class="display-flex w-100-p flex-row jc-space-around ai-center flex-1-gap" [formGroup]="searchForm">
+
+    <div class="md-form w-24-p min-width-120">
+      <mdb-select
+        [options]="pageOptionSelect"
+        formControlName="applicationFormPage"
+        id="page"
+        label="Page"></mdb-select>
+    </div>
+
+    <div class="md-form w-24-p min-width-120">
+      <input type="text" id="topic" formControlName="topic" class="form-control" mdbInput>
+      <label for="topic">Topic</label>
+    </div>
+
+    <div class="md-form w-24-p min-width-120">
+      <input type="text" id="topicCode" formControlName="topicCode" class="form-control" mdbInput>
+      <label for="topicCode">Code</label>
+    </div>
+
+    <div class="md-form w-24-p min-width-120">
+      <mdb-select
+        [options]="optionsSelect"
+        formControlName="status"
+        id="status"
+        placeholder="All"></mdb-select>
+      <label for="status">Status</label>
+    </div>
+
+    <div class="md-form w-24-p min-width-120">
+      <mdb-select
+        [multiple]="true"
+        [options]="approveStatusOptionsSelect"
+        formControlName="approveStatusList"
+        id="approveStatusList"
+        placeholder="All"></mdb-select>
+      <label for="approveStatusList">Approval Status</label>
+    </div>
+
+    <div class="display-flex flex-1 flex-row jc-end ai-center">
+      <button (click)="doSearch()" type="button" class=" medium-button btn btn-info" mdbBtn>Search</button>
+      <button (click)="clearSearch()" class=" medium-button btn btn-outline-info clear-btn" mdbBtn type="button">
+        Clear
+      </button>
+    </div>
+  </form>
+</div>
+
+<div *ngIf="applicationSubTopicsPagedData.length == 0" class="alert alert-warning section" role="alert">
+  No Topic(s) Found !
+</div>
+
+<ng-container *ngIf="applicationSubTopicsPagedData.length > 0">
+  <div class="section table-responsive">
+    <table class="table">
+      <thead>
+      <tr>
+        <th>Page</th>
+        <th>Topic</th>
+        <th>Topic Code</th>
+        <th>Description</th>
+        <th>Status</th>
+        <th>Approval Status</th>
+        <th>Approval Date</th>
+        <th>Approved By</th>
+      </tr>
+      </thead>
+      <tbody>
+      <ng-container *ngFor="let data of applicationSubTopicsPagedData">
+        <tr (click)="loadSelectedItem(data.topicID)" class="table-clickable-row">
+          <td>{{applicationFormTopicPage[data.page]}}</td>
+          <td>{{data.topic}}</td>
+          <td>{{data.topicCode}}</td>
+          <td>{{data.description ? data.description : '-'}}</td>
+          <td>
+            <span
+              [class.color-green]="data.status === statusConst.ACT"
+              [class.color-red]="data.status === statusConst.INA"
+            >
+                  {{status[data.status]}}
+                </span>
+          </td>
+          <td>
+            <span
+              [class.color-green]="data.approveStatus === approvedStatusConst.APPROVED"
+              [class.color-red]="data.approveStatus === approvedStatusConst.REJECTED"
+              [class.color-blue]="data.approveStatus == approvedStatusConst.PENDING"
+            >
+                  {{approvedStatus[data.approveStatus]}}
+                </span>
+          </td>
+          <td>{{data.approvedDateStr ? data.approvedDateStr : '-'}}</td>
+          <td>{{data.approvedBy ? data.approvedBy : '-'}}</td>
+        </tr>
+      </ng-container>
+      </tbody>
+    </table>
+  </div>
+    <app-paginator
+      [pageIndex]="pageSize.pageIndex"
+      [length]="pageSize.length"
+      [pageSize]="pageSize.pageSize"
+      [pageSizeOptions]="pageSize.pageSizeOptions"
+      (page)="onPageEvent($event)"
+    ></app-paginator>
+  
+</ng-container>
+

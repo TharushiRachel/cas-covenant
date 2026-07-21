@@ -1,0 +1,190 @@
+<div class="tab-view">
+  <ng-container *ngIf="isLoading">
+    <div class="d-flex justify-content-center">
+      <div class="spinner-grow text-info spinner-grow-sm" role="status">
+        <span class="visually-hidden"></span>
+      </div>
+      <div class="spinner-grow text-info spinner-grow-sm" role="status">
+        <span class="visually-hidden"></span>
+      </div>
+      <div class="spinner-grow text-info spinner-grow-sm" role="status">
+        <span class="visually-hidden"></span>
+      </div>
+      <div class="spinner-grow text-info spinner-grow-sm" role="status">
+        <span class="visually-hidden"></span>
+      </div>
+      <div class="spinner-grow text-info spinner-grow-sm" role="status">
+        <span class="visually-hidden"></span>
+      </div>
+    </div>
+  </ng-container>
+
+  <ng-container *ngIf="!isLoading">
+    <app-tabs [selectedTabIndex]="selectedTabIndex" class="w-100-p" (onTabSelect)="onTabSelect($event)">
+      <app-tab [tabTitle]="'General'">
+        <ng-container *ngIf="isTabSelected(generalTabIndex)">
+          <br />
+          <ng-container *ngIf="!kalyptoData['gernalTabObj']">
+            <div class="alert alert-warning" role="alert">
+              No records found!
+            </div>
+          </ng-container>
+          <ng-container *ngIf="kalyptoData['gernalTabObj']">
+            <div class="d-flex flex-row justify-content-between mb-10p ">
+              <label class="w-25-p font-weight-bold">Counterparty Name</label>
+              <span class="w-5 font-weight-bold">:</span>
+              <span class="width-70">{{ kalyptoData['gernalTabObj']['counterpartyName'] || "-" }}</span>
+            </div>
+            <div class="d-flex flex-row justify-content-between mb-10p">
+              <label class="w-25-p font-weight-bold">Model</label>
+              <span class="w-5 font-weight-bold">:</span>
+              <span class="width-70">{{ kalyptoData['gernalTabObj']['model']||"-" }}</span>
+            </div>
+
+            <div class="d-flex flex-row justify-content-between mb-10p">
+              <label class="w-25-p font-weight-bold">Rating Score</label>
+              <span class="w-5 font-weight-bold">:</span>
+              <span class="width-70">{{kalyptoData['gernalTabObj']['ratingscore']||"-" }}</span>
+            </div>
+
+            <div class="d-flex flex-row justify-content-between mb-10p">
+              <label class="w-25-p font-weight-bold">Unique Identifier</label>
+              <span class="w-5 font-weight-bold">:</span>
+              <span class="width-70">{{kalyptoData['gernalTabObj']['uniqueIdentifier'] ||"-" }}</span>
+            </div>
+          </ng-container>
+
+        </ng-container>
+      </app-tab>
+
+      <app-tab [tabTitle]="'Details'">
+        <ng-container *ngIf="isTabSelected(detailTabIndex)">
+          <div class="card p-3 bg-white">
+            <br />
+            <ng-container *ngIf="!kalyptoData['values']">
+              <div class="alert alert-warning" role="alert">
+                No records found!
+              </div>
+            </ng-container>
+            <ng-container *ngIf="kalyptoData['values']">
+              <div class="d-flex justify-content-end">
+                <ng-container *ngIf="!isRefreshLoading">
+                  <button (click)="refreshKalypto()" type="button" class=" medium-button btn btn-info cta-btn"
+                    data-toggle="tooltip" data-placement="left" [title]='"Refresh Kalypto Details"'
+                    [disabled]="isRefreshBtnDisabled" mdbWavesEffect mdbBtn>
+                    <i class="fas fa-retweet"></i>
+                  </button>
+                </ng-container>
+                <ng-container *ngIf="isRefreshLoading">
+                  <div class="spinner-border" role="status">
+                    <span class="sr-only"></span>
+                  </div>
+                  <br />
+                </ng-container>
+                <ng-container *ngIf="isAddedNewKalypto === false">
+                  <button (click)="loadInputColumn()" type="button" class=" medium-button btn btn-info cta-btn"
+                    data-toggle="tooltip" data-placement="bottom" [title]='"Add Column Data"'
+                    [disabled]="isRowAddBtnDisabled" mdbWavesEffect mdbBtn>
+                    <div *ngIf="!isOpenInput"><i class="fas fa-plus"></i></div>
+                    <div *ngIf="isOpenInput"><i class="fas fa-minus"></i></div>
+                  </button>
+                </ng-container>
+
+                <ng-container *ngIf="!isRowEditing">
+                  <button (click)="startRowEditing()" type="button" class=" medium-button btn btn-info cta-btn"
+                    data-toggle="tooltip" data-placement="left" [title]='"Start Edit  Details"'
+                    [disabled]="isEditBtnDisabled" mdbBtn>
+                    <i class="fas fa-pencil-alt"></i>
+                  </button>
+                </ng-container>
+
+                <ng-container *ngIf="isRowEditing">
+                  <button (click)="stopRowEditing()" type="button" class=" medium-button btn btn-info cta-btn"
+                    data-toggle="tooltip" data-placement="left" [title]='"Conform Edit  Details"'
+                    [disabled]="isEditBtnDisabled" mdbBtn>
+                    <i class="fas fa-check"></i>
+                  </button>
+                </ng-container>
+
+              </div>
+            </ng-container>
+          </div>
+          <ng-container *ngIf="kalyptoData['values']">
+            <div class="section table-responsive mb-15p">
+              <table class="custom-bordered-table width-100">
+                <thead>
+                  <tr style="height: 30px" class="table-heading-color">
+                    <th *ngIf="kalyptoData['periods']" scope="col" style="width:400px;">Ratio</th>
+                    <ng-container *ngFor="let columnName of kalyptoData['periods']; let i = index">
+                      <th scope="col" style="width:200px;">
+                        <div *ngIf="columnName['isAddedNew'] === 0">
+                          <div [innerHTML]="columnName['periodName'] | safeHtml"></div>
+                        </div>
+                        <div *ngIf="columnName['isAddedNew'] === 1">
+                          <div *ngIf="!isAddedColEditing" (click)="startAddedColEditing()"
+                            [innerHTML]="columnName['periodName'] | safeHtml">
+                          </div>
+                          <input *ngIf="isAddedColEditing" type="text" id="addedColName" maxlength="200"
+                            (blur)="stopAddedColEditing()" (keyup)="changeAddedColValue(i,columnName, $event)"
+                            class="form-control" style="background: none;" [(value)]="columnName['periodName']"
+                            autofocus />
+                        </div>
+                      </th>
+                    </ng-container>
+                    <ng-container *ngIf="isOpenInput">
+                      <th scope="col" style="width:200px;">
+                        <div style="border: 1px solid gray; border-radius: 2px;">
+                          <form [formGroup]="colForm">
+                            <input type="text" id="columnName" formControlName="columnName" maxlength="200"
+                              class="form-control" style="background: none;" mdbInput />
+                          </form>
+                        </div>
+                      </th>
+                    </ng-container>
+                  </tr>
+                </thead>
+                <tbody>
+                  <ng-container *ngFor="let rowInfo of kalyptoData['values'];let k =index">
+                    <tr>
+                      <td *ngIf="rowInfo['parameterName']" style="text-align: start;">
+                        {{ rowInfo['parameterName'] || '-'}}
+                      </td>
+                      <ng-container *ngFor="let rec of rowInfo['values'];let l =index">
+                        <td *ngIf="rec" style="text-align: end;">
+                          <div *ngIf="!isRowEditing" class="form-control">
+                            {{getCurrencyFormat(rec['valueNumberic']) }}
+                          </div>
+                          <input *ngIf="isRowEditing" type="number" id="rowValue" maxlength="200"
+                            (keyup)="changeRowValue(k, l, rec, $event)" class="form-control" style="text-align: right;"
+                            [(ngModel)]="rec['valueNumberic']" />
+                        </td>
+                      </ng-container>
+                      <ng-container *ngIf="isOpenInput">
+                        <td *ngIf="rowInfo['values'].length > 0" style="text-align: end;">
+                          <div style="border: 1px solid gray; border-radius: 2px;">
+                            <input type="number" maxlength="200" class="form-control" id="columnAddedName" mdbInput
+                              (keyup)="changeAddedRowValue(k,rowInfo, $event)" style="background: none;" />
+                          </div>
+                        </td>
+                      </ng-container>
+                    </tr>
+                  </ng-container>
+                </tbody>
+              </table>
+              <br />
+              <ng-container>
+                <div class="d-flex  justify-content-end">
+                  <button *ngIf="kalyptoData['values'] && kalyptoData['periods']" data-placement="bottom" type="button"
+                    class="medium-button btn btn-info" mdbWavesEffect mdbBtn (click)="openSaveConformDialog()"
+                    [disabled]="isSaveBtnDisabled">
+                    <span>Save</span>
+                  </button>
+                </div>
+              </ng-container>
+            </div>
+          </ng-container>
+        </ng-container>
+      </app-tab>
+    </app-tabs>
+  </ng-container>
+</div>

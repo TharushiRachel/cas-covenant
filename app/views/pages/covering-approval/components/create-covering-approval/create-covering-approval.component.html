@@ -1,0 +1,37 @@
+<div class="modal-header flex-center modal-topic">
+  <h4 class="modal-title w-100 font-weight-bold">Covering Approval Creation</h4>
+  <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="mdbModalRef.hide()">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
+<div class="modal-body mx-3 modal-detail form-margin">
+  <div *ngIf="errorMessage" class="alert alert-danger">
+    {{ errorMessage }}
+  </div>
+  <form class="d-flex flex-column justify-content-start align-items-start w-100-p" [formGroup]="componentForm">
+    <div class="d-flex flex-row justify-content-center  w-100-p">
+      <div class="md-form m-top-10px m-bottom-10px side-margin w-75-p">
+        <input mdbValidate type="text" id="transactionId" maxlength="200" formControlName="transactionId"
+          class="form-control" mdbInput required (input)="onTransactionIdInput()">
+        <label for="transactionId">Transaction ID *</label>
+      </div>
+    </div>
+    <div class="d-flex flex-row justify-content-center  w-100-p">
+      <div class="md-form m-top-10px m-bottom-10px side-margin w-75-p">
+        <mdb-date-picker mdbValidate class="form-control" id="tranDate" label="Date *" formControlName="tranDate"
+          [options]="myDatePickerOptions" [inline]="true" required></mdb-date-picker>
+      </div>
+    </div>
+    <div class="d-flex flex-row justify-content-end w-100-p">
+      <button (click)="onBack()" class="save-btn relative waves-light modal-footer modal-end" color="secondary" mdbBtn
+        mdbWavesEffect type="button">
+        Back
+      </button>
+      <button (click)="onSubmit()" class="save-btn relative waves-light modal-footer modal-end" color="secondary" mdbBtn
+        mdbWavesEffect type="button" [disabled]="!isValidForm()">
+        {{ buttonAction }}
+      </button>
+    </div>
+  </form>
+</div>

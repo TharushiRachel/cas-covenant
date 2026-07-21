@@ -1,0 +1,47 @@
+.facilityPaper-exposure-tbl {
+  .fp-tx-data {
+    div {
+      align-items: center;
+      width: 34%;
+      text-align: center;
+
+      .w-100-p {
+        width: 100%;
+      }
+    }
+
+    .te-header {
+      font-weight: bold;
+    }
+  }
+}
+
+
+.jumbotron {
+  padding: 15px 0;
+}
+
+
+.text-align-end {
+  text-align: end !important;
+}
+
+.text-align-start {
+  text-align: start !important;
+}
+
+.text-align-center {
+  text-align: center;
+}
+
+h5 {
+  font-size: 1.1rem;
+  font-weight: 400;
+}
+
+.topic {
+  background-color: #dae3e6 !important;
+  padding-top: 6px !important;
+  padding-bottom: 1px !important;
+  margin-bottom: 5px !important;
+}

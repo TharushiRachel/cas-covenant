@@ -1,0 +1,53 @@
+<div>
+  <div class="modal-header modal-topic flex-center">
+    <button type="button" class="close pull-right" aria-label="Close" (click)="onNoClick()">
+      <span aria-hidden="true">×</span>
+    </button>
+    <h4 class="modal-title w-100 heading-align font-weight-bold" id="myModalLabel">{{heading}}</h4>
+  </div>
+  <div class="modal-body">
+    <form class="d-flex p-2 flex-column align-items-start w-100-p" [formGroup]="componentForm">
+      <div class="d-flex flex-row justify-content-between w-100-p">
+        <div class="md-form m-top-10px m-bottom-10px side-margin w-45-p">
+          <mdb-date-picker class="form-control"
+                           id="fromDate"
+                           label="From Date *"
+                           formControlName="fromDate"
+                           [options]="myDatePickerOptions"
+                           [inline]="true"
+          ></mdb-date-picker>
+          <mdb-error class="m-top-10px" *ngIf="formErrors.fromDate.required">Required</mdb-error>
+        </div>
+
+        <div class="md-form m-top-10px m-bottom-10px side-margin w-45-p">
+          <mdb-date-picker class="form-control"
+                           id="toDate"
+                           label="To Date *"
+                           formControlName="toDate"
+                           [options]="myDatePickerOptions"
+                           [inline]="true"
+          ></mdb-date-picker>
+          <mdb-error class="m-top-10px" *ngIf="formErrors.toDate.invalidDateRange">Invalid Date range</mdb-error>
+        </div>
+      </div>
+    </form>
+    <div class="modal-footer modal-end">
+      <button type="button" mdbBtn color="light" size="sm" class="relative waves-light mr-10p" (click)="onNoClick()"
+              mdbWavesEffect>Cancel
+      </button>
+
+      <button
+        type="button"
+        mdbBtn
+        color="info"
+        size="sm"
+        class="relative
+        waves-light"
+        [disabled]="!this.componentForm.valid"
+        (click)="onYesClick()"
+        mdbWavesEffect
+      >Set
+      </button>
+    </div>
+  </div>
+</div>

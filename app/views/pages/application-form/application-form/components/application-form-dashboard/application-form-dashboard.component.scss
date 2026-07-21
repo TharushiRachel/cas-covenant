@@ -1,0 +1,73 @@
+.facility-paper-status {
+  display: block;
+  align-content: center;
+  width: 50%;
+  min-width: 80px;
+
+  mdb-badge {
+    display: block;
+  }
+}
+
+.count-card-header {
+  color: white;
+  font-weight: bold;
+  text-align: center;
+  border: none;
+}
+
+.count-card-body {
+  text-align: center;
+}
+
+.status-icon {
+  text-align: center;
+  padding: 5px;
+  width: 80px;
+}
+
+.icon-padding {
+  padding-top: 2px;
+}
+
+.border-none-card {
+  border: none !important;
+  box-shadow: none;
+}
+
+.customer-name-col {
+  width: 25%;
+}
+
+.status-img-width {
+  width: 35px;
+  margin-left: 5%;
+  padding: 3px;
+}
+
+.box-width {
+  width: 14%;
+}
+
+.status-sub {
+  padding: 10px;
+  font-size: 17px;
+  font-weight: 500;
+  font-family: "Roboto", sans-serif;
+  color: #696767;
+}
+
+.status-sub-header {
+  padding: 10px;
+  font-size: 12px;
+  font-weight: 500;
+  font-family: "Roboto", sans-serif;
+  color: #696767;
+}
+
+@media screen and (max-width: 1024px) {
+  .box-width {
+    width: 17%;
+  }
+}
+

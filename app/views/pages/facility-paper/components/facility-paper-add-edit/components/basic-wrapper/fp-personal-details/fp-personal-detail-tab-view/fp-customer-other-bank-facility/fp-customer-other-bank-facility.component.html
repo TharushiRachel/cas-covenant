@@ -1,0 +1,116 @@
+<div class="modal-header flex-center">
+  <div class="modal-header text-center no-border">
+    <h4 class="modal-title w-100 font-weight-bold">Other Bank Facility</h4>
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="mdbModalRef.hide()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+</div>
+
+<div class="modal-body mx-3">
+  <form class="d-flex p-2 flex-column justify-content-start align-items-start w-100-p" [formGroup]="componentForm">
+
+    <div class="d-flex w-100-p  p-2">
+      <div class="md-form m-top-10px m-bottom-10px w-100-p input-size">
+        <input mdbValidate type="text" id="bankName" maxlength="200" formControlName="bankName" class="form-control"
+               mdbInput>
+        <label for="bankName">Bank Name *</label>
+        <mdb-error *ngIf="formErrors.bankName.required">Bank Name required</mdb-error>
+      </div>
+
+      <div class="md-form m-top-10px m-bottom-10px w-100-p input-size">
+        <input mdbValidate type="text" id="branchName" maxlength="200" formControlName="branchName" class="form-control"
+               mdbInput>
+        <label for="branchName">Branch Name *</label>
+        <mdb-error *ngIf="formErrors.branchName.required">Branch Name required</mdb-error>
+      </div>
+
+
+      <div class="md-form m-top-10px m-bottom-10px w-100-p input-size">
+        <input mdbValidate type="text" id="facilityAmount" maxlength="200" formControlName="facilityAmount"
+               class="form-control"
+               mdbInput>
+        <label for="facilityAmount">Facility Amount *</label>
+        <mdb-error *ngIf="formErrors.facilityAmount.required">Facility Amount required</mdb-error>
+        <mdb-error *ngIf="formErrors.facilityAmount.isNumberError">Invalid value</mdb-error>
+      </div>
+
+      <div class="md-form m-top-10px m-bottom-10px w-100-p input-size">
+        <input mdbValidate type="text" id="outstandingAmount" maxlength="200" formControlName="outstandingAmount"
+               class="form-control"
+               mdbInput>
+        <label for="outstandingAmount">Outstanding Amount *</label>
+        <mdb-error *ngIf="formErrors.outstandingAmount.required">Outstanding Amount required</mdb-error>
+        <mdb-error *ngIf="formErrors.outstandingAmount.isNumberError">Invalid value</mdb-error>
+      </div>
+    </div>
+
+    <div class="d-flex w-100-p  p-2">
+      <div class="md-form m-top-10px m-bottom-10px w-100-p input-size">
+        <input mdbValidate type="text"
+               id="facilityType"
+               maxlength="200"
+               formControlName="facilityType"
+               class="form-control"
+               placeholder="Choose Facility Type *"
+               [mdbAutoCompleter]="auto"
+               mdbInput>
+
+        <mdb-auto-completer #auto="mdbAutoCompleter" textNoResults="I have found no results :(">
+          <mdb-option *ngFor="let option of result |async" [value]="option.facilityTypeName">
+            {{ option.facilityTypeName}}
+          </mdb-option>
+        </mdb-auto-completer>
+        <label for="facilityType">Facility Type *</label>
+        <mdb-error *ngIf="formErrors.facilityType.required">Facilty Type required</mdb-error>
+      </div>
+      <div class="md-form m-top-10px m-bottom-10px w-100-p input-size">
+        <input mdbValidate type="text" id="securities" maxlength="200" formControlName="securities" class="form-control"
+               mdbInput>
+        <label for="securities">Security *</label>
+        <mdb-error *ngIf="formErrors.securities.required">Secuities required</mdb-error>
+      </div>
+      <div class="md-form m-top-10px m-bottom-10px w-100-p input-size">
+        <mdb-date-picker class="form-control"
+                         id="disbursementDate"
+                         formControlName="disbursementDate"
+                         [options]="disbursementDateOptions"
+                         placeholder="Disbursment Date *"
+                         [inline]="true"
+        ></mdb-date-picker>
+        <mdb-error class="m-top-15px" *ngIf="formErrors.disbursementDate.required">Disbursment Date required</mdb-error>
+      </div>
+
+      <div class="md-form m-top-10px m-bottom-10px w-100-p input-size">
+        <mdb-date-picker class="form-control"
+                         id="maturityDate"
+                         formControlName="maturityDate"
+                         [options]="maturityDateOptions"
+                         placeholder="Maturity Date *"
+                         [inline]="true"
+        ></mdb-date-picker>
+        <mdb-error class="m-top-15px" *ngIf="formErrors.maturityDate.required">Maturity Date required</mdb-error>
+      </div>
+    </div>
+  </form>
+</div>
+
+<div class="modal-footer">
+  <ng-container *appHasAnyPrivilege="masterDataPrivilege.ICAS_SETTINGS_FACILITY_PAPER_EDIT">
+    <button
+      type="button" mdbBtn color="secondary" size="sm" class="relative waves-light" mdbWavesEffect
+      [hidden]="!isEmpty"
+      [disabled]="componentForm.invalid" (click)="onAddOtherBankFacility($event)">Save
+    </button>
+    <button
+      type="button" mdbBtn color="warning" size="sm" class="relative waves-light" mdbWavesEffect
+      [hidden]="isEmpty"
+      (click)="onRemoveOtherBankFacility($event)">Remove
+    </button>
+    <button
+      type="button" mdbBtn color="secondary" size="sm" class="relative waves-light" mdbWavesEffect
+      [hidden]="isEmpty"
+      [disabled]="!isDirty()" (click)="onAddOtherBankFacility($event)">Update
+    </button>
+  </ng-container>
+</div>

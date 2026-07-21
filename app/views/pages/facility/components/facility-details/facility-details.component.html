@@ -1,0 +1,192 @@
+<ng-container *ngIf="selectedFacility">
+  <div class="single-row d-flex flex-column flex-md-row justify-content-start  justify-content-md-between">
+    <div class="w-49-5-p item-box">
+      <div class="item-wrapper d-flex flex-column justify-content-start ">
+        <div>
+          <h4 class="facility-data-header">Facility Detail Summary</h4>
+        </div>
+        <div>
+          <div><label class="facility-data-lbl"></label> <span></span></div>
+          <div><label class="facility-data-lbl">Facility ID :</label> <span>{{selectedFacility.facilityID}}</span></div>
+          <div><label class="facility-data-lbl">Currency :</label> <span>{{selectedFacility.facilityCurrency}}</span>
+          </div>
+          <div><label class="facility-data-lbl">Account Number :</label>
+            <span>{{selectedFacility.disbursementAccNumber}}</span></div>
+          <div><label class="facility-data-lbl">Facility Amount :</label>
+            <span>{{selectedFacility.facilityAmount}}</span></div>
+          <div><label class="facility-data-lbl">Outastanding Amount :</label>
+            <span>{{selectedFacility.outstandingAmount}}</span></div>
+          <div><label class="facility-data-lbl">Purpose of Advance :</label>
+            <span>{{selectedFacility.purposeOfAdvance}}</span></div>
+          <div><label class="facility-data-lbl">Purpose :</label> <span>{{selectedFacility.purpose}}</span></div>
+          <div><label class="facility-data-lbl">Repayment :</label> <span>{{selectedFacility.repayment}}</span></div>
+          <div><label class="facility-data-lbl">Condition :</label> <span>{{selectedFacility.condition}}</span></div>
+          <div><label class="facility-data-lbl">Display Order :</label> <span>{{selectedFacility.displayOrder}}</span>
+          </div>
+          <div><label class="facility-data-lbl">Remark :</label> <span>{{selectedFacility.remark}}</span></div>
+          <div><label class="facility-data-lbl">Status :</label> <span>{{status[selectedFacility.status]}}</span></div>
+          <div><label class="facility-data-lbl">Is New :</label> <span>{{yesNo[selectedFacility.isNew]}}</span></div>
+          <div><label class="facility-data-lbl">Is One Off :</label> <span>{{yesNo[selectedFacility.isOneOff]}}</span>
+          </div>
+          <div><label class="facility-data-lbl">Is Cooperate :</label>
+            <span>{{yesNo[selectedFacility.isCooperate]}}</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="w-49-5-p item-box" *ngIf="selectedFacility.creditFacilityTemplateDTO">
+      <div class="item-wrapper d-flex flex-column justify-content-start ">
+        <div>
+          <h4 class="facility-data-header">Credit Facility Template Details</h4>
+        </div>
+        <div>
+          <div><label class="facility-data-lbl"></label> <span></span></div>
+          <div><label class="facility-data-lbl">Credit Facility Template ID :</label>
+            <span>{{selectedFacility.creditFacilityTemplateDTO.creditFacilityTemplateID}}</span></div>
+          <div><label class="facility-data-lbl">Credit Facility Template Name :</label>
+            <span>{{selectedFacility.creditFacilityTemplateDTO.creditFacilityName}}</span></div>
+          <div><label class="facility-data-lbl">Credit Facility Group :</label>
+            <span>{{selectedFacility.creditFacilityTemplateDTO.facilityTypeName}}</span></div>
+          <div><label class="facility-data-lbl">Description :</label>
+            <span>{{selectedFacility.creditFacilityTemplateDTO.description}}</span></div>
+          <div><label class="facility-data-lbl">Max Facility Amount :</label>
+            <span>{{selectedFacility.creditFacilityTemplateDTO.maxFacilityAmount}}</span></div>
+          <div><label class="facility-data-lbl">Min Facility Amount :</label>
+            <span>{{selectedFacility.creditFacilityTemplateDTO.minFacilityAmount}}</span></div>
+          <div><label class="facility-data-lbl">Status :</label>
+            <span>{{status[selectedFacility.creditFacilityTemplateDTO.status]}}</span></div>
+          <div><label class="facility-data-lbl">Approval Status :</label>
+            <span>{{approveStatus[selectedFacility.creditFacilityTemplateDTO.approveStatus]}}</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="single-row d-flex flex-column flex-md-row justify-content-start  justify-content-md-between">
+    <div class="w-49-5-p item-box" *ngIf="selectedFacility.facilityDocumentList">
+      <div class="single-row d-flex flex-column justify-content-start">
+        <div>
+          <h4 class="facility-data-header">Facility Document List</h4>
+        </div>
+        <div class="table-responsive">
+          <table class="table">
+            <thead>
+            <tr>
+              <ng-container *ngFor="let col of tableColumnsForFacilityDocument">
+                <th scope="col">{{col}}</th>
+              </ng-container>
+            </tr>
+            </thead>
+            <tbody>
+            <ng-container *ngFor="let item of selectedFacility.facilityDocumentList">
+              <tr class="table-clickable-row">
+                <td>{{item.supportingDocumentName}}</td>
+                <td>{{yesNo[item.mandatory]}}</td>
+                <td>{{item.displayOrder}}</td>
+                <td>{{item.remark}}</td>
+                <td>
+                  {{status[item.status]}}
+                </td>
+              </tr>
+            </ng-container>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="w-49-5-p item-box" *ngIf="selectedFacility.facilityInterestRateList">
+      <div class="single-row d-flex flex-column justify-content-start">
+        <div>
+          <h4 class="facility-data-header">Facility Interest List</h4>
+        </div>
+        <div class="table-responsive">
+          <table class="table">
+            <thead>
+            <tr>
+              <ng-container *ngFor="let col of tableColumnsForFacilityInterestRate">
+                <th scope="col">{{col}}</th>
+              </ng-container>
+            </tr>
+            </thead>
+            <tbody>
+            <ng-container *ngFor="let item of selectedFacility.facilityInterestRateList">
+              <tr class="table-clickable-row">
+                <td>{{item.rateCode}}</td>
+                <td>{{item.value}}</td>
+                <td>{{yesNo[item.isDefault]}}</td>
+                <td>
+                  {{status[item.status]}}
+                </td>
+              </tr>
+            </ng-container>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="single-row d-flex flex-column flex-md-row justify-content-start  justify-content-md-between">
+    <div class="w-49-5-p item-box" *ngIf="selectedFacility.facilityPurposeOfAdvanceList">
+      <div class="single-row d-flex flex-column justify-content-start">
+        <div>
+          <h4 class="facility-data-header">Facility Purpose of Advance List</h4>
+        </div>
+        <div class="table-responsive">
+          <table class="table">
+            <thead>
+            <tr>
+              <ng-container *ngFor="let col of tableColumnsForFacilityPurposeofAdvance">
+                <th scope="col">{{col}}</th>
+              </ng-container>
+            </tr>
+            </thead>
+            <tbody>
+            <ng-container *ngFor="let item of selectedFacility.facilityPurposeOfAdvanceList">
+              <tr class="table-clickable-row">
+                <td>{{item.purposeOfAdvance}}</td>
+                <td>{{item.referenceCode}}</td>
+                <td>{{item.referenceDescription}}</td>
+                <td>
+                  {{status[item.status]}}
+                </td>
+              </tr>
+            </ng-container>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="w-49-5-p item-box" *ngIf="selectedFacility.facilitySecurityDTOList">
+      <div class="single-row d-flex flex-column justify-content-start">
+        <div>
+          <h4 class="facility-data-header">Facility Security List</h4>
+        </div>
+        <div class="table-responsive">
+          <table class="table">
+            <thead>
+            <tr>
+              <ng-container *ngFor="let col of tableColumnsForFacilitySecurity">
+                <th scope="col">{{col}}</th>
+              </ng-container>
+            </tr>
+            </thead>
+            <tbody>
+            <ng-container *ngFor="let item of selectedFacility.facilitySecurityDTOList">
+              <tr class="table-clickable-row">
+                <td>{{item.securityDetail}}</td>
+                <td>{{item.securityAmount}}</td>
+                <td>
+                  {{status[item.status]}}
+                </td>
+              </tr>
+            </ng-container>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</ng-container>

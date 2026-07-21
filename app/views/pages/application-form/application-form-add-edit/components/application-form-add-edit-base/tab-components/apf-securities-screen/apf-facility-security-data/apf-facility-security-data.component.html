@@ -1,0 +1,136 @@
+<ng-container *ngIf="facilityData.afSecurityDTOList">
+  <div class="single-row d-flex flex-column justify-content-start">
+
+    <div class="d-flex flex-row justify-content-between m-0 w-100-p">
+      <div class="width-12">
+        <ng-container *ngIf="currentIndex != 0">
+          <button mdbBtn color="light-blue" size="sm" type="button" mdbWavesEffect
+                  (click)="showPreviousTab($event)">
+            <mdb-icon fas icon="angle-left" aria-hidden="true"></mdb-icon>
+            Previous
+          </button>
+        </ng-container>
+      </div>
+
+      <div class="d-flex flex-column text-center">
+        <h6 class="f-bold">
+          {{facilityData.creditFacilityTemplateDTO?.creditFacilityName}}
+          <span *ngIf="facilityData.facilityRefCode">{{ " - " + facilityData.facilityRefCode}}</span>
+        </h6>
+        <h4><b>({{facilityData.creditFacilityTemplateDTO?.facilityTypeName }}
+          : {{facilityData.facilityCurrency}} {{this.getFormattedThreeDecimalValues(getMillionValue(facilityData.facilityAmount))}}
+          Mn)</b>
+        </h4>
+      </div>
+
+      <div class="width-12">
+        <ng-container *ngIf="currentIndex != lastIndex">
+          <button mdbBtn color="light-blue" size="sm" type="button" mdbWavesEffect
+                  (click)="showNextTab($event)">
+            Next
+            <mdb-icon fas icon="angle-right" aria-hidden="true"></mdb-icon>
+          </button>
+        </ng-container>
+      </div>
+    </div>
+
+    <div class="d-flex flex-row justify-content-between mb-2">
+
+      <h6 class="facility-data-header">Facility {{currentIndex + 1}} Security(ies)</h6>
+
+      <div *ngIf="isAbleToEdit()">
+        <button (click)="addSecurity(facilityData,{},{})"
+                mdbTooltip="Add Security(ies)"
+                class="medium-button add-security-detail-button"
+                type="button"
+                mdbBtn
+                color="light"
+                mdbWavesEffect>
+          Add
+        </button>
+      </div>
+    </div>
+
+    <ng-container *ngIf="organizedSecurityList.length>0">
+      <div class="table-responsive">
+        <table class="table">
+          <thead>
+          <tr>
+            <th scope="col"></th>
+            <th scope="col"></th>
+            <th scope="col" class="text-right" style="width: 1%"></th>
+            <th scope="col" class="text-right">Amount</th>
+            <ng-container *ngIf="isAbleToEdit()">
+              <th scope="col" class="text-align-center action-header">Actions</th>
+            </ng-container>
+          </tr>
+          </thead>
+          <tbody>
+          <ng-container *ngFor="let item of organizedSecurityList;let i = index">
+            <tr class="m-top-10px" style="padding: 20px; border-bottom: unset !important;">
+              <td style="width: 1%">
+                <span>
+                  {{i + 1}}.
+                </span>
+              </td>
+              <td class="security-detail">
+                <pre class="custom-pre-tag-with-spaces">{{item.securityDetail}}</pre>
+              </td>
+              <td class="security-common-flag text-right d-flex d-flex-row">
+                <div class="mr-2" *ngIf="item.isCommonSecurity === yesNoConst.Y">
+                  <mdb-badge default="true" [title]="'Common Security'">C</mdb-badge>
+
+                </div>
+                <div class="mr-2" *ngIf="item.isCashSecurity == 'Y'">
+                  <mdb-badge default="true" [title]="'Cash'">Cash</mdb-badge>
+                </div>
+              </td>
+              <td class="security-amount text-right">
+                {{item.securityCurrency}} {{this.getFormattedValue(item.securityAmount)}}
+              </td>
+
+              <td class="security-action">
+                <div class="display-flex flex-row jc-end ai-center">
+                  <ng-container *ngIf="isAbleToEdit()">
+                    <button class="btn btn-sm btn-secondary cta-btn" type="button" mdbWavesEffect
+                            (click)="addSecurity(facilityData, item,{})"
+                            mdbTooltip="Edit"
+                            placement="left">
+                      <mdb-icon fas icon="pencil-alt" aria-hidden="true"></mdb-icon>
+                    </button>
+
+                    <button class="btn btn-sm btn-danger cta-btn delete-button" type="button" mdbWavesEffect
+                            (click)="onRemoveFacilitySecurity(facilityData, item)"
+                            mdbTooltip="Delete" placement="left">
+                      <mdb-icon fas icon="trash-alt" aria-hidden="true"></mdb-icon>
+                    </button>
+                  </ng-container>
+                </div>
+              </td>
+
+            </tr>
+            <tr>
+              <td class="padding-unset"></td>
+              <td class=" padding-unset security-detail">
+                <ng-container *ngIf="item.isCashSecurity=='Y'">
+                  <p class="custom-pre-tag-with-spaces"><b>Cash Amount
+                    - {{item.securityCurrency}} {{this.getFormattedValue(item.cashAmount)}}</b></p>
+                </ng-container>
+              </td>
+              <td class="padding-unset"></td>
+              <td class="padding-unset"></td>
+              <td class="padding-unset"></td>
+            </tr>
+          </ng-container>
+          </tbody>
+        </table>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="organizedSecurityList.length == 0">
+      <p style="margin-left: 25px;">
+        No Securities
+      </p>
+    </ng-container>
+  </div>
+</ng-container>

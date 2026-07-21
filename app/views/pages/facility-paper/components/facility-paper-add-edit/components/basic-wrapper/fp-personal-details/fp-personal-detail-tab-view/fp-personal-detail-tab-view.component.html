@@ -1,0 +1,280 @@
+<div class="d-flex flex-row justify-content-start align-items-center w-100-p flex-wrap">
+
+  <ng-container *ngIf="sortedFpList.length > 0">
+    <app-tabs class="w-100-p" (onTabSelect)="onPersonalDetailsTabSelect($event)">
+
+      <ng-container *ngFor="let customer of sortedFpList; let i =index">
+        <app-tab [tabTitle]="getTabTitle(customer)" [active]="i == 0" [showIcon]="true" [iconName]="'user-circle'"
+          [isPrimary]="customer.isPrimary" [warningTitle]="isNonFinaclePrimaryCustomer(customer)">
+
+          <ng-container *ngIf="isSelectedTab(i)">
+            <div class="d-flex flex-row justify-content-end">
+              <ng-container *appHasAnyPrivilege="masterDataPrivilege.ICAS_SETTINGS_FACILITY_PAPER_EDIT">
+                <ng-container *ngIf="isEqualLoginAndAssignUser() && !isApproveStatus() && !isRejected()">
+                  <ng-container *ngIf="!customer.isPrimary">
+                    <button class="btn btn-sm btn-danger cta-btn delete-button" type="button" mdbWavesEffect
+                      (click)="onRemovePartner(customer)" mdbTooltip="Remove partner" placement="left">
+                      <mdb-icon fas icon="trash-alt" aria-hidden="true"></mdb-icon>
+                    </button>
+                  </ng-container>
+                  <button class="btn btn-sm btn-info cta-btn" type="button" mdbWavesEffect
+                    (click)="updateNonFinacleCustomer($event,customer)" mdbTooltip="Edit Details" placement="left">
+                    <mdb-icon fas icon="pencil-alt" aria-hidden="true"></mdb-icon>
+                  </button>
+                </ng-container>
+              </ng-container>
+            </div>
+
+            <div class="w-100-p">
+              <app-tabs [selectedTabIndex]="selectedTabIndex" class="w-100-p customer-stat-tab"
+                (onTabSelect)="onTabSelect($event)">
+
+                <app-tab [tabTitle]="'Basic Details'">
+                  <ng-container *ngIf="isTabSelected(0)">
+
+                    <div class="p-2">
+                      <ng-container *ngIf="facilityPaperAddEditService.allowFinacleData()">
+                        <app-personal-detail-basic [customer]="selectedCustomerMap[customer.casCustomerID]"
+                          [updateButtonIsEnabled]="isAbleToAddEdit"
+                          (updateCasCustomerData)="updateCasCustomerData($event)" [facilityPaper]="facilityPaper"
+                          class="w-100-p">
+                        </app-personal-detail-basic>
+                        <app-fp-show-crib-details-button [customer]="customer" [facilityPaper]="facilityPaper">
+                        </app-fp-show-crib-details-button>
+                      </ng-container>
+
+                      <ng-container *ngIf="!facilityPaperAddEditService.allowFinacleData()">
+                        <p class="not-auth-message">
+                          You are not authorized to view finacle data
+                        </p>
+                      </ng-container>
+
+                      <ng-container *ngIf="facilityPaperAddEditService.allowCrib()">
+                        <app-personal-crib-detail [customer]="selectedCustomerMap[customer.casCustomerID]"
+                          [facilityPaper]="facilityPaper">
+                        </app-personal-crib-detail>
+                      </ng-container>
+
+                      <ng-container *ngIf="!facilityPaperAddEditService.allowCrib()">
+                        <p class="not-auth-message">
+                          You are not authorized to view crib data
+                        </p>
+                      </ng-container>
+
+                      <ng-container>
+                        <app-personal-customer-ratings [customer]="selectedCustomerMap[customer.casCustomerID]"
+                          [facilityPaper]="facilityPaper">
+                        </app-personal-customer-ratings>
+                      </ng-container>
+
+                      <ng-container>
+                        <app-fp-director-details [facilityPaper]="facilityPaper"
+                          class="w-100-p"></app-fp-director-details>
+                      </ng-container>
+                    </div>
+
+                  </ng-container>
+
+                </app-tab>
+
+                <app-tab [tabTitle]="'Current Account Statistics'">
+                  <ng-container *ngIf="isTabSelected(1)">
+                    <ng-container *ngIf="!isNonFinacleCustomer(customer)">
+                      <app-customer-current-account-details
+                        [customerDetails]="customerDetailsMap[customer.casCustomerID]">
+                      </app-customer-current-account-details>
+                    </ng-container>
+
+                  </ng-container>
+                </app-tab>
+
+                <app-tab [tabTitle]="'Comprehensive Statistics'">
+                  <ng-container *ngIf="isTabSelected(2)">
+                    <ng-container *ngIf="!isNonFinacleCustomer(customer)">
+                      <app-customer-comprehensive-statistics
+                        [customerDetails]="customerDetailsMap[customer.casCustomerID]">
+                      </app-customer-comprehensive-statistics>
+                    </ng-container>
+                  </ng-container>
+                </app-tab>
+
+                <app-tab [tabTitle]="'Outstanding'">
+                  <ng-container *ngIf="isTabSelected(3)">
+                    <ng-container *ngIf="!isNonFinacleCustomer(customer)">
+                      <app-customer-stat-outstanding [customerDetails]="customerDetailsMap[customer.casCustomerID]">
+                      </app-customer-stat-outstanding>
+                    </ng-container>
+                  </ng-container>
+                </app-tab>
+
+                <app-tab [tabTitle]="'Advance Details'">
+                  <ng-container *ngIf="isTabSelected(4)">
+                    <ng-container *ngIf="!isNonFinacleCustomer(customer)">
+                      <app-customer-advance-details [customerDetails]="customerDetailsMap[customer.casCustomerID]">
+                      </app-customer-advance-details>
+                    </ng-container>
+                  </ng-container>
+                </app-tab>
+
+                <app-tab [tabTitle]="'Deposit Details'">
+                  <ng-container *ngIf="isTabSelected(5)">
+                    <ng-container *ngIf="!isNonFinacleCustomer(customer)">
+                      <app-customer-deposits-details [customerDetails]="customerDetailsMap[customer.casCustomerID]">
+                      </app-customer-deposits-details>
+                    </ng-container>
+                  </ng-container>
+                </app-tab>
+
+                <app-tab tabTitle="Bank Facilities">
+                  <ng-container *ngIf="isTabSelected(6)">
+                    <div *ngIf="facilityPaperAddEditService.allowFinacleData()" class="p-2">
+                      <div>
+                        <ng-container>
+                          <!-- <app-personal-detail-bank
+                            [customer]="selectedCustomerMap[customer.casCustomerID]"
+                            class="w-100-p">
+                          </app-personal-detail-bank>-->
+                          <app-personal-detail-bank [FormData]="selectedCustomerMap[customer.casCustomerID]"
+                            [FormType]="'FACILITY_PAPER'" class="w-100-p">
+                          </app-personal-detail-bank>
+                          <div *ngIf="!loadMoreClicked" class="w-100-p mb-2 jumbo-padding">
+                            <span class="a-color" (click)="onLoadMoreDetail()">show more..</span>
+                          </div>
+                        </ng-container>
+
+                        <ng-container *ngIf="loadMoreClicked">
+                          <!--<app-personal-detail-facility
+                            [customer]="selectedCustomerMap[customer.casCustomerID]"
+                            class="w-100-p">
+                          </app-personal-detail-facility>-->
+                          <app-personal-detail-facility [FormData]="selectedCustomerMap[customer.casCustomerID]"
+                            [FormType]="'FACILITY_PAPER'" class="w-100-p">
+                          </app-personal-detail-facility>
+                        </ng-container>
+                      </div>
+
+                      <ng-container>
+                        <app-personal-detail-ob-facility [customer]="selectedCustomerMap[customer.casCustomerID]"
+                          [facilityPaper]="facilityPaper" class="w-100-p">
+                        </app-personal-detail-ob-facility>
+                      </ng-container>
+                    </div>
+
+                    <ng-container *ngIf="!facilityPaperAddEditService.allowFinacleData()">
+                      <p class="not-auth-message">
+                        You are not authorized to view finacle data
+                      </p>
+                    </ng-container>
+
+                  </ng-container>
+                </app-tab>
+
+
+
+                <app-tab [tabTitle]="'Kalypto Details'">
+                  <ng-container *ngIf="isTabSelected(7)">
+                    <!-- <ng-container *ngIf="!isNonFinacleCustomer(customer)"> -->
+                    <app-customer-kalypto-details [customerDetails]="customerDetailsMap[customer.casCustomerID]"
+                      [mainFacilityPaper]="mainFacilityPaper">
+                    </app-customer-kalypto-details>
+                    <!-- </ng-container> -->
+                  </ng-container>
+                </app-tab>
+
+                <!-- <ng-container *ngIf="!isNonFinacleCustomer(customer)">
+                  <app-tab tabTitle="Customer Statistics">
+                    <ng-container *ngIf="isTabSelected(7)">
+
+                      <div class="p-2">
+                        <hr style="padding: unset !important;">
+                       <app-personal-customer-stat-wrapper
+                          [customer]="selectedCustomerMap[customer.casCustomerID]"
+                          class="w-100-p"
+                        >
+                        </app-personal-customer-stat-wrapper>
+                        <app-personal-customer-stat-wrapper
+                          [FormData]="selectedCustomerMap[customer.casCustomerID]"
+                          [FormType]="'FACILITY_PAPER'"
+                          class="w-100-p"
+                        >
+                        </app-personal-customer-stat-wrapper>
+                      </div>
+
+                    </ng-container>
+
+                  </app-tab>
+                </ng-container> -->
+
+
+                <app-tab [tabTitle]="'Guarantee Volumes'">
+                  <ng-container *ngIf="isTabSelected(8)">
+
+                    <app-customer-guarantee-volumes [customerData]="getCustomerDetails(customer)"
+                      [updateButtonIsEnabled]="isAbleToUpdate"></app-customer-guarantee-volumes>
+
+                  </ng-container>
+                </app-tab>
+
+
+
+                <!-- <app-tab [tabTitle]="'Import Turnover'">
+                    <ng-container>
+                      <ng-container>
+                        <app-customer-import-turnover>
+  
+                        </app-customer-import-turnover>
+                      </ng-container>
+                    </ng-container>
+                  </app-tab> -->
+
+
+
+                <app-tab [tabTitle]="'Insurance/Valuation Expiry Details'">
+                  <ng-container *ngIf="isTabSelected(9)">
+                    <app-customer-insurance-valuation [insuranceParams]="getCustomerDetails(customer)" [mode]="'edit'"
+                      [updateButtonIsEnabled]="isAbleToUpdate">
+
+                    </app-customer-insurance-valuation>
+                  </ng-container>
+                </app-tab>
+                <app-tab [tabTitle]="'Export Turnover'">
+                  <ng-container *ngIf="isTabSelected(10)">
+                    <app-customer-export-turnover [customerData]="getCustomerDetails(customer)"
+                      [updateButtonIsEnabled]="isAbleToUpdate">
+
+                    </app-customer-export-turnover>
+                  </ng-container>
+                </app-tab>
+
+                <app-tab [tabTitle]="'Import Turnover'">
+                  <ng-container *ngIf="isTabSelected(11)">
+                    <app-customer-import-turnover [customerData]="getCustomerDetails(customer)"
+                      [updateButtonIsEnabled]="isAbleToUpdate">
+
+                    </app-customer-import-turnover>
+                  </ng-container>
+                </app-tab>
+              </app-tabs>
+            </div>
+
+
+            <ng-container *ngIf="isPersonalBurrower(customer)">
+              <label class="font-weight-bold mr-auto">Customer Classification</label>
+              <app-customer-clarification-view [facilityPaper]="facilityPaper"
+                [customer]="customer" [isEditEnabled]="true"></app-customer-clarification-view>
+            </ng-container>
+
+            <div class="m-2 w-100-p">
+              <div *ngIf="!isNonFinacleCustomer(customer)">
+                <button type="button" (click)="loadKalyptoData(customer)" mdbBtn color="light" mdbWavesEffect>Load
+                  Kalypto
+                </button>
+              </div>
+            </div>
+          </ng-container>
+        </app-tab>
+      </ng-container>
+
+    </app-tabs>
+  </ng-container>
+</div>

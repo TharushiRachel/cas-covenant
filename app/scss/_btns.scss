@@ -1,0 +1,76 @@
+.btn {
+  box-shadow: 0 2px 1px 0 rgba(0, 0, 0, .16), 0 2px 2px 0 rgba(0, 0, 0, .12) !important;
+}
+
+.btn:active, .btn:focus, .btn:hover {
+  box-shadow: 0 3px 3px 0 rgba(0, 0, 0, .18), 0 3px 3px 0 rgba(0, 0, 0, .15) !important;
+}
+
+.btn {
+  padding: 8px 25px !important;
+  font-size: 10px !important;
+}
+
+$btnTypes: (primary, secondary, success, danger, warning, info, light, dark, link);
+
+@each $btnType in $btnTypes {
+  .btn-outline-#{$btnType} {
+    padding: 6px 25px !important;
+  }
+}
+
+.cta-btn {
+  padding: .4rem .7rem !important;
+  font-size: .8rem;
+  color: #15181bb3;
+}
+
+.button-padding {
+  margin: 0.2rem 1.3rem;
+}
+
+.button-for-icon {
+  background-color: unset !important;
+  border: unset !important;
+}
+
+
+//.btn-outline-primary {
+//  padding: 6px 25px !important;
+//}
+
+//.btn-primary {
+//  border: 2px solid #4285f4 !important;
+//}
+//
+//.btn-secondary {
+//  border: 2px solid #aa66cc !important;;
+//}
+//
+//.btn-success {
+//  border: 2px solid #68c955 !important;;
+//}
+//
+//.btn-danger {
+//  border: 2px solid #eb4640 !important;;
+//}
+//
+//.btn-warning {
+//  border: 2px solid #f8bb39 !important;;
+//}
+//
+//.btn-info {
+//  border: 2px solid #48b5e6 !important;;
+//}
+//
+//.btn-light {
+//  border: 2px solid #e0e0e0 !important;;
+//}
+//
+//.btn-dark {
+//  border: 2px solid #212121 !important;;
+//}
+//
+//.btn-link {
+//  border: 2px solid transparent !important;;
+//}

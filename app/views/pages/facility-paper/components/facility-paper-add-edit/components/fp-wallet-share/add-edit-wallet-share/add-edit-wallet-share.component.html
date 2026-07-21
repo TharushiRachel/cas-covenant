@@ -1,0 +1,131 @@
+<div class="modal-header modal-topic">
+    <h4 class="modal-title w-100 font-weight-bold">Add/Edit Wallet Share</h4>
+    <button (click)="close()" aria-label="Close" class="close" data-dismiss="modal" type="button">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+
+<div class="modal-body mx-3 modal-detail form-margin" style="max-height: 80vh; overflow-y: auto;">
+    <div class="d-flex flex-row justify-content-between w-100-p mx-0">
+        <div class="col-md-4 md-form px-0">
+            <div class="md-form">
+                <input class="form-control" id="bank" [(ngModel)]="formData.bank" (focusout)="handleBankChange($event)"
+                    type="text" mdbInput [disabled]="isSubmittedItem()">
+                <label for="bank">Bank</label>
+                <mdb-error *ngIf="formErrors.bank">{{formErrors.bank}}</mdb-error>
+            </div>
+        </div>
+    </div>
+
+    <div class="row d-flex flex-row justify-content-between w-100-p mt-4 py-3 mx-0 border border-1 rounded">
+        <div class="col-md-4">
+            <div class="md-form">
+                <input class="form-control" id="facility" [(ngModel)]="newFacility.facility" type="text" mdbInput
+                    style="margin-top: 2px;">
+                <label for="facility">Facility</label>
+                <mdb-error *ngIf="formErrors.facility">{{formErrors.facility}}</mdb-error>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="md-form">
+                <input class="form-control" id="limitAmount" [(ngModel)]="newFacility.limitAmount" type="text"
+                    (focusout)="setCurrencyFormatValue('limitAmount')" mdbInput style="margin-top: 2px;">
+                <label for="limitAmount">Limit Present / Available (Rs. Mn)</label>
+                <mdb-error *ngIf="formErrors.limitAmount">{{formErrors.limitAmount}}</mdb-error>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="md-form">
+                <input class="form-control" id="osAmount" [(ngModel)]="newFacility.osAmount" type="text"
+                    (focusout)="setCurrencyFormatValue('osAmount')" mdbInput style="margin-top: 2px;">
+                <label for="osAmount">O/S as at (Rs. Mn)</label>
+                <mdb-error *ngIf="formErrors.osAmount">{{formErrors.osAmount}}</mdb-error>
+            </div>
+        </div>
+        <div class="col-md-12 my-3">
+            <div class="md-form">
+                <textarea appTextAreaAutoHeight class="form-control border-bottom" id="newSecurity" mdbInput
+                    [(ngModel)]="newFacility.security" type="text" style="min-height: 37px; height: 37px;">
+                </textarea>
+                <label for="newSecurity">Security</label>
+                <mdb-error *ngIf="formErrors.security">{{formErrors.security}}</mdb-error>
+            </div>
+        </div>
+        <div class="col-md-12 text-align-end">
+            <button class="relative waves-light" color="light" mdbBtn mdbWavesEffect type="button"
+                (click)="clearFacilityData()" *ngIf="isFacilityEdit">
+                Clear
+            </button>
+            <button class="relative waves-light" color="secondary" mdbBtn mdbWavesEffect type="button"
+                (click)="saveFacility()" [disabled]="!isBankSelected()">
+                {{isFacilityEdit ? "Edit" : "Add"}} Facility
+            </button>
+        </div>
+    </div>
+
+    <div class="d-flex flex-row justify-content-between w-100-p mt-3 mx-0">
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th style="width: 12%;">Facility</th>
+                    <th style="width: 12%;">Limit Present / Available (Rs. Mn)</th>
+                    <th style="width: 12%;">O/S as at (Rs. Mn)</th>
+                    <th style="width: 58%;">Security</th>
+                    <th style="width: 6%;">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <ng-container *ngIf="filterRemoveData(selectedFacilities).length > 0">
+                    <tr *ngFor="let item of filterRemoveData(selectedFacilities)">
+                        <td>{{item.facility}}</td>
+                        <td style="text-align: end;">{{getFormattedMillionValue(item.limitAmount)}}</td>
+                        <td style="text-align: end;">{{getFormattedMillionValue(item.osAmount)}}</td>
+                        <td>
+                            <pre class="custom-pre-tag-with-spaces">{{item.security ? item.security : "-"}}</pre>
+                        </td>
+                        <td>
+                            <div class="row d-flex mx-0">
+                                <mdb-icon [mdbTooltip]="'Edit'" fas icon="pencil-alt" class="gray-text fa-1x mr-2"
+                                    aria-hidden="true" (click)="editFacility(item)"></mdb-icon>
+                                <mdb-icon [mdbTooltip]="'Remove'" fas icon="trash-alt" class="red-text fa-1x"
+                                    aria-hidden="true" (click)="removeFacility(item)"></mdb-icon>
+                            </div>
+                        </td>
+                    </tr>
+                </ng-container>
+                <ng-container *ngIf="filterRemoveData(selectedFacilities).length <= 0">
+                    <tr *ngIf="!formErrors.facilities">
+                        <td colspan="4" style="text-align: center;">There are no facilities.</td>
+                    </tr>
+                    <tr *ngIf="formErrors.facilities">
+                        <td colspan="4" style="text-align: center;color: red;">{{formErrors.facilities}} </td>
+                    </tr>
+                </ng-container>
+            </tbody>
+        </table>
+
+    </div>
+
+    <div class="d-flex flex-row justify-content-between w-100-p mt-2 mx-0">
+        <div class="col-md-12 px-0">
+            <div class="md-form">
+                <textarea appTextAreaAutoHeight class="form-control border-bottom" id="commonSecurity" mdbInput
+                    [(ngModel)]="formData.commonSecurity" type="text" style="min-height: 37px; height: 37px;">
+                </textarea>
+                <label for="commonSecurity">Common Security</label>
+                <mdb-error *ngIf="formErrors.commonSecurity">{{formErrors.commonSecurity}}</mdb-error>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal-footer modal-end">
+    <button class="relative waves-light" color="light" mdbBtn mdbWavesEffect type="button" (click)="clearData()"
+        *ngIf="!isSubmittedItem()">
+        Clear Data
+    </button>
+    <button class="relative waves-light" color="secondary" mdbBtn mdbWavesEffect type="button"
+        (click)="saveWalletShare()">
+        Save
+    </button>
+</div>

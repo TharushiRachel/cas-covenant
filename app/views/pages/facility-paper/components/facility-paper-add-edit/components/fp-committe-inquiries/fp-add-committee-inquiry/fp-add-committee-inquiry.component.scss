@@ -1,0 +1,25 @@
+#fp-inquiry-editor {
+  min-height: 200px;
+}
+
+.editor-save-btn {
+  min-width: 80px;
+}
+
+.modal-width-85-p {
+  max-width: 85% !important;
+}
+
+.modal-content {
+  overflow: visible;
+}
+
+// Make sure modal body doesn’t clip child dropdowns
+.modal-body {
+  overflow: visible !important;
+}
+
+// Force dropdown list above modal footer
+mdb-select .dropdown-menu {
+  z-index: 9999 !important;
+}

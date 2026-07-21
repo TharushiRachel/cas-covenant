@@ -1,0 +1,34 @@
+<div class="d-flex p-2 flex-column justify-content-start align-items-start w-100-p">
+  <div class="width-100">
+    <ng-container *ngIf="isDataAvailable  ; else : noData">
+      <p class="font-weight-bold">Outstanding as at {{date}}</p>
+      <table class="custom-bordered-table width-100">
+        <thead>
+          <tr style="height: 30px" class="table-heading-color">
+            <th style="width: 150px;">Account Type</th>
+            <th>LIEN Amount</th>
+            <th>Reserved</th>
+            <th>Balance</th>
+            <th>Currency</th>
+          </tr>
+          <tr>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let data of accStatResp">
+            <td style="width: 150px; text-align: start;">{{data.acctype}}</td>
+            <td class="value-cel">{{getCurrencyFormat(data.lien)}}</td>
+            <td class="value-cel">{{getCurrencyFormat(data.reserved)}}</td>
+            <td class="value-cel">{{getCurrencyFormat(data.avaiBal)}}</td>
+            <td class="value-cel">{{data.curr}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </ng-container>
+    <ng-template #noData>
+      <p class="not-auth-message">
+        No Records Available
+      </p>
+    </ng-template>
+  </div>
+</div>

@@ -1,0 +1,28 @@
+<div class="modal-header modal-topic">
+    <h4 class="modal-title w-100 ">Security Document Action Log<br>
+        <h4 class="modal-title w-100 font-weight-bold">{{ selectedDocumentElement.documentName }} </h4>
+    </h4>
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="mdbModalRef.hide()">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+
+<div class="modal-body mx-3 mb-3 modal-detail form-margin" style="max-height: 80vh; overflow-y: auto;">
+    <table class="table width-100">
+        <thead>
+            <tr>
+                <th class="text-align-center width-20">User</th>
+                <th class="text-align-center width-20">Date</th>
+                <th class="text-align-center width-20">Action</th>
+                <th class="text-align-center width-20">Comment</th>
+            </tr>
+        </thead>
+        <tr [ngClass]="{'tr-highlight': data.documentStatus == 'PRINT'}"
+            *ngFor="let data of securityDocumentHistoryActionList">
+            <td class="text-align-start">{{data.user}}</td>
+            <td class="text-align-center">{{data.actionDate}}</td>
+            <td class="text-align-left">{{data.action}}</td>
+            <td class="text-align-left">{{data.comment ? data.comment : '-'}}</td>
+        </tr>
+    </table>
+</div>

@@ -1,0 +1,43 @@
+<mdb-navbar #sideNav SideClass="navbar fixed-top navbar-toggleable-md navbar-expand-lg scrolling-navbar double-nav"
+            [containerInside]="false" id = 'navbar'>
+
+  <navlinks class="navbar-container">
+    <!-- SideNav slide-out button -->
+    <!--    <div class="float-left">-->
+    <!--      <a class="header-collapse-btn">-->
+    <!--        <mdb-icon fas icon="bars"></mdb-icon>-->
+    <!--      </a>-->
+    <!--    </div>-->
+    <!--/. SideNav slide-out button -->
+  </navlinks>
+
+  <navlinks>
+    <ul class="nav navbar-nav nav-flex-icons ml-auto ie-double-nav">
+      <!--      <li class="nav-item">-->
+      <!--        <a class="nav-link waves-light" mdbWavesEffect><mdb-icon fas icon="envelope"></mdb-icon> <span-->
+      <!--          class="clearfix d-none d-sm-inline-block">Contact</span></a>-->
+      <!--      </li>-->
+      <!--      <li class="nav-item">-->
+      <!--        <a class="nav-link waves-light" mdbWavesEffect><mdb-icon far icon="comments"></mdb-icon> <span-->
+      <!--          class="clearfix d-none d-sm-inline-block">Support</span></a>-->
+      <!--      </li>-->
+      <!--      <li class="nav-item">-->
+      <!--        <a class="nav-link waves-light" mdbWavesEffect><mdb-icon fas icon="user"></mdb-icon> <span-->
+      <!--          class="clearfix d-none d-sm-inline-block">Account</span></a>-->
+      <!--      </li>-->
+      <li class="nav-item dropdown btn-group" dropdown>
+        <a dropdownToggle type="button" class="nav-link dropdown-toggle waves-light" mdbWavesEffect>
+          <mdb-icon fas icon="user"></mdb-icon>
+          <span class="clearfix d-none d-sm-inline-block f-medium">{{getUserName()}}</span>
+        </a>
+        <div class="dropdown-menu dropdown-primary dropdown-menu-right" role="menu" style="z-index: 100 !important;">
+          <a class="dropdown-item f-regular" href="#" (click)="viewInfo($event)">View Info</a>
+          <ng-container *ngIf="isAgent()">
+            <a class="dropdown-item f-regular" href="#" (click)="onChangePassword($event)">Change Password</a>
+          </ng-container>
+          <a class="dropdown-item f-regular" href="#" (click)="onLogOut()">Log Out</a>
+        </div>
+      </li>
+    </ul>
+  </navlinks>
+</mdb-navbar>

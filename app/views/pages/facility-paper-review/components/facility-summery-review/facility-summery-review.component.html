@@ -1,0 +1,122 @@
+<div mdbSticky class="d-flex flex-row justify-content-between page-header">
+  <div class="d-flex flex-row align-items-center">
+    <h5><i class="fas fa-poll header-icon"></i>Paper Review Summary</h5>
+  </div>
+</div>
+
+<div class="page-search-section section display-flex flex-column jc-start p-2 pt-3 pb-3 default-box-styles align-start">
+  <form [formGroup]="searchForm">
+    <div class="display-flex w-100-p flex-row jc-start ai-center flex-wrap flex-2-gap">
+
+      <div class="md-form w-22-p min-width-120 ">
+        <mdb-select
+          [options]="optionsSelect"
+          placeholder="Select Data Range"
+          formControlName="dateRange"
+          id="dateRange"></mdb-select>
+      </div>
+      <!--Enable The Service call when the service get resolved to fill up the options -->
+      <!--      <div class="md-form w-22-p min-width-120 ">-->
+      <!--        <mdb-select-->
+      <!--          [options]="allowApprovedUPMGroupsForLoginUser"-->
+      <!--          placeholder="UPM Group"-->
+      <!--          formControlName="upmGroupCode"-->
+      <!--          id="upmGroupCode"></mdb-select>-->
+      <!--      </div>-->
+
+      <div class="md-form w-22-p min-width-120 ">
+        <mdb-select
+          [multiple]="true"
+          [options]="paperReviewStatusSelect"
+          placeholder="Review Status"
+          formControlName="paperReviewStatusList"
+          id="paperReviewStatusList"
+        ></mdb-select>
+      </div>
+
+      <div class="md-form w-22-p min-width-120 ">
+        <input type="text"
+               id="approvedUser"
+               formControlName="approvedUser"
+               class="form-control" mdbInput>
+        <label for="approvedUser">Approved User</label>
+      </div>
+
+      <div class="display-flex flex-1 flex-row justify-content-between ai-center">
+        <div class="md-form">
+          <ng-container *ngIf="fromDateAndToDate.fromDate">
+            <table class="table">
+              <tr class="date-tr">
+                <th>From</th>
+                <td>{{fromDateAndToDate.fromDate}}</td>
+                <th>To</th>
+                <td>{{fromDateAndToDate.toDate}}</td>
+              </tr>
+            </table>
+          </ng-container>
+        </div>
+        <div>
+          <button
+            (click)="doSearch()"
+            type="button"
+            class="medium-button btn btn-info"
+            mdbBtn
+            size="sm">Search
+          </button>
+          <button
+            (click)="clearSearch()"
+            class="medium-button btn btn-outline-info clear-btn"
+            type="button"
+            mdbBtn
+            size="sm"
+          >
+            Clear
+          </button>
+        </div>
+      </div>
+    </div>
+  </form>
+
+  <div *ngIf="facilityReviewSummaries.length == 0" class="alert alert-warning section" role="alert">
+    No Facility Review(s) Found !
+  </div>
+
+  <ng-container *ngIf="facilityReviewSummaries.length > 0">
+    <div class="section table-responsive mb-15p">
+      <table class="table">
+        <thead>
+        <tr>
+          <th scope="col">Approved User</th>
+          <!--        <th scope="col">UPM ID</th>-->
+          <th scope="col" class="text-align-end">Total Exposure(Direct/Indirect)</th>
+          <th scope="col" class="text-align-end">No of Papers</th>
+          <th scope="col" class="text-align-end">No of Days</th>
+          <th scope="col" class="text-align-end">Average</th>
+        </tr>
+        </thead>
+        <tbody>
+        <ng-container *ngFor="let facilitySummary of facilityReviewSummaries; let i = index">
+          <tr class="table-clickable-row"
+              (click)="viewFacilityPapers(facilitySummary)"
+          >
+            <td>{{facilitySummary.displayName}}</td>
+            <!--          <td>{{facilitySummary.upmID}}</td>-->
+            <td class="text-right">{{this.getCurrencyFormat(facilitySummary.totalFacilityAmount)}}</td>
+            <td class="text-right">{{facilitySummary.numberOfFacilities}}</td>
+            <td class="text-right width-10">{{facilitySummary.noOfDays}}</td>
+            <td class="text-right">{{this.getCurrencyFormat(facilitySummary.average)}}</td>
+          </tr>
+        </ng-container>
+        </tbody>
+      </table>
+    </div>
+
+    <app-paginator
+      [pageIndex]="pageSize.pageIndex"
+      [length]="pageSize.length"
+      [pageSize]="pageSize.pageSize"
+      [pageSizeOptions]="pageSize.pageSizeOptions"
+      (page)="onPageEvent($event)"
+    ></app-paginator>
+  </ng-container>
+</div>

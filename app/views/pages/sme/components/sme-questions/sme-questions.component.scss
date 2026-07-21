@@ -1,0 +1,150 @@
+/* filepath: c:\Sampath Bank Project\cas2020\src\main\angular\src\app\views\pages\sme\components\sme-questions\sme-questions.component.scss */
+
+/* Make the component scrollable */
+:host {
+  display: block;
+  max-height: 500px; /* Set the maximum height */
+  overflow-y: auto; /* Enable vertical scrolling */
+  overflow-x: hidden; /* Prevent horizontal scrolling */
+  padding: 10px 10px 0px 10px;
+}
+
+/* General form styling */
+.sme-questions-form {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  overflow-y: auto;
+}
+
+/* Form container */
+.form-container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #ffffff;
+}
+
+/* Form group */
+.form-group {
+  margin-bottom: 20px;
+}
+
+/* Question block styling */
+.question-block {
+  margin-bottom: 20px;
+  padding: 15px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  background-color: #fff;
+}
+
+/* Question title styling */
+.question-title {
+  font-weight: bold;
+  margin-bottom: 10px;
+  display: block;
+  color: #333;
+}
+
+/* Answer options styling */
+.answers {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Form check group */
+.form-check-group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Answer option */
+.answer-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Form check */
+.form-check {
+  display: flex;
+  align-items: center;
+}
+
+/* Radio button styling */
+input[type="radio"] {
+  accent-color: #007bff; /* Bootstrap primary color */
+  cursor: pointer;
+}
+
+/* Radio button styling */
+.form-check-input {
+  margin-right: 10px;
+  cursor: pointer;
+}
+
+/* Answer label styling */
+.answer-label {
+  color: #555;
+  cursor: pointer;
+}
+
+/* Answer label */
+.form-check-label {
+  color: #555;
+  cursor: pointer;
+}
+
+/* Submit button styling */
+.submit-button {
+  display: block;
+  margin: 20px auto 0;
+  padding: 10px 20px;
+  font-size: 16px;
+  font-weight: bold;
+  color: #fff;
+  background-color: #007bff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+/* Form actions */
+.form-actions {
+  text-align: center;
+  margin-top: 20px;
+}
+
+/* Submit button */
+.btn-primary {
+  padding: 10px 20px;
+  font-size: 16px;
+  font-weight: bold;
+  color: #fff;
+  background-color: #007bff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.submit-button:hover {
+  background-color: #0056b3;
+}
+
+.btn-primary:hover {
+  background-color: #0056b3;
+}
+
+.sticky-submit {
+  position: sticky;
+  bottom: 0;
+  background: #fff;
+  padding: 16px 0 0 0;
+  z-index: 10;
+  text-align: left; /* or center/left as you prefer */
+}

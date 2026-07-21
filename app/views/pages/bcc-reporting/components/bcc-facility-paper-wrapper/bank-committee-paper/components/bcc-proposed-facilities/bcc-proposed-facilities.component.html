@@ -1,0 +1,214 @@
+<form [formGroup]="proposedFacilitiesGroup">
+
+  <div class="d-flex flex-column w-100-p mt-2">
+    <table class="table custom-bordered-table facility-table">
+      <thead>
+      <tr class="td-border-unset">
+        <th colspan="2" class="td-border-unset">
+          Date Of Approval
+          <mdb-date-picker class="form-control custom-date-input"
+                           id="facilityDateOfApproval"
+                           formControlName="facilityDateOfApproval"
+                           [options]="myDatePickerOptions"
+                           [inline]="true"
+                           inlineIcon=""
+          ></mdb-date-picker>
+        </th>
+        <th colspan="7">Proposed Facility/ies</th>
+        <th class="text-align-center w-5 ">
+          <button class="btn btn-sm btn-secondary cta-btn" type="button" mdbWavesEffect
+                  (click)="addFacilityFormRow.emit()"
+                  mdbTooltip="Add New Record" placement="left">
+            <mdb-icon fas icon="fas fa-plus" aria-hidden="true"></mdb-icon>
+          </button>
+        </th>
+      </tr>
+      <tr>
+        <th class="width-100-p">Type</th>
+        <th>Date Granted</th>
+        <th class="width-65-p">Amount Rs.Mn.</th>
+        <th>Interest Rate [Present]</th>
+        <th>Purpose</th>
+        <th>Outstanding As at Rs.Mn.
+
+          <mdb-date-picker class="form-control custom-date-input"
+                           id="proposedOutstandingAtDate"
+                           formControlName="proposedOutstandingAtDate"
+                           [options]="myDatePickerOptions"
+                           [inline]="true"
+                           inlineIcon=""
+          ></mdb-date-picker>
+
+        </th>
+        <th colspan="2">Settlement</th>
+        <th>Security</th>
+        <th></th>
+      </tr>
+      <tr>
+        <th rowspan="2"></th>
+        <th rowspan="2"></th>
+        <th rowspan="2"></th>
+        <th rowspan="2"></th>
+        <th rowspan="2"></th>
+        <th rowspan="2"></th>
+        <th>Date</th>
+        <th>Plan</th>
+        <th rowspan="2"></th>
+        <th rowspan="2"></th>
+      </tr>
+      </thead>
+      <tbody>
+      <ng-container formArrayName="proposedFacilities">
+        <tr *ngFor="let item of proposedFacilitiesGroup.get('proposedFacilities')['controls'];
+          let i = index;" [formGroupName]="i"
+        >
+          <td>
+           <textarea type="text"
+                     id="type"
+                     class="form-control comment-area"
+                     maxlength="4000"
+                     placeholder="type"
+                     formControlName="type"
+                     customHeight="100"
+                     appTextAreaAutoHeight
+                     mdbInput>
+          </textarea>
+          </td>
+          <td>
+          <textarea type="text"
+                    id="dateGrantedStr"
+                    class="form-control comment-area"
+                    maxlength="4000"
+                    formControlName="dateGrantedStr"
+                    mdbInput>
+          </textarea>
+          </td>
+          <td>
+            <input mdbValidate
+                   type="text"
+                   id="existingAmount"
+                   maxlength="10"
+                   formControlName="amount"
+                   class="custom-text-input text-align-end"
+                   placeholder="0.0"
+                   (focusout)="currencyService.patchFormControllerValue(item, 'amount')"
+                   mdbInput>
+          </td>
+          <td>
+          <textarea type="text"
+                    id="interestRate"
+                    class="form-control comment-area"
+                    maxlength="4000"
+                    placeholder="00.00"
+                    formControlName="interestRate"
+                    appTextAreaAutoHeight
+                    customHeight="100"
+                    mdbInput>
+          </textarea>
+          </td>
+          <td>
+          <textarea type="text"
+                    id="purpose"
+                    class="form-control comment-area"
+                    maxlength="4000"
+                    placeholder="Purpose"
+                    formControlName="purpose"
+                    appTextAreaAutoHeight
+                    customHeight="100"
+                    mdbInput>
+          </textarea>
+          </td>
+          <td>
+           <textarea mdbValidate
+                     type="text"
+                     id="outstandingAsAt"
+                     class="form-control comment-area"
+                     maxlength="100"
+                     formControlName="outstandingAsAt"
+                     appTextAreaAutoHeight
+                     customHeight="100"
+                     mdbInput>
+           </textarea>
+          </td>
+          <td>
+
+          <textarea type="text"
+                    id="settlementDate"
+                    class="form-control comment-area"
+                    maxlength="4000"
+                    formControlName="settlementDate"
+                    appTextAreaAutoHeight
+                    customHeight="100"
+                    mdbInput>
+          </textarea>
+
+          </td>
+          <td>
+        <textarea type="text"
+                  id="settlementPlan"
+                  class="form-control comment-area"
+                  maxlength="4000"
+                  placeholder="Plan"
+                  formControlName="settlementPlan"
+                  appTextAreaAutoHeight
+                  customHeight="100"
+                  mdbInput>
+          </textarea>
+          </td>
+          <td>
+        <textarea type="text"
+                  id="security"
+                  class="form-control comment-area text-align-start"
+                  maxlength="4000"
+                  placeholder="Security..."
+                  formControlName="security"
+                  appTextAreaAutoHeight
+                  customHeight="100"
+                  mdbInput>
+          </textarea>
+          </td>
+          <td class="w-5" [class.new-record]="!item.value.bccFacilityID">
+            <div class="d-flex flex-row justify-content-center">
+              <ng-container *ngIf="item.value.bccFacilityID">
+                <button class="btn btn-sm cta-btn delete-button" type="button" mdbWavesEffect
+                        (click)="removeBccFacility(item)"
+                        mdbTooltip="Remove" placement="left">
+                  <mdb-icon fas icon="trash-alt" aria-hidden="true"></mdb-icon>
+                </button>
+              </ng-container>
+              <ng-container *ngIf="!item.value.bccFacilityID">
+                <button class="btn btn-sm cta-btn delete-button" type="button" mdbWavesEffect
+                        (click)="removeFacilityFormRow.emit(i)"
+                        mdbTooltip="Remove" placement="left">
+                  <mdb-icon fas icon="trash-alt" aria-hidden="true"></mdb-icon>
+                </button>
+              </ng-container>
+            </div>
+          </td>
+        </tr>
+      </ng-container>
+      <tr>
+        <td>Proposed Total</td>
+        <td></td>
+        <td>
+          <input mdbValidate
+                 type="text"
+                 id="proposedFacilityTotal"
+                 formControlName="proposedFacilityTotal"
+                 class="custom-text-input text-align-end"
+                 placeholder="0.0"
+                 (focusout)="currencyService.patchFormControllerValue(proposedFacilitiesGroup, 'proposedFacilityTotal')"
+                 mdbInput>
+        </td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</form>

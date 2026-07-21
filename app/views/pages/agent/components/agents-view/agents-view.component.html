@@ -1,0 +1,135 @@
+<div mdbSticky class="d-flex flex-row justify-content-between page-header">
+  <div class="d-flex flex-row align-items-center">
+    <h5><i class="fas fa-users header-icon"></i> Agent(s)</h5>
+  </div>
+
+  <div class="d-flex flex-row align-items-center">
+    <ng-container *appHasAnyPrivilege="masterDataPrivilege.ICAS_SETTINGS_AGENT_ADD">
+      <button (click)="loadAgent(null)"
+              class="medium-button btn btn-info btn-sm"
+              mdbBtn
+              type="button"
+              mdbWavesEffect>New Agent
+      </button>
+    </ng-container>
+  </div>
+
+</div>
+
+
+<div class="page-search-section section display-flex flex-column jc-start p-2 pt-3 pb-3 default-box-styles align-start">
+  <form class="display-flex w-100-p flex-row jc-start ai-center flex-wrap flex-2-gap" [formGroup]="searchForm">
+
+    <div class="md-form w-18-p min-width-120">
+      <input type="text" id="userName" formControlName="userName" class="form-control" mdbInput>
+      <label for="userName">User Name</label>
+    </div>
+
+    <div class="md-form w-18-p min-width-120">
+      <input type="text" id="firstName" formControlName="firstName" class="form-control" mdbInput>
+      <label for="firstName">First Name</label>
+    </div>
+
+    <div class="md-form w-18-p min-width-120">
+      <input type="text" id="lastName" formControlName="lastName" class="form-control"
+             mdbInput>
+      <label for="lastName">Last Name</label>
+    </div>
+
+    <div class="md-form w-18-p min-width-120">
+      <input type="text" id="email" formControlName="email" class="form-control" mdbInput>
+      <label for="email">Email</label>
+    </div>
+
+    <div class="md-form w-18-p min-width-120">
+      <input type="text" id="mobileNumber" formControlName="mobileNumber" class="form-control" mdbInput>
+      <label for="mobileNumber">Mobile Number</label>
+    </div>
+
+
+    <div class="md-form w-18-p min-width-120">
+      <input type="text" id="nic" formControlName="nic" class="form-control" mdbInput>
+      <label for="nic">NIC</label>
+    </div>
+
+    <div class="md-form w-18-p min-width-120">
+      <input type="text" id="supervisorADUserID" formControlName="supervisorADUserID" class="form-control" mdbInput>
+      <label for="supervisorADUserID">Supervisor</label>
+    </div>
+
+    <div class="md-form w-18-p min-width-120">
+      <mdb-select
+        [options]="optionsSelect"
+        placeholder="All"
+        formControlName="status"
+        id="status"></mdb-select>
+      <label for="status">Status</label>
+    </div>
+
+    <div class="display-flex flex-1 flex-row jc-end ai-center">
+      <button
+        (click)="doSearch()"
+        type="button"
+        class="medium-button btn btn-info"
+        mdbBtn
+        size="sm">Search
+      </button>
+      <button
+        (click)="clearSearch()"
+        class="medium-button btn btn-outline-info clear-btn"
+        type="button"
+        mdbBtn
+        size="sm"
+      >
+        Clear
+      </button>
+    </div>
+
+  </form>
+</div>
+
+<div *ngIf="agents.length == 0" class="alert alert-warning section" role="alert">
+  No Agent(s) Found !
+</div>
+
+<ng-container *ngIf="agents.length > 0">
+  <div class="section table-responsive mb-15p">
+    <table class="table">
+      <thead>
+      <tr>
+        <ng-container *ngFor="let col of tableColumns">
+          <th scope="col">{{col}}</th>
+        </ng-container>
+      </tr>
+      </thead>
+      <tbody>
+      <ng-container *ngFor="let agent of agents">
+        <tr (click)="loadAgent(agent.agentID)" class="table-clickable-row">
+          <td>{{agent.userDTO.userName}}</td>
+          <td>{{agent.userDTO.fullName}}</td>
+          <td>{{agent.userDTO.email}}</td>
+          <td>{{agent.nic}}</td>
+          <td>{{agent.mobileNumber}}</td>
+          <td>{{agent.supervisorADUserID}}</td>
+          <td>
+            <span
+              [class.color-green]="agent.status === statusConst.ACT"
+              [class.color-red]="agent.status === statusConst.INA"
+            >
+                  {{status[agent.status]}}
+                </span>
+          </td>
+        </tr>
+      </ng-container>
+      </tbody>
+    </table>
+  </div>
+    <app-paginator
+      [pageIndex]="pageSize.pageIndex"
+      [length]="pageSize.length"
+      [pageSize]="pageSize.pageSize"
+      [pageSizeOptions]="pageSize.pageSizeOptions"
+      (page)="onPageEvent($event)"
+    ></app-paginator>
+  
+</ng-container>

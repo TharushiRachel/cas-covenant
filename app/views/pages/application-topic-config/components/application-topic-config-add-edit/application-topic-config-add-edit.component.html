@@ -1,0 +1,55 @@
+<div mdbSticky class="d-flex flex-row justify-content-between page-header">
+  <div class="d-flex flex-row align-items-center">
+    <a appGoBack class="d-flex flex-row align-items-center">
+      <i class="fas fa-angle-left header-icon-back"></i>
+    </a>
+    <h5><i class="fas fab fa-codepen header-icon"></i>
+      <span>Application Topics Config</span>
+    </h5>
+  </div>
+
+</div>
+
+<ng-container *appHasAnyPrivilege="masterDataPrivilege.ICAS_SETTINGS_APPLICATION_TOPIC_CONFIG_EDIT">
+  <div class="page-search-section d-flex p-2 flex-row justify-content-between align-items-start section">
+    <div class="input-group width-50" style="position:relative; margin-top: 6px">
+      <input type="file" class="custom-file-input" id="inputGroupFile01"
+             (change)="selectFile($event)">
+      <label class="custom-file-label" for="inputGroupFile01">
+        {{fileToUpload ? fileToUpload.name : 'Choose file'}}
+      </label>
+      <mdb-error *ngIf="fileUploadError.hasError">{{fileUploadError.errorMessage}}</mdb-error>
+    </div>
+
+    <div class="d-flex width-50 ">
+      <button
+        class="medium-button btn btn-success btn-sm"
+        mdbBtn
+        type="button"
+        [disabled]="!isValid()"
+        (click)="uploadFile()"
+        mdbWavesEffect>
+        <span>SAVE</span>
+      </button>
+    </div>
+  </div>
+</ng-container>
+
+<div class="page-search-section d-flex p-2 flex-column justify-content-start align-items-start section">
+  <table class="table width-100" *ngIf="uploadedApplicationFormConfigTopicList.length>0">
+    <thead>
+    <tr>
+      <th>Page</th>
+      <th>Topic Code</th>
+    </tr>
+    </thead>
+    <tbody>
+    <ng-container *ngFor="let data of uploadedApplicationFormConfigTopicList">
+      <tr>
+        <td>{{data.page}}</td>
+        <td>{{data.topicCode}}</td>
+      </tr>
+    </ng-container>
+    </tbody>
+  </table>
+</div>

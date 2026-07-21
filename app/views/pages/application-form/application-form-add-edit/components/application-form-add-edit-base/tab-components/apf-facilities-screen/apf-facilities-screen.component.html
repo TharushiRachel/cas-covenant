@@ -1,0 +1,111 @@
+<mdb-card>
+  <mdb-card-body class="custom-card-body" id="af-f-prev-mod">
+    <mdb-card-header class="custom-card-header justify-content-center">
+      <div class="d-flex flex-row w-100-p flex-wrap justify-content-between">
+        <div>
+          <ng-container *ngIf="applicationFormFacilitiesList.length == 0">
+            <div class="alert alert-warning section" style="margin-bottom: 0px ; font-weight: normal" role="alert">
+              No Facilities Yet !
+            </div>
+          </ng-container>
+        </div>
+        <div>
+          <ng-container *ngIf="isAbleToEdit()">
+            <button mdbBtn
+                    type="button"
+                    class="action-button-padding btn-outline-info btn-sm"
+                    outline="true"
+                    mdbWavesEffect
+                    (click)="toggleViewMode($event)">
+              <ng-container *ngIf="!isPreviewMode">
+                <mdb-icon fas icon="eye" aria-hidden="true"></mdb-icon>
+                Preview Mode
+              </ng-container>
+              <ng-container *ngIf="isPreviewMode">
+                <mdb-icon fas icon="pencil-alt" aria-hidden="true"></mdb-icon>
+                Edit Mode
+              </ng-container>
+            </button>
+          </ng-container>
+
+          <ng-container
+            *ngIf="applicationFormFacilitiesList.length > 0 && isAbleToEdit()">
+            <button mdbBtn
+                    type="button"
+                    class="action-button-padding btn-outline-info btn-sm"
+                    outline="true"
+                    mdbWavesEffect
+                    (click)="updateFacilityOrder($event)">
+              Facility Order
+            </button>
+          </ng-container>
+
+          <ng-container *ngIf="isAbleToEdit()">
+            <button mdbBtn
+                    type="button"
+                    class=" medium-button btn btn-info btn-sm margin-unset"
+                    mdbTooltip="Add Facility" placement="left"
+                    mdbWavesEffect
+                    (click)="openModalAddEdit($event)">
+              Add Facility
+            </button>
+          </ng-container>
+        </div>
+      </div>
+    </mdb-card-header>
+    <div class="d-flex flex-column justify-content-center w-100-p">
+      <ng-container *ngIf="!isPreviewMode ; else preview">
+        <ng-container *ngIf="applicationFormFacilitiesList.length > 0">
+          <app-tabs class="w-100-p" [selectedTabIndex]="selectedTabIndex" (onTabSelect)="setTabIndex($event)">
+            <ng-container *ngFor="let facility of applicationFormFacilitiesList; let i =index">
+              <app-tab [tabTitle]="'Facility ' + (i + 1)"
+                       [showBadge]="facility.isNew=='Y'"
+                       [badgeContent]="'N'"
+                       [badgeColor]="'red'"
+                       [active]="i == selectedTabIndex">
+                <div class="d-flex flex-column justify-content-start width-100">
+                  <app-apf-facility
+                    [facilityData]="facility"
+                    [applicationForm]="applicationForm"
+                    [currentIndex]="selectedTabIndex"
+                    [facilityList]="applicationFormFacilitiesList"
+                    [lastIndex]="applicationFormFacilitiesList.length-1"
+                    (setTabIndex)="setTabIndex($event)"
+                    (onUpdateFacility)="openModalAddEdit($event, facility,i)"
+                  ></app-apf-facility>
+                </div>
+              </app-tab>
+            </ng-container>
+          </app-tabs>
+        </ng-container>
+      </ng-container>
+      <ng-template #preview>
+        <ng-container *ngIf="applicationFormFacilitiesList.length > 0">
+          <ng-container *ngFor="let creditFacility of applicationFormFacilitiesList; let i =index">
+            <div class="w-100-p mt-10p">
+              <app-apf-facility-data-preview
+                [currentIndex]="i"
+                [creditFacilityList]="applicationFormFacilitiesList"
+                [facilityData]="creditFacility"
+                (toCommonSecurityContent)="toCommonSecurityContent($event)"
+              >
+              </app-apf-facility-data-preview>
+            </div>
+          </ng-container>
+        </ng-container>
+        <ng-container *ngIf="commonFacilitySecurityList.length > 0">
+          <div class="w-100-p d-flex flex-column justify-content-center">
+            <app-apf-facilities-common-securities
+              [commonFacilitySecurityList]="commonFacilitySecurityList"
+              [facilities]="applicationFormFacilitiesList"
+              (moveUp)="moveUp()"
+            >
+            </app-apf-facilities-common-securities>
+          </div>
+        </ng-container>
+      </ng-template>
+    </div>
+  </mdb-card-body>
+  <mdb-card-footer class="custom-card-footer">
+  </mdb-card-footer>
+</mdb-card>

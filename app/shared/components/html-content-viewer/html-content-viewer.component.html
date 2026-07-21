@@ -1,0 +1,11 @@
+<div class="w-100-p" style="overflow-y:scroll">
+  <div class="custom-heading">
+    <button type="button" class="close pull-right" aria-label="Close" (click)="onNoClick()">
+      <span aria-hidden="true">×</span>
+    </button>
+    <h4 class="modal-title w-100 heading-align" id="myModalLabel">{{header}}</h4>
+  </div>
+  <div class="custom-body">
+    <div id="printContentDiv" [innerHTML]="htmlContent | safeHtml"></div>
+  </div>
+</div>

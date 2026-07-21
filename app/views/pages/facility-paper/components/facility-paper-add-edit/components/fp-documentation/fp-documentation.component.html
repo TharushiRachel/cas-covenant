@@ -1,0 +1,135 @@
+  <div>
+    <form class="d-flex p-2 flex-column justify-content-start align-items-start w-100-p">
+      <div class="d-flex flex-row justify-content-between w-100-p">
+        <div class="div-margin w-100-p m-right-left-2px">
+          <table class="table-width">
+            <tr>
+              <td></td>
+              <td class="bl-width"> </td>
+              <td class="btn-style">
+                <ng-container *ngIf="showSubmitDocumentButton()">
+                  <button mdbBtn
+                          type="button"
+                          mdbTooltip="Submit Document"
+                          class="action-button-padding btn-outline-success btn-sm undefined btn btn-outline- ng-star-inserted"
+                          outline="true"
+                          mdbWavesEffect
+                          (click)="submitDocument()">
+                    <span>Submit</span>
+                  </button>
+                </ng-container>
+                <ng-container *ngIf="showApproveDocumentButton()">
+                  <button mdbBtn
+                          type="button"
+                          mdbTooltip="Recommend and Forward Document"
+                          class="action-button-padding btn-outline-success btn-sm undefined btn btn-outline- ng-star-inserted"
+                          outline="true"
+                          mdbWavesEffect
+                          (click)="approveDocument()">
+                    <span>Forward</span>
+                  </button>
+                </ng-container>
+                <ng-container *ngIf="showEditDocumentButton()">
+                  <button mdbBtn
+                          type="button"
+                          mdbTooltip="Edit Document"
+                          class="action-button-padding btn-outline-info btn-sm"
+                          outline="true"
+                          mdbWavesEffect
+                          (click)="openModalAddEdit($event)">
+                    <span>Edit</span>
+                  </button>
+                </ng-container>
+              <!--  <ng-container *ngIf="showDeleteDocumentButton()">
+                  <button mdbBtn
+                          type="button"
+                          mdbTooltip="Delete Document"
+                          class="action-button-padding btn-outline-info btn-sm undefined btn btn-outline- ng-star-inserted"
+                          outline="true"
+                          mdbWavesEffect
+                          (click)="deleteDocument()">
+                    <span>Delete</span>
+                  </button>
+                </ng-container>-->
+                <ng-container *ngIf="showPrintDocumentButton()">
+                  <button mdbBtn
+                          type="button"
+                          mdbTooltip="Print Document"
+                          class="action-button-padding btn-outline-success btn-sm undefined btn btn-outline- ng-star-inserted"
+                          outline="true"
+                          mdbWavesEffect
+                          (click)="printDocument()">
+                    <span>Print</span>
+                  </button>
+                </ng-container>
+                <ng-container *ngIf="showPreviewDocumentButton()">
+                  <button mdbBtn
+                          type="button"
+                          mdbTooltip="Preview Document"
+                          class="action-button-padding btn-outline-success btn-sm undefined btn btn-outline- ng-star-inserted"
+                          outline="true"
+                          mdbWavesEffect
+                          (click)="previewDocument()">
+                    <span>Preview</span>
+                  </button>
+                </ng-container>
+                <ng-container *ngIf="showReturnDocumentButton()">
+                  <button mdbBtn
+                          type="button"
+                          mdbTooltip="Return Document"
+                          class="action-button-padding btn-outline-info btn-sm undefined btn btn-outline- ng-star-inserted"
+                          outline="true"
+                          mdbWavesEffect
+                          (click)="returnDocument($event)">
+                    <span>Return</span>
+                  </button>
+                </ng-container>
+                <ng-container *ngIf="showActionLogButton()">
+                  <button mdbBtn
+                          type="button"
+                          mdbTooltip="View Action Log"
+                          class="medium-button btn btn-info btn-sm"
+                          outline="true"
+                          mdbWavesEffect
+                          (click)="viewActionLog()">
+                    <span>Action Log</span>
+                  </button>
+                </ng-container>
+              </td>
+            </tr>
+            <tr [ngClass]="{'tr-height': visibleToEnterer}">
+              <td class="doc-nav">
+                <ng-container *ngIf="showInitialTreeNavigation()">
+                  <p-tree
+                    [value]="initialNodes"
+                    [filter]="true"
+                    selectionMode="single"
+                    [(selection)]="selectedInitialNode"
+                    (onNodeSelect)="nodeSelect($event)" >
+                  </p-tree>
+                </ng-container>
+              </td>
+              <td class="bl-width"> </td>
+              <ng-container *ngIf="showDocPreview">
+                <td style="vertical-align: top;"  rowspan = 3>
+                  <div class="doc-content" [innerHtml]="documentContent | safeHtml"></div>
+                </td>
+              </ng-container>
+            </tr>
+            <tr [ngClass]="{'tr-height': visibleToEnterer}"></tr>
+            <tr>
+              <td class="doc-nav">
+                <p-tree
+                  [filter]="true"
+                  [value]="documentNodes"
+                  selectionMode="single"
+                  [(selection)]="selectedNode"
+                  (onNodeSelect)="docNodeSelect($event)"
+                ></p-tree>
+              </td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </form>
+</div>

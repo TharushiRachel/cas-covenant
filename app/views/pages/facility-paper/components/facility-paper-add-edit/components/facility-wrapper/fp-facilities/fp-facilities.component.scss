@@ -1,0 +1,61 @@
+.header-facility-data {
+  background: #dcdfe2f2;
+  color: black;
+  border-radius: 5px;
+  height: 2ch;
+  margin-bottom: 5px;
+  font-size: 6ch;
+  font-family: initial;
+
+  span {
+    &.tab-title {
+      color: black;
+    }
+  }
+}
+
+.page-section {
+  border: 1px solid #6a9ed3;
+  margin: 0.5rem 0;
+
+  &:first-child {
+    margin-top: 1rem;
+  }
+
+  .info-section {
+    margin: 3px 15px 3px 0;
+    min-width: 220px;
+
+    .info-caption {
+      margin-right: 5px;
+    }
+  }
+}
+
+.read-view-btn {
+  min-width: 135px;
+  padding: 0.4rem 1rem !important;
+}
+
+.cft-btn {
+  padding: 0px;
+  height: 30px;
+  float: right;
+  margin-bottom: 15px;
+}
+
+mdb-accordion-item-head {
+  background-color: #dcdfe2f2;
+
+  &.active {
+    color: black;
+  }
+}
+
+.facility-content {
+  margin-left: unset;
+  margin-right: unset;
+  padding-left: 0;
+  padding-right: 0;
+}
+

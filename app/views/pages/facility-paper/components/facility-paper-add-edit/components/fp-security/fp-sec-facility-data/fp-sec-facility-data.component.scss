@@ -1,0 +1,107 @@
+.facility-data-header {
+  font-weight: bold;
+  display: inline;
+  width: fit-content;
+}
+
+.cta-btn {
+  padding: .4rem .7rem;
+  font-size: .8rem;
+  color: #15181bb3;
+}
+
+.security-detail {
+  width: 80%;
+}
+
+.security-amount {
+  width: 30%;
+}
+
+.security-common-flag {
+  width: 5%;
+}
+
+.security-action {
+  width: 10%;
+}
+
+.add-security-detail-button {
+  padding: 0.2rem 1.2rem !important;
+}
+
+.delete-button {
+  background-color: #ff354785 !important;
+}
+
+.action-header {
+  width: 112px;
+  min-width: 112px;
+}
+
+.table {
+  margin-bottom: 20px;
+
+  td, th {
+    padding: 5px 0;
+    //vertical-align: middle;
+  }
+
+  &.preview-mode {
+    td, th {
+      padding: 5px 0;
+      //vertical-align: middle;
+    }
+  }
+}
+
+.refer-to-the {
+  color: #0b51c5;
+
+  &:hover {
+    cursor: pointer;
+  }
+}
+
+.border-none-card {
+  border: none !important;
+  box-shadow: none;
+}
+
+.custom-security-facility-table {
+  td, th {
+    border: 1px solid #9d9ea0 !important;
+    padding: 0px 2px 0px 2px !important;
+    vertical-align: middle !important;
+  }
+
+  thead tr, thead th {
+    padding: 0px 2px 0px 2px !important;
+    background-color: unset;
+    vertical-align: middle !important;
+    text-align: center;
+  }
+
+  tbody tr, tbody th {
+    padding: 0px 2px 0px 2px !important;
+    background-color: unset;
+    vertical-align: middle !important;
+    text-align: center;
+  }
+
+
+  padding: unset !important;
+  border-spacing: 0px;
+  -webkit-border-horizontal-spacing: 0px;
+  -webkit-border-vertical-spacing: 0px;
+  border-collapse: collapse;
+  background-color: unset;
+}
+
+.individual-security-cash-total  {
+  margin-left: 2%;
+}
+
+h4 {
+  font-size: .8rem;
+}

@@ -1,0 +1,66 @@
+<div class="item-wrapper d-flex flex-column justify-content-start">
+  <div>
+    <h6 class="hcaption">CAS Facilities</h6>
+  </div>
+  <div *ngIf="tableDataList.length >0">
+    <div class="table-responsive">
+      <table class="table">
+        <thead>
+        <tr>
+          <ng-container *ngFor="let col of tableColumns">
+            <th scope="col">{{col}}</th>
+          </ng-container>
+        </tr>
+        </thead>
+        <tbody>
+        <ng-container *ngFor="let facilityPaper of tableDataList">
+          <tr (click)="loadFacilityPaper(facilityPaper.facilityPaperID)"
+              class="table-clickable-row">
+
+            <td>{{facilityPaper.fpRefNumber}}</td>
+            <td>{{facilityPaper.bankAccountNumber}}</td>
+            <td>{{getBranchName(facilityPaper.branchCode)}}</td>
+            <td>{{facilityPaper.createdDateStr || '-'}}</td>
+            <td>{{facilityPaper.currentAssignUser || '-'}}</td>
+            <td class="status-icon status-col">
+              <a *ngIf="facilityPaper.facilityPaperStatus == this.facilityStatusConst_.IN_PROGRESS"
+                 data-toggle="tooltip" data-placement="left" title="In Progress" class="icon-padding">
+                <img class="status-img-width" src="assets/media/images/fpstatusicon/inprogress.png" alt="In Progress">
+              </a>
+
+              <a *ngIf="facilityPaper.facilityPaperStatus == this.facilityStatusConst_.APPROVED"
+                 data-toggle="tooltip" data-placement="left" title="Approved" class="icon-padding">
+                <img class="status-img-width" src="assets/media/images/fpstatusicon/approved.png" alt="Approved">
+              </a>
+
+              <a *ngIf="facilityPaper.facilityPaperStatus == this.facilityStatusConst_.CANCEL"
+                 data-toggle="tooltip" data-placement="left" title="Returned" class="icon-padding">
+                <img class="status-img-width" src="assets/media/images/fpstatusicon/return.png" alt="Returned">
+              </a>
+
+              <a *ngIf="facilityPaper.facilityPaperStatus == this.facilityStatusConst_.REJECTED"
+                 data-toggle="tooltip" data-placement="left" title="Rejected" class="icon-padding">
+                <img class="status-img-width" src="assets/media/images/fpstatusicon/rejected.png" alt="Rejected">
+              </a>
+
+              <a *ngIf="facilityPaper.facilityPaperStatus == this.facilityStatusConst_.DRAFT"
+                 data-toggle="tooltip" data-placement="left" title="Drafted" class="icon-padding">
+                <img class="status-img-width" src="assets/media/images/fpstatusicon/draft.png" alt="Drafted">
+              </a>
+
+
+            </td>
+          </tr>
+        </ng-container>
+        </tbody>
+      </table>
+    </div>
+    <app-paginator
+      [pageIndex]="pageSize.pageIndex"
+      [length]="pageSize.length"
+      [pageSize]="pageSize.pageSize"
+      [pageSizeOptions]="pageSize.pageSizeOptions"
+      (page)="onPageEvent($event)"
+    ></app-paginator>
+  </div>
+</div>

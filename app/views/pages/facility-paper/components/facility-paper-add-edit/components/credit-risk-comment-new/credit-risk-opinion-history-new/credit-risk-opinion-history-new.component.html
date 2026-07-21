@@ -1,0 +1,41 @@
+<div class="history-sec">
+    <div>    
+        <h4 class="h4-sec">View History</h4>
+    </div>
+
+
+    <div class="w-100-p" >
+        <div class="table-responsive" *ngIf="previousLockedComments != null">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">Opinion Created by</th>
+                        <th scope="col" class="">Created On</th>
+                        <th scope="col" class="text-align-center">View</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    <ng-container *ngFor="let item of previousLockedComments">
+
+                        <tr>
+                            <td class="vertical-align-middle">{{item.modifiedUserName || item.createdUserName}}</td>
+                            <td class="vertical-align-middle">{{item.modifiedDateStr ||item.commentedTimeStr}}</td>
+                            <td class="text-align-center">
+                            <button class="btn btn-sm btn-secondary cta-btn margin-unset" type="button" mdbWavesEffect
+                                    mdbTooltip="View Risk Opinion"
+                                    (click)="view(item)"
+                                    placement="left">
+                                <mdb-icon fas icon="file-alt" aria-hidden="true"></mdb-icon>
+                            </button>
+                            </td>
+                        </tr>
+                    </ng-container>
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+</div>
+    

@@ -1,0 +1,113 @@
+.ca-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.tranInfo {
+  margin-top: 20px;
+}
+
+.read-view-btn {
+  min-width: 135px;
+  padding: 0.4rem 1rem !important;
+}
+
+.fieldset {
+  padding: 39px;
+  margin: 0;
+  border: revert;
+}
+
+.flex-row {
+  margin-top: 10px;
+}
+
+.legend {
+  display: block;
+  /* width: 100%; */
+  width: fit-content;
+  max-width: 100%;
+  padding: 0;
+  margin-bottom: -0.5rem;
+  font-size: 1rem;
+  font-weight: bold;
+  line-height: inherit;
+  color: inherit;
+  white-space: normal;
+}
+
+.d-flex {
+  flex-wrap: wrap;
+}
+
+.info-caption {
+  width: 35% !important;
+}
+
+.width-5 {
+  width: 5% !important;
+}
+
+.w-100-p {
+  width: 100% !important;
+}
+
+.info-details {
+  width: 60% !important;
+  font-weight: bold !important;
+}
+
+.margin-10 {
+  margin: 10px;
+}
+
+.btn-width {
+  width: 97px;
+}
+
+.detail-section {
+  width: 100%;
+  background-color: white;
+}
+
+.padding-unset {
+  padding-right: unset;
+  padding-left: unset;
+}
+
+.custom-mdb-select {
+  position: relative;
+  cursor: pointer;
+  background-color: transparent;
+  border: none;
+
+  outline: 0;
+
+  width: 50%;
+  font-size: 1rem;
+  margin: 0;
+  height: 0px;
+  box-sizing: content-box;
+
+  display: block;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  text-align: start;
+
+
+}
+
+.mdb-select>div {
+  border: transparent;
+  box-sizing: border-box;
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  width: 50%;
+}

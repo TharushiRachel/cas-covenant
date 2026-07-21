@@ -1,0 +1,42 @@
+<div class="d-flex flex-column justify-content-start align-items-start w-100-p mt-10p">
+  <div class="w-100-p">
+    <ng-container *ngIf="creditFacilityList.length >0">
+      <ng-container *ngFor="let creditFacility of creditFacilityList; let i =index">
+        <div id="fp-f-prev-mod" class="w-100-p my-3 mx-0">
+          <div class="row mx-0 my-2 justify-content-end" *ngIf="isHigherWCUser()">
+            <button class="btn" [ngClass]="getUnReadCommentsCount(creditFacility) > 0 ? 'btn-primary' : 'btn-info'" (click)="openReportModal(creditFacility)" mdbTooltip="Comments/Changes"
+              placement="right" style="padding: 8px 14px !important;">
+              <mdb-icon aria-hidden="true" fas icon="comments"></mdb-icon>
+            </button>
+          </div>
+
+          <ng-container *ngIf="isCommitteePaper; else nonCorporateFacilityData">
+            <app-preview-three-col-facility-data [currentIndex]="i" [creditFacilityList]="creditFacilityList"
+              [facilityData]="creditFacility" [facilityPaper]="facilityPaper"
+              (toCommonSecurityContent)="toCommonSecurityContent($event)"></app-preview-three-col-facility-data>
+          </ng-container>
+          <ng-template #nonCorporateFacilityData>
+            <app-preview-facility-data [creditScheduleESBResponseStatusList]="creditScheduleESBResponseStatusList"
+              [currentIndex]="i" [creditFacilityList]="creditFacilityList" [facilityData]="creditFacility"
+              [facilityPaper]="facilityPaper" (toCommonSecurityContent)="toCommonSecurityContent($event)">
+            </app-preview-facility-data>
+          </ng-template>
+        </div>
+      </ng-container>
+    </ng-container>
+  </div>
+
+  <ng-container *ngIf="commonFacilitySecurityList.length > 0">
+    <div class="w-100-p d-flex flex-column justify-content-center">
+      <app-preview-common-securities [facilityPaper]="facilityPaper"
+        [commonFacilitySecurityList]="commonFacilitySecurityList" (moveUp)="moveUp()">
+      </app-preview-common-securities>
+    </div>
+  </ng-container>
+
+  <ng-container>
+    <app-preview-common-facility-covenant class="width-100">
+    </app-preview-common-facility-covenant>
+  </ng-container>
+
+</div>

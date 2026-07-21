@@ -1,0 +1,64 @@
+<div class="d-flex flex-column flex-center login-page-container">
+  <div class="m-0 p-0" *ngIf="!isLoading">
+    <!-- SSO Login -->
+    <div class="m-0 p-0" *ngIf="isSSOLogin()">
+      <app-sso-init [ssoConfig]="ssoConfig"></app-sso-init>
+    </div>
+
+    <!-- Material form login -->
+    <mdb-card class="login-form-container" *ngIf="!isSSOLogin()">
+
+      <mdb-card-header class="custom-class white-text text-center py-4">
+        <h5>
+          <strong>Credit Approval System</strong>
+        </h5>
+      </mdb-card-header>
+
+
+      <!--Card content-->
+      <mdb-card-body class="px-lg-5 pt-0">
+
+        <!-- Form -->
+        <form class="text-center" [formGroup]="loginForm" autocomplete="off">
+
+          <!-- Email -->
+          <div class="md-form">
+            <input mdbValidate type="text" id="userName" formControlName="userName" class="form-control" mdbInput>
+            <label for="userName">User Name</label>
+            <mdb-error *ngIf="isControlHasError('userName','required')">User Name is required</mdb-error>
+          </div>
+
+          <div class="md-form">
+            <div class="d-flex flex-row">
+              <input [type]="passwordInputType" id="materialLoginFormPassword" class="form-control"
+                formControlName="password" mdbInput>
+              <label for="materialLoginFormPassword">Password</label>
+              <span class="show-password-icon" (click)="togglePassword()">
+                <i class="fas fa-eye-slash" *ngIf="isPasswordVisible"></i>
+                <i class="fas fa-eye" *ngIf="!isPasswordVisible"></i>
+              </span>
+            </div>
+            <mdb-error *ngIf="isControlHasError('password','required')">Password is required</mdb-error>
+          </div>
+
+          <button (click)="submit()" [disabled]="!isValidForm()" mdbBtn color="info" block="true" class="my-4"
+            type="submit">{{getButtonAction()}}
+          </button>
+
+
+          <p>&copy;
+            Sampath Bank PLC
+          </p>
+
+          <p>
+            Version 2.1.19
+          </p>
+        </form>
+        <!-- Form -->
+
+      </mdb-card-body>
+
+    </mdb-card>
+    <!-- Material form login -->
+  </div>
+</div>

@@ -1,0 +1,36 @@
+<ng-container *ngIf="fpComment">
+  <mdb-card class="border-none-card">
+    <mdb-card-body>
+      <ng-container>
+        <div class="col">
+          <dl>
+            <div class="d-flex flex-row justify-content-between mb-3">
+              <dt class="w-15-p">User</dt>
+              <dt class="w-5">:</dt>
+              <dd class="w-80 mb-0">{{fpComment.assignUser || '-'}}</dd>
+            </div>
+
+            <div class="d-flex flex-row justify-content-between mb-3">
+              <dt class="w-15-p">Date</dt>
+              <dt class="w-5">:</dt>
+              <dd class="w-80 mb-0">{{fpComment.dateStr || '-'}}</dd>
+            </div>
+
+            <div class="d-flex flex-row justify-content-between mb-3">
+              <dt class="w-15-p">Comment</dt>
+              <dt class="w-5">:</dt>
+              <dd class="w-80 mb-0">{{fpComment.comment || '-'}}</dd>
+            </div>
+
+            <div class="d-flex flex-row justify-content-between mb-3">
+              <dt class="w-15-p">Action & Done By</dt>
+              <dt class="w-5">:</dt>
+              <dd
+                class="w-80 mb-0">{{remarkStatus[fpComment.action] ? remarkStatus[fpComment.action] + ' by ' : ''}}  {{fpComment.actionBy ? fpComment.actionBy : ''}}</dd>
+            </div>
+          </dl>
+        </div>
+      </ng-container>
+    </mdb-card-body>
+  </mdb-card>
+</ng-container>

@@ -1,0 +1,131 @@
+<div mdbSticky class="d-flex flex-row justify-content-between page-header">
+  <div class="d-flex flex-row align-items-center">
+    <h5><i class="fas fa-assistive-listening-systems header-icon"></i> User Delegated Authority(ies)</h5>
+  </div>
+
+  <div class="d-flex flex-row align-items-center">
+    <ng-container *appHasAnyPrivilege="masterDataPrivilege.ICAS_SETTINGS_USER_DA_ADD">
+      <button (click)="loadUserDA(null)"
+              class="custom-button"
+              mdbBtn
+              type="button"
+              color="default"
+              outline="true"
+              mdbWavesEffect>New User DA
+      </button>
+    </ng-container>
+  </div>
+</div>
+
+<div class="page-search-section section display-flex flex-column jc-start p-2 pt-3 pb-3 default-box-styles">
+  <form class="display-flex w-100-p flex-row jc-space-around ai-center flex-1-gap" [formGroup]="searchForm">
+
+    <div class="md-form w-24-p min-width-120">
+      <input type="text" id="userName" formControlName="userName" class="form-control" mdbInput>
+      <label for="userName">User Name</label>
+    </div>
+
+    <div class="md-form w-24-p min-width-120">
+      <input type="text" id="maxAmount" formControlName="maxAmount" class="form-control" mdbInput>
+      <label for="maxAmount">Maximum Amount</label>
+    </div>
+
+      <div class="md-form w-24-p min-width-120">
+      <input type="text" id="cleanAmount" formControlName="cleanAmount" class="form-control" mdbInput>
+      <label for="cleanAmount">Clean Amount</label>
+    </div>
+
+    <div class="md-form w-24-p min-width-120">
+      <input type="text" id="description" formControlName="description" class="form-control" mdbInput>
+      <label for="description">Description</label>
+    </div>
+
+    <div class="md-form w-24-p min-width-120">
+      <mdb-select
+        [options]="optionsSelect"
+        formControlName="status"
+        id="status"
+        placeholder="All"></mdb-select>
+      <label for="status">Status</label>
+    </div>
+
+    <div class="display-flex flex-1 flex-row jc-end ai-center">
+      <button (click)="doSearch()" type="button" class=" medium-button btn btn-info" mdbBtn>Search</button>
+      <button (click)="clearSearch()" class=" medium-button btn btn-outline-info clear-btn" mdbBtn type="button">
+        Clear
+      </button>
+    </div>
+  </form>
+
+  <!--  <div class="display-flex flex-1 flex-row jc-end ai-cente">-->
+  <!--    <button (click)="doSearch()" class="medium-button" type="button" mdbBtn color="light" mdbWavesEffect>Search-->
+  <!--    </button>-->
+  <!--    <button (click)="clearSearch()" class="medium-button" type="button" mdbBtn color="light" mdbWavesEffect>Clear-->
+  <!--    </button>-->
+  <!--  </div>-->
+</div>
+
+<div *ngIf="userDAs.length == 0" class="alert alert-warning section" role="alert">
+  No User Delegated Authority(s) Found !
+</div>
+
+
+<ng-container *ngIf="userDAs.length > 0">
+  <div class="section table-responsive mb-15p">
+    <table class="table">
+      <thead>
+      <tr>
+        <ng-container *ngFor="let col of tableColumns">
+          <th scope="col">{{col}}</th>
+        </ng-container>
+      </tr>
+      </thead>
+      <tbody>
+      <ng-container *ngFor="let userDA of userDAs">
+        <tr (click)="loadUserDA(userDA.userDaID)" class="table-clickable-row">
+          <td>{{userDA.userName}}</td>
+          <td>
+            <div class="amount-div">
+              {{currencyService.getFormattedAmount(userDA.maxAmount)}}
+            </div>
+          </td>
+          <td>
+            <div class="amount-div">
+              {{currencyService.getFormattedAmount(userDA.cleanAmount)}}
+            </div>
+          </td>
+          <td>{{userDA.description ? userDA.description : '-'}}</td>
+          <td>
+            <span
+              [class.color-green]="userDA.status === statusConst.ACT"
+              [class.color-red]="userDA.status === statusConst.INA"
+            >
+                  {{status[userDA.status]}}
+                </span>
+          </td>
+          <td>
+            <span
+              [class.color-green]="userDA.approveStatus === approvedStatusConst.APPROVED"
+              [class.color-red]="userDA.approveStatus === approvedStatusConst.REJECTED"
+              [class.color-blue]="userDA.approveStatus == approvedStatusConst.PENDING"
+            >
+                  {{approvedStatus[userDA.approveStatus]}}
+                </span>
+          </td>
+          <td>{{userDA.approvedDateStr ? userDA.approvedDateStr : '-'}}</td>
+          <td>{{userDA.approvedBy ? userDA.approvedBy : '-'}}</td>
+        </tr>
+      </ng-container>
+      </tbody>
+    </table>
+  </div>
+    <app-paginator
+      [pageIndex]="pageSize.pageIndex"
+      [length]="pageSize.length"
+      [pageSize]="pageSize.pageSize"
+      [pageSizeOptions]="pageSize.pageSizeOptions"
+      (page)="onPageEvent($event)"
+    ></app-paginator>
+  
+</ng-container>
+

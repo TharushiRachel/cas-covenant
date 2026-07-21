@@ -1,0 +1,47 @@
+.page-section {
+  margin: 0.5rem 0;
+
+  &:first-child {
+    margin-top: 1rem;
+  }
+
+  .info-section {
+    margin: 3px 15px 3px 0;
+    min-width: 220px;
+
+    .info-caption {
+      margin-right: 5px;
+    }
+  }
+}
+
+.cft-btn {
+  padding: 0px;
+  height: 30px;
+  float: right;
+  margin-bottom: 15px;
+}
+
+.level-btn {
+  margin: 5px;
+}
+
+.action-button-padding {
+  padding: 0.2rem 1.3rem;
+}
+
+.user-width {
+  width: 16%;
+}
+
+.date-width {
+  width: 16%;
+}
+
+.comment-align {
+  text-align: justify;
+}
+
+.action-width {
+  width: 16%;
+}

@@ -1,0 +1,65 @@
+<mdb-card>
+  <mdb-card-header class="custom-card-header">
+    BORROWER/GUARANTOR PAST DETAILS
+  </mdb-card-header>
+  <mdb-card-body class="custom-card-body">
+    <div class="d-flex flex-row justify-content-start- w-100-p">
+      <ng-container>
+        <table class="table custom-apf-table">
+          <tr>
+            <th>Bank & Branch</th>
+            <th>Date Granted</th>
+            <th>Amount</th>
+            <th>Borrower's name if guaranteed</th>
+            <ng-container *ngIf="isAbleToEdit()">
+              <th class="width-10 text-align-center">
+                <button class="btn btn-sm btn-secondary cta-btn" type="button" mdbWavesEffect
+                        (click)="openModalBorrowerGuarantor($event)"
+                        mdbTooltip="Add New" placement="left">
+                  <mdb-icon fas icon="fas fa-plus" aria-hidden="true"></mdb-icon>
+                </button>
+              </th>
+            </ng-container>
+          </tr>
+          <ng-container
+            *ngIf="basicInformation.afBorrowerGuarantorDTOList &&  basicInformation.afBorrowerGuarantorDTOList.length>0 ; else noData;">
+            <tr *ngFor="let borrowerGuarantor of basicInformation.afBorrowerGuarantorDTOList">
+              <td class="text-align-start">{{borrowerGuarantor.bankAndBranch}}</td>
+              <td class="text-align-center">{{borrowerGuarantor.dateGrantedStr}}</td>
+              <td class="text-align-end">{{getCurrencyFormat(borrowerGuarantor.amount)}}</td>
+              <td
+                class="text-align-start">{{borrowerGuarantor.borrowerName ? borrowerGuarantor.borrowerName : '-'}}</td>
+              <ng-container *ngIf="isAbleToEdit()">
+                <td class="text-align-center">
+                  <button class="btn btn-sm btn-secondary cta-btn" type="button" mdbWavesEffect
+                          (click)="openModalBorrowerGuarantor($event,borrowerGuarantor)"
+                          mdbTooltip="Edit"
+                          placement="left">
+                    <mdb-icon fas icon="pencil-alt" aria-hidden="true"></mdb-icon>
+                  </button>
+
+                  <button class="btn btn-sm btn-danger cta-btn delete-button" type="button" mdbWavesEffect
+                          mdbTooltip="Remove"
+                          (click)="remove($event,borrowerGuarantor)"
+                          placement="left">
+                    <mdb-icon fas icon="trash-alt" aria-hidden="true"></mdb-icon>
+                  </button>
+                </td>
+              </ng-container>
+            </tr>
+          </ng-container>
+          <ng-template #noData>
+            <tr class="table-clickable-row">
+              <th colspan="7" class="text-align-center">
+                <p class="no-data-message" (click)="openModalBorrowerGuarantor($event)">
+                  Have you ever been a Borrower or Guarantor in this Bank or any other Bank in the Past ? if so , give
+                  particulars
+                </p>
+              </th>
+            </tr>
+          </ng-template>
+        </table>
+      </ng-container>
+    </div>
+  </mdb-card-body>
+</mdb-card>

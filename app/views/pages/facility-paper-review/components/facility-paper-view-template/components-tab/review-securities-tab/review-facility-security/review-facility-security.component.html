@@ -1,0 +1,83 @@
+<ng-container *ngIf="facilityData.facilitySecurityDTOList">
+  <div class="single-row d-flex flex-column justify-content-start">
+
+    <ng-container *ngIf="isPreviewMode">
+      <div class="display-flex flex-column ai-center w-100-p">
+        <h6 class="f-bold text-center heading-topics">
+          {{facilityData.creditFacilityTemplateDTO?.creditFacilityName}}
+          <span *ngIf="facilityData.facilityRefCode">{{ " - " + facilityData.facilityRefCode}}</span>
+        </h6>
+        <h6 class="text-center">({{ facilityData.creditFacilityTemplateDTO?.facilityTypeName }})</h6>
+      </div>
+    </ng-container>
+  </div>
+
+  <ng-container *ngIf="organizedSecurityList.length>0">
+    <div class="table-responsive">
+      <table class="table" [class.preview-mode]="isPreviewMode">
+        <thead>
+        <tr>
+          <th scope="col"></th>
+          <th scope="col"></th>
+          <th scope="col" class="text-right" style="width: 1%"></th>
+          <th scope="col" class="text-right">Amount</th>
+          <ng-container *ngIf="!isPreviewMode">
+            <th scope="col" class="text-right action-header">Actions</th>
+          </ng-container>
+        </tr>
+        </thead>
+        <tbody>
+        <ng-container *ngFor="let item of organizedSecurityList;let i = index">
+          <tr class="m-top-10px " style="padding: 20px">
+            <td style="width: 1%">
+                <span>
+                  {{i + 1}}.
+                </span>
+            </td>
+            <td class="security-detail" *ngIf="item.isCommonSecurity === yesNoConst.N || !isPreviewMode">
+              <pre class="custom-pre-tag-with-spaces">{{item.securityDetail}}</pre>
+            </td>
+            <td class="security-detail" *ngIf="item.isCommonSecurity === yesNoConst.Y && isPreviewMode">
+              <p style="margin-left: 2%">Refer to the common security
+                <span
+                  (click)="toContent(item.facilitySecurityID+item.securityCode)"
+                  class="refer-to-the">
+                    {{item.securityCode}}
+                  </span>
+              </p>
+            </td>
+            <td class="security-common-flag text-right">
+              <div class="mr-2" *ngIf="item.isCommonSecurity === yesNoConst.Y">
+                <h5>
+                  <mdb-badge default="true">C</mdb-badge>
+                </h5>
+              </div>
+            </td>
+            <td class="security-amount text-right">
+              {{item.securityCurrency}} {{this.getFormattedValue(item.securityAmount)}}
+            </td>
+          </tr>
+        </ng-container>
+        </tbody>
+        <ng-container *ngIf="totalIndividualSecuritiesCashAmount">
+          <tr>
+            <td></td>
+            <td class="security-detail">
+              <b><p class="individual-security-cash-total">Cash Amount
+                : {{currency}} {{this.getFormattedValue(totalIndividualSecuritiesCashAmount)}}
+              </p></b>
+            </td>
+            <td></td>
+            <td></td>
+          </tr>
+        </ng-container>
+      </table>
+    </div>
+  </ng-container>
+
+  <ng-container *ngIf="activeSecurityList.length == 0">
+    <p style="margin-left: 25px;">
+      No Facility Security List
+    </p>
+  </ng-container>
+</ng-container>

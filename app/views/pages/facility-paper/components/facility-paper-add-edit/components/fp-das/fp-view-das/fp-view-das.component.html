@@ -1,0 +1,167 @@
+<div>
+  <div class="scrollable-content">
+    <div class="container modal-custom-width">
+      <div class="modal-header modal-topic">
+        <button type="button" class="close px-4" data-dismiss="modal" aria-label="Close" (click)="mdbModalRef.hide()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+
+      <div class="text-align-start">
+        <h5 class="modal-title w-100 font-weight-bold">Risk Grading : {{riskGrade}}</h5>
+      </div>
+
+      <div class="modal-header modal-topic">
+        <h5 class="modal-title w-100 font-weight-bold">DELEGATED CREDIT AUTHORITY LIMITS</h5>
+      </div>
+
+      <div class="accordion">
+
+       
+        <div class="accordion-item">
+          <input type="checkbox" id="committee-accordion" class="accordion-checkbox" hidden [checked]="facilityPaper.isCommittee === 'Y'"
+          >
+          <label for="committee-accordion" class="accordion-title labelTxt text-align-start">
+            <i class="fas" [ngClass]="{'fa-chevron-down': !isCommitteeOpen, 'fa-chevron-up': isCommitteeOpen}"></i> 
+            Committee / MD 
+          </label>
+
+          <div class="accordion-content" (click)="toggleAccordion('committee')">
+            <app-da-table-structure [mode]="type" [tableType]="committeeTable"></app-da-table-structure>
+          </div>
+        </div>
+      
+      
+        <div class="accordion-item">
+          <input type="checkbox" id="individual-accordion" class="accordion-checkbox" hidden  [checked]="facilityPaper.isCommittee !== 'Y'"
+          >
+          <label for="individual-accordion" class="accordion-title labelTxt text-align-start">
+            <i class="fas" [ngClass]="{'fa-chevron-down': !isIndividualOpen, 'fa-chevron-up': isIndividualOpen}"></i> 
+              Individual
+          </label>
+          <div class="accordion-content" (click)="toggleAccordion('individual')">
+            <app-da-table-structure [mode]="type" [tableType]="individualTable"></app-da-table-structure>
+          </div>
+        </div>
+
+      </div>
+
+  
+      
+
+      
+      
+      
+
+
+      
+
+      <!-- <div class="text-align-start">
+        <h5 class="modal-title w-100 font-weight-bold">Committee / MD</h5>
+      </div>
+
+      <div>
+        <app-da-table-structure [mode]="type" [tableType]="committeeTable"></app-da-table-structure>
+      </div>
+
+      <div class="text-align-start">
+        <h5 class="modal-title w-100 font-weight-bold">Individual</h5>
+      </div>
+
+      <div>
+        <app-da-table-structure [mode]="type" [tableType]="individualTable"></app-da-table-structure>
+      </div> -->
+
+      <div class="my-3">
+        <div class="modal-header modal-topic">
+          <h5 class="modal-title w-100 font-weight-bold">SUMMARY OF EXPOSURE</h5>
+        </div>
+
+        <!-- <div class="m-top-15px">
+        <app-preview-security-summary
+          [facilityPaper]="this.facilityPaper"
+        >
+        </app-preview-security-summary>
+      </div> -->
+        <div>
+          <table class="custom-bordered-table width-100 mt-5p">
+            <thead>
+              <tr class="highlight-row">
+                <th rowspan="2" colspan="2">Security Type</th>
+                <th colspan="2">Company (LKR)</th>
+                <th colspan="2">Group (LKR)</th>
+              </tr>
+              <tr class="highlight-row">
+                <!-- <th></th> -->
+                <th>Value (Rs. Mn)</th>
+                <th>%</th>
+                <th>Value (Rs. Mn)</th>
+                <th>%</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <tr>
+
+                <!-- <td colspan="2"></td>
+        <td colspan="2"></td> -->
+              </tr>
+              <tr>
+                <td colspan="2" class="text-align-start font-weight-bold" style="padding-left: 6px !important;">First
+                  Class Security Total</td>
+                <td class="text-align-end" style="padding-right: 6px !important">{{
+                  getCurrencyFormat(firstClassSecurityTotal) }}</td>
+                <td class="text-align-end" style="padding-right: 6px !important">{{getPercentage('C',
+                  firstClassSecurityTotal)}}</td>
+                <td class="text-align-end" style="padding-right: 6px !important">
+                  {{getCurrencyFormat(groupFirstClassSecurityTotal)}}</td>
+                <td class="text-align-end" style="padding-right: 6px !important">{{ getPercentage('G',
+                  groupFirstClassSecurityTotal) }}</td>
+              </tr>
+              <tr>
+                <td colspan="2" class="text-align-start font-weight-bold" style="padding-left: 6px !important;">Other
+                  Security Total</td>
+                <td class="text-align-end" style="padding-right: 6px !important">
+                  {{getCurrencyFormat(otherSecurityTotal)}}</td>
+                <td class="text-align-end" style="padding-right: 6px !important">{{getPercentage('C',
+                  otherSecurityTotal)}}</td>
+                <td class="text-align-end" style="padding-right: 6px !important">
+                  {{getCurrencyFormat(groupOtherSecurityTotal)}}</td>
+                <td class="text-align-end" style="padding-right: 6px !important">{{getPercentage('G',
+                  groupOtherSecurityTotal)}}</td>
+              </tr>
+              <tr>
+                <td colspan="2" class="text-align-start font-weight-bold" style="padding-left: 6px !important;">Clean
+                  Total</td>
+                <td class="text-align-end" style="padding-right: 6px !important">{{getCurrencyFormat(cleanTotal)}}</td>
+                <td class="text-align-end" style="padding-right: 6px !important">{{getPercentage('C', cleanTotal)}}</td>
+                <td class="text-align-end" style="padding-right: 6px !important">{{getCurrencyFormat(groupCleanTotal)}}
+                </td>
+                <td class="text-align-end" style="padding-right: 6px !important">{{getPercentage('G', groupCleanTotal)}}
+                </td>
+              </tr>
+              <tr>
+                <td colspan="2" class="text-align-start font-weight-bold" style="padding-left: 6px !important;">Grand
+                  Total</td>
+                <td class="text-align-end" style="padding-right: 6px !important">{{getCurrencyFormat(grandTotal)}}</td>
+                <td class="text-align-end" style="padding-right: 6px !important">{{getPercentage('C', grandTotal)}}</td>
+                <td class="text-align-end" style="padding-right: 6px !important">{{getCurrencyFormat(groupGrandTotal)}}
+                </td>
+                <td class="text-align-end" style="padding-right: 6px !important">{{getPercentage('G', groupGrandTotal)}}
+                </td>
+              </tr>
+              <!-- <tr>
+        <td colspan="2" class="text-align-start font-weight-bold" style="padding-left: 6px !important;">Total</td>
+        <td></td>
+        <td>100.00%</td>
+        <td></td>
+        <td>100.00%</td>
+        </tr> -->
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>

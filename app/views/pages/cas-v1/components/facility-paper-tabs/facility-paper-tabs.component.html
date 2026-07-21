@@ -1,0 +1,36 @@
+<div class="mx-0 px-2 mt-3">
+    <ul class="nav nav-tabs">
+        <li class="nav-item" style="box-shadow: none;" *ngFor="let tab of tabs">
+            <button [class]="currentIndex == tab.index ? 'nav-link active' : 'nav-link'"
+                style="box-shadow: none;outline: none;min-width: 150px;" type="button" role="tab"
+                (click)="handleTabSelect(tab.index)">
+                {{tab.title}}
+            </button>
+        </li>
+    </ul>
+    <div class="tab-content my-3 mx-0" style="max-height: 75vh;overflow-y: auto;">
+        <ng-container *ngIf="currentIndex == 1">
+            <app-facility-wrapper-v1 [facilities]="facilities" [basicData]="basicData"></app-facility-wrapper-v1>
+        </ng-container>
+        <ng-container *ngIf="currentIndex == 2">
+            <app-security-wrapper-v1 [facilities]="facilities"></app-security-wrapper-v1>
+        </ng-container>
+        <ng-container *ngIf="currentIndex == 3">
+            <app-upc-comments-wrapper-v1 [combinedData]="combinedData" [tabLoadingSetting]="tabLoadingSetting"
+                [tabLoadedData]="tabLoadedData" (handleTabLoadingSetting)="handleTabLoadingSetting($event)"
+                (onUPCDataChange)="setUpcData($event)"></app-upc-comments-wrapper-v1>
+        </ng-container>
+        <ng-container *ngIf="currentIndex == 4">
+            <app-comments-details [refNo]="basicData.refNo" [paperDate]="basicData.date"
+                [tabLoadingSetting]="tabLoadingSetting" [tabLoadedData]="tabLoadedData"
+                (handleTabLoadingSetting)="handleTabLoadingSetting($event)"
+                (onCmntDataChange)="setComments($event)"></app-comments-details>
+        </ng-container>
+        <ng-container *ngIf="currentIndex == 5">
+            <app-full-paper-wrapper-v1 [facilities]="facilities" [basicData]="basicData" [combinedData]="combinedData"
+                [tabLoadingSetting]="tabLoadingSetting" [tabLoadedData]="tabLoadedData"
+                (handleTabLoadingSetting)="handleTabLoadingSetting($event)" (onCmntDataChange)="setComments($event)"
+                (onUPCDataChange)="setUpcData($event)"></app-full-paper-wrapper-v1>
+        </ng-container>
+    </div>
+</div>

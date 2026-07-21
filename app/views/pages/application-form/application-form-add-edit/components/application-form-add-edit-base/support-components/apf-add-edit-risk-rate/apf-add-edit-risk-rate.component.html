@@ -1,0 +1,113 @@
+<div class="modal-header modal-topic">
+  <h4 class="modal-title w-100 font-weight-bold">
+    Risk Rating Details
+  </h4>
+  <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="mdbModalRef.hide()">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
+<div class="modal-body mx-3 modal-detail form-margin">
+  <mdb-card>
+    <mdb-card-body class="custom-card-body">
+      <ng-container>
+        <form [formGroup]="riskForm">
+          <div class="d-flex flex-row justify-content-between w-100-p">
+            <div class="md-form m-top-12px width-25">
+              <input mdbValidate
+                     type="text"
+                     id="scoring"
+                     maxlength="200"
+                     formControlName="scoring"
+                     class="form-control"
+                     mdbInput
+              >
+              <label for="scoring">Scoring *</label>
+            </div>
+
+            <div class="md-form mt-8p width-25">
+              <mdb-select
+                [options]="bccRiskRatingScoreOptionSelect"
+                formControlName="riskGrading"
+                id="riskGrading"
+                label="Grading"></mdb-select>
+            </div>
+
+            <div class="md-form m-top-12px width-50">
+              <input mdbValidate
+                     type="text"
+                     id="assetClassification"
+                     maxlength="200"
+                     formControlName="assetClassification"
+                     class="form-control"
+                     mdbInput
+              >
+              <label for="assetClassification">Asset Classification *</label>
+            </div>
+          </div>
+
+          <div class="d-flex flex-row justify-content-between w-100-p">
+            <div class="md-form  m-top-1px width-50">
+              <mdb-date-picker class="form-control"
+                               id="lastRatedStr"
+                               formControlName="lastRatedStr"
+                               [options]="myDatePickerOptions"
+                               [inline]="true"
+                               label="Last Rated *"
+              ></mdb-date-picker>
+            </div>
+
+            <div class="md-form mt-13p width-50">
+              <input mdbValidate
+                     type="text"
+                     id="initiatedBranch"
+                     maxlength="200"
+                     formControlName="initiatedBranch"
+                     [mdbAutoCompleter]="auto"
+                     class="form-control"
+                     mdbInput
+              >
+              <label for="initiatedBranch">Initiated Branch *</label>
+              <mdb-auto-completer #auto="mdbAutoCompleter" [clearButton]="!isFormDisabled">
+                <ng-container *ngFor="let option of results | async">
+                  <mdb-option [value]="option.branchName">
+                    {{ option.branchName }}
+                  </mdb-option>
+                </ng-container>
+              </mdb-auto-completer>
+            </div>
+          </div>
+
+          <div class="d-flex flex-row justify-content-between w-100-p">
+            <div class="md-form width-50 m-top-12px">
+              <mdb-select
+                [options]="optionsRatingModelSelect"
+                formControlName="model"
+                id="model"
+                label="Model *"></mdb-select>
+            </div>
+
+            <div class="md-form width-50 m-top-12px ml-20p">
+              <mdb-checkbox formControlName="riskConfirmed">Risk Confirmed</mdb-checkbox>
+            </div>
+          </div>
+        </form>
+      </ng-container>
+    </mdb-card-body>
+  </mdb-card>
+</div>
+
+<div class="modal-footer modal-end">
+  <button
+    type="button" mdbBtn color="secondary" size="sm" class="relative waves-light" mdbWavesEffect
+    [hidden]="riskRate.riskRateID"
+    (click)="save()"
+  >ADD
+  </button>
+  <button
+    type="button" mdbBtn color="secondary" size="sm" class="relative waves-light" mdbWavesEffect
+    [hidden]="!riskRate.riskRateID"
+    (click)="save()"
+  >Update
+  </button>
+</div>

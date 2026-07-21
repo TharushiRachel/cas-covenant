@@ -1,0 +1,30 @@
+
+.input-field-icon {
+  position: absolute;
+  left: 96%;
+  top: 8px;
+  font-size: 1.25rem;
+
+  &:hover {
+    cursor: pointer;
+    color: blue;
+  }
+}
+
+.tbl-btn{
+  padding: 0px;
+  height: 25px;
+}
+
+mdb-date-picker {
+  margin-top: -9px !important;
+  margin-bottom: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+.cft-btn {
+  padding: 5px;
+  height: 30px;
+  width: 30px;
+  border-radius: 50%;
+}

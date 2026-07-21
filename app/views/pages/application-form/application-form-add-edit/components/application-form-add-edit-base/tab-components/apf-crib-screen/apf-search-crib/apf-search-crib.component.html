@@ -1,0 +1,47 @@
+<mdb-card>
+  <mdb-card-body class="custom-card-body">
+    <ng-container *ngIf="isAbleToEdit()">
+      <form [formGroup]="cribSearchForm">
+        <div class="d-flex flex-column justify-content-between w-100-p">
+          <div class="d-flex flex-row justify-content-start w-100-p m-bottom-10px">
+            <div class="md-form width-35">
+              <mdb-select
+                [options]="identityOptionSelect"
+                formControlName="identificationType"
+                id="identificationType"
+                class="mt-8p"
+                placeholder="Identification Type"
+              >
+              </mdb-select>
+              <mdb-error *ngIf="formErrors.identificationType.required">Identification Type required</mdb-error>
+            </div>
+
+            <div class="md-form width-35 m-top-12px">
+              <input mdbValidate
+                     type="text"
+                     id="identificationNumber"
+                     maxlength="200"
+                     formControlName="identificationNumber"
+                     class="form-control"
+                     mdbInput
+              >
+              <label for="identificationNumber">Identification No *</label>
+            </div>
+
+            <div class="md-form width-70 m-top-12px">
+              <button type="button"
+                      mdbBtn
+                      color="secondary"
+                      class=""
+                      [disabled]="cribSearchForm.invalid"
+                      (click)="searchCribDetails()"
+                      mdbWavesEffect size="sm">
+                ADD JOINING PARTY
+              </button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </ng-container>
+  </mdb-card-body>
+</mdb-card>

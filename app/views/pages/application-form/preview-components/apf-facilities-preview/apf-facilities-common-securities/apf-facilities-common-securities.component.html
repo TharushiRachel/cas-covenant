@@ -1,0 +1,107 @@
+<table class="width-100" [class.preview-mode]="true">
+  <thead>
+  <tr>
+    <th scope="col" class="text-align-center common-security" style="padding-left: 37% !important;"> Common
+      Securities
+    </th>
+    <th scope="col" class="text-right">Amount</th>
+  </thead>
+  <tbody>
+  <ng-container *ngFor="let commonSecurity of commonFacilities; let i =index">
+    <ng-container *ngIf="commonSecurity">
+      <tr id="{{commonSecurity.facilitySecurityID+commonSecurity.securityCode}}">
+        <th class="">
+          <b>{{commonSecurity.securityCode}}</b>
+        </th>
+        <th class="text-right">
+          {{commonSecurity.securityCurrency}} {{this.getFormattedValue(commonSecurity.securityAmount)}}
+        </th>
+      </tr>
+
+      <tr>
+        <td><b></b></td>
+      </tr>
+      <tr>
+        <td colspan="2">
+          <pre class="custom-pre-tag-with-spaces">{{commonSecurity.securityDetail}}</pre>
+        </td>
+      </tr>
+      <tr>
+        <td colspan="2" style="margin: unset; padding: unset">
+          <table class="width-100 mt-10p">
+            <thead>
+            <tr>
+              <th
+                style="vertical-align:top">
+                Linked Facilities
+              </th>
+
+              <th
+                style="vertical-align:top ; text-align: end">
+                Previous Amount
+              </th>
+
+              <th
+                style="vertical-align:top ; text-align: end">
+                Required/Outstanding Amount
+              </th>
+            </tr>
+            </thead>
+            <tbody>
+            <ng-container *ngFor="let facility of commonSecurity.afFacilityDTOS ; let i =index">
+              <tr>
+                <td>
+                  {{facility.creditFacilityTemplateDTO.creditFacilityName}}
+                  - {{facility.facilityRefCode}} ({{facility.facilityType}})
+                </td>
+                <td
+                  class="text-align-end">{{facility.facilityCurrency}} {{getFormattedValue(facility.outstandingAmount)}}</td>
+                <td
+                  class="text-align-end">{{facility.facilityCurrency}} {{getFormattedValue(facility.facilityAmount)}}</td>
+              </tr>
+            </ng-container>
+            </tbody>
+          </table>
+        </td>
+      </tr>
+    </ng-container>
+  </ng-container>
+  <tr>
+    <td class="cash-amount"><b>Cash Amount </b></td>
+    <td class="cash-amount text-align-end">
+      <b>{{currency}} {{getFormattedValue(totalCommonSecuritiesCashAmount)}}</b></td>
+  </tr>
+
+  <tr>
+    <td colspan="2">
+      <hr class="">
+    </td>
+  </tr>
+
+  <tr>
+    <td class="margin-unset"><b>Total Cash Amount Kept as Security/ies </b></td>
+    <td class="margin-unset text-align-end" *ngIf="facilities">
+      <b>{{currency}} {{getFormattedValue(getTotalCashAmount(facilities))}}</b></td>
+  </tr>
+
+  <tr>
+    <td colspan="2">
+      <hr class="">
+    </td>
+  </tr>
+
+  <div>
+    <button
+      class="btn btn-sm btn-secondary cta-btn"
+      style="margin-left: unset"
+      type="button"
+      mdbWavesEffect
+      (click)="moveUpWindow()"
+      placement="left">
+      <i class="fas fa-angle-up"></i> Move Up
+    </button>
+  </div>
+  </tbody>
+</table>
+
+

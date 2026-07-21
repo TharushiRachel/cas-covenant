@@ -1,0 +1,14 @@
+.refer-to-the {
+  color: #0b51c5;
+
+  &:hover {
+    cursor: pointer;
+  }
+}
+
+.security-detail {
+  white-space: pre-wrap;
+  font-family: "Roboto", sans-serif;
+  font-size: small;
+  margin-bottom: 2px;
+}

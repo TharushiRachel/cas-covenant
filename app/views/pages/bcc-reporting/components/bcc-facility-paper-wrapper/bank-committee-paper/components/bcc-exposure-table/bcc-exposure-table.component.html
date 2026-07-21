@@ -1,0 +1,382 @@
+<form [formGroup]="exposureGroup">
+  <div
+    class="d-flex flex-column w-100-p m-top-20px"
+  >
+    <table class="table custom-bordered-table">
+      <thead>
+      <tr>
+        <th colspan="3" class="text-align-center">Existing Exposure</th>
+        <th colspan="3" class="text-align-center">Additional Exposure</th>
+        <th colspan="3" class="text-align-center">Total Exposure</th>
+        <th colspan="5" class="text-align-center">Summary of Securities</th>
+      </tr>
+      </thead>
+      <tbody>
+
+      <tr>
+        <th colspan="14" class="text-align-start">Company</th>
+      </tr>
+
+      <tr>
+        <th>Direct</th>
+        <th>Indirect</th>
+        <th>Total</th>
+        <th>Direct</th>
+        <th>Indirect</th>
+        <th>Total</th>
+        <th>Direct</th>
+        <th>Indirect</th>
+        <th>Total</th>
+        <th>Type</th>
+        <th>Exposure Secured by</th>
+        <th>Approved FSV</th>
+        <th>% against Approved FSV</th>
+        <th>% against total exposure</th>
+      </tr>
+
+      <tr [formGroup]="bccExposureCompanyForm">
+        <td>
+          <textarea type="text"
+                    id="bccExposureCompanyExistingExposureDirect"
+                    class="form-control"
+                    maxlength="4000"
+                    formControlName="existingExposureDirect"
+                    customHeight="30"
+                    appTextAreaAutoHeight
+                    mdbInput>
+          </textarea>
+        </td>
+        <td>
+          <textarea type="text"
+                    id="bccExposureCompanyExistingExposureIndirect"
+                    class="form-control"
+                    maxlength="4000"
+                    formControlName="existingExposureIndirect"
+                    customHeight="30"
+                    appTextAreaAutoHeight
+                    mdbInput>
+          </textarea>
+        </td>
+        <td>
+
+          <textarea type="text"
+                    id="bccExposureCompanyExistingExposureTotal"
+                    class="form-control"
+                    maxlength="4000"
+                    formControlName="existingExposureTotal"
+                    customHeight="30"
+                    appTextAreaAutoHeight
+                    mdbInput>
+                    </textarea>
+        </td>
+        <td>
+          <textarea type="text"
+                    id="bccExposureCompanyAdditionalExposureDirect"
+                    class="form-control"
+                    maxlength="4000"
+                    formControlName="additionalExposureDirect"
+                    customHeight="30"
+                    appTextAreaAutoHeight
+                    mdbInput>
+                    </textarea>
+        </td>
+        <td>
+          <textarea type="text"
+                    id="bccExposureCompanyAdditionalExposureIndirect"
+                    class="form-control"
+                    maxlength="4000"
+                    formControlName="additionalExposureIndirect"
+                    customHeight="30"
+                    appTextAreaAutoHeight
+                    mdbInput>
+          </textarea>
+        </td>
+        <td>
+          <textarea type="text"
+                    id="bccExposureCompanyAdditionalExposureTotal"
+                    class="form-control"
+                    maxlength="4000"
+                    formControlName="additionalExposureTotal"
+                    customHeight="30"
+                    appTextAreaAutoHeight
+                    mdbInput>
+          </textarea>
+        </td>
+        <td>
+          <textarea type="text"
+                    id="bccExposureCompanyTotalExposureDirect"
+                    class="form-control"
+                    maxlength="4000"
+                    formControlName="totalExposureDirect"
+                    customHeight="30"
+                    appTextAreaAutoHeight
+                    mdbInput>
+          </textarea>
+        </td>
+        <td>
+           <textarea type="text"
+                     id="bccExposureCompanyTotalExposureIndirect"
+                     class="form-control"
+                     maxlength="4000"
+                     formControlName="totalExposureIndirect"
+                     customHeight="30"
+                     appTextAreaAutoHeight
+                     mdbInput>
+           </textarea>
+        </td>
+        <td>
+          <textarea type="text"
+                    id="bccExposureCompanyTotalExposureTotal"
+                    class="form-control"
+                    maxlength="4000"
+                    formControlName="totalExposureTotal"
+                    customHeight="30"
+                    appTextAreaAutoHeight
+                    mdbInput>
+          </textarea>
+        </td>
+        <td>
+          <textarea type="text"
+                    id="bccExposureCompanyType"
+                    class="form-control"
+                    maxlength="4000"
+                    formControlName="type"
+                    customHeight="30"
+                    appTextAreaAutoHeight
+                    mdbInput>
+          </textarea>
+        </td>
+        <td>
+          <textarea type="text"
+                    id="bccExposureCompanyExposureSecuredBy"
+                    class="form-control"
+                    maxlength="4000"
+                    formControlName="exposureSecuredBy"
+                    customHeight="30"
+                    appTextAreaAutoHeight
+                    mdbInput>
+          </textarea>
+        </td>
+        <td>
+           <textarea type="text"
+                     id="bccExposureCompanyApprovedFSV"
+                     class="form-control"
+                     maxlength="4000"
+                     formControlName="approvedFSV"
+                     customHeight="30"
+                     appTextAreaAutoHeight
+                     mdbInput>
+          </textarea>
+        </td>
+        <td>
+          <textarea type="text"
+                    id="bccExposureCompanyAgainstApprovedFSV"
+                    class="form-control"
+                    maxlength="4000"
+                    formControlName="againstApprovedFSV"
+                    customHeight="30"
+                    appTextAreaAutoHeight
+                    mdbInput>
+          </textarea>
+        </td>
+        <td>
+          <textarea type="text"
+                    id="bccExposureCompanyAgainstTotalExposure"
+                    class="form-control"
+                    maxlength="4000"
+                    formControlName="againstTotalExposure"
+                    customHeight="30"
+                    appTextAreaAutoHeight
+                    mdbInput>
+          </textarea>
+        </td>
+      </tr>
+
+      <tr>
+        <th colspan="14" class="text-align-start">Group</th>
+      </tr>
+
+      <tr>
+        <th>Direct</th>
+        <th>Indirect</th>
+        <th>Total</th>
+        <th>Direct</th>
+        <th>Indirect</th>
+        <th>Total</th>
+        <th>Direct</th>
+        <th>Indirect</th>
+        <th>Total</th>
+        <th>Type</th>
+        <th>Exposure Secured by</th>
+        <th>Approved FSV</th>
+        <th>% against Approved FSV</th>
+        <th>% against total exposure</th>
+      </tr>
+
+      <tr [formGroup]="bccExposureGroupForm">
+        <td>
+           <textarea type="text"
+                     id="bccExposureGroupExistingExposureDirect"
+                     class="form-control"
+                     maxlength="4000"
+                     formControlName="existingExposureDirect"
+                     customHeight="30"
+                     appTextAreaAutoHeight
+                     mdbInput>
+          </textarea>
+        </td>
+        <td>
+            <textarea type="text"
+                      id="bccExposureGroupExistingExposureIndirect"
+                      class="form-control"
+                      maxlength="4000"
+                      formControlName="existingExposureIndirect"
+                      customHeight="30"
+                      appTextAreaAutoHeight
+                      mdbInput>
+          </textarea>
+        </td>
+        <td>
+           <textarea type="text"
+                     id="bccExposureGroupExistingExposureTotal"
+                     class="form-control"
+                     maxlength="4000"
+                     formControlName="existingExposureTotal"
+                     customHeight="30"
+                     appTextAreaAutoHeight
+                     mdbInput>
+          </textarea>
+        </td>
+        <td>
+
+           <textarea type="text"
+                     id="bccExposureGroupAdditionalExposureDirect"
+                     class="form-control"
+                     maxlength="4000"
+                     formControlName="additionalExposureDirect"
+                     customHeight="30"
+                     appTextAreaAutoHeight
+                     mdbInput>
+          </textarea>
+        </td>
+        <td>
+           <textarea type="text"
+                     id="bccExposureGroupAdditionalExposureIndirect"
+                     class="form-control"
+                     maxlength="4000"
+                     formControlName="additionalExposureIndirect"
+                     customHeight="30"
+                     appTextAreaAutoHeight
+                     mdbInput>
+          </textarea>
+        </td>
+        <td>
+          <textarea type="text"
+                    id="bccExposureGroupAdditionalExposureTotal"
+                    class="form-control"
+                    maxlength="4000"
+                    formControlName="additionalExposureTotal"
+                    customHeight="30"
+                    appTextAreaAutoHeight
+                    mdbInput>
+          </textarea>
+        </td>
+        <td>
+
+            <textarea type="text"
+                      id="bccExposureGroupTotalExposureDirect"
+                      class="form-control"
+                      maxlength="4000"
+                      formControlName="totalExposureDirect"
+                      customHeight="30"
+                      appTextAreaAutoHeight
+                      mdbInput>
+          </textarea>
+        </td>
+        <td>
+
+           <textarea type="text"
+                     id="bccExposureGroupTotalExposureIndirect"
+                     class="form-control"
+                     maxlength="4000"
+                     formControlName="totalExposureIndirect"
+                     customHeight="30"
+                     appTextAreaAutoHeight
+                     mdbInput>
+          </textarea>
+        </td>
+        <td>
+
+          <textarea type="text"
+                    id="bccExposureGroupTotalExposureTotal"
+                    class="form-control"
+                    maxlength="4000"
+                    formControlName="totalExposureTotal"
+                    customHeight="30"
+                    appTextAreaAutoHeight
+                    mdbInput>
+          </textarea>
+        </td>
+        <td>
+          <textarea type="text"
+                    id="bccExposureGroupType"
+                    class="form-control"
+                    maxlength="4000"
+                    formControlName="type"
+                    mdbInput>
+          </textarea>
+        </td>
+        <td>
+
+          <textarea type="text"
+                    id="bccExposureGroupExposureSecuredBy"
+                    class="form-control"
+                    maxlength="4000"
+                    formControlName="exposureSecuredBy"
+                    customHeight="30"
+                    appTextAreaAutoHeight
+                    mdbInput>
+          </textarea>
+        </td>
+        <td>
+
+          <textarea type="text"
+                    id="bccExposureGroupApprovedFSV"
+                    class="form-control"
+                    maxlength="4000"
+                    formControlName="approvedFSV"
+                    customHeight="30"
+                    appTextAreaAutoHeight
+                    mdbInput>
+          </textarea>
+        </td>
+        <td>
+
+          <textarea type="text"
+                    id="bccExposureGroupAgainstApprovedFSV"
+                    class="form-control"
+                    maxlength="4000"
+                    formControlName="againstApprovedFSV"
+                    customHeight="30"
+                    appTextAreaAutoHeight
+                    mdbInput>
+          </textarea>
+        </td>
+        <td>
+
+          <textarea type="text"
+                    id="bccExposureGroupAgainstTotalExposure"
+                    class="form-control"
+                    maxlength="4000"
+                    formControlName="againstTotalExposure"
+                    customHeight="30"
+                    appTextAreaAutoHeight
+                    mdbInput>
+          </textarea>
+
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</form>

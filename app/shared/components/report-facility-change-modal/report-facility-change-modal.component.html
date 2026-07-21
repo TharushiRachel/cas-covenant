@@ -1,0 +1,152 @@
+<div class="modal-header modal-topic">
+    <h4 class="modal-title w-100 font-weight-bold">
+        Report Facility/Security Changes
+    </h4>
+
+    <mdb-icon class="header-icon" fas icon="sync" style="color: #198ddb;" (click)="refreshComments()"></mdb-icon>
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="close()">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+
+<div class="modal-body mx-3 px-0" style="height: 90vh;">
+    <div class="row d-flex mx-0" style="width: 100%; height: 100%; position: relative;">
+        <button class="btn exp-btn" (click)="handleCollapsed()" *ngIf="isCommentable()">
+            <mdb-icon fas icon="chevron-down" aria-hidden="true" *ngIf="isCollapsed"></mdb-icon>
+            <mdb-icon fas icon="chevron-up" aria-hidden="true" *ngIf="!isCollapsed"></mdb-icon>
+        </button>
+        <div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-7 pl-0 html-content-wrapper"
+            *ngIf="!isCollapsed && isCommentable()">
+            <div class="data-section">
+                <div id="fp-f-prev-mod" class="w-100-p my-3 mx-0 px-1">
+                    <ng-container *ngIf="componentData.facilityPaper.isCommittee=='Y' ; else nonCorporateFacilityData">
+                        <app-preview-three-col-facility-data [currentIndex]="0"
+                            [creditFacilityList]="componentData.creditFacilityList"
+                            [facilityData]="componentData.creditFacility" [facilityPaper]="componentData.facilityPaper"
+                            (toCommonSecurityContent)="toCommonSecurityContent($event)"></app-preview-three-col-facility-data>
+                    </ng-container>
+                    <ng-template #nonCorporateFacilityData>
+                        <app-preview-facility-data
+                            [creditScheduleESBResponseStatusList]="componentData.creditScheduleESBResponseStatusList"
+                            [currentIndex]="0" [creditFacilityList]="componentData.creditFacilityList"
+                            [facilityData]="componentData.creditFacility" [facilityPaper]="componentData.facilityPaper"
+                            (toCommonSecurityContent)="toCommonSecurityContent($event)">
+                        </app-preview-facility-data>
+                    </ng-template>
+                </div>
+
+                <ng-container *ngIf="componentData.commonFacilitySecurityList.length > 0">
+                    <div class="w-100-p d-flex flex-column justify-content-center px-1">
+                        <app-preview-common-securities [facilityPaper]="componentData.facilityPaper"
+                            [commonFacilitySecurityList]="componentData.commonFacilitySecurityList" (moveUp)="moveUp()">
+                        </app-preview-common-securities>
+                    </div>
+                </ng-container>
+            </div>
+        </div>
+
+        <div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-5 px-0 chat-wrapper"
+            [class.chat-wrapper-expanded]="isCollapsed || !isCommentable()">
+            <div class="row d-flex chat-section" *ngIf="commentHistory.length > 0"
+                [class.chat-section-cmnt-disabled]="!isCommentable() || !isHigherWCUser()">
+                <div class="m-0 p-0 w-100" *ngFor="let item of commentHistory">
+                    <div class="row d-flex chat-item"
+                        [style.background]="item.id == parentCmntId || item.id == selectedId  ? 'rgba(222, 226, 230, 0.5)' : 'transparent'">
+
+                        <span class="text-1" [class.w-100]="!isCommentable() && !isHigherWCUser()">
+                            <pre class="custom-pre-tag-with-spaces mx-0">{{item.comment}}</pre>
+                            <span class="text-1" style="color: #198ddb;font-weight: 400;">
+                                by {{item.addedBy}}{{item.createdUserDesignation ? " ("+item.createdUserDesignation+") "
+                                : ""}} on {{item.date}}
+                                <mdb-badge default="true" data-toggle="tooltip" data-placement="bottom"
+                                    [title]="'Security'" *ngIf="item.flag == 'FACSE'">
+                                    S
+                                </mdb-badge>
+                                <mdb-badge default="true" data-toggle="tooltip" data-placement="bottom"
+                                    [title]="'Facility'" *ngIf="item.flag == 'FAC'">
+                                    F
+                                </mdb-badge>
+                            </span>
+                        </span>
+                        <div class="cht-item-btn-div" *ngIf="isCommentable() || isHigherWCUser()">
+                            <mdb-icon class="cht-item-icon" fas icon="reply" style="color: #198ddb;"
+                                (click)="setParentCommentId(item)" *ngIf="isReplyEnabled(item)"></mdb-icon>
+                            <mdb-icon class="cht-item-icon" fas icon="edit" style="color: #bfc0c0;"
+                                (click)="setCommentToEdit(item)" *ngIf="isActionEnabled(item)"></mdb-icon>
+                            <mdb-icon class="cht-item-icon" fas icon="trash-alt" style="color: #ff4a67;"
+                                (click)="removeComment(item.id)" *ngIf="isActionEnabled(item)"></mdb-icon>
+                        </div>
+                    </div>
+                    <div class="m-0 pl-4 pr-0" *ngFor="let child of item.childCmnt">
+                        <div class="row d-flex chat-item"
+                            [style.background]="child.id == selectedId  ? 'rgba(222, 226, 230, 0.5)' : 'transparent'">
+                            <span class="text-1"
+                                [class.w-100]="!isActionEnabled(child) && !isCommentable() && !isHigherWCUser()">
+                                <pre class="custom-pre-tag-with-spaces mx-0">{{child.comment}}</pre>
+                                <span class="text-1" style="color: #198ddb;font-weight: 400;">
+                                    by {{child.addedBy}}{{item.createdUserDesignation ? "
+                                    ("+item.createdUserDesignation+") "
+                                    : ""}} on {{child.date}}
+                                    <mdb-badge default="true" data-toggle="tooltip" data-placement="bottom"
+                                        [title]="'Security'" *ngIf="child.flag == 'FACSE'">
+                                        S
+                                    </mdb-badge>
+                                    <mdb-badge default="true" data-toggle="tooltip" data-placement="bottom"
+                                        [title]="'Facility'" *ngIf="child.flag == 'FAC'">
+                                        F
+                                    </mdb-badge>
+                                </span>
+                            </span>
+                            <div class="cht-item-btn-div"
+                                *ngIf="isActionEnabled(child) && (isCommentable() || isHigherWCUser())">
+                                <mdb-icon class="cht-item-icon" fas icon="edit" style="color: #bfc0c0;"
+                                    (click)="setCommentToEdit(child)"></mdb-icon>
+                                <mdb-icon class="cht-item-icon" fas icon="trash-alt" style="color: #ff4a67;"
+                                    (click)="removeComment(child.id)"></mdb-icon>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row d-flex flex-column chat-section justify-content-center align-items-center my-auto h-100"
+                *ngIf="commentHistory.length <= 0">
+                <mdb-icon fas icon="comment-slash" style="font-size: 60px;"></mdb-icon>
+                <span class="text-center" style="font-size: 16px;font-weight: 600;">There are no records!</span>
+            </div>
+            <div class="row d-flex align-items-center mx-0 cht-btn-div"
+                [class.cht-btn-div-expanded]="isCollapsed || !isCommentable()"
+                *ngIf="isCommentable() || isHigherWCUser()">
+                <div class="col-12 px-2">
+                    <div class="row d-flex mx-0 p-0 mb-2">
+
+                        <div class="col-5 d-flex align-items-center m-0 pl-0">
+                            <mdb-checkbox [(ngModel)]="isFcSecurity" (change)="securityCheckChange($event)"
+                                [disabled]="isCheckBoxDisabled()">
+                                Is Facility Security
+                            </mdb-checkbox>
+                        </div>
+                        <div class="col-7 d-flex align-items-center m-0 pr-0 w-100">
+                            <div class="md-form p-0 m-0 w-100" *ngIf="isFcSecurity">
+                                <mdb-select [options]="fcSecurities" class="form-control m-0 p-0"
+                                    [(ngModel)]="selectedFCSecurity" (ngModelChange)="handleSecurityChange()"
+                                    id="selectedFCSecurity" label="Facility Security *">
+                                </mdb-select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <textarea #cmntInput name="commentText" id="commentText"
+                        class="form-control border border-1 border-rounded" rows="3" [(ngModel)]="commentText"
+                        maxlength="3900" [disabled]="isCmntDisabled() && securityCmntEnabled">
+                    </textarea>
+                </div>
+                <div class="col-12 row d-flex mx-0 px-0 pb-2 justify-content-end">
+                    <button class="btn btn-info" [disabled]="!commentText" (click)="handleComment()"
+                        mdbTooltip="Save Comment" placement="top"><mdb-icon fas icon="check"></mdb-icon></button>
+                    <button class="btn btn-primary" (click)="close()" mdbTooltip="Close" placement="top"><mdb-icon fas
+                            icon="times"></mdb-icon></button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

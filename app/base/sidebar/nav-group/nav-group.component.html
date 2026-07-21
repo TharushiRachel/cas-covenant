@@ -1,0 +1,23 @@
+<ng-container *ngIf="hasPrivileges(item)">
+  <mdb-accordion-item>
+    <mdb-accordion-item-head mdbWavesEffect>
+      <i [ngClass]="item.icon"></i> {{item.title}}
+    </mdb-accordion-item-head>
+    <mdb-accordion-item-body>
+      <ul>
+        <li *ngFor="let child of item.children">
+          <ng-container *ngIf="hasPrivileges(child)">
+            <ng-container *ngIf="item.isExternal">
+              <a [routerLink]="child.url" routerLinkActive="active" href="#" mdbWavesEffect (click)="child.onClick()">
+                <i class="sub-item-icon" [ngClass]="child.icon"></i> {{child.title}}</a>
+            </ng-container>
+            <ng-container *ngIf="!item.isExternal">
+              <a [routerLink]="child.url" routerLinkActive="active" href="#" mdbWavesEffect>
+                <i class="sub-item-icon" [ngClass]="child.icon"></i> {{child.title}}</a>
+            </ng-container>
+          </ng-container>
+        </li>
+      </ul>
+    </mdb-accordion-item-body>
+  </mdb-accordion-item>
+</ng-container>

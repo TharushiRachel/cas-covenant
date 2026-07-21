@@ -1,0 +1,33 @@
+<div class="item-wrapper d-flex flex-column justify-content-start">
+  <div>
+
+    <div class="display-flex w-100-p flex-1 flex-wrap flex-row jc-space-between ai-center break-all-words">
+      <div class="w-79-p">
+        <h6 class="hcaption">Kalypto Data</h6>
+      </div>
+
+      <div class="min-width-85">
+        <button type="button"
+                class="float-right custom-button btn-outline-info"
+                size="sm"
+                (click)="loadKalyptoData()"
+                mdbBtn
+                outline="true"
+                mdbWavesEffect>Load Kalypto
+        </button>
+      </div>
+    </div>
+
+    <ng-container *ngIf="isDataEmpty">
+      <div class="alert alert-warning section" style="margin-bottom: 0px" role="alert">
+        {{message}}
+      </div>
+    </ng-container>
+  </div>
+  <!-- Nav Tabs -->
+  <ng-container *ngIf="!isDataEmpty">
+    <app-kalypto-data-view [kalyptoData]="kalyptoData">
+    </app-kalypto-data-view>
+  </ng-container>
+</div>
+

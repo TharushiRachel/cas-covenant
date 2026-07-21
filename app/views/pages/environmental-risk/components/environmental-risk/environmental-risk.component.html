@@ -1,0 +1,24 @@
+<div mdbSticky class="d-flex flex-row justify-content-between page-header">
+    <div class="d-flex flex-row align-items-center">
+        <h5><i class="fas fa-dice-d20 header-icon"></i> Environmental Risk Tool</h5>
+    </div>
+
+    <div class="d-flex flex-row align-items-center">
+        <ng-container>
+            <button (click)="addEditRisk(false,false,null)" class="custom-button" mdbBtn type="button" color="default"
+                outline="true" mdbWavesEffect>
+                Add Tool Category
+            </button>
+        </ng-container>
+    </div>
+</div>
+
+<ng-container *ngIf="riskCategories.length > 0">
+    <app-risk-tree-view [nodes]="riskCategories" (addChildRisk)="addChildRisk($event)"
+        (editChildRisk)="editChildRisk($event)" (approveRisk)="approveRisk($event)" (rejectRisk)="rejectRisk($event)"
+        (viewPendingInfo)="viewPendingInfo($event)" (removeRisk)="removeRiskCategory($event)"></app-risk-tree-view>
+</ng-container>
+
+<div class="row d-flex justify-content-center mx-0 my-5" *ngIf="riskCategories.length == 0">
+    <span class="font-weight-bold" style="font-size: 16px;">There are no data found.</span>
+</div>

@@ -1,0 +1,30 @@
+<div class="tab-view width-100">
+  <app-tabs
+    [selectedTabIndex]="selectedTabIndex"
+    class="w-100-p"
+    (onTabSelect)="onTabSelect($event)">
+
+    <app-tab [tabTitle]="'Own Reviews'">
+      <ng-container *ngIf="isTabSelected(0)">
+        <div class="w-100-p d-flex justify-content-center">
+          <div class="width-90 m-top-20px">
+            <app-facility-summery-report>
+            </app-facility-summery-report>
+            <!--            <ng-content></ng-content>-->
+          </div>
+        </div>
+      </ng-container>
+    </app-tab>
+
+    <app-tab [tabTitle]="'Higher Level Reviews'">
+      <ng-container *ngIf="isTabSelected(1)">
+        <div class="w-100-p d-flex justify-content-center">
+          <div class="width-90 m-top-20px">
+            <app-own-approved-paper-summary>
+            </app-own-approved-paper-summary>
+          </div>
+        </div>
+      </ng-container>
+    </app-tab>
+  </app-tabs>
+</div>

@@ -1,0 +1,67 @@
+<div class="d-flex p-2 flex-column justify-content-start align-items-start w-100-p">
+  <div class="width-100">
+    <ng-container>
+      <div *ngIf="updateButtonIsEnabled">
+        <form [formGroup]="componentForm">
+          <div class="d-flex align-items-center">
+            <div class="md-form w-15-p min-width-120 mr-3">
+
+              <mdb-select [options]="yearOptions" formControlName="startDate" id="startDate"
+                placeholder={{yearTypeMessage}}></mdb-select>
+
+              <mdb-error style="margin-top: 10px" *ngIf="selectedStartDate == null">Required</mdb-error>
+            </div>
+
+
+            <button (click)="onSubmit()" type="button" [disabled]="!componentForm.valid && selectedStartDate == null"
+              mdbTooltip="get Guarantee volumes" placement="right" class="medium-button btn-sm btn-info relative-icon"
+              mdbBtn>
+              Get Volumes
+            </button>
+          </div>
+
+        </form>
+
+      </div>
+
+      <div *ngIf="volumes != null" class="ng-container">
+        <p style="margin-top: 20px; text-align: center" class="font-weight-bold">
+          Guarantee Volumes as at {{volumes[0].createdDate}}
+        </p>
+
+        <table class="custom-bordered-table width-100 table table-striped">
+          <thead>
+            <tr class="table-heading-color">
+              <th>Year</th>
+              <th>Currency</th>
+              <th>Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let volume of volumes; let i = index">
+              <td class="text-align-center">
+                {{ volume.year }}
+              </td>
+              <td class="text-align-center">
+                {{ volume.cnyCode ? volume.cnyCode : "-" }}
+              </td>
+              <td class="text-align-end">{{setCurrencyFormatValue(volume.totalVolume) }}</td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="row d-flex justify-content-end mx-0">
+          <button *ngIf="isShowSaveButton" style="margin-right: 10px" (click)="save()" type="button"
+            mdbTooltip="get Guarantee volumes" placement="right"
+            class="medium-button btn-sm btn-info relative-icon bottom-right-button" mdbBtn>
+            Save
+          </button>
+        </div>
+
+        <br />
+      </div>
+    </ng-container>
+    <p *ngIf="noRecordsAvailableMsg" class="not-auth-message">
+      No Records Available
+    </p>
+  </div>
+</div>

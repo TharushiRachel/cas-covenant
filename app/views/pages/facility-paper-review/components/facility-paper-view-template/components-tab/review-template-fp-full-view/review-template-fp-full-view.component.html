@@ -1,0 +1,73 @@
+<div>
+  <ng-container>
+    <app-preview-fp-about
+      [facilityPaper]="facilityPaper">
+    </app-preview-fp-about>
+  </ng-container>
+
+  <hr>
+
+  <ng-container *ngFor="let customer of customerList; let i = index">
+    <div class="m-top-15px">
+      <app-personal-detail-basic [customer]="customer">
+      </app-personal-detail-basic>
+      <app-preview-customer-crib-detail [customer]="customer">
+      </app-preview-customer-crib-detail>
+
+      <app-preview-personal-customer-ratings
+        [customer]="customer">
+      </app-preview-personal-customer-ratings>
+
+      <ng-container *ngIf="customer.customerFinancialID">
+       <!-- <app-personal-customer-stat-wrapper [customer]="customer">
+        </app-personal-customer-stat-wrapper>-->
+        <app-personal-customer-stat-wrapper
+          [FormData]="customer"
+          [FormType]="'FACILITY_PAPER'"
+          [facilityPaper]="facilityPaper">
+        </app-personal-customer-stat-wrapper>
+      </ng-container>
+      <hr>
+    </div>
+  </ng-container>
+
+  <app-preview-facilities
+    [facilityPaper]="this.facilityPaper">
+  </app-preview-facilities>
+
+  <app-preview-customer-covenants></app-preview-customer-covenants>
+
+  <ng-container *ngIf="facilityPaper.isCommittee =='Y' ; else nonCorporateFacilityExposureData">
+    <app-preview-three-col-facility-exposure-data [facilityPaper]="facilityPaper">
+    </app-preview-three-col-facility-exposure-data>
+  </ng-container>
+  <ng-template #nonCorporateFacilityExposureData>
+    <app-preview-facility-exposure-data [facilityPaper]="facilityPaper">
+    </app-preview-facility-exposure-data>
+  </ng-template>
+
+  <app-preview-security-summary
+    [facilityPaper]="this.facilityPaper" [isView]="false"
+  >
+  </app-preview-security-summary>
+
+  <app-preview-upc-document
+    [isCommentEnable]="true"
+    [facilityPaper]="this.facilityPaper"
+    [upcSectionData]="this.fpUpcSectionData"
+    [upcTemplateList]="this.upcTemplateList"
+  >
+  </app-preview-upc-document>
+
+  <app-preview-risk-comments
+    [riskCommentList]="this.facilityPaper.fpCreditRiskCommentList">
+  </app-preview-risk-comments>
+
+
+  <app-preview-comments
+    [resizedFPCommentList]="this.facilityPaper.fpCommentDTOList">
+  </app-preview-comments>
+
+</div>
+
+<a class="download-link" #downloadLink></a>

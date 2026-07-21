@@ -1,0 +1,98 @@
+<div>
+
+
+  <form [formGroup]="componentForm" class="your-form-class">
+    <div class="d-flex justify-content-center">
+      <div class="width-100 m-top-20px">
+        <fieldset class="fieldset">
+          <legend class="legend">Customer Information</legend>
+          <div class="d-flex flex-wrap">
+            <div class="d-flex flex-row justify-content-between width-50">
+              <label class="info-caption">Customer Name</label>
+              <span class="width-5">:</span>
+              <span class="info-details">{{ basicInfoDetails?.customerName }}</span>
+            </div>
+            <div class="d-flex flex-row justify-content-between width-50">
+              <label class="info-caption">NIC / BR</label>
+              <span class="width-5">:</span>
+              <span class="info-details">{{ basicInfoDetails?.identificationNumber }}</span>
+            </div>
+          </div>
+          <div class="d-flex flex-wrap">
+            <div class="d-flex flex-row justify-content-between width-50">
+              <label class="info-caption">Account Number</label>
+              <span class="width-5">:</span>
+              <span class="info-details">{{ basicInfoDetails?.accountNumber }}</span>
+            </div>
+            <div class="d-flex flex-row justify-content-between width-50">
+              <label class="info-caption">Account Manager User ID</label>
+              <span class="width-5">:</span>
+              <span class="info-details">{{basicInfoDetails?.accounManager}}</span>
+            </div>
+          </div>
+          <div class="d-flex flex-wrap">
+            <div class="d-flex flex-row justify-content-between width-50">
+              <label class="info-caption">Address</label>
+              <span class="width-5">:</span>
+              <span class="info-details">{{ basicInfoDetails?.address }}</span>
+            </div>
+            <div class="d-flex flex-row justify-content-between width-50">
+              <label class="info-caption">Account Manager Sol ID</label>
+              <span class="width-5">:</span>
+              <span class="info-details">{{ upmDetails?.solID }}</span>
+            </div>
+
+          </div>
+        </fieldset>
+        <ng-container *ngIf="coveringApproval && (!isEqualLoginAndAssignUser() || coveringApproval.currentStatus === 'APPROVED')">
+          <fieldset class="fieldset" style="margin-top: 25px;">
+            <legend class="legend">Transaction Information</legend>
+
+            <div class="d-flex flex-column justify-content-start">
+
+
+              <div class="d-flex flex-wrap">
+                <div class="d-flex flex-row justify-content-between width-50">
+                  <label class="info-caption">Transaction Branch</label>
+                  <span class="width-5">:</span>
+                  <span class="info-details">{{basicInfoDetails?.branchName}}</span>
+                </div>
+                <div class="d-flex flex-row justify-content-between width-50">
+                  <label class="info-caption">Transaction Date</label>
+                  <span class="width-5">:</span>
+                  <span class="info-details">{{ basicInfoDetails?.tranDate | date : "dd/MM/yyyy" }}</span>
+                </div>
+              </div>
+
+              <div class="d-flex flex-wrap">
+                <!-- <div *ngIf="addressDataCom" class="d-flex flex-row justify-content-between width-50">
+              <label class="info-caption">Address</label>
+              <span class="width-5">:</span>
+              <span *ngFor="let addressLine of addressDataCom" class="info-details">{{basicInfoDetails?.address}}</span>
+            </div> -->
+                <div class="d-flex flex-row justify-content-between width-50">
+                  <label class="info-caption">Transaction Amount</label>
+                  <span class="width-5">:</span>
+                  <span class="info-details">{{basicInfoDetails?.tranCurrency}}
+                    {{this.getFormattedValue(basicInfoDetails?.tranAmount)}}</span>
+                </div>
+                <div class="d-flex flex-row justify-content-between width-50">
+                  <label class="info-caption">Cheque Number</label>
+                  <span class="width-5">:</span>
+                  <span class="info-details">{{basicInfoDetails?.chequeNumber }}</span>
+                </div>
+              </div>
+
+            </div>
+          </fieldset>
+        </ng-container>
+      </div>
+    </div>
+  </form>
+  <div class="ssection mb-15p "
+    *ngIf="coveringApproval && isEqualLoginAndAssignUser() ">
+    <app-cov-pending-dashboard [coveringApproval]="coveringApproval">
+
+    </app-cov-pending-dashboard>
+  </div>
+</div>

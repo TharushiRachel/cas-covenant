@@ -1,0 +1,134 @@
+<div class="d-flex mt-10p flex-column justify-content-start align-items-start w-100-p">
+  <div class="d-flex flex-row justify-content-between w-100-p flex-wrap">
+    <label class="font-weight-bold float-left badge-margin">CRIB Detail(s)</label>
+    <ng-container *appHasAnyPrivilege="masterDataPrivilege.ICAS_SETTINGS_FACILITY_PAPER_EDIT">
+      <ng-container *ngIf="isEqualLoginAndAssignUser() && !isApproveStatus() && !isRejected() && isEditableAssignUser()">
+        <button class="btn btn-sm btn-info cta-btn" type="button" mdbTooltip="Add crib detail"
+          (click)="openAddCribReport()">
+          <i class="fas fa-plus" aria-hidden="true"></i>
+        </button>
+      </ng-container>
+    </ng-container>
+  </div>
+
+  <div class="table-responsive">
+    <table class="table custom-table">
+      <thead>
+        <tr>
+          <ng-container *ngFor="let col of tableColumns">
+            <th scope="col">{{col}}</th>
+          </ng-container>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-container *ngIf="cribDetailList.length > 0; else noData">
+          <ng-container *ngFor="let cribItem of cribDetailList">
+            <tr *ngIf="cribItem.status == 'ACT'">
+              <td>
+                {{cribItem.fullName}}
+              </td>
+              <td>
+                <span [class.color-red]="cribItem.cribStatus === cribStatusConst.NOT_ENTERED"
+                  [class.color-blue]="cribItem.cribStatus === cribStatusConst.PENDING"
+                  [class.color-green]="cribItem.cribStatus === cribStatusConst.NO_IRREGULAR_ADVANCES || cribItem.cribStatus === cribStatusConst.REPORTED_AS_IRREGULAR">
+                  {{cribStatus[cribItem.cribStatus]}}
+                </span>
+              </td>
+              <td *ngIf="cribItem.isPrev">
+                {{ cribItem.isReport ? 'Crib Report' : cribItem.docStorageDTO.fileName ? cribItem.docStorageDTO.fileName
+                : '-' }}
+              </td>
+              <td *ngIf="!cribItem.isPrev">
+                {{cribItem.docStorageDTO.fileName ? cribItem.docStorageDTO.fileName : '-'}}
+              </td>
+              <td class="text-align-center" *ngIf="!cribItem.isPrev">{{cribItem.cribIssueDateStr | date:'mediumDate'}}
+              </td>
+              <td class="text-align-center" *ngIf="cribItem.isPrev">
+                <ng-container *ngIf="!cribItem.isReport">
+                  {{cribItem.cribIssueDateStr | date:'mediumDate'}}
+                </ng-container>
+                <ng-container *ngIf="cribItem.isReport">
+                  {{cribItem.cribDateStr | date:'mediumDate'}}
+                </ng-container>
+              </td>
+              <td>{{cribItem.remark ? cribItem.remark : "N/A"}}</td>
+              <td class="text-align-center" *ngIf="!cribItem.isPrev">
+                <ng-container *ngIf="isEqualLoginAndAssignUser() && !isApproveStatus() && !isRejected() && isEditableAssignUser()">
+                  <button class="btn btn-sm btn-secondary" type="button" mdbWavesEffect
+                    (click)="openEditCribReport(cribItem)" mdbTooltip="Edit Crib Report" placement="left">
+                    <mdb-icon fas icon="pencil-alt" aria-hidden="true"></mdb-icon>
+                  </button>
+                </ng-container>
+                <ng-container>
+                  <button class="btn btn-sm btn-info" type="button" mdbWavesEffect (click)="viewDocument(cribItem)"
+                    mdbTooltip="View Crib Report" placement="left">
+                    <mdb-icon fas icon="fas fa-eye" aria-hidden="true"></mdb-icon>
+                  </button>
+                </ng-container>
+
+                <button class="btn btn-sm btn-success" type="button" mdbWavesEffect (click)="downloadDocument(cribItem)"
+                  mdbTooltip="Download Crib Report" placement="left">
+                  <mdb-icon fas icon="fa fa-download" aria-hidden="true"></mdb-icon>
+                </button>
+
+                <ng-container *ngIf="isEqualLoginAndAssignUser() && !isApproveStatus() && !isRejected() && isEditableAssignUser()">
+                  <button class="btn btn-sm btn-danger" type="button" mdbWavesEffect
+                    (click)="onRemoveCribReport(cribItem)" mdbTooltip="Delete Crib Report" placement="left">
+                    <mdb-icon fas icon="trash-alt" aria-hidden="true"></mdb-icon>
+                  </button>
+                </ng-container>
+              </td>
+
+              <td class="text-align-center" *ngIf="cribItem.isPrev">
+                <ng-container *ngIf="cribItem.isReport">
+                  <button class="btn btn-sm btn-info" type="button" mdbWavesEffect (click)="viewCribContent(cribItem)"
+                    mdbTooltip="View Crib Content" placement="left">
+                    <mdb-icon fas icon="fas fa-eye" aria-hidden="true"></mdb-icon>
+                  </button>
+                  <ng-container *ngIf="isEqualLoginAndAssignUser() && !isApproveStatus() && !isRejected() && isEditableAssignUser()">
+                    <button class="btn btn-sm btn-danger" type="button" mdbWavesEffect
+                      (click)="onRemoveCribContent(cribItem)" mdbTooltip="Delete Crib Report" placement="left">
+                      <mdb-icon fas icon="trash-alt" aria-hidden="true"></mdb-icon>
+                    </button>
+                  </ng-container>
+                </ng-container>
+
+                <ng-container *ngIf="!cribItem.isReport">
+                  <ng-container *ngIf="isCheckedPdf(cribItem)">
+                    <button class="btn btn-sm btn-info" type="button" mdbWavesEffect (click)="onDownLoadDoc(cribItem)"
+                      mdbTooltip="View Crib Report" placement="left">
+                      <mdb-icon fas icon="fas fa-eye" aria-hidden="true"></mdb-icon>
+                    </button>
+                  </ng-container>
+
+                  <button class="btn btn-sm btn-success" type="button" mdbWavesEffect
+                    (click)="downloadPrevDocument(cribItem)" mdbTooltip="Download Crib Report" placement="left">
+                    <mdb-icon fas icon="fa fa-download" aria-hidden="true"></mdb-icon>
+                  </button>
+
+                  <ng-container *ngIf="isEqualLoginAndAssignUser() && !isApproveStatus() && !isRejected() && isEditableAssignUser()">
+                    <button class="btn btn-sm btn-danger" type="button" mdbWavesEffect (click)="onRemove(cribItem)"
+                      mdbTooltip="Delete Crib Report" placement="left">
+                      <mdb-icon fas icon="trash-alt" aria-hidden="true"></mdb-icon>
+                    </button>
+                  </ng-container>
+                </ng-container>
+              </td>
+            </tr>
+          </ng-container>
+        </ng-container>
+        <ng-template #noData>
+          <tr>
+            <th colspan="6" class="text-align-center">
+              <p class="no-data-message">
+                No Record(s)
+              </p>
+            </th>
+          </tr>
+        </ng-template>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<a class="download-link" #downloadLink></a>

@@ -1,0 +1,61 @@
+<div>
+  <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="mdbModalRef.hide()">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body modal-detail form-margin">
+  <h4 class="modal-title w-100 font-weight-bold text-align-center risk-option">
+    Risk Opinion
+  </h4>
+  <div class="custom-body risk-opinion-sec">
+    <div [innerHTML]="riskComment | safeHtml"></div>
+
+    <div class="date-sec">
+      <div>
+        <p class="created-user-sec">Created by</p>
+        <div [innerHTML]="getContent(createdUserName) | safeHtml"></div>
+        <div [innerHTML]="getContent(createdDateStr) | safeHtml"></div>
+      </div>
+
+      <div class="modified-date-sec">
+        <p class="created-user-sec">Modified by</p>
+        <div [innerHTML]="getContent(modifiedUserName) | safeHtml"></div>
+        <div [innerHTML]="getContent(modifiedDateStr) | safeHtml"></div>
+      </div>
+    </div>
+  </div>
+  <br>
+  <!-- <hr> -->
+  <h4 class="modal-title w-100 font-weight-bold text-align-center risk-option">
+    Reply to the Opinion
+  </h4>
+  <div class="custom-body risk-opinion-sec">
+    <div [innerHTML]="getContent(riskReply) | safeHtml"></div>
+
+    <div class="date-sec">
+      <div>
+        <p class="created-user-sec">Created by</p>
+        <div [innerHTML]="getContent(createdRiskReplyUserName) | safeHtml"></div>
+        <div [innerHTML]="getContent(createdDate) | safeHtml"></div>
+
+        <div class="date-sec">
+          <p>Div Code : </p>
+          <div [innerHTML]="getContent(divCode) | safeHtml"></div>
+        </div>
+
+      </div>
+
+      <div class="modified-date-sec">
+        <p class="created-user-sec">Modified by</p>
+        <div [innerHTML]="getContent(modifiedRiskReplyUserName) | safeHtml"></div>
+        <div [innerHTML]="getContent(modifiedDate) | safeHtml"></div>
+
+        <div class="date-sec">
+          <p>Div Code : </p>
+          <div [innerHTML]="getContent(divCode) | safeHtml"></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

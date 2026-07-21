@@ -1,0 +1,42 @@
+.application-form-status {
+    display: block;
+    align-content: center;
+    width: 50%;
+    min-width: 80px;
+  
+    mdb-badge {
+      display: block;
+    }
+  }
+  
+  .status-icon {
+    text-align: left;
+    padding: 0px;
+  }
+  
+  .icon-padding {
+    padding-top: 2px;
+  }
+  
+  .customer-name-col {
+    width: 20%;
+  }
+  
+  .assign-user-col {
+    width: 20%;
+  }
+  
+  .status-col {
+    width: 10%;
+  }
+  
+  .clear-btn {
+    //height: 38px;
+  }
+  
+  .status-img-width {
+    width: 30%;
+    margin-left: 5%;
+    padding: 3px;
+  }
+  

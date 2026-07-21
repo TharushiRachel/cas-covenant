@@ -1,0 +1,40 @@
+<div class="d-flex flex-column">
+  <div *ngIf="isSubmitted==yesNoConst.N">
+    <div class="float-right">
+      <div class="d-flex flex-row align-items-center">
+        <ng-container *ngIf="isEqualLoginAndAssignUser()">
+          <mdb-icon class="color-red btn-sm" (click)="onRemoveBccPaper()" fas icon="trash-alt" aria-hidden="true"
+            mdbTooltip="Delete BCC Paper">
+          </mdb-icon>
+          <button mdbBtn type="button" class="action-button-padding btn-info btn-sm" outline="true" mdbWavesEffect
+            (click)="update($event)">
+            <span>Update</span>
+          </button>
+          <button mdbBtn type="button" class="action-button-padding btn-info btn-sm" outline="true" mdbWavesEffect
+            (click)="print()">
+            <span>Print</span>
+          </button>
+          <button mdbBtn type="button" class="action-button-padding btn-info btn-sm" outline="true" mdbWavesEffect
+            (click)="addComparableStatemnet()">
+            <span>Add Comparable Statemnet</span>
+          </button>
+          <button mdbBtn type="button" class="action-button-padding btn-info btn-sm" outline="true" mdbWavesEffect
+            (click)="handleSubmission()">
+            <span>Statement Submitted</span>
+          </button>
+        </ng-container>
+        <ng-container *ngIf="!isEqualLoginAndAssignUser()">
+          <button mdbBtn type="button" class="action-button-padding btn-info btn-sm" outline="true" mdbWavesEffect
+            (click)="getAssign($event)">
+            <span>Get Assigned</span>
+          </button>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+
+  <div class="w-100-p pb-5 mt-4">
+    <div id="printContentDiv" class="html-content-view" [innerHTML]="htmlContent | safeHtml">
+    </div>
+  </div>
+</div>

@@ -1,0 +1,129 @@
+{
+  "realKey": "Net Turnover",
+  "possibleKeys": [
+    "Net Turnover",
+    "Net Turnover 1"
+  ]
+},
+{
+"realKey": "Gross Profit",
+"possibleKeys": [
+"Gross Profit"
+]
+},
+{
+"realKey": "Operating Profit",
+"possibleKeys": [
+"Operating Profit"
+]
+},
+{
+"realKey": "Net Income (NPBT)",
+"possibleKeys": [
+"Net Income (NPBT)"
+]
+},
+{
+"realKey": "Net Income (NPAT)",
+"possibleKeys": [
+"Net Income (NPAT)"
+]
+},
+{
+"realKey": "Net Income",
+"possibleKeys": [
+"Net Income"
+]
+},
+{
+"realKey": "Tangible net worth (net of revaluation reserves)",
+"possibleKeys": [
+"Tangible net worth (net of revaluation reserves)"
+]
+},
+{
+"realKey": "Stated Capital",
+"possibleKeys": [
+"Stated Capital"
+]
+},
+
+{
+"realKey": "Stock holding period (days)",
+"possibleKeys": [
+"Stock holding period (days)",
+"3.4 SELLING, GENERAL AND ADMINISTRATION EXPENSES"
+]
+},
+{
+"realKey": "Debtors collection period (days)",
+"possibleKeys": [
+"Debtors collection period (days)"
+]
+},
+{
+"realKey": "Creditor payment period",
+"possibleKeys": [
+"Creditor payment period"
+]
+},
+{
+"realKey": "Working Capital Cycle (days)",
+"possibleKeys": [
+"Working Capital Cycle (days)"
+]
+},
+{
+"realKey": "Gearing",
+"possibleKeys": [
+"Gearing"
+]
+},
+{
+"realKey": "Gearing net of revaluation reserves",
+"possibleKeys": [
+"Gearing net of revaluation reserves"
+]
+},
+{
+"realKey": "Current Ratios(times)",
+"possibleKeys": [
+"Current Ratios(times)"
+]
+},
+{
+"realKey": "Interest cover(times)",
+"possibleKeys": [
+"Interest cover(times)"
+]
+},
+{
+"realKey": "Cash Interest Cover (times)",
+"possibleKeys": [
+"Cash Interest Cover (times)"
+]
+},
+{
+"realKey": "Debt Service Cover (times)",
+"possibleKeys": [
+"Debt Service Cover (times)"
+]
+},
+{
+"realKey": "Cash Debt Service Cover (times)",
+"possibleKeys": [
+"Cash Debt Service Cover (times)"
+]
+},
+{
+"realKey": "Net Profit margin",
+"possibleKeys": [
+"Net Profit margin"
+]
+},
+{
+"realKey": "Operating Cash flow",
+"possibleKeys": [
+"Operating Cash flow"
+]
+}]

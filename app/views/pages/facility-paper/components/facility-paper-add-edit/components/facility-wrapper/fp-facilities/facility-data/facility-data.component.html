@@ -1,0 +1,501 @@
+<ng-container *ngIf="facilityData">
+  <mdb-card [ngClass]="{'border-none-card': isPreviewMode, 'bordered-card': !isPreviewMode}" class="w-100-p">
+
+    <ng-container *ngIf="!isPreviewMode">
+      <div class="d-flex flex-row justify-content-between next-prv-btns">
+        <div>
+          <ng-container *ngIf="currentIndex != 0">
+            <button (click)="showPreviousTab($event)" class="margin-left-unset" color="light-blue" mdbBtn mdbWavesEffect
+              size="sm" type="button">
+              <mdb-icon aria-hidden="true" fas icon="angle-left"></mdb-icon>
+              Previous
+            </button>
+          </ng-container>
+
+          <ng-container *ngIf="isShow()">
+            <button class="btn" [ngClass]="getUnReadCommentsCount(facilityData) > 0 ? 'btn-primary' : 'btn-info'"
+              (click)="viewChangeModal(facilityData)" mdbTooltip="View Changes" placement="right"
+              style="padding: 8px 14px !important;">
+              <mdb-icon aria-hidden="true" fas icon="comments"></mdb-icon>
+            </button>
+          </ng-container>
+        </div>
+
+        <div>
+          <ng-container *ngIf="currentIndex != lastIndex">
+            <button (click)="showNextTab($event)" class="margin-right-unset" color="light-blue" mdbBtn mdbWavesEffect
+              size="sm" type="button">
+              Next
+              <mdb-icon aria-hidden="true" fas icon="angle-right"></mdb-icon>
+            </button>
+          </ng-container>
+        </div>
+      </div>
+    </ng-container>
+
+    <mdb-card-body class="facility-content width-100 d-flex flex-column justify-content-center md-card-custom-body">
+      <mdb-card>
+        <mdb-card-body>
+          <ng-container>
+            <div class="mx-0 p-2 border my-2 rounded border-danger"
+              *ngIf="showCusApplicableNotify(facilityData)">
+              <span class="text-danger font-weight-bold">
+                Note :- The Lease Facility must have customer applicable lease covenants under facility covenants.
+              </span>
+            </div>
+            <div class="d-flex flex-row justify-content-between w-100-p text-center">
+              <div class="d-flex flex-column">
+                <h5 class="currency-previous">{{facilityData.facilityCurrency}}
+                  {{this.getFormattedValue(facilityData.outstandingAmount)}}</h5>
+                <span class="text-info" style="text-align: left"> Previous Amount</span>
+              </div>
+              <div class="d-flex flex-column w-75">
+                <h5>
+                  {{this.currentIndex + 1}}.
+                  {{facilityData.creditFacilityTemplateDTO?.creditFacilityName}}
+                  <span *ngIf="facilityData.facilityRefCode">{{ " - " + facilityData.facilityRefCode}}</span>
+                </h5>
+                <h4>({{ facilityData.creditFacilityTemplateDTO?.facilityTypeName }})</h4>
+                <div class="d-flex flex-column justify-content-center">
+
+                  <div class="row d-flex flex-row justify-content-center mx-0">
+                    <div class="mr-2">
+                      <h4 *ngIf="facilityData.isNew === yesNoConst.Y">
+                        <mdb-badge default="true">New</mdb-badge>
+                      </h4>
+                      <h4 *ngIf="facilityData.isNew === yesNoConst.N">
+                        <mdb-badge default="true">Exist</mdb-badge>
+                      </h4>
+                    </div>
+                    <div *ngIf="facilityData.parentFacilityID != null" class="mr-2">
+                      <h4>
+                        <mdb-badge default="true">Child</mdb-badge>
+                      </h4>
+                    </div>
+                    <div *ngIf="facilityData.directFacility === yesNoConst.Y" class="mr-2">
+                      <h4>
+                        <mdb-badge default="true">Direct</mdb-badge>
+                      </h4>
+                    </div>
+                    <div *ngIf="facilityData.directFacility !== yesNoConst.Y" class="mr-2">
+                      <h4>
+                        <mdb-badge default="true">Indirect</mdb-badge>
+                      </h4>
+                    </div>
+                    <div *ngIf="facilityData.isOneOff === yesNoConst.Y" class="mr-2">
+                      <h4>
+                        <mdb-badge default="true">One-Off</mdb-badge>
+                      </h4>
+                    </div>
+                    <div *ngIf="facilityData.isCommittee === yesNoConst.Y" class="mr-2">
+                      <h4>
+                        <mdb-badge default="true">Committee</mdb-badge>
+                      </h4>
+                    </div>
+                    <div *ngIf="facilityData.seriesOfLoans === yesNoConst.Y" class="mr-2">
+                      <h4>
+                        <mdb-badge default="true">Series of Loans</mdb-badge>
+                      </h4>
+                    </div>
+                    <div *ngIf="facilityData.revolving === yesNoConst.Y" class="mr-2">
+                      <h4>
+                        <mdb-badge default="true">Revolving</mdb-badge>
+                      </h4>
+                    </div>
+                    <div *ngIf="facilityData.reduction === yesNoConst.Y" class="mr-2">
+                      <h4>
+                        <mdb-badge default="true">Reduction</mdb-badge>
+                      </h4>
+                    </div>
+                    <div *ngIf="facilityData.enhancement === yesNoConst.Y" class="mr-2">
+                      <h4>
+                        <mdb-badge default="true">Enhancement</mdb-badge>
+                      </h4>
+                    </div>
+
+                    <div class="mr-2" *ngIf="facilityData.isAnnual === yesNoConst.Y">
+                      <h4>
+                        <mdb-badge default="true">Annual Review</mdb-badge>
+                      </h4>
+                    </div>
+
+                    <div class="mr-2" *ngIf="facilityData.isAdditional === yesNoConst.Y">
+                      <h4>
+                        <mdb-badge default="true">Additional</mdb-badge>
+                      </h4>
+                    </div>
+
+                    <div class="mr-2" *ngIf="facilityData.isTermsAmended === yesNoConst.Y">
+                      <h4>
+                        <mdb-badge default="true">Terms Amended</mdb-badge>
+                      </h4>
+                    </div>
+
+                    <div class="mr-2" *ngIf="facilityData.isReStructure === yesNoConst.Y">
+                      <h4>
+                        <mdb-badge default="true">Re-Structure</mdb-badge>
+                      </h4>
+                    </div>
+
+                    <div class="mr-2" *ngIf="facilityData.isReSchedule === yesNoConst.Y">
+                      <h4>
+                        <mdb-badge default="true">Re-Schedule</mdb-badge>
+                      </h4>
+                    </div>
+
+                    <div *ngIf="ESBCreditScheduleServiceResponse" class="mr-2">
+                      <h4>
+                        <mdb-badge
+                          *ngIf="ESBCreditScheduleServiceResponse.responseStatus === esbCreditCalculatorResponseStatusConst.FAILED"
+                          mdbTooltip="ESB Service Failed" warning="true">F
+                        </mdb-badge>
+                        <mdb-badge
+                          *ngIf="ESBCreditScheduleServiceResponse.responseStatus === esbCreditCalculatorResponseStatusConst.SUCCESS"
+                          default="true" mdbTooltip="ESB Service Success">S
+                        </mdb-badge>
+                      </h4>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+
+              <div class="d-flex flex-column">
+                <h5 class="currency-required">{{facilityData.facilityCurrency}}
+                  {{this.getFormattedValue(facilityData.facilityAmount)}}</h5>
+                <span class="text-info" style="text-align: right">Required/Outstanding Amount</span>
+              </div>
+            </div>
+
+            <div class="d-flex flex-row justify-content-center w-100-p">
+              <div *ngIf="facilityData.parentFacilityID != null" class="mr-2">
+                <h4>
+                  <ng-container *ngIf="parentFacility">
+                    <mdb-badge default="true">Parent</mdb-badge>
+
+                    {{parentFacility.creditFacilityTemplateDTO?.creditFacilityName}}
+
+                    <span *ngIf="parentFacility.facilityRefCode">
+                      {{ " - " + parentFacility.facilityRefCode }}
+                    </span>
+
+                    <span>
+                      {{ " (" + parentFacility.facilityCurrency + " " +
+                      this.getFormattedValue(parentFacility.facilityAmount) + ")"}}
+                    </span>
+                  </ng-container>
+                </h4>
+              </div>
+            </div>
+          </ng-container>
+
+          <div class="d-flex flex-row">
+            <ng-container>
+              <div class="d-flex flex-row w-100-p facility-details-s1">
+                <div class="d-flex flex-column item-box">
+                  <div class="d-flex flex-row ">
+                    <h4 class="width-25">SECTOR</h4>
+                    <h4>:</h4>
+                    <h4 class="w-75 facility-data-lbl">{{getReferenceDescriptionForSectorId(facilityData.sectorID)}}
+                    </h4>
+                  </div>
+                  <div class="d-flex flex-row">
+                    <h4 class="width-25">SUB SECTOR</h4>
+                    <h4>:</h4>
+                    <h4 class="w-75 facility-data-lbl">
+                      {{getReferenceDescriptionForSubSectorId(facilityData.subSectorID)}}</h4>
+                  </div>
+                  <div *ngIf="facilityData.cashFlowGenerationSectorID" class="d-flex flex-row">
+                    <h4 class="w-25">CASH FLOW GENERATION SECTOR</h4>
+                    <h4>:</h4>
+                    <h4 class="w-75 facility-data-lbl">
+                      {{getReferenceDescriptionForCashFlowGenerationSectorID(facilityData.cashFlowGenerationSectorID)}}
+                    </h4>
+                  </div>
+                  <div class="d-flex flex-row">
+                    <h4 class="width-25">PURPOSE OF ADVANCE</h4>
+                    <h4>:</h4>
+                    <h4 class="w-75 facility-data-lbl">{{purposeOfAdvancedMap[facilityData.purposeOfAdvance]}}</h4>
+                  </div>
+                </div>
+              </div>
+
+              <div class="action-buttons d-flex flex-column">
+                <ng-container *ngIf="isPreviewMode && isShow()">
+                  <button class="btn btn-info" (click)="viewChangeModal(facilityData)" mdbTooltip="View Changes"
+                    placement="right" style="padding: 8px 14px !important;">
+                    <mdb-icon aria-hidden="true" fas icon="comments"></mdb-icon>
+                  </button>
+                </ng-container>
+
+                <ng-container *ngIf="!isPreviewMode && isEqualLoginAndAssignUser()">
+                  <ng-container *appHasAnyPrivilege="masterDataPrivilege.ICAS_SETTINGS_FACILITY_PAPER_EDIT">
+                    <button (click)="onUpdate($event)" class="btn btn-sm btn-info cta-btn" mdbTooltip="Edit facility"
+                      placement="left">
+                      <mdb-icon aria-hidden="true" fas icon="pencil-alt"></mdb-icon>
+                    </button>
+                  </ng-container>
+                </ng-container>
+
+                <ng-container *ngIf="isEqualLoginAndAssignUser()">
+                  <button (click)="openModalFacilityRepayment($event)" class="btn btn-sm btn-info cta-btn" mdbBtn
+                    mdbTooltip="Add/Edit Repayment" placement="left">
+                    <mdb-icon aria-hidden="true" fas icon="calendar-alt"></mdb-icon>
+                  </button>
+                </ng-container>
+
+                <ng-container *ngIf="isEqualLoginAndAssignUser()">
+                  <ng-container *ngIf="isAbleToAddDocuments()">
+                    <button (click)="openModalFacilityDocument($event)" class="btn btn-sm btn-info cta-btn" mdbBtn
+                      mdbTooltip="Add/Edit Document(s)" placement="left">
+                      <mdb-icon aria-hidden="true" fas icon="file"></mdb-icon>
+                    </button>
+                  </ng-container>
+                </ng-container>
+
+                <ng-container *ngIf="fpShowCalculator=='Y'">
+                  <button (click)="openModalCreditCalculator(fpOtherInfoDataDTOList, facilityData, fpRentalDataDTOList)"
+                    class="btn btn-sm cta-btn btn-info" mdbBtn mdbTooltip="Lease/Hire Purchase Calculator"
+                    placement="left">
+                    <mdb-icon aria-hidden="true" fas icon="calculator"></mdb-icon>
+                  </button>
+                </ng-container>
+
+
+                <ng-container *ngIf="!isPreviewMode && isEqualLoginAndAssignUser()">
+                  <ng-container *appHasAnyPrivilege="masterDataPrivilege.ICAS_SETTINGS_FACILITY_PAPER_EDIT">
+                    <button (click)="openCopyFacilityWindow(facilityData)" class="btn btn-sm cta-btn btn-info" mdbBtn
+                      mdbTooltip="Copy Facility" placement="left">
+                      <mdb-icon aria-hidden="true" fas icon="fas fa-plus"></mdb-icon>
+                    </button>
+                  </ng-container> </ng-container>
+
+              </div>
+            </ng-container>
+          </div>
+
+          <ng-container>
+            <div class="d-flex flex-row justify-content-between mt-3 facility-details-s2">
+
+              <div class="width-100">
+                <dl>
+                  <div class="d-flex flex-row justify-content-between facility-detail-td">
+                    <dt class="width-24-half pl-15p">Account Number</dt>
+                    <dt>:</dt>
+                    <dd class="w-75 facility-detail-dd">{{facilityData.disbursementAccNumber || '-'}}</dd>
+                  </div>
+                  <ng-container *ngIf="facilityData.creditFacilityTemplateDTO.showPurpose=='Y'">
+                    <div class="d-flex flex-row justify-content-between facility-detail-td">
+                      <dt class="width-24-half pl-15p">Purpose</dt>
+                      <dt>:</dt>
+                      <dd class="w-75 facility-detail-dd">
+                        <pre class="pre-set-texts">{{facilityData.purpose || '-'}}</pre>
+                      </dd>
+                    </div>
+                  </ng-container>
+                  <ng-container *ngIf="applicablefpInterestList.length > 0">
+                    <div class="d-flex flex-row justify-content-between facility-detail-td">
+                      <dt class="width-24-half pl-15p">Interest</dt>
+                      <dt>:</dt>
+                      <dd class="w-75 facility-detail-dd">
+
+
+                        <div class="table-responsive">
+                          <table class="table simple-table padding-left-unset">
+                            <thead>
+                              <tr>
+                                <ng-container *ngFor="let col of tableColumnsForFacilityInterestRate">
+                                  <th scope="col">{{col}}</th>
+                                </ng-container>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <ng-container *ngFor="let item of applicablefpInterestList">
+                                <tr>
+                                  <td>{{item.rateName ? item.rateName : item.rateCode ? item.rateCode : '' }}</td>
+                                  <td>{{item.value ? item.value : "-"}}</td>
+                                  <td>
+                                    <pre class="pre-set-texts">{{item.userComment}}</pre>
+                                  </td>
+                                </tr>
+                              </ng-container>
+                            </tbody>
+                          </table>
+                        </div>
+                      </dd>
+                    </div>
+                  </ng-container>
+                  <ng-container *ngIf="facilityData.creditFacilityTemplateDTO.showRepayment=='Y'">
+                    <div class="d-flex flex-row justify-content-between facility-detail-td">
+                      <dt class="width-24-half pl-15p">Repayment</dt>
+                      <dt>:</dt>
+                      <dd class="w-75 facility-detail-dd">
+                        <pre class="pre-set-texts">{{facilityData.repayment || '-'}}</pre>
+                      </dd>
+                    </div>
+                  </ng-container>
+                  <ng-container *ngIf="facilityData.creditFacilityTemplateDTO.showCondition=='Y'">
+                    <div class="d-flex flex-row justify-content-between facility-detail-td">
+                      <dt class="width-24-half pl-15p">Condition</dt>
+                      <dt>:</dt>
+                      <dd class="w-75 facility-detail-dd">
+                        <pre class="pre-set-texts">{{facilityData.condition || '-'}}</pre>
+                      </dd>
+                    </div>
+                  </ng-container>
+                  <ng-container *ngIf="facilityData.creditFacilityTemplateDTO.showRemark=='Y'">
+                    <div class="d-flex flex-row justify-content-between facility-detail-td">
+                      <dt class="width-24-half pl-15p">Remark</dt>
+                      <dt>:</dt>
+                      <dd class="w-75 facility-detail-dd">
+                        <pre class="pre-set-texts">{{facilityData.remark || '-'}}</pre>
+                      </dd>
+                    </div>
+                  </ng-container>
+                  <ng-container *ngIf="fpVitalInfoDataDTOList.length > 0">
+                    <ng-container *ngFor="let item of fpVitalInfoDataDTOList; let id = index">
+                      <div class="d-flex flex-row justify-content-between facility-detail-td">
+                        <dt class="width-24-half pl-15p">{{item.vitalInfoName}}</dt>
+                        <dt>:</dt>
+                        <dd class="w-75 facility-detail-dd">
+                          <pre class="pre-set-texts">{{item.vitalInfoData || '-'}}</pre>
+                        </dd>
+                      </div>
+                    </ng-container>
+                  </ng-container>
+
+                  <ng-container *ngIf="fpOtherInfoDataDTOList.length > 0">
+                    <ng-container *ngFor="let item of fpOtherInfoDataDTOList; let id = index">
+                      <ng-container *ngIf="item.outputCode !='OUT001'">
+                        <ng-container *ngIf="item.outputCode !='OUT003'">
+                          <div class="d-flex flex-row justify-content-between facility-detail-td">
+                            <dt class="width-24-half pl-15p">{{item.otherFacilityInfoName}}</dt>
+                            <dt>:</dt>
+                            <dd class="w-75 facility-detail-dd">
+                              <pre class="pre-set-texts">{{item.otherInfoData || '-'}}</pre>
+                            </dd>
+                          </div>
+                        </ng-container>
+                      </ng-container>
+                    </ng-container>
+                  </ng-container>
+                  <ng-container *ngIf="fpRentalDataDTOList.length > 0">
+                    <div class="d-flex flex-row justify-content-between facility-detail-td">
+                      <dt class="width-24-half pl-15p">Rental Data</dt>
+                      <dt>:</dt>
+                      <dd class="w-75 facility-detail-dd">
+
+
+                        <div class="table-responsive width-80">
+                          <table class="table simple-table padding-left-unset">
+                            <thead>
+                              <tr>
+                                <th scope="col">No of Rentals</th>
+                                <th class="text-align-end" scope="col">Rental Amount</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <ng-container *ngFor="let item of fpRentalDataDTOList">
+                                <tr>
+                                  <td>{{item.noOfRentals}}</td>
+                                  <td class="text-align-end">{{getFormattedValue(item.rentalAmount)}}</td>
+                                </tr>
+                              </ng-container>
+                            </tbody>
+                          </table>
+                        </div>
+                      </dd>
+                    </div>
+                  </ng-container>
+                  <ng-container *ngIf="isPreviewMode">
+                    <ng-container *ngIf="facilityData.facilitySecurityDTOList.length > 0">
+                      <div class="d-flex flex-row justify-content-between facility-detail-td">
+                        <dt class="width-24-half pl-15p">Securities</dt>
+                        <dt>:</dt>
+                        <dd class="w-75 facility-detail-dd">
+                          <div class="table-responsive">
+                            <table class="table simple-table">
+                              <thead>
+                                <tr>
+                                  <th scope="col" style="vertical-align:top ; width: 20px"></th>
+                                  <th scope="col" style="vertical-align:top; padding-left: 2%"></th>
+                                  <th class="text-align-end" scope="col" style="vertical-align:top; width: 17%">Security
+                                    Amount
+                                  </th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <ng-container *ngFor="let item of organizedSecurityList; index as i">
+                                  <tr>
+                                    <td><span>
+                                        {{i + 1}}.
+                                      </span>
+                                    </td>
+                                    <td *ngIf="item.isCommonSecurity === yesNoConst.Y">
+                                      <p style="margin-left: 2%">Refer to the common security
+                                        <span (click)="toContent(item.facilitySecurityID+item.securityCode)"
+                                          class="refer-to-the">
+                                          {{item.securityCode}}
+                                        </span>
+                                      </p>
+                                    </td>
+                                    <td *ngIf="item.isCommonSecurity === yesNoConst.N">
+                                      <pre class="custom-pre-tag-with-spaces">{{item.securityDetail}}</pre>
+                                    </td>
+                                    <td class="text-align-end">
+                                      <ng-container *ngIf="item.isCommonSecurity === yesNoConst.N">
+                                        {{item.securityCurrency}} {{getFormattedValue(item.securityAmount)}}
+                                      </ng-container>
+                                    </td>
+                                  </tr>
+                                </ng-container>
+                                <tr *ngIf="individualCashAmounts.length>0">
+                                  <td></td>
+                                  <td class="font-weight-bold padding-left-2">
+                                    Cash Amount
+                                  </td>
+                                  <td class="text-align-end">
+                                    <ng-container *ngFor="let item of individualCashAmounts" class="border-bottom-0">
+                                      <span class="text-align-end">{{item.currency}}
+                                        {{getFormattedValue(item.amount)}}</span><br>
+                                    </ng-container>
+                                  </td>
+                                </tr>
+                              </tbody>
+                            </table>
+                          </div>
+                        </dd>
+                      </div>
+                    </ng-container>
+                  </ng-container>
+
+                  <!-- custom facility info started -->
+                  <mat-accordion *ngIf="fpCustomInfoDataDTOList.length > 0">
+                    <mat-expansion-panel>
+                      <mat-expansion-panel-header>
+                        Custom Facility Info
+                      </mat-expansion-panel-header>
+
+                      <ng-container *ngIf="fpCustomInfoDataDTOList.length > 0">
+                        <ng-container class="column" *ngFor="let item of fpCustomInfoDataDTOList; let id = index">
+                          <div class="flex-row justify-content-between flex-container">
+                            <dt class="width-153">{{item.customFacilityInfoName}}</dt>
+                            <dt>:</dt>
+                            <dd class="text-align-right-margin-right w-100 custom-info-data">
+                              <pre class="pre-set-texts div-margin">{{item.customInfoData || '-'}}</pre>
+                            </dd>
+                          </div>
+                        </ng-container>
+                      </ng-container>
+                    </mat-expansion-panel>
+                  </mat-accordion>
+                  <!-- custom facility info ended -->
+                </dl>
+              </div>
+            </div>
+          </ng-container>
+        </mdb-card-body>
+      </mdb-card>
+    </mdb-card-body>
+  </mdb-card>
+</ng-container>

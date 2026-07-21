@@ -1,0 +1,66 @@
+<div class="d-flex flex-column justify-content-start align-items-start w-100-p mt-20p" id="af-lps-f-prev-mod">
+
+  <div class="w-100-p" *ngIf="visibility">
+    <div class="w-100-p text-align-center topic">
+      <h5>Proposed Facilities</h5>
+    </div>
+    <ng-container *ngIf="proposedFacilityList.length >0 ; else noData">
+      <ng-container *ngFor="let creditFacility of proposedFacilityList; let i =index">
+        <div class="w-100-p">
+          <app-apf-facility-data-preview
+            [currentIndex]="i"
+            [creditFacilityList]="creditFacilityList"
+            [facilityData]="creditFacility"
+            (toCommonSecurityContent)="toCommonSecurityContent($event)"
+          >
+          </app-apf-facility-data-preview>
+        </div>
+      </ng-container>
+    </ng-container>
+    <ng-template #noData>
+      <div class="text-align-center">
+        <p class="no-data-message">
+          No Facility(ies)
+        </p>
+      </div>
+    </ng-template>
+  </div>
+
+  <div class="w-100-p" *ngIf="visibility">
+    <div class="w-100-p text-align-center topic">
+      <h5>Existing Facilities</h5>
+    </div>
+    <ng-container *ngIf="existingFacilityList.length >0 ; else noData">
+      <ng-container *ngFor="let creditFacility of existingFacilityList; let i =index">
+        <div class="w-100-p">
+          <app-apf-facility-data-preview
+            [currentIndex]="i"
+            [creditFacilityList]="creditFacilityList"
+            [facilityData]="creditFacility"
+            (toCommonSecurityContent)="toCommonSecurityContent($event)"
+          >
+          </app-apf-facility-data-preview>
+        </div>
+      </ng-container>
+    </ng-container>
+    <ng-template #noData>
+      <div class="text-align-center">
+        <p class="no-data-message">
+          No Facility(ies)
+        </p>
+      </div>
+    </ng-template>
+  </div>
+
+  <ng-container *ngIf="commonFacilitySecurityList.length > 0">
+    <div class="w-100-p d-flex flex-column justify-content-center">
+      <app-apf-facilities-common-securities
+        [commonFacilitySecurityList]="commonFacilitySecurityList"
+        [facilities]="creditFacilityList"
+        (moveUp)="moveUp()"
+      >
+      </app-apf-facilities-common-securities>
+    </div>
+  </ng-container>
+
+</div>

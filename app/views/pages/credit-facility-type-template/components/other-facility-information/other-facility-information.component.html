@@ -1,0 +1,85 @@
+<div class="modal-header">
+  <div class="modal-header text-center no-border">
+    <h4 class="w-100 font-weight-bold">Add Other Facility Informations</h4>
+    <button (click)="mdbModalRef.hide()" aria-label="Close" class="close" data-dismiss="modal" type="button">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+</div>
+
+<div class="modal-body mx-3">
+  <form [formGroup]="componentForm" class="d-flex p-2 flex-column justify-content-start align-items-start w-100-p">
+
+    <div class="md-form m-top-10px m-bottom-10px w-100-p">
+      <input class="form-control" formControlName="otherFacilityInfoName" id="otherFacilityInfoName" maxlength="200"
+             mdbInput
+             mdbValidate
+             type="text">
+      <label for="otherFacilityInfoName">Other Facility Information Name</label>
+      <mdb-error *ngIf="formErrors.otherFacilityInfoName.required">Information Name required</mdb-error>
+    </div>
+
+    <div class="md-form m-top-10px m-bottom-10px w-100-p">
+      <input class="form-control" formControlName="otherFacilityInfoCode" id="otherFacilityInfoCode" maxlength="200"
+             mdbInput
+             mdbValidate
+             type="text">
+      <label for="otherFacilityInfoCode">Other Facility Information Code</label>
+      <mdb-error *ngIf="formErrors.otherFacilityInfoCode.required">Information Code required</mdb-error>
+    </div>
+
+    <div class="md-form m-top-10px m-bottom-10px w-100-p">
+      <input class="form-control" formControlName="description" id="cftDescription" maxlength="200" mdbInput
+             mdbValidate
+             type="text">
+      <label for="cftDescription">Description</label>
+      <mdb-error *ngIf="formErrors.description.required">Information Description required</mdb-error>
+    </div>
+
+
+    <div class="md-form m-top-10px m-bottom-10px w-100-p">
+      <mdb-select
+        [options]="optionSelectInputFieldType"
+        formControlName="otherFacilityInfoFieldType"
+        id="otherFacilityInfoFieldValueType"
+        placeholder="Field Value Type"></mdb-select>
+      <label for="status">Field Value Type</label>
+      <mdb-error *ngIf="formErrors.otherFacilityInfoFieldType.required">Field value type required</mdb-error>
+    </div>
+
+    <div class="md-form m-top-10px m-bottom-10px w-100-p">
+      <input class="form-control" formControlName="defaultValue" id="defaultValue" maxlength="200" mdbInput
+             mdbValidate
+             type="text">
+      <label for="defaultValue">Default Value</label>
+      <mdb-error *ngIf="formErrors.defaultValue.required">Default Value Required</mdb-error>
+    </div>
+
+    <div class="md-form m-top-10px m-bottom-10px w-100-p">
+      <mdb-select
+        [options]="yesNo"
+        formControlName="mandatory"
+        id="mandatory"
+        placeholder="Mandatory"></mdb-select>
+      <label for="status">Mandatory</label>
+      <mdb-error *ngIf="formErrors.mandatory.required">Mandatory required</mdb-error>
+    </div>
+
+    <div class="md-form m-top-10px m-bottom-10px w-100-p">
+      <mdb-select
+        [options]="optionsSelect"
+        formControlName="status"
+        id="status"
+        placeholder="Status"></mdb-select>
+      <label for="status">Status</label>
+      <mdb-error *ngIf="formErrors.status.required">Status required</mdb-error>
+    </div>
+  </form>
+</div>
+
+<div class="modal-footer">
+  <button (click)="onAdd()" [disabled]="componentForm.invalid" class="relative waves-light" color="primary" mdbBtn
+          mdbWavesEffect type="button">ADD
+  </button>
+</div>
+

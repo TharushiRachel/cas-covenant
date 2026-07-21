@@ -1,0 +1,454 @@
+<div class="d-flex p-2 flex-column justify-content-start align-items-start w-100-p">
+  <div *ngIf="!isEnable" class="w-100-p">
+
+    <div class="display-flex w-100-p flex-1 flex-wrap flex-row jc-space-between ai-center break-all-words">
+      <div class="width-60">
+        <h6 class="hcaption">
+          {{this.personalUpdateDTO.title}} {{this.personalUpdateDTO.title ? '. ' : ''}} {{this.personalUpdateDTO.customerName}}
+          - {{this.personalUpdateDTO.customerFinancialID}}
+        </h6>
+      </div>
+
+      <div>
+        <!--        <button-->
+        <!--          [hidden]="isEnable"-->
+        <!--          *appHasAnyPrivilege="masterDataPrivilege.ADMIN_CUSTOMER_PERSONAL_DETAIL_UPDATE"-->
+        <!--          (click)="enableButtons()"-->
+        <!--          type="button"-->
+        <!--          class="btn btn-outline-info btn-sm"-->
+        <!--        >Edit-->
+        <!--        </button>-->
+
+        <button
+          *appHasAnyPrivilege="masterDataPrivilege.ICAS_SETTINGS_CUSTOMER_REFRESH"
+          (click)="refreshCustomerDetailFromBank.emit()"
+          type="button"
+          class="medium-button btn btn-info"
+          mdbBtn
+          title="Refresh Details">
+          <mdb-icon fas icon="sync" aria-hidden="true"></mdb-icon>
+        </button>
+
+      </div>
+    </div>
+
+    <div class="d-flex w-100-p p-2 mb-3">
+      <div class="table-responsive ">
+        <table class="table">
+          <tbody>
+
+          <!--              <tr class="tr">-->
+          <!--                <td>Customer Financial ID</td>-->
+          <!--                <td class="td-width">{{this.personalUpdateDTO.customerFinancialID}}</td>-->
+          <!--              </tr>-->
+
+          <!--              <tr class="tr">-->
+          <!--                <td>Customer Name</td>-->
+          <!--                <td class="td-width">{{this.personalUpdateDTO.casCustomerName}}</td>-->
+          <!--              </tr>-->
+
+          <tr class="tr">
+            <td>Date of Birth</td>
+            <td *ngIf="this.personalUpdateDTO.dateOfBirth != ''"
+                class="td-width">{{this.personalUpdateDTO.dateOfBirth}}</td>
+            <td *ngIf="this.personalUpdateDTO.dateOfBirth == ''" class="td-width">-</td>
+          </tr>
+
+          <tr class="tr">
+            <td>Civil Status</td>
+            <td *ngIf="this.personalUpdateDTO.civilStatus != ''"
+                class="td-width">{{civilStatus[this.personalUpdateDTO.civilStatus]}}</td>
+            <td *ngIf="this.personalUpdateDTO.civilStatus == ''" class="td-width">-</td>
+          </tr>
+
+          <tr class="tr">
+            <td>Email</td>
+            <td *ngIf="this.personalUpdateDTO.emailAddress != ''"
+                class="td-width">{{this.personalUpdateDTO.emailAddress}}</td>
+            <td *ngIf="this.personalUpdateDTO.emailAddress == ''" class="td-width">-</td>
+          </tr>
+
+          <tr class="tr" *ngIf="this.personalUpdateDTO.secondaryEmailAddress != ''">
+            <td></td>
+            <td class="td-width"
+                *ngIf="this.personalUpdateDTO.secondaryEmailAddress != ''">{{this.personalUpdateDTO.secondaryEmailAddress}}</td>
+          </tr>
+
+          <ng-container *ngFor="let item of getActiveIdList(); let first = first;">
+            <tr class="tr">
+              <td>
+                  <span *ngIf="first">
+                    Identification
+                  </span>
+              </td>
+              <td class="td-width">
+                    <span>
+                    {{customerIdentificationType[item.identificationType]}}
+                      /
+                      {{item.identificationNumber}}
+                  </span>
+              </td>
+            </tr>
+          </ng-container>
+
+          <ng-container *ngFor="let item of getActiveTpList(); let first = first;">
+            <tr class="tr">
+              <td>
+                    <span *ngIf="first">
+                      Contact Number
+                    </span>
+              </td>
+              <td class="td-width">
+                {{item.contactNumber}} ({{contactNumberType[item.description]}})
+              </td>
+            </tr>
+          </ng-container>
+
+          <ng-container *ngFor="let item of addressList ">
+            <tr class="tr" *ngIf="item.status == 'ACT'">
+              <td>Address
+                <span *ngIf="item.addressType != ''">
+                    (
+                  {{addressType[item.addressType]}}
+                  )
+                  </span>
+              </td>
+              <td class="td-width">
+                {{item.address1}} {{item.address2}} {{item.city}}
+              </td>
+            </tr>
+          </ng-container>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+
+  <div *ngIf="isEnable" class="w-100-p">
+    <form
+      class="w-100-p"
+      [formGroup]="componentForm">
+      <h6 class="hcaption">Customer</h6>
+
+      <div class="d-flex flex-row justify-content-between w-100-p p-2">
+        <div class="md-form m-top-10px m-bottom-10px w-49-p">
+          <input mdbValidate type="text" id="customerFinancialID" maxlength="200"
+                 formControlName="customerFinancialID"
+                 class="form-control"
+                 mdbInput>
+          <label for="customerFinancialID">Customer Financial ID *</label>
+        </div>
+
+        <div class="md-form m-top-10px m-bottom-10px w-49-p">
+          <input mdbValidate type="text" id="casCustomerName" maxlength="200" formControlName="casCustomerName"
+                 class="form-control"
+                 mdbInput>
+          <label for="casCustomerName">Customer Name *</label>
+        </div>
+      </div>
+
+      <div class="d-flex w-100-p flex-row justify-content-between p-2">
+        <div class="md-form m-bottom-10px w-49-p">
+          <mdb-date-picker class="form-control"
+                           id="dateOfBirth"
+                           formControlName="dateOfBirth"
+                           [options]="myDatePickerOptionsForBirthDay"
+                           placeholder="Date of Birth"
+                           [inline]="true"
+          ></mdb-date-picker>
+        </div>
+
+        <div class="md-form m-top-10px m-bottom-10px w-49-p">
+          <mdb-select
+            [options]="optionsCivilStatusSelect"
+            formControlName="civilStatus"
+            id="civilStatus"
+            placeholder="Civil Status"></mdb-select>
+          <label for="civilStatus">Civil Status</label>
+        </div>
+      </div>
+
+      <div class="d-flex w-100-p flex-row justify-content-between p-2">
+        <div class="md-form m-top-10px m-bottom-10px w-49-p">
+          <input mdbValidate type="text" id="emailAddress" maxlength="200" formControlName="emailAddress"
+                 class="form-control"
+                 mdbInput>
+          <label for="emailAddress">Email Address</label>
+        </div>
+
+        <div class="md-form m-top-10px m-bottom-10px w-49-p">
+          <input mdbValidate type="text" id="secondaryEmailAddress" maxlength="200"
+                 formControlName="secondaryEmailAddress" class="form-control"
+                 mdbInput>
+          <label for="secondaryEmailAddress">Secondary Email Address</label>
+        </div>
+      </div>
+    </form>
+
+    <div *ngIf="!loadMoreClicked" class="w-100-p flex-row flex-center">
+      <a class="a-color" (click)="onLoadMoreDetail()">show more..</a>
+    </div>
+
+    <div *ngIf="loadMoreClicked" class="w-100-p">
+      <h6 class="hcaption">Identification</h6>
+
+      <ng-container *ngIf="isEnable">
+        <form class="d-flex p-2 flex-column justify-content-start align-items-start w-100-p" [formGroup]="idForm">
+          <div class="d-flex w-100-p flex-row justify-content-between">
+            <div class="md-form m-top-10px m-bottom-10px w-45-p">
+              <mdb-select
+                [options]="IDSelect"
+                formControlName="identificationType"
+                id="identificationType"
+                placeholder="Identification Type"></mdb-select>
+              <label for="identificationType">ID type *</label>
+            </div>
+
+            <div class="md-form m-top-10px m-bottom-10px w-45-p">
+              <input mdbValidate type="text" id="identificationNumber2" maxlength="200"
+                     formControlName="identificationNumber" class="form-control"
+                     mdbInput>
+              <label for="identificationNumber2">ID Number *</label>
+            </div>
+
+            <button
+              *appHasAnyPrivilege="masterDataPrivilege.ADMIN_CUSTOMER_PERSONAL_DETAIL_UPDATE"
+              [disabled]="!isIDFormValid()"
+              mdbTooltip="Add Id Type"
+              type="button"
+              class="btn btn-light px-sm-2 cft-btn float-right"
+              (click)="onAddID()">
+              <i class="fas fa-plus" aria-hidden="true"></i>
+
+            </button>
+          </div>
+
+        </form>
+      </ng-container>
+
+      <div class="d-flex w-100-p border p-2 mb-3">
+        <div class="table-responsive">
+          <table class="table">
+            <thead>
+            <tr>
+              <ng-container *ngFor="let col of IdentificationTableColumns">
+                <th scope="col">{{col}}</th>
+              </ng-container>
+            </tr>
+            </thead>
+            <tbody>
+            <ng-container *ngFor="let item of idList ">
+              <tr class="tr" *ngIf="item.status == 'ACT'">
+                <td>{{customerIdentificationType[item.identificationType]}}</td>
+                <td>{{item.identificationNumber}}</td>
+                <td>
+                  <i *appHasAnyPrivilege="masterDataPrivilege.ADMIN_CUSTOMER_PERSONAL_DETAIL_UPDATE"
+                     class="fas fa-trash-alt text-black-50 input-size" aria-hidden="true"
+                     color="red"
+                     mdbTooltip="Delete" placement="top"
+                     [hidden]="!isEnable"
+                     flat="true"
+                     (click)="onRemove(item)">
+                  </i>
+                </td>
+              </tr>
+            </ng-container>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <h6 class="hcaption">Telephone Details</h6>
+
+      <ng-container *ngIf="isEnable">
+        <form class="d-flex p-2 flex-column justify-content-start align-items-start w-100-p" [formGroup]="tpForm">
+          <div class="d-flex w-100-p flex-row justify-content-between">
+
+            <div class="md-form m-top-10px m-bottom-10px w-45-p">
+              <input mdbValidate type="text" id="contactNumber" maxlength="200"
+                     formControlName="contactNumber" class="form-control"
+                     mdbInput>
+              <label for="contactNumber">Contact Number *</label>
+            </div>
+
+            <div class="md-form m-top-10px m-bottom-10px w-45-p">
+              <input mdbValidate type="text" id="description" maxlength="200"
+                     formControlName="description" class="form-control"
+                     mdbInput>
+              <label for="description">Description</label>
+            </div>
+
+            <button
+              *appHasAnyPrivilege="masterDataPrivilege.ADMIN_CUSTOMER_PERSONAL_DETAIL_UPDATE"
+              [disabled]="!isTpFormValid()"
+              mdbTooltip="Add Telephone Number"
+              type="button"
+              class="btn btn-light px-sm-2 cft-btn float-right"
+              (click)="onAddTp()">
+              <i class="fas fa-plus" aria-hidden="true"></i>
+
+            </button>
+          </div>
+
+        </form>
+      </ng-container>
+
+      <div class="d-flex w-100-p border p-2 mb-3">
+        <div class="table-responsive ">
+          <table class="table">
+            <thead>
+            <tr>
+              <ng-container *ngFor="let col of tpColumns">
+                <th scope="col">{{col}}</th>
+              </ng-container>
+            </tr>
+            </thead>
+            <tbody>
+            <ng-container *ngFor="let item of tpList ">
+              <tr class="tr" *ngIf="item.status == 'ACT'">
+                <td>{{item.contactNumber}}</td>
+                <td>{{item.description}}</td>
+                <td>
+                  <i *appHasAnyPrivilege="masterDataPrivilege.ADMIN_CUSTOMER_PERSONAL_DETAIL_UPDATE"
+                     class="fas fa-trash-alt text-black-50 input-size" aria-hidden="true"
+                     color="red"
+                     mdbTooltip="Delete" placement="top"
+                     [hidden]="!isEnable"
+                     flat="true"
+                     (click)="onRemove(item)">
+                  </i>
+                </td>
+              </tr>
+            </ng-container>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <h6 class="hcaption">Address</h6>
+
+      <ng-container *ngIf="isEnable">
+        <form class="d-flex p-2 flex-column justify-content-start align-items-start w-100-p"
+              [formGroup]="addressForm">
+          <div class="d-flex w-100-p  flex-row justify-content-start">
+            <div class="md-form m-top-10px m-bottom-10px w-45-p pr-2">
+              <mdb-select
+                [options]="addressSelect"
+                formControlName="addressType"
+                id="addressType"
+                placeholder="Address Type"></mdb-select>
+              <label for="addressType">Address type *</label>
+            </div>
+
+            <div class="md-form m-top-10px m-bottom-10px w-45-p pr-2">
+              <input mdbValidate type="text" id="city" maxlength="200"
+                     formControlName="city" class="form-control"
+                     mdbInput>
+              <label for="city">City</label>
+            </div>
+          </div>
+
+          <div class="d-flex w-100-p  flex-row justify-content-start">
+            <div class="md-form m-top-10px m-bottom-10px w-45-p pr-2">
+              <input mdbValidate type="text" id="address1" maxlength="200"
+                     formControlName="address1" class="form-control"
+                     mdbInput>
+              <label for="address1">Address 1 *</label>
+            </div>
+
+            <div class="md-form m-top-10px m-bottom-10px w-45-p pr-2">
+              <input mdbValidate type="text" id="address2" maxlength="200"
+                     formControlName="address2" class="form-control"
+                     mdbInput>
+              <label for="address2">Address 2</label>
+            </div>
+
+            <button
+              *appHasAnyPrivilege="masterDataPrivilege.ADMIN_CUSTOMER_PERSONAL_DETAIL_UPDATE"
+              [disabled]="!isAddressFormValid()"
+              type="button"
+              class="btn btn-light float-right px-sm-2 cft-btn"
+              mdbTooltip=" Add Address"
+              (click)="onAddAddress()">
+              <i class="fas fa-plus" aria-hidden="true"></i>
+
+            </button>
+          </div>
+        </form>
+      </ng-container>
+
+      <div class="d-flex w-100-p border p-2 mb-3">
+        <div class="table-responsive">
+          <table class="table">
+            <thead>
+            <tr>
+              <ng-container *ngFor="let col of addressColumns">
+                <th scope="col">{{col}}</th>
+              </ng-container>
+            </tr>
+            </thead>
+            <tbody>
+            <ng-container *ngFor="let item of addressList ">
+              <tr *ngIf="item.status == 'ACT'">
+                <td>{{addressType[item.addressType]}}</td>
+                <td>{{item.address1}}</td>
+                <td>{{item.address2}}</td>
+                <td>{{item.city}}</td>
+                <td>
+                  <div>
+                    <i *appHasAnyPrivilege="masterDataPrivilege.ADMIN_CUSTOMER_PERSONAL_DETAIL_UPDATE"
+                       class="fas fa-trash-alt text-black-50 input-size" aria-hidden="true"
+                       color="red"
+                       [hidden]="!isEnable"
+                       mdbTooltip="Delete" placement="top"
+                       flat="true"
+                       (click)="onRemove(item)">
+                    </i>
+                  </div>
+                </td>
+              </tr>
+            </ng-container>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+
+  <div class="align-items-end d-flex flex-row justify-content-end p-2 w-100-p">
+    <button
+      [hidden]="!isEnable"
+      *appHasAnyPrivilege="masterDataPrivilege.ADMIN_CUSTOMER_PERSONAL_DETAIL_UPDATE"
+      (click)="disableButtons()"
+      type="button"
+      class="btn btn-outline-dark btn-sm float-right"
+    >Cancel
+    </button>
+
+    <button
+      *appHasAnyPrivilege="masterDataPrivilege.ADMIN_CUSTOMER_PERSONAL_DETAIL_UPDATE"
+      [hidden]="!isEnable"
+      [disabled]="!isMainFormDirty()"
+      (click)="resetUpdateCustomer()"
+      type="button"
+      class="btn btn-outline-warning btn-sm float-right"
+
+    >Reset
+    </button>
+    <button
+      *appHasAnyPrivilege="masterDataPrivilege.ADMIN_CUSTOMER_PERSONAL_DETAIL_UPDATE"
+      [hidden]="!isEnable"
+      [disabled]="isReset() || !isMainFormDirty()"
+      (click)="updateCustomer()"
+      type="button"
+      class="btn btn-outline-info btn-sm float-right"
+    >Update ABC
+    </button>
+  </div>
+</div>
+<div *ngIf="loadMoreClicked" class="w-100-p flex-row flex-center">
+  <a class="a-color" (click)="onHideDetail()">hide..</a>
+</div>

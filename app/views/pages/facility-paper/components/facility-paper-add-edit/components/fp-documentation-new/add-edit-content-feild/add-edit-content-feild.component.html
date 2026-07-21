@@ -1,0 +1,64 @@
+<div class="modal-header modal-topic">
+    <h4 class="modal-title w-100 "> Edit Security Document <br>
+        <h4 class="modal-title w-100 font-weight-bold">{{ getDefualtDocumentName() }} </h4>
+    </h4>
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="mdbModalRef.hide()">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+
+<div class="modal-body mx-3 modal-detail form-margin">
+
+    <table class="table border-0">
+        <tr *ngFor="let feild of documentInputFields">
+            <ng-container *ngIf="feild.showInput">
+                <td class="label-td">
+                    <label [for]="feild.id">
+                        {{ feild.label }}
+                        <ng-container *ngIf="feild.isRequired">*</ng-container>
+                    </label>
+                </td>
+                <td>
+                    <ng-container *ngIf="feild.inputType === 'date'">
+                        <mdb-date-picker [id]="feild.id" class="form-control m-0 px-2 py-0" [(ngModel)]="feild.value"
+                            [options]="datePickerOptions" [inline]="true" [disabled]="feild.disabled">
+                        </mdb-date-picker>
+                    </ng-container>
+
+                    <ng-container *ngIf="feild.inputType === 'text'">
+                        <input [type]="feild.inputType" [id]="feild.id" class="form-control" [(ngModel)]="feild.value"
+                            mdbInput [disabled]="feild.disabled">
+                    </ng-container>
+
+                    <ng-container *ngIf="feild.inputType === 'textarea'">
+                        <textarea [id]="feild.id" class="form-control" [(ngModel)]="feild.value" mdbInput
+                            [disabled]="feild.disabled"></textarea>
+                    </ng-container>
+
+                    <ng-container *ngIf="feild.inputType === 'decimal'">
+                        <input type="text" [id]="feild.id" class="form-control"
+                            (focusout)="setCurrencyFormatValue(feild)" [(ngModel)]="feild.value" mdbInput
+                            [disabled]="feild.disabled">
+                        <span class="text-danger">{{feild.error}}</span>
+                    </ng-container>
+
+                    <ng-container *ngIf="feild.inputType === 'select' || feild.inputType === 'selectText'">
+                        <mdb-select class="m-0 px-2 py-0" [id]="feild.id" [options]="feild.selectOptions"
+                            [allowClear]="true" [(ngModel)]="feild.value" [disabled]="feild.disabled">
+                        </mdb-select>
+                    </ng-container>
+                </td>
+            </ng-container>
+        </tr>
+    </table>
+</div>
+<div class="modal-footer modal-end">
+    <button type="button" mdbBtn color="secondary" class="relative waves-light" mdbWavesEffect (click)="handleSave()"
+        [disabled]="isSaveDisabled()" *ngIf="!showPrintButton()">
+        Save
+    </button>
+    <button type="button" mdbBtn color="secondary" class="relative waves-light" mdbWavesEffect (click)="handlePrint()"
+        [disabled]="isPrintSaveDisabled()" *ngIf="showPrintButton()">
+        Print
+    </button>
+</div>

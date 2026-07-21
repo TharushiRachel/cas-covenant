@@ -1,0 +1,28 @@
+<div>
+    <div class="modal-header modal-topic flex-center">
+      <button type="button" class="close pull-right" aria-label="Close" (click)="onClose()">
+        <span aria-hidden="true">&times;</span>
+      </button>
+      <h4 class="modal-title w-100 font-weight-bold heading-align">Annexures</h4>
+    </div>
+  
+    <div class="modal-body modal-detail form-margin">
+      <form [formGroup]="componentForm" class="d-flex flex-row flex-fill flex-wrap align-items-center">
+        <div class="d-flex w-100-p p-2">
+          <div class="md-form min-width-120 mr-3 flex-fill">
+            <mdb-select *ngIf="componentForm" id="annexureId" [options]="annexureOptions"
+              formControlName="annexureId" label="Annexure">
+            </mdb-select>
+            <mdb-error *ngIf="formErrors.annexureId.required">Required</mdb-error>
+          </div>
+        </div>
+      </form>
+    </div>
+  
+    <div class="modal-footer modal-end">
+      <button type="button" mdbBtn class="medium-button" (click)="onClose()">Close</button>
+      <button type="button" mdbBtn color="secondary" class="relative medium-button" [disabled]="!isValid()" (click)="onCreate()">Create</button>
+    </div>
+  </div>
+  
+  

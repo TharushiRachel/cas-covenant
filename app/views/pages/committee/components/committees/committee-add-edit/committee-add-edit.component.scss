@@ -1,0 +1,27 @@
+.user-chip {
+    font-size: 14px;
+    font-weight: 500;
+    width: fit-content;
+    background-color: #dddd;
+    border-radius: 6px;
+    padding: 4px;
+    cursor: pointer;
+    margin: 4px 8px 4px 0px;
+}
+.comment-card{
+    width: 100%;
+    position: relative;
+    margin: 4px 0px;
+    border-radius: 12px;
+}
+.comment-chip {
+    font-size: 12px;
+    font-weight: 500;
+    width: fit-content;
+    background-color: #dddd;
+    border-radius: 6px;
+    padding: 4px;
+    position: absolute;
+    right: 8px;
+    top: 8px;
+}

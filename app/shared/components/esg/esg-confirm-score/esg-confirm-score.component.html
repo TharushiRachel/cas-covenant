@@ -1,0 +1,35 @@
+<div>
+    <div class="modal-header modal-topic flex-center">
+        <button type="button" class="close pull-right" aria-label="Close" (click)="onNoClick()">
+            <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-title w-100 heading-align" id="myModalLabel" style="font-size: 1rem ; font-weight: bold">
+            {{heading}}
+        </h4>
+    </div>
+    <div class="modal-body modal-detail form-margin">
+        <h6 style="font-size: 0.9rem">{{message}}</h6>
+
+        <div class="row d-flex mx-0" *ngIf="isApproval">
+            <div class="col-6 md-form mx-0 p-0">
+                <mdb-select class="mt-2" id="riskRating" [options]="riskRatingOptions" [(ngModel)]="score"
+                    label="Risk Rating (Optional)">
+                </mdb-select>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer modal-end">
+        <button type="button" mdbBtn color="secondary" size="sm" class="waves-light" aria-label="Close"
+            (click)="onNoClick()" mdbWavesEffect>
+            Cancel
+        </button>
+        <button type="button" mdbBtn color="light" size="sm" class="waves-light" aria-label="Close"
+            (click)="onClear()" mdbWavesEffect *ngIf="isApproval && score">
+            Clear
+        </button>
+        <button type="button" mdbBtn color="success" size="sm" class="relative waves-light" (click)="onYesClick()"
+            mdbWavesEffect>
+            {{getButtonTxt()}}
+        </button>
+    </div>
+</div>

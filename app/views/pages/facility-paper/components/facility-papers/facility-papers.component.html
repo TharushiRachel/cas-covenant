@@ -1,0 +1,141 @@
+<div mdbSticky class="d-flex flex-row justify-content-between page-header">
+  <div class="d-flex flex-row align-items-center">
+    <h5><i class="fas fa-newspaper header-icon"></i> Facility Paper(s)</h5>
+  </div>
+</div>
+
+<div class="page-search-section section display-flex flex-column jc-start p-2 pt-3 pb-3 default-box-styles align-start">
+  <form class="display-flex w-100-p flex-row jc-start ai-center flex-wrap flex-2-gap" [formGroup]="searchForm">
+
+    <div class="md-form w-18-p  min-width-120">
+      <input type="text" id="fpRefNumber" formControlName="fpRefNumber" class="form-control" mdbInput>
+      <label for="fpRefNumber">Ref Number</label>
+    </div>
+
+    <div class="md-form w-18-p  min-width-120">
+      <input type="text" id="assignUserDisplayName" formControlName="assignUserDisplayName" class="form-control"
+             mdbInput>
+      <label for="assignUserDisplayName">Assigned User</label>
+    </div>
+
+    <div
+      class="md-form w-18-p  min-width-120">
+      <input type="text" id="bankAccountID" formControlName="bankAccountID" class="form-control" mdbInput>
+      <label for="bankAccountID">Account Number</label>
+    </div>
+
+
+    <div class="md-form w-18-p  min-width-120">
+      <input type="text" id="leadRefNumber" formControlName="leadRefNumber" class="form-control" mdbInput>
+      <label for="leadRefNumber">Lead Ref Number</label>
+    </div>
+
+    <div class="md-form w-18-p  min-width-120 ">
+      <input type="text" id="customerName" formControlName="customerName" class="form-control" mdbInput>
+      <label for="customerName">Customer Name</label>
+    </div>
+
+    <div class="md-form w-18-p min-width-120 ">
+      <mdb-select
+        [options]="optionsSelect"
+        placeholder="Select status"
+        formControlName="facilityPaperStatus"
+        id="facilityPaperStatus"></mdb-select>
+      <!--      <label for="facilityPaperStatus">Status</label>-->
+    </div>
+
+    <div class="display-flex flex-1 flex-row jc-end ai-center">
+      <button (click)="doSearch()" type="button" class=" medium-button btn btn-info" mdbBtn>Search</button>
+      <button (click)="clearSearch()" class=" medium-button btn btn-outline-info clear-btn" mdbBtn type="button">
+        Clear
+      </button>
+    </div>
+  </form>
+</div>
+
+<div *ngIf="selectedFacilityPapers.length == 0" class="alert alert-warning" role="alert">
+  No Facility Paper(s) Found !
+</div>
+
+<ng-container *ngIf="selectedFacilityPapers.length > 0">
+  <div class="section table-responsive mb-15p">
+    <table class="table">
+      <thead>
+      <tr>
+        <th scope="col">Customer Name</th>
+        <th scope="col">Ref Number</th>
+        <th scope="col">Account Number</th>
+        <th scope="col">Branch</th>
+        <th scope="col">Created Date</th>
+        <th scope="col">Assigned User</th>
+        <th scope="col" class="text-align-center">Status</th>
+      </tr>
+      </thead>
+      <tbody>
+      <ng-container *ngFor="let paper of selectedFacilityPapers">
+        <tr
+          (click)="loadFacilityPaper(paper.facilityPaperID)"
+          class="table-clickable-row">
+          <td class="customer-name-col">{{paper.customerName || '-'}}</td>
+          <td class="fp-ref-number-header">{{paper.fpRefNumber || '-'}}
+            <ng-container *ngIf="paper.currentFacilityPaperStatus == this.facilityPaperStatusConst.APPROVED">
+              <app-facility-paper-reviewer-label [facilityPaper]="paper">
+              </app-facility-paper-reviewer-label>
+            </ng-container>
+          </td>
+          <td>{{paper.bankAccountID || '-'}}</td>
+          <td>{{getBranchName(paper.branchCode) || '-'}}</td>
+          <td>
+            {{paper.createdDateStr || '-'}}
+            <app-facility-paper-date-count-label [facilityPaper]="paper"
+                                                 [tooltipContent]='"Consuming days from " + paper.createdDateStr'>
+            </app-facility-paper-date-count-label>
+          </td>
+          <td>{{paper.assignUserDisplayName || getBranchName(paper.assignDepartmentCode) || '-'}}</td>
+          <td class="status-icon">
+
+            <a *ngIf="paper.currentFacilityPaperStatus == this.facilityPaperStatusConst.IN_PROGRESS"
+               data-toggle="tooltip" data-placement="left" [title]='"In Progress on "+paper.inProgressDateStr'
+               class="icon-padding">
+              <img class="status-img-width" src="assets/media/images/fpstatusicon/inprogress.png" alt="In Progress">
+            </a>
+
+            <a *ngIf="paper.currentFacilityPaperStatus == this.facilityPaperStatusConst.APPROVED"
+               data-toggle="tooltip" data-placement="left" [title]='"Approved on " + paper.approvedDateStr'
+               class="icon-padding">
+              <img class="status-img-width" src="assets/media/images/fpstatusicon/approved.png" alt="Approved">
+            </a>
+
+            <a *ngIf="paper.currentFacilityPaperStatus == this.facilityPaperStatusConst.CANCEL"
+               data-toggle="tooltip" data-placement="left" [title]='"Returned on "+paper.canceledDateStr'
+               class="icon-padding">
+              <img class="status-img-width" src="assets/media/images/fpstatusicon/return.png" alt="Returned">
+            </a>
+
+            <a *ngIf="paper.currentFacilityPaperStatus == this.facilityPaperStatusConst.REJECTED"
+               data-toggle="tooltip" data-placement="left" [title]='"Rejected on "+ paper.rejectedDateStr'
+               class="icon-padding">
+              <img class="status-img-width" src="assets/media/images/fpstatusicon/rejected.png" alt="Rejected">
+            </a>
+
+            <a *ngIf="paper.currentFacilityPaperStatus == this.facilityPaperStatusConst.DRAFT"
+               data-toggle="tooltip" data-placement="left" [title]='"Drafted on " + paper.createdDateStr'
+               class="icon-padding">
+              <img class="status-img-width" src="assets/media/images/fpstatusicon/draft.png" alt="Drafted">
+            </a>
+
+          </td>
+        </tr>
+      </ng-container>
+      </tbody>
+    </table>
+
+    <app-paginator
+      [pageIndex]="pageSize.pageIndex"
+      [length]="pageSize.length"
+      [pageSize]="pageSize.pageSize"
+      [pageSizeOptions]="pageSize.pageSizeOptions"
+      (page)="onPageEvent($event)"
+    ></app-paginator>
+  </div>
+</ng-container>

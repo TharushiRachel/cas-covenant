@@ -1,0 +1,14 @@
+<div>
+    <div class="modal-header modal-topic flex-center">
+        <button type="button" class="close pull-right" aria-label="Close" (click)="onNoClick()">
+            <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-title w-100 heading-align" id="myModalLabel">{{heading}}</h4>
+    </div>
+    <div class="modal-body mx-3 modal-detail form-margin">
+        <h6 class="mb-1">{{message}}</h6>
+        <ol>
+            <li *ngFor="let tag of tags">{{tag}}</li>
+        </ol>
+    </div>
+</div>

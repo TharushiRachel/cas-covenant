@@ -1,0 +1,43 @@
+.facility-paper-status {
+    display: block;
+    align-content: center;
+    width: 50%;
+    min-width: 80px;
+  
+    mdb-badge {
+      display: block;
+    }
+  }
+  
+  .status-icon {
+    text-align: left;
+    padding: 0px;
+  }
+  
+  .icon-padding {
+    padding-top: 2px;
+  }
+  
+  .customer-name-col {
+    width: 25%;
+  }
+  
+  .assign-user-col {
+    width: 20%;
+  }
+  
+  .status-col {
+    width: 4%;
+  }
+  
+  .clear-btn {
+    //height: 38px;
+  }
+  
+  .status-img-width {
+    width: 80%;
+    margin-left: 5%;
+    margin-right: 10%;
+    padding: 3px;
+  }
+  

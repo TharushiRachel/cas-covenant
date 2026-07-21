@@ -1,0 +1,82 @@
+.facility-data-header {
+  font-weight: bold;
+  display: inline;
+  width: fit-content;
+}
+
+.cta-btn {
+  padding: .4rem .7rem;
+  font-size: .8rem;
+  color: #15181bb3;
+}
+
+.security-detail {
+  margin-left: 25%;
+  width: 80%;
+}
+
+.security-amount {
+  width: 30%;
+}
+
+.security-common-flag {
+  width: 5%;
+}
+
+.security-action {
+  width: 10%;
+}
+
+.add-security-detail-button {
+  padding: 0.2rem 1.2rem !important;
+}
+
+.delete-button {
+  background-color: #ff354785 !important;
+}
+
+.action-header {
+  width: 220px;
+  min-width: 220px;
+}
+
+.table {
+  margin-bottom: 20px;
+
+  td, th {
+    padding: 5px 0;
+    //vertical-align: middle;
+  }
+
+  &.preview-mode {
+    td, th {
+      padding: 5px 0;
+      //vertical-align: middle;
+    }
+  }
+}
+
+.refer-to-the {
+  color: #0b51c5;
+
+  &:hover {
+    cursor: pointer;
+  }
+}
+
+.border-none-card {
+  border: none !important;
+  box-shadow: none;
+}
+
+
+.heading-topics {
+  font-size: small;
+  margin-left: 1% !important;
+  font-weight: bold !important;
+}
+
+.individual-security-cash-total  {
+  margin-left: 2%;
+}
+

@@ -1,0 +1,142 @@
+<div class="d-flex flex-column justify-content-start align-items-start w-100-p">
+  <div class="d-flex flex-row mb-2 w-100-p flex-wrap" id="fp-f-prev-mod">
+    <label class="mr-auto p-2 "></label>
+    <div>
+      <ng-container *appHasAnyPrivilege="masterDataPrivilege.ICAS_SETTINGS_FACILITY_PAPER_EDIT">
+        <ng-container *ngIf="facilityPaper.isCommittee=='Y'">
+          <ng-container
+            *ngIf="creditFacilityList.length > 0 && isEqualLoginAndAssignUser() && !isApproveStatus() && !isRejected()">
+            <button (click)="updateOutstandingDate($event)" [mdbTooltip]="'Update Outstanding Date'"
+              class="action-button-padding btn-outline-info btn-sm" mdbBtn mdbWavesEffect outline="true" type="button">
+              Outstanding Date
+            </button>
+          </ng-container>
+        </ng-container>
+      </ng-container>
+
+      <ng-container *appHasAnyPrivilege="masterDataPrivilege.ICAS_SETTINGS_FACILITY_PAPER_EDIT">
+        <ng-container
+          *ngIf="creditFacilityList.length > 0 && isEqualLoginAndAssignUser() && !isApproveStatus() && !isRejected()">
+          <button (click)="updateFacilityOrder($event)" class="action-button-padding btn-outline-info btn-sm" mdbBtn
+            mdbWavesEffect outline="true" type="button">
+            Facility Order
+          </button>
+        </ng-container>
+      </ng-container>
+
+      <ng-container *appHasAnyPrivilege="masterDataPrivilege.ICAS_SETTINGS_FACILITY_PAPER_EDIT">
+        <ng-container
+          *ngIf="creditFacilityList.length > 0 && isEqualLoginAndAssignUser() && !isApproveStatus() && !isRejected()">
+          <button (click)="toggleViewMode($event)" class="action-button-padding btn-outline-info btn-sm" mdbBtn
+            mdbWavesEffect outline="true" type="button">
+            <ng-container *ngIf="!isPreviewMode">
+              <mdb-icon aria-hidden="true" fas icon="eye"></mdb-icon>
+              Preview Mode
+            </ng-container>
+            <ng-container *ngIf="isPreviewMode">
+              <mdb-icon aria-hidden="true" fas icon="pencil-alt"></mdb-icon>
+              Edit Mode
+            </ng-container>
+          </button>
+        </ng-container>
+      </ng-container>
+
+      <ng-container *appHasAnyPrivilege="masterDataPrivilege.ICAS_SETTINGS_FACILITY_PAPER_EDIT">
+        <ng-container *ngIf="isEqualLoginAndAssignUser() && !isApproveStatus() && !isRejected()">
+          <button (click)="openModalAddEdit($event)" class=" medium-button btn btn-info btn-sm" mdbBtn
+            mdbTooltip="Add Facility" mdbWavesEffect placement="left" type="button">
+            Add Facility
+          </button>
+        </ng-container>
+      </ng-container>
+    </div>
+  </div>
+
+  <ng-container *appHasAnyPrivilege="masterDataPrivilege.ICAS_SETTINGS_FACILITY_PAPER_EDIT">
+    <ng-container *ngIf="creditFacilityList.length > 0 && !isPreviewMode">
+      <app-tabs (onTabSelect)="setTabIndex($event)" [selectedTabIndex]="selectedTabIndex" class="w-100-p">
+        <ng-container *ngFor="let creditFacility of creditFacilityList; let i =index">
+
+          <app-tab [active]="i == selectedTabIndex" [badgeColor]="'red'" [badgeContent]="'N'"
+            [showBadge]="creditFacility.isNew=='Y'" [tabTitle]="'Facility ' + (i + 1)">
+            <ng-container *ngIf="selectedTabIndex == i">
+
+              <!--              There are two view for the facility paper condition with corporate and non corporate -->
+              <ng-container *ngIf="facilityPaper.isCommittee=='Y' ; else nonCorporateFacilityData">
+                <app-three-column-facility-data
+                  (onUpdateFacility)="openModalAddEdit($event, creditFacility,i)"
+                  (setTabIndex)="setTabIndex($event)"
+                  (updateOutstandingDate)="updateOutstandingDate($event)"
+                  [creditFacilityList]="creditFacilityList"
+                  [currentIndex]="i"
+                  [facilityData]="creditFacility"
+                  [facilityPaper]="updatedFacilityPaper"
+                  [isPreviewMode]="isPreviewMode"
+                  [lastIndex]="creditFacilityList.length - 1">
+                </app-three-column-facility-data>
+              </ng-container>
+              <ng-template #nonCorporateFacilityData>
+                <app-facility-data (onUpdateFacility)="openModalAddEdit($event, creditFacility,i)"
+                  (setTabIndex)="setTabIndex($event)" [creditFacilityList]="creditFacilityList"
+                  [creditScheduleESBResponseStatusList]="creditScheduleESBResponseStatusList" [currentIndex]="i"
+                  [facilityData]="creditFacility" [facilityPaper]="facilityPaper" [isPreviewMode]="isPreviewMode"
+                  [lastIndex]="creditFacilityList.length - 1">
+                </app-facility-data>
+              </ng-template>
+            </ng-container>
+          </app-tab>
+
+        </ng-container>
+      </app-tabs>
+    </ng-container>
+  </ng-container>
+
+  <ng-container *ngIf="creditFacilityList.length > 0 && isPreviewMode">
+    <ng-container *ngFor="let creditFacility of creditFacilityList; let i =index">
+      <div class="w-100-p">
+        <!--              There are two view for the facility paper condition with corporate and non corporate -->
+        <ng-container *ngIf="facilityPaper.isCommittee=='Y' ; else nonCorporateFacilityDataPreview">
+          <app-three-column-facility-data
+            (onUpdateFacility)="openModalAddEdit($event, creditFacility)"
+            (setTabIndex)="setTabIndex($event)"
+            (toCommonSecurityContent)="toCommonSecurityContent($event)"
+            (updateOutstandingDate)="updateOutstandingDate($event)"
+            [creditFacilityList]="creditFacilityList"
+            [currentIndex]="i"
+            [facilityData]="creditFacility"
+            [facilityPaper]="updatedFacilityPaper"
+            [isPreviewMode]="isPreviewMode"
+            [lastIndex]="creditFacilityList.length - 1"
+          >
+          </app-three-column-facility-data>
+        </ng-container>
+        <ng-template #nonCorporateFacilityDataPreview>
+          <app-facility-data (onUpdateFacility)="openModalAddEdit($event, creditFacility)"
+            (setTabIndex)="setTabIndex($event)" (toCommonSecurityContent)="toCommonSecurityContent($event)"
+            [creditFacilityList]="creditFacilityList"
+            [creditScheduleESBResponseStatusList]="creditScheduleESBResponseStatusList" [currentIndex]="i"
+            [facilityData]="creditFacility" [facilityPaper]="facilityPaper" [isPreviewMode]="isPreviewMode"
+            [lastIndex]="creditFacilityList.length - 1">
+          </app-facility-data>
+        </ng-template>
+      </div>
+    </ng-container>
+  </ng-container>
+
+  <ng-container *ngIf="commonFacilitySecurityList.length > 0 && isPreviewMode">
+    <div class="facility-content width-100 d-flex flex-column justify-content-center">
+      <mdb-card class="w-100-p">
+        <mdb-card-body>
+          <app-preview-common-securities (moveUp)="moveUp()" [commonFacilitySecurityList]="commonFacilitySecurityList"
+            [facilityPaper]="facilityPaper">
+          </app-preview-common-securities>
+        </mdb-card-body>
+      </mdb-card>
+    </div>
+  </ng-container>
+
+</div>
+
+<ng-container *ngIf="isPreviewMode">
+  <app-scroll-to-top></app-scroll-to-top>
+</ng-container>

@@ -1,0 +1,330 @@
+<div mdbSticky class="d-flex flex-row justify-content-between page-header">
+  <div class="d-flex flex-row align-items-center">
+    <h5><i class="fas fa-newspaper header-icon"></i> Committee Paper(s)</h5>
+  </div>
+</div>
+
+<div class="card mt-1r default-box-styles">
+  <div class="card-body">
+
+    <div class="w-100-p mt-10p mb-10p display-flex flex-row jc-space-around ai-center">
+     <ng-container *ngIf='this.hasPrivilegeToViewBCCPapers'>
+        <bcc-paper-count-box
+          class="box-width"
+          [selectedStatus]="this.status"
+          [count]="bccPaperCounts.inboxBCCPaper"
+          [status]="bccPaperDashboardStatusConst.INBOX"
+          (onClick)="loadBCCPageData($event)"
+        ></bcc-paper-count-box>
+
+        <bcc-paper-count-box
+          class="box-width"
+          [selectedStatus]="this.status"
+          [count]="bccPaperCounts.inProgressBCCPaper"
+          [status]="bccPaperDashboardStatusConst.IN_PROGRESS"
+          (onClick)="loadBCCPageData($event)"
+        ></bcc-paper-count-box>
+
+        <bcc-paper-count-box
+          class="box-width"
+          [selectedStatus]="this.status"
+          [count]="bccPaperCounts.approvedBCCPaper"
+          [status]="bccPaperDashboardStatusConst.APPROVED"
+          (onClick)="loadBCCPageData($event)"
+        ></bcc-paper-count-box>
+
+        <bcc-paper-count-box
+          class="box-width"
+          [selectedStatus]="this.status"
+          [count]="bccPaperCounts.declinedBCCPaper"
+          [status]="bccPaperDashboardStatusConst.DECLINED"
+          (onClick)="loadBCCPageData($event)"
+        ></bcc-paper-count-box>
+      </ng-container>
+
+     <!-- <ng-container *ngIf='!this.hasPrivilegeToViewBCCPapers'>
+          <committee-paper-count-box
+            class="box-width"
+            [selectedStatus]="this.status"
+            [count]="committeePaperCounts.inboxCommitteePaper"
+            [status]="committeePaperDashboardStatusConst.INBOX"
+            (onClick)="loadPageData($event)"
+          ></committee-paper-count-box>
+
+          <committee-paper-count-box
+            class="box-width"
+            [selectedStatus]="this.status"
+            [count]="committeePaperCounts.inProgressCommitteePaper"
+            [status]="committeePaperDashboardStatusConst.IN_PROGRESS"
+            (onClick)="loadPageData($event)"
+          ></committee-paper-count-box>
+
+          <committee-paper-count-box
+            class="box-width"
+            [selectedStatus]="this.status"
+            [count]="committeePaperCounts.returnedCommitteePaper"
+            [status]="committeePaperDashboardStatusConst.RETURNED"
+            (onClick)="loadPageData($event)"
+          ></committee-paper-count-box>
+
+          <committee-paper-count-box
+            class="box-width"
+            [selectedStatus]="this.status"
+            [count]="committeePaperCounts.approvedCommitteePaper"
+            [status]="committeePaperDashboardStatusConst.COMMITTEE_APPROVED"
+            (onClick)="loadPageData($event)"
+          ></committee-paper-count-box>
+
+
+            <committee-paper-count-box
+              class="box-width"
+              [selectedStatus]="this.status"
+              [count]="committeePaperCounts.declinedCommitteePaper"
+              [status]="committeePaperDashboardStatusConst.DECLINED"
+              (onClick)="loadPageData($event)"
+            ></committee-paper-count-box>
+
+      </ng-container>-->
+     </div>
+
+    </div>
+</div>
+
+
+
+<ng-container *ngFor="let committeePaperItem of this.committeePapers | keyvalue">
+      <label  class ="font-weight-bold status-sub">
+        <ng-container *ngIf="this.hasPrivilegeToViewBCCPapers">
+           <ng-container *ngIf="this.loggedInUserRole == 'BCC_ENTERER'">
+              <ng-container *ngIf="committeePaperItem.key == this.bccWorkFlowStatusConst.DRAFT">
+                Draft - Pending Documents
+              </ng-container>
+              <ng-container *ngIf="committeePaperItem.key == this.bccWorkFlowStatusConst.FORWARDED">
+                Received BCC Papers
+              </ng-container>
+              <ng-container *ngIf="committeePaperItem.key == this.bccWorkFlowStatusConst.REJECTED">
+                Rejected BCC Papers / Documents
+              </ng-container>
+
+              <!-- <ng-container *ngIf="committeePaperItem.key == this.bccWorkFlowStatusConst.abc">
+                Rejected Attachments(doc)
+              </ng-container> -->
+
+              <ng-container *ngIf="committeePaperItem.key == this.bccWorkFlowStatusConst.PENDING">
+                Submitted BCC Papers
+              </ng-container>
+
+              <ng-container *ngIf="committeePaperItem.key == this.bccWorkFlowStatusConst.AUTH_PENDING_DOCS">
+                Authorization Pending Documents
+              </ng-container>
+          </ng-container>
+
+
+          
+
+          <ng-container *ngIf="this.loggedInUserRole == 'BCC_AUTHORIZER'">
+          <ng-container *ngIf="committeePaperItem.key == this.bccWorkFlowStatusConst.AUTH_PENDING_DOCS">
+            Authorization Pending Documents
+          </ng-container>
+          <ng-container *ngIf="committeePaperItem.key == this.bccWorkFlowStatusConst.PENDING">
+            Received BCC Papers
+          </ng-container>
+          <ng-container *ngIf="committeePaperItem.key == this.bccWorkFlowStatusConst.REJECTED">
+            Rejected BCC Papers
+          </ng-container>
+          </ng-container>
+
+
+        </ng-container>
+
+        <!--<ng-container *ngIf="!this.hasPrivilegeToViewBCCPapers && this.loggedInUserRole == 'BCC_INQUIRER'">
+            <ng-container *ngIf="committeePaperItem.key == this.bccWorkFlowStatusConst.FORWARDED; else OTHER_STATUS">
+              Received BCC Papers
+            </ng-container>
+
+            <ng-template #OTHER_STATUS>
+              {{committeePaperItem.key}}
+            </ng-template>
+        </ng-container>
+
+        <ng-container *ngIf="!this.hasPrivilegeToViewBCCPapers && this.loggedInUserRole != 'BCC_INQUIRER'">
+          {{committeePaperItem.key}}
+        </ng-container>-->
+     </label>
+
+  <ng-container *ngIf="committeePaperItem.value.length == 0">
+    <div class="alert alert-warning" role="alert">
+      No Committee Paper(s) Found !
+    </div>
+  </ng-container>
+
+  <ng-container *ngIf="committeePaperItem.value.length > 0">
+    <div class="section  mb-15p">
+      <table class="table">
+        <thead>
+        <tr>
+          <ng-container *ngFor="let col of tableColumns">
+            <th scope="col">{{col}}</th>
+          </ng-container>
+        </tr>
+        </thead>
+        <tbody>
+        <ng-container *ngFor="let committeePaper of committeePaperItem.value">
+          <tr (click)="this.loadFacilityPaper(committeePaper.facilityPaperID)" class="table-clickable-row">
+            <td>{{committeePaper.customerName || '-'}}</td>
+            <td>{{committeePaper.fpRefNumber || '-'}}</td>
+            <td>{{committeePaper.bankAccountID || '-'}}</td>
+            <td>{{getBranchName(committeePaper.branchCode) || '-'}}</td>
+            <td>{{committeePaper.lastActionDateStr || '-'}}</td>
+            <td>{{committeePaper.assignUserDisplayName || getBranchName(committeePaper.assignDepartmentCode) || '-'}}</td>
+
+
+
+
+            <td class="status-icon status-col">
+              <!-- SHOW DRAFT STATUS ICON-->
+             <!-- <ng-container *ngIf="this.loggedInUserRole != 'BCC_INQUIRER'">
+                 <a *ngIf="committeePaper.dashboardSubStatus == this.committeePaperStatusConst.FORWARDED"
+                   data-toggle="tooltip" data-placement="left" title="Forwarded" class="icon-padding">
+                  <img class="status-img-width" src="assets/media/images/fpstatusicon/assigned.png" alt="Assigned">
+                 </a>
+              </ng-container> -->
+
+
+              <a *ngIf="committeePaper.dashboardSubStatus == this.committeePaperStatusConst.RECOMMENDED"
+                 data-toggle="tooltip" data-placement="left" title="In Progress" class="icon-padding">
+                <img class="status-img-width" src="assets/media/images/fpstatusicon/inprogress.png" alt="In Progress">
+              </a>
+
+              <a *ngIf="committeePaper.dashboardSubStatus == this.committeePaperStatusConst.RETURNED"
+                 data-toggle="tooltip" data-placement="left" title="Returned" class="icon-padding">
+                <img class="status-img-width" src="assets/media/images/fpstatusicon/return.png" alt="Returned">
+              </a>
+
+
+              <a *ngIf="committeePaper.dashboardSubStatus == this.committeePaperStatusConst.COMMITTEE_APPROVED"
+                 data-toggle="tooltip" data-placement="left" title="Committee Paper Approved" class="icon-padding">
+                <img class="status-img-width" src="assets/media/images/fpstatusicon/approved.png" alt="Committee Paper Approved">
+              </a>
+
+
+              <ng-container *ngIf="this.loggedInUserRole == 'BCC_INQUIRER'">
+                <a *ngIf="committeePaper.dashboardSubStatus == this.bccWorkFlowStatusConst.FORWARDED || committeePaper.dashboardSubStatus == this.committeePaperStatusConst.FORWARDED"
+                   data-toggle="tooltip" data-placement="left" title="Assigned" class="icon-padding">
+                  <img class="status-img-width" src="assets/media/images/fpstatusicon/assigned.png" alt="Assigned">
+                </a>
+                <a *ngIf="committeePaper.dashboardSubStatus == this.bccWorkFlowStatusConst.PENDING"
+                   data-toggle="tooltip" data-placement="left" title="In Progress" class="icon-padding">
+                  <img class="status-img-width" src="assets/media/images/fpstatusicon/inprogress.png" alt="In Progress">
+                </a>
+
+                <a *ngIf="committeePaper.dashboardSubStatus == this.bccWorkFlowStatusConst.AUTH_PENDING_DOCS"
+                   data-toggle="tooltip" data-placement="left" title="In Progress" class="icon-padding">
+                  <img class="status-img-width" src="assets/media/images/fpstatusicon/inprogress.png" alt="In Progress">
+                </a>
+              </ng-container>
+
+              <ng-container *ngIf="this.loggedInUserRole == 'BCC_ENTERER'">
+
+                <a *ngIf="committeePaper.dashboardSubStatus == this.bccWorkFlowStatusConst.FORWARDED"
+                   data-toggle="tooltip" data-placement="left" title="Received" class="icon-padding">
+                  <img class="status-img-width" src="assets/media/images/fpstatusicon/assigned.png" alt="Assigned">
+                </a>
+
+                <a *ngIf="committeePaper.dashboardSubStatus == this.bccWorkFlowStatusConst.DRAFT && committeePaper.bccApproveStatus != 'APPROVED' "
+                   data-toggle="tooltip" data-placement="left" title="Draft" class="icon-padding">
+                  <img class="status-img-width" src="assets/media/images/fpstatusicon/draft.png" alt="Draft">
+                </a>
+
+                <a *ngIf="committeePaper.dashboardSubStatus == this.bccWorkFlowStatusConst.DRAFT && committeePaper.bccApproveStatus == 'APPROVED'"
+                  data-toggle="tooltip" data-placement="left" title="Draft Docs" class="icon-padding">
+                <img class="status-img-width" src="assets/media/images/fpstatusicon/approved.png" alt="Draft">
+                </a>
+
+                <a *ngIf="committeePaper.dashboardSubStatus == this.bccWorkFlowStatusConst.REJECTED && committeePaper.bccApproveStatus != 'APPROVED'"
+                   data-toggle="tooltip" data-placement="left" title="Rejected" class="icon-padding">
+                  <img class="status-img-width" src="assets/media/images/fpstatusicon/return.png" alt="Rejected">
+                </a>
+
+                <a *ngIf="committeePaper.dashboardSubStatus == this.bccWorkFlowStatusConst.REJECTED && committeePaper.bccApproveStatus == 'APPROVED'"
+                   data-toggle="tooltip" data-placement="left" title="Rejected Docs" class="icon-padding">
+                  <img class="status-img-width" src="assets/media/images/fpstatusicon/approved.png" alt="Rejected">
+                </a>
+
+                <a *ngIf="committeePaper.dashboardSubStatus == this.bccWorkFlowStatusConst.PENDING"
+                   data-toggle="tooltip" data-placement="left" title="In Progress" class="icon-padding">
+                  <img class="status-img-width" src="assets/media/images/fpstatusicon/inprogress.png" alt="In Progress">
+                </a>
+                <a *ngIf="committeePaper.dashboardSubStatus == this.bccWorkFlowStatusConst.AUTH_PENDING_DOCS"
+                   data-toggle="tooltip" data-placement="left" title="Pending Docs" class="icon-padding">
+                  <img class="status-img-width" src="assets/media/images/fpstatusicon/approved.png" alt="In Progress">
+                </a>
+              </ng-container>
+
+              <ng-container *ngIf="this.loggedInUserRole == 'BCC_AUTHORIZER'">
+                <a *ngIf="committeePaper.dashboardSubStatus == this.bccWorkFlowStatusConst.AUTH_PENDING_DOCS"
+                   data-toggle="tooltip" data-placement="left" title="Pending Docs" class="icon-padding">
+                  <img class="status-img-width" src="assets/media/images/fpstatusicon/approved.png" alt="Assigned">
+                </a>
+                <a *ngIf="committeePaper.dashboardSubStatus == this.bccWorkFlowStatusConst.PENDING"
+                   data-toggle="tooltip" data-placement="left" title="Received" class="icon-padding">
+                  <img class="status-img-width" src="assets/media/images/fpstatusicon/assigned.png" alt="Assigned">
+                </a>
+                <a *ngIf="committeePaper.dashboardSubStatus == this.bccWorkFlowStatusConst.REJECTED && committeePaper.bccApproveStatus != 'APPROVED'"
+                   data-toggle="tooltip" data-placement="left" title="Rejected" class="icon-padding">
+                  <img class="status-img-width" src="assets/media/images/fpstatusicon/inprogress.png" alt="In Progress">
+                </a>
+
+                <a *ngIf="committeePaper.dashboardSubStatus == this.bccWorkFlowStatusConst.REJECTED && committeePaper.bccApproveStatus == 'APPROVED'"
+                   data-toggle="tooltip" data-placement="left" title="Rejected Docs" class="icon-padding">
+                  <img class="status-img-width" src="assets/media/images/fpstatusicon/approved.png" alt="In Progress">
+                </a>
+              </ng-container>
+
+              <a *ngIf="committeePaper.dashboardSubStatus == this.bccPaperStatusConst.APPROVED"
+                 data-toggle="tooltip" data-placement="left" title="Approved" class="icon-padding">
+                <img class="status-img-width" src="assets/media/images/fpstatusicon/approved.png" alt="Approved">
+              </a>
+
+              <a *ngIf="committeePaper.dashboardSubStatus == this.bccPaperStatusConst.DECLINED"
+                 data-toggle="tooltip" data-placement="left" title="Declined" class="icon-padding">
+                <img class="status-img-width" src="assets/media/images/fpstatusicon/decline.png" alt="Declined">
+              </a>
+
+            </td>
+
+
+
+
+
+   
+          </tr>
+        </ng-container>
+
+        </tbody>
+      </table>
+
+      <ng-container *ngIf="this.hasPrivilegeToViewBCCPapers">
+        <app-paginator
+          [pageIndex]="this.committeePapersPage[committeePaperItem.key].currentPageNo - 1"
+          [length]="this.committeePapersPage[committeePaperItem.key].totalNoOfRecords"
+          [pageSize]="pageSize.pageSize"
+          [pageSizeOptions]="pageSize.pageSizeOptions"
+          (page)="onBCCPageEvent($event, committeePaperItem.key)"
+        ></app-paginator>
+      </ng-container>
+
+      <!-- <ng-container *ngIf="!this.hasPrivilegeToViewBCCPapers">
+        <app-paginator
+          [pageIndex]="this.committeePapersPage[committeePaperItem.key].currentPageNo - 1"
+          [length]="this.committeePapersPage[committeePaperItem.key].totalNoOfRecords"
+          [pageSize]="pageSize.pageSize"
+          [pageSizeOptions]="pageSize.pageSizeOptions"
+          (page)="onPageEvent($event, committeePaperItem.key)"
+        ></app-paginator>
+      </ng-container> -->
+
+    </div>
+  </ng-container>
+</ng-container>
+

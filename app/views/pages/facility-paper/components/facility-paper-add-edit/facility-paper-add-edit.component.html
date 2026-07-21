@@ -1,0 +1,481 @@
+<div id="remove-view-section">
+  <div mdbSticky id="facility-paper" class="d-flex flex-row justify-content-between page-header align-items-center">
+    <div class="d-flex flex-row align-items-center">
+      <a appGoBack class="d-flex flex-row align-items-center">
+        <i class="fas fa-angle-left header-icon-back"></i>
+      </a>
+      <h5>
+        <i class="fas fa-edit header-icon"></i>
+        <span>Facility Paper - Ref No : {{ this.facilityPaper.fpRefNumber }}
+          <br *ngIf="this.scrWidth < 1450" />
+          (<span [ngStyle]="getColour(this.facilityPaper.currentFacilityPaperStatus)">
+            {{
+            facilityStatus[this.facilityPaper.currentFacilityPaperStatus]
+            }}</span>
+          )</span>
+
+        <ng-container *ngIf="this.facilityPaper.externalAppDescription || this.facilityPaper.externalAppRefNumber ">
+          <span data-placement="right" style="font-size: 90%;">
+            ({{this.facilityPaper.externalAppDescription}} - Ref :{{this.facilityPaper.externalAppRefNumber}})
+          </span>
+        </ng-container>
+      </h5>
+    </div>
+    <div class="float-right d-flex flex-row justify-content-between">
+      <div class="align-items-center">
+        <ng-container *ngIf="!isLoggedInUserBCCEnterer && !isLoggedInUserBCCAuthorizer && !isLegalOfficer()">
+          <button mdbBtn type="button" class="action-button-padding btn btn-outline-dark btn-size" data-toggle="tooltip"
+            data-placement="bottom" [title]="'View DA Limits'" outline="true" mdbWavesEffect
+            (click)="loadDATable($event)">
+            <span>DA Limits</span>
+          </button>
+        </ng-container>
+
+        <ng-container *ngIf="!isAgentUser()">
+          <ng-container *appHasAnyPrivilege="masterDataPrivilege.ICAS_WEB_AUDIT_VIEW">
+            <button mdbBtn type="button" class="action-button-padding btn-outline-info btn-sm btn-size" outline="true"
+              mdbWavesEffect (click)="onViewFpAuditClick(this.facilityPaper.facilityPaperID)">
+              <span>AUDIT</span>
+            </button>
+          </ng-container>
+          <ng-container *appHasAnyPrivilege="
+              masterDataPrivilege.ICAS_SETTINGS_FACILITY_PAPER_COPY_ENABLED
+            ">
+            <ng-container *ngIf="!isLegalOfficer()">
+              <ng-container *appBlockedByUPMs>
+                <button mdbBtn type="button" class="action-button-padding btn-outline-info btn-sm btn-size"
+                  data-toggle="tooltip" data-placement="bottom" [title]="'For a New Reference'" outline="true"
+                  mdbWavesEffect (click)="copyFacilityPaper(facilityPaper)">
+                  <span>COPY</span>
+                </button>
+              </ng-container>
+            </ng-container>
+          </ng-container>
+          <ng-container *ngIf="showReturnButton(facilityPaper)">
+            <button mdbBtn type="button" class="action-button-padding btn-outline-info btn-sm btn-size" outline="true"
+              data-toggle="tooltip" data-placement="bottom" [title]="'Back to a Initial Level'" mdbWavesEffect (click)="
+                changeFacilityPaperStatus(
+                  facilityPaper,
+                  facilityStatusConst.CANCEL
+                )
+              ">
+              <span>Return</span>
+            </button>
+          </ng-container>
+          <ng-container *ngIf="
+              isEqualLoginAndAssignUser() &&
+              !isAgentUser() &&
+              showReturnToAgentButton(facilityPaper)
+            ">
+            <button mdbBtn type="button" data-toggle="tooltip" data-placement="bottom" [title]="'Return to Agent'"
+              class="action-button-padding btn-outline-info btn-sm btn-size" outline="true" mdbWavesEffect (click)="
+                returnToAgent(
+                  facilityPaper,
+                  facilityStatus.CANCEL,
+                  facilityRoutigStatus.BACK,
+                  'Return'
+                )
+              ">
+              <span>Return</span>
+            </button>
+          </ng-container>
+          <ng-container *ngIf="
+              isEqualLoginAndAssignUser() &&
+              !isAgentUser() &&
+              showForwardButton(facilityPaper)
+            ">
+            <button mdbBtn type="button" data-toggle="tooltip" data-placement="bottom" [title]="'Send Next Level'"
+              class="action-button-padding btn-outline-success btn-sm btn-size" outline="true" mdbWavesEffect (click)="
+                changeFacilityPaperStatus(
+                  facilityPaper,
+                  facilityStatusConst.IN_PROGRESS
+                )
+              ">
+              <span>Forward</span>
+            </button>
+          </ng-container>
+
+          <ng-container *ngIf="showESGForwardButton(facilityPaper.currentFacilityPaperStatus)">
+            <button data-placement="bottom" mdbBtn type="button" mdbTooltip="Forward Application Form"
+              class="action-button-padding btn-outline-success btn-sm" outline="true" mdbWavesEffect
+              (click)="handleEsgForward(facilityPaper,facilityStatusConst.IN_PROGRESS, true)">
+              <span>Forward to ESG</span>
+            </button>
+          </ng-container>
+
+          <ng-container *appHasAnyPrivilege="
+              masterDataPrivilege.ICAS_SETTINGS_FACILITY_PAPER_SCRUTINIZER
+            ">
+            <ng-container *ngIf="
+                !isEqualLoginAndAssignUser() &&
+                isAssignedForLoggedInUserUPMGroup() &&
+                isPaperAssignedForLoggedInUserBranch() && !isLegalOfficer()
+              ">
+              <ng-container *ngIf="!isAgentUser() && showForwardButton(facilityPaper)">
+                <button mdbBtn type="button" data-toggle="tooltip" data-placement="bottom" [title]="'Scrutinizing'"
+                  class="action-button-padding btn-outline-success btn-sm btn-size" outline="true" mdbWavesEffect
+                  (click)="
+                    changeFacilityPaperStatus(
+                      facilityPaper,
+                      facilityStatusConst.IN_PROGRESS
+                    )
+                  ">
+                  <span>Forward</span>
+                </button>
+              </ng-container>
+            </ng-container>
+          </ng-container>
+          <ng-container *ngIf="showAttendButton(facilityPaper)">
+            <button mdbBtn type="button" class="action-button-padding btn-outline-success btn-sm btn-size"
+              data-toggle="tooltip" data-placement="bottom" [title]="'Assigned to Me'" outline="true" mdbWavesEffect
+              (click)="
+                attend($event, facilityPaper, facilityStatusConst.IN_PROGRESS)
+              ">
+              <span>Attend</span>
+            </button>
+          </ng-container>
+          <ng-container *ngIf="showReleaseButton(facilityPaper) && !isLegalOfficer()">
+            <button mdbBtn type="button" class="action-button-padding btn-outline-success btn-sm btn-size"
+              data-toggle="tooltip" data-placement="bottom" [title]="'To User Groups'" outline="true" mdbWavesEffect
+              (click)="
+                release($event, facilityPaper, facilityStatusConst.IN_PROGRESS)
+              ">
+              <span>Release</span>
+            </button>
+          </ng-container>
+          <ng-container *appHasAnyPrivilege="masterDataPrivilege.ICAS_SETTINGS_APPROVE_FACILITY_PAPER">
+              <ng-container
+                *ngIf="(isEqualLoginAndAssignUser() && showAssignButton(facilityPaper) && !isLegalOfficer()) || enabledAutoApprove(facilityPaper)">
+                <button mdbBtn type="button" color="success" class="btn-size" size="sm"
+                  [disabled]="!showApproveButton(facilityPaper) && !enabledAutoApprove(facilityPaper)" mdbWavesEffect
+                  (click)="approveFacilityPaper($event, facilityStatusConst.APPROVED)">
+                  <span>{{ enabledAutoApprove(facilityPaper) ? 'Authorize' : 'Approve' }}</span>
+                </button>
+              </ng-container>
+          </ng-container>
+
+          <ng-container *appHasAnyPrivilege="masterDataPrivilege.ICAS_SETTINGS_VIEW_COMMITTEE_PAPER">
+            <ng-container *appBlockedByUPMs>
+              <ng-container *ngIf="this.isCommitteeButtonsEnable">
+                <button mdbBtn type="button" class="action-button-padding btn-outline-info btn-sm btn-size"
+                  outline="true" data-toggle="tooltip" data-placement="bottom" [title]="'Return Committee Paper'"
+                  mdbWavesEffect (click)="returnCommitteePaper()">
+                  <span>Return as a Committee Member</span>
+                </button>
+                <button mdbBtn type="button" color="success" class="btn-size" size="sm" mdbWavesEffect
+                  (click)="recommendCommitteePaper()">
+                  <span>Approve as a Committee Member</span>
+                </button>
+              </ng-container>
+            </ng-container>
+          </ng-container>
+
+          <ng-container *appHasAnyPrivilege="masterDataPrivilege.ICAS_SETTINGS_VIEW_BCC_PAPER">
+            <ng-container *ngIf="this.isLoggedInUserBCCEnterer">
+              <button mdbBtn type="button" color="success" class="btn-size" size="sm" data-toggle="tooltip"
+                data-placement="bottom" [hidden]="!showBCCEntererButtons(facilityPaper)" [title]="'Approved by BCC'"
+                mdbWavesEffect (click)="submitBCCStatus($event, this.bccPaperStatusConst.APPROVED)">
+                <span>Approved by BCC</span>
+              </button>
+              <button mdbBtn type="button" color="danger" class="btn-size" size="sm" data-toggle="tooltip"
+                data-placement="bottom" [hidden]="!showBCCEntererButtons(facilityPaper)" [title]="'Declined by BCC'"
+                mdbWavesEffect (click)="submitBCCStatus($event, this.bccPaperStatusConst.DECLINED)">
+                <span>Declined by BCC</span>
+              </button>
+            </ng-container>
+
+            <ng-container *ngIf="this.isLoggedInUserBCCAuthorizer">
+              <button mdbBtn type="button" color="success" class="btn-size" size="sm" data-toggle="tooltip"
+                data-placement="bottom" [hidden]="!showBCCAuthorizerButtons(facilityPaper)" [title]="'Authorize'"
+                mdbWavesEffect (click)="authorizeBCCStatus($event, this.bccWorkFlowStatusConst.APPROVED)">
+                <span>Authorize</span>
+              </button>
+              <button mdbBtn type="button" color="danger" class="btn-size" size="sm" data-toggle="tooltip"
+                data-placement="bottom" [hidden]="!showBCCAuthorizerButtons(facilityPaper)" [title]="'Reject'"
+                mdbWavesEffect (click)="authorizeBCCStatus($event, this.bccWorkFlowStatusConst.REJECTED)">
+                <span>Reject</span>
+              </button>
+
+              <ng-container *ngIf="isPendingDocsForauthorize()">
+                <button mdbBtn type="button" color="success" class="btn-size" size="sm" data-toggle="tooltip"
+                  data-placement="bottom" [hidden]="!showBCCAuthorizerButtons(facilityPaper)" [title]="'Authorize'"
+                  mdbWavesEffect (click)="authorizeBCCStatus($event, this.bccWorkFlowStatusConst.APPROVED)">
+                  <span>Authorize Docs</span>
+                </button>
+                <button mdbBtn type="button" color="danger" class="btn-size" size="sm" data-toggle="tooltip"
+                  data-placement="bottom" [hidden]="!showBCCAuthorizerButtons(facilityPaper)" [title]="'Reject'"
+                  mdbWavesEffect (click)="authorizeBCCStatus($event, this.bccWorkFlowStatusConst.REJECTED)">
+                  <span>Reject Docs</span>
+                </button>
+
+              </ng-container>
+            </ng-container>
+          </ng-container>
+
+          <app-tab [tabTitle]="borrowerTabName">
+            <ng-container *ngIf="isTabSelected(borrowerTabIndex)">
+              <app-fp-personal-details class="w-100-p" [mainFacilityPaper]="facilityPaper"
+                (goToKalipto)="goToKalipto($event)"></app-fp-personal-details>
+            </ng-container>
+          </app-tab>
+        </ng-container>
+        <ng-container *ngIf="this.showDeclineButton(facilityPaper) && !isLegalOfficer()">
+          <button mdbBtn type="button" color="danger" data-toggle="tooltip" data-placement="bottom"
+            [title]="'Paper will be permanently rejected'" class="btn-size" size="sm" mdbWavesEffect
+            (click)="declineFacilityPaper($event, facilityStatusConst.REJECTED)">
+            <span>Decline</span>
+          </button>
+        </ng-container>
+        <ng-container *ngIf="isAgentUser()">
+          <ng-container *ngIf="
+             isEqualLoginAndAssignUser() &&
+             showForwardButton(facilityPaper) &&
+             isAgentUser()
+           ">
+            <button mdbBtn type="button" color="success" data-toggle="tooltip" data-placement="bottom"
+              [title]="'To Supervisor'" class="btn-size" size="sm" (click)="
+               agentForwardFacilityPaper(
+                 facilityPaper,
+                 facilityStatusConst.IN_PROGRESS,
+                 facilityRoutigStatus.NEXT,
+                 'Forward'
+               )
+             " mdbWavesEffect>
+              <span>Forward</span>
+            </button>
+          </ng-container>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+  <div class="tab-view-section">
+    <ng-container *ngIf="this.hasPrivilegeToViewBCCPapers">
+      <div class="tab-view">
+        <app-tabs [selectedTabIndex]="selectedTabIndex" class="w-100-p" (onTabSelect)="onTabSelect($event)">
+          <app-tab [tabTitle]="'About'">
+            <ng-container *ngIf="isTabSelected(aboutTabIndex)">
+              <app-basic-wrapper class="w-100-p" (goToKalipto)="goToKalipto($event)"></app-basic-wrapper>
+            </ng-container>
+          </app-tab>
+          <app-tab tabTitle="Full Paper" *ngIf="!isBoardPaper()">
+            <ng-container *ngIf="isTabSelected(defaultFullViewTabIndex)">
+              <app-fp-default-full-view [facilityPaper]="facilityPaper" class="w-100-p"></app-fp-default-full-view>
+            </ng-container>
+          </app-tab>
+          <app-tab tabTitle="Attachments">
+            <ng-container *ngIf="isTabSelected(attachmentsTabIndex)">
+              <app-bcc-attachments [facilityPaper]="facilityPaper" class="w-100-p"></app-bcc-attachments>
+            </ng-container>
+          </app-tab>
+          <app-tab tabTitle="Comments">
+            <ng-container *ngIf="isTabSelected(commentTabIndex)">
+              <app-fp-approve-remark [facilityPaper]="facilityPaper" class="w-100-p">
+              </app-fp-approve-remark>
+            </ng-container>
+          </app-tab>
+          <app-tab tabTitle="Other Details">
+            <ng-container *ngIf="isTabSelected(otherDetailsTabIndex)">
+              <app-other-details-wrapper [facilityPaper]="facilityPaper" class="w-100-p"></app-other-details-wrapper>
+            </ng-container>
+          </app-tab>
+          <ng-container *ngIf="isBoardPaper()">
+            <app-tab tabTitle="Committee Paper">
+              <ng-container *ngIf="isTabSelected(committeFullViewTabIndex)">
+                <app-fp-bcc-full-view [facilityPaper]="facilityPaper" class="w-100-p"></app-fp-bcc-full-view>
+              </ng-container>
+            </app-tab>
+          </ng-container>
+          <ng-container *ngIf="facilityPaper.isCommittee == 'Y'">
+            <app-tab tabTitle="Committee Inquiries">
+              <ng-container *ngIf="isTabSelected(committeeInquiriesTabIndex)">
+                <app-fp-committe-inquiries [facilityPaper]="facilityPaper" class="w-100-p"></app-fp-committe-inquiries>
+              </ng-container>
+            </app-tab>
+          </ng-container>
+
+        </app-tabs>
+      </div>
+    </ng-container>
+    <ng-container *ngIf="!this.hasPrivilegeToViewBCCPapers">
+      <div class="tab-view">
+        <app-tabs [selectedTabIndex]="selectedTabIndex" class="w-100-p" (onTabSelect)="onTabSelect($event)">
+          <app-tab [tabTitle]="'About'">
+            <div class="row d-flex align-items-center mx-0 px-3 py-0 my-3 border"
+              *ngIf="isCommiteeSectionShow(facilityPaper.currentFacilityPaperStatus,facilityPaper.currentAssignUser)">
+              <mdb-checkbox [(ngModel)]="isCommittee">Committee Paper</mdb-checkbox>
+              <button class="btn btn-info ml-auto" [disabled]="isSameType()" (click)="updateFPType()">Update</button>
+            </div>
+            <div class="row d-flex align-items-center mx-0 px-3 py-0 my-3 border"
+              *ngIf="isCommiteeSectionShow(facilityPaper.currentFacilityPaperStatus,facilityPaper.currentAssignUser)">
+              <mdb-checkbox [checked]="isFinancialYear" (change)="onYearSelectCheckboxChange()">Selected Financial Year:
+                {{selectedYear}}</mdb-checkbox>
+              <button class="btn btn-info ml-auto" [disabled]="isSameYearType()"
+                (click)="updateYearType()">Update</button>
+            </div>
+            <ng-container *ngIf="isTabSelected(aboutTabIndex)">
+              <app-basic-wrapper class="w-100-p" (goToKalipto)="goToKalipto($event)"></app-basic-wrapper>
+            </ng-container>
+          </app-tab>
+
+          <app-tab [tabTitle]="borrowerTabName">
+            <ng-container *ngIf="isTabSelected(borrowerTabIndex)">
+              <app-fp-personal-details class="w-100-p" [mainFacilityPaper]="facilityPaper"
+                (goToKalipto)="goToKalipto($event)"></app-fp-personal-details>
+            </ng-container>
+          </app-tab>
+
+          <ng-container *ngIf="!hasPrivilegeToViewFullPaperAsDefault">
+            <app-tab tabTitle="Facilities">
+              <ng-container *ngIf="isTabSelected(facilitiesTabIndex)">
+                <app-facility-wrapper [facilityPaper]="facilityPaper"
+                  (handleWalletShareUpdate)="handleWalletShareUpdate($event)" class="w-100-p"></app-facility-wrapper>
+              </ng-container>
+            </app-tab>
+            <app-tab tabTitle="Security">
+              <ng-container *ngIf="isTabSelected(securityTabIndex)">
+                <app-fp-security [facilityPaper]="facilityPaper"
+                  (handleWalletShareUpdate)="handleWalletShareUpdate($event)" class="w-100-p"></app-fp-security>
+              </ng-container>
+            </app-tab>
+            <app-tab tabTitle="Wallet Share">
+              <ng-container *ngIf="isTabSelected(walletShareTabIndex)">
+                <app-fp-wallet-share class="w-100-p" [facilityPaper]="facilityPaper"></app-fp-wallet-share>
+              </ng-container>
+            </app-tab>
+          </ng-container>
+
+          <ng-container *ngIf="!hasPrivilegeToViewFullPaperAsDefault || hasPrivilegeToEditUPCAsDefault">
+            <app-tab tabTitle="UPC Documents">
+              <ng-container *ngIf="isTabSelected(upcTabIndex)">
+                <app-fp-editor class="w-100-p" [facilityPaper]="facilityPaper"></app-fp-editor>
+              </ng-container>
+            </app-tab>
+          </ng-container>
+
+          <app-tab tabTitle="Other Details">
+            <ng-container *ngIf="isTabSelected(otherDetailsTabIndex)">
+              <app-other-details-wrapper [facilityPaper]="facilityPaper" class="w-100-p"></app-other-details-wrapper>
+            </ng-container>
+          </app-tab>
+          <app-tab tabTitle="Comments">
+            <ng-container *ngIf="isTabSelected(commentTabIndex)">
+              <app-fp-approve-remark [facilityPaper]="facilityPaper" class="w-100-p">
+              </app-fp-approve-remark>
+            </ng-container>
+          </app-tab>
+          <!-- <ng-container *ngIf="!isAgentUser()">
+           <app-tab [tabTitle]="'Credit Risk Comments'">
+             <ng-container *ngIf="isTabSelected(creditRiskCommentTabIndex)">
+               <app-credit-risk-comment
+                 [facilityPaper]="facilityPaper"
+                 class="w-100-p"
+               ></app-credit-risk-comment>
+             </ng-container>
+           </app-tab>
+         </ng-container> -->
+          <ng-container *ngIf="!isAgentUser()">
+            <!--This Tab view Not allow to agent users -->
+            <app-tab [tabTitle]="'Credit Risk Comments'">
+              <ng-container *ngIf="isTabSelected(creditRiskCommentTabIndex)">
+                <app-credit-risk-comment-new [facilityPaper]="facilityPaper"
+                  class="w-100-p"></app-credit-risk-comment-new>
+              </ng-container>
+            </app-tab>
+
+            <app-tab [tabTitle]="'ESG'">
+              <ng-container *ngIf="isTabSelected(esgTabIndex)">
+                <app-fp-esg-wrapper [facilityPaper]="facilityPaper" class="w-100-p">
+                </app-fp-esg-wrapper>
+              </ng-container>
+            </app-tab>
+          </ng-container>
+
+          <app-tab [tabTitle]="'Kalypto Details'">
+            <ng-container *ngIf="isTabSelected(kalyptoDetailsTabIndex)">
+              <app-fp-kalypto-detail [selectedCustomer]="kalyptoCustomer" class="w-100-p"></app-fp-kalypto-detail>
+            </ng-container>
+          </app-tab>
+
+          <ng-container *ngIf="hasPrivilegeToViewFullPaperAsDefault">
+            <ng-container *ngIf="isApprovedFacilityPaper(this.facilityPaper)">
+              <app-tab tabTitle="Reviewer Comment">
+                <ng-container *ngIf="isTabSelected(reviewerCommentTabIndex)">
+                  <app-fp-reviewer-comment class="w-100-p"></app-fp-reviewer-comment>
+                </ng-container>
+              </app-tab>
+            </ng-container>
+          </ng-container>
+
+          <app-tab [tabTitle]="'Covenants'">
+            <ng-container *ngIf="isTabSelected(customerCovenantTabIndex)">
+              <app-customer-covenant [facilityPaper]="facilityPaper" [covenantList]="covenantList"
+                [customerCovenantList]="customerCovenantList" [facilityCovenantList]="facilityCovenantList"
+                class="w-100-p">
+              </app-customer-covenant>
+            </ng-container>
+          </app-tab>
+
+          <app-tab tabTitle="Full Paper" *ngIf="!isBoardPaper()">
+            <ng-container *ngIf="isTabSelected(defaultFullViewTabIndex)">
+              <app-fp-default-full-view [facilityPaper]="facilityPaper" class="w-100-p"></app-fp-default-full-view>
+            </ng-container>
+          </app-tab>
+
+          <ng-container *ngIf="isBoardPaper()">
+            <app-tab tabTitle="Committee Paper">
+              <ng-container *ngIf="isTabSelected(committeFullViewTabIndex)">
+                <app-fp-bcc-full-view [facilityPaper]="facilityPaper" class="w-100-p"></app-fp-bcc-full-view>
+              </ng-container>
+            </app-tab>
+          </ng-container>
+
+          <ng-container *ngIf="showDocumentationTab()">
+            <app-tab tabTitle="Documentation">
+              <ng-container *ngIf="isTabSelected(documentationTabIndex)">
+
+                <ng-container *ngIf="isSecurityDocumentOldVersionEnabled()">
+                  <app-fp-documentation [facilityPaper]="facilityPaper"
+                    [fpDocumentElementDTOListAll]="fpDocumentElementDTOListAll" class="w-100-p">
+                  </app-fp-documentation>
+                </ng-container>
+
+                <ng-container *ngIf="securityDocumentVersion === 2">
+                  <app-fp-documentation-new [facilityPaper]="facilityPaper" class="w-100-p">
+                  </app-fp-documentation-new>
+                </ng-container>
+
+              </ng-container>
+            </app-tab>
+          </ng-container>
+
+          <ng-container *ngIf="facilityPaper.isCommittee == 'Y'">
+            <app-tab tabTitle="Committee Inquiries">
+              <ng-container *ngIf="isTabSelected(committeeInquiriesTabIndex)">
+                <app-fp-committe-inquiries [facilityPaper]="facilityPaper" class="w-100-p"></app-fp-committe-inquiries>
+              </ng-container>
+            </app-tab>
+          </ng-container>
+
+          <ng-container *ngIf="showAttachmentTab()">
+            <app-tab tabTitle="Attachments">
+              <ng-container *ngIf="isTabSelected(attachmentsTabIndex)">
+                <app-bcc-attachments [facilityPaper]="facilityPaper" class="w-100-p"></app-bcc-attachments>
+              </ng-container>
+            </app-tab>
+          </ng-container>
+
+
+          <ng-container *ngIf="showDeviationTab()">
+            <app-tab tabTitle="Deviation">
+              <ng-container *ngIf="isTabSelected(deviationsTabIndex)">
+                <app-fp-deviation [facilityPaper]="facilityPaper" [isDeviationTableEditable]="showDeviationTab()"
+                  class="w-100-p">
+                </app-fp-deviation>
+              </ng-container>
+            </app-tab>
+          </ng-container>
+        </app-tabs>
+      </div>
+    </ng-container>
+  </div>
+</div>

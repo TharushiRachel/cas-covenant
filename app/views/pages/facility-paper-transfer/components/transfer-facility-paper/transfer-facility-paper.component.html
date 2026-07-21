@@ -1,0 +1,65 @@
+<div mdbSticky id="facility-paper" class="d-flex flex-row justify-content-between page-header">
+  <div class="d-flex flex-row align-items-center">
+    <a appGoBack class="d-flex flex-row align-items-center">
+      <i class="fas fa-angle-left header-icon-back"></i>
+    </a>
+    <h5><i class="fas fa-poll header-icon"></i>
+      <span>Facility Paper - Ref No : {{this.facilityPaper.fpRefNumber}}
+        (<span
+          [ngStyle]="getColour(this.facilityPaper.currentFacilityPaperStatus)"> {{facilityStatus[this.facilityPaper.currentFacilityPaperStatus]}}</span> )</span>
+    </h5>
+  </div>
+
+  <div class="float-right">
+    <div class="d-flex flex-row align-items-center">
+      <ng-container *ngIf="this.showTransferButton(facilityPaper)">
+        <button mdbBtn
+                type="button"
+                mdbTooltip="Transfer Paper"
+                class="action-button-padding btn-outline-success btn-sm"
+                outline="true"
+                mdbWavesEffect
+                (click)="clickStatusChange(facilityPaper,facilityStatusConst.IN_PROGRESS)">
+          <span>Transfer</span>
+        </button>
+      </ng-container>
+    </div>
+  </div>
+</div>
+
+<div class="d-flex justify-content-center">
+  <div class="width-90 m-top-20px">
+    <app-preview-fp-about [facilityPaper]="facilityPaper">
+    </app-preview-fp-about>
+
+    <app-preview-facilities [facilityPaper]="this.facilityPaper">
+    </app-preview-facilities>
+
+    <div class="m-top-15px">
+      <app-preview-security-summary
+        [facilityPaper]="this.facilityPaper" [isView]="false"
+      >
+      </app-preview-security-summary>
+    </div>
+
+    <div class="m-top-15px">
+      <app-preview-upc-document
+        [isCommentEnable]="true"
+        [upcTemplateList]="this.upcTemplateList"
+        [upcSectionData]="this.fpUpcSectionData"
+        [facilityPaper]="this.facilityPaper"
+      >
+      </app-preview-upc-document>
+    </div>
+
+    <div class="m-top-15px">
+      <app-preview-comments
+        [resizedFPCommentList]="this.facilityPaper.fpCommentDTOList">
+      </app-preview-comments>
+
+      <!-- <app-preview-risk-comments
+        [riskCommentList]="this.facilityPaper.fpCreditRiskCommentList">
+      </app-preview-risk-comments> -->
+    </div>
+  </div>
+</div>

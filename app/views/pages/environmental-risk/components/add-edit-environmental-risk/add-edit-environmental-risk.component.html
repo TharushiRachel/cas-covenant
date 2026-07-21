@@ -1,0 +1,45 @@
+<div class="modal-header modal-topic flex-center">
+    <button type="button" class="close pull-right" aria-label="Close" (click)="onClose()">
+        <span aria-hidden="true">×</span>
+    </button>
+    <h4 class="modal-title w-100 heading-align" id="myModalLabel" style="font-size: 1rem ; font-weight: bold">
+        Add / Edit Tool Category
+    </h4>
+</div>
+<div class="modal-body modal-detail form-margin mt-0 px-3"
+    style="min-height: 20vh; max-height: 80vh; overflow-y: auto;">
+    <h6 class="my-2 font-weight-bold px-3" *ngIf="parentDesc">Parent :- {{parentDesc}}</h6>
+    <div class="row d-flex flex-row mx-0 my-3">
+        <div class="col-md-4">
+            <div class="md-form">
+                <mdb-select [allowClear]="true" [options]="typeOptions" [(ngModel)]="formData.type"
+                    (ngModelChange)="handleType()" class="form-control py-0" label="Category Type *"
+                    [disabled]="isEdit">
+                </mdb-select>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="md-form">
+                <input class="form-control" id="description" [(ngModel)]="formData.description" type="text" mdbInput
+                    style="margin-top: 2px;">
+                <label for="description">Description *</label>
+                <mdb-error *ngIf="errors.description">{{errors.description}}</mdb-error>
+            </div>
+        </div>
+        <div class="col-md-4" *ngIf="isChild()">
+            <div class="md-form">
+                <mdb-select [allowClear]="true" [options]="riskRatingOptions" [(ngModel)]="formData.score"
+                    class="form-control py-0" label="Score *">
+                </mdb-select>
+                <mdb-error *ngIf="errors.score">{{errors.score}}</mdb-error>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal-footer modal-end pt-0 border border-top-1">
+    <button type="button" mdbBtn color="info" size="sm" class="waves-light" aria-label="Close" mdbWavesEffect
+        (click)="handleSave()" [disabled]="!isSaveEnabled()">
+        Save
+    </button>
+</div>

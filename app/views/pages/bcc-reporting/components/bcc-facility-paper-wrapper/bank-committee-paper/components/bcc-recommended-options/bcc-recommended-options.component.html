@@ -1,0 +1,57 @@
+<form [formGroup]="recommendedOptions">
+  <table class="table custom-bordered-table">
+    <thead>
+    <tr>
+      <td>
+        <input type="radio"
+               class="form-check-input"
+               id="recommendedByGRO"
+               [value]="BCCPaperRecommendationConst.RECOMMENDED_BY_GRO"
+               formControlName="recommendation"
+               name="recommendation">
+        <label class="form-check-label" for="recommendedByGRO">RECOMMENDED BY GCRO</label>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <input type="radio"
+               class="form-check-input"
+               id="recommendedWithFulfillment"
+               [value]="BCCPaperRecommendationConst.CONDITION_OF_IMPOSED"
+               formControlName="recommendation"
+               name="recommendation">
+        <label class="form-check-label" for="recommendedWithFulfillment">RECOMMENDED BY GCRO SUBJECT TO FULFILLMENT OF
+          CONDITIONS IMPOSED</label>
+      </td>
+
+    </tr>
+    <tr>
+      <td>
+        <input type="radio"
+               class="form-check-input"
+               id="notRecommendedByGRO"
+               [value]="BCCPaperRecommendationConst.NOT_RECOMMENDED_BY_GRO"
+               formControlName="recommendation"
+               name="recommendation">
+        <label class="form-check-label" for="notRecommendedByGRO">NOT RECOMMENDED BY GCRO</label>
+      </td>
+    </tr>
+    </thead>
+  </table>
+
+  <div>
+    <ng-container *ngIf="showRecommendationRemark">
+        <textarea type="text"
+                  id="recommendationRemark"
+                  class="form-control comment-area"
+                  maxlength="4000"
+                  placeholder="Not Recommendation Remark"
+                  formControlName="recommendationRemark"
+                  appTextAreaAutoHeight
+                  mdbInput>
+          </textarea>
+    </ng-container>
+  </div>
+
+</form>
+

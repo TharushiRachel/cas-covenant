@@ -1,0 +1,47 @@
+<div class="w-100-p">
+  <div class="float-right">
+    <div class="d-flex flex-row align-items-center">
+      <ng-container *ngIf="fpReviewerComments.length>0">
+        <button mdbBtn
+                type="button"
+                mdbTooltip="Reply"
+                class="action-button-padding btn-outline-info btn-sm comment"
+                outline="true"
+                mdbWavesEffect
+                [disabled]="!isButtonEnabled()"
+                (click)="openCommentModal(facilityPaper)">
+          <span>{{getButtonLabel(this.facilityPaper.paperReviewStatus)}}</span>
+        </button>
+      </ng-container>
+    </div>
+  </div>
+  <ng-container *ngIf="fpReviewerComments.length>0">
+    <div class="table-responsive">
+      <table class="table">
+        <thead>
+        <tr>
+          <ng-container *ngFor="let col of tableColumns">
+            <th scope="col">{{col}}</th>
+          </ng-container>
+        </tr>
+        </thead>
+        <tbody>
+        <ng-container *ngFor="let item of fpReviewerComments">
+          <tr>
+            <td class="width-16">{{item.createdUserDisplayName || '-'}}</td>
+            <td class="width-16">{{item.commentedTimeStr || '-'}}</td>
+            <!--            <td class="width-16">{{item.upmID || '-'}}</td>-->
+            <td>{{paperReviewStatus[item.paperReviewStatus]}}</td>
+            <td class="width-50 comment-align" [innerHTML]="getContent(item.comment) | safeHtml">
+
+            </td>
+          </tr>
+        </ng-container>
+        </tbody>
+      </table>
+    </div>
+  </ng-container>
+  <ng-container *ngIf="fpReviewerComments.length==0">
+    <p style="text-align: center; margin-top: 2% ">No Comments Available</p>
+  </ng-container>
+</div>

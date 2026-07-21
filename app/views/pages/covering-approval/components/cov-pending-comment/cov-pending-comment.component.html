@@ -1,0 +1,33 @@
+<div class="container-fluid ca-header">
+  <div class="modal-header ca-header">
+    <h4 class="modal-title">Comment Details</h4>
+    <button type="button" class="close" aria-label="Close" (click)="mdbModalRef.hide()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="table-responsive">
+    <table class="table">
+      <thead>
+        <tr *ngIf="comments.length > 0">
+          <th>User</th>
+          <th class="text-align-center" style="width: 130px !important;">Date</th>
+          <th>Action</th>
+          <th>Comment</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let comment of comments">
+          <td>{{ comment.createdUserDisplayName }}</td>
+          <td>{{ formatDate(comment.createdDate) | date:'dd/MM/yyyy' }}</td>
+          <td>{{ comment.actionMessage }}</td>
+          <td>{{ comment.userComment }}</td>
+        </tr>
+      </tbody>
+      <tr *ngIf="comments.length === 0">
+        <th colspan="4" class="text-align-center">
+          <p class="no-data-message">No Comments.</p>
+        </th>
+      </tr>
+    </table>
+  </div>
+</div>

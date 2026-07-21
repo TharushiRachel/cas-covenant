@@ -1,0 +1,100 @@
+.card {
+  background: #fff;
+  border-radius: 10px;
+}
+
+.legend{
+  display: block;
+  width: fit-content;
+  max-width: 100%;
+  padding: 0;
+  margin-bottom: -0.5rem;
+  font-size: 1rem;
+  font-weight: bold;
+  line-height: inherit;
+  color: inherit;
+  white-space: normal;
+}
+
+.info-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-top: 20px;
+}
+
+.info-list-cus {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.info-item {
+  display: flex;
+  gap: 10px;
+  
+}
+
+.info-number {
+  font-weight: bold;
+  width: 20px;
+  text-align: right;
+
+}
+
+.info-caption {
+  width: 35%;
+  font-weight: bold;
+}
+
+.info-separator {
+  font-weight: bold;
+}
+
+.info-details {
+  color: #333;
+  width: 60%;
+}
+
+.table-light th {
+  border-color: #dee2e6a1;
+}
+
+
+.table {
+  width: 100%;
+  margin-top: 10px;
+}
+
+.table th, .table td {
+  text-align: center;
+}
+
+
+.roman-list {
+  list-style-type: lower-roman;
+}
+
+.info-table-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.info-fields {
+  width: 60%;
+}
+
+.info-table {
+  width: 35%;
+  min-width: 200px; 
+  margin-top: -140px; 
+}
+
+.small-table {
+  font-size: 0.8rem;
+  width: 100%;
+  border-radius: 8px;
+}

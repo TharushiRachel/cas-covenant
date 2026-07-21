@@ -1,0 +1,22 @@
+
+.table-paginator {
+
+  font-size: 80%;
+
+  .custom-margin {
+    margin-right: 20px;
+  }
+
+  mdb-select ::ng-deep {
+    width: 50px;
+
+    div {
+      .single {
+        font-size: 0.9rem !important;
+      }
+    }
+
+  }
+}
+
+

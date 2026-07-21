@@ -1,0 +1,91 @@
+<div mdbSticky class="d-flex flex-row justify-content-between page-header">
+  <div class="d-flex flex-row align-items-center">
+    <a appGoBack class="d-flex flex-row align-items-center">
+      <i class="fas fa-angle-left header-icon-back"></i>
+    </a>
+    <h5><i class="fas fa-file-alt header-icon"></i> Lead Audit(s)</h5>
+  </div>
+</div>
+
+<div class="page-search-section d-flex p-2 flex-row align-items-center section">
+  <form class="d-flex flex-row flex-fill flex-wrap align-items-center" [formGroup]="searchForm">
+
+    <div class="md-form w-15-p  min-width-120 mr-3">
+      <input type="text" id="userName" formControlName="userName" class="form-control" mdbInput>
+      <label for="userName">User Name</label>
+    </div>
+
+    <div class="md-form w-15-p min-width-120 mr-3">
+      <input type="text" id="userFirstName" formControlName="userFirstName" class="form-control" mdbInput>
+      <label for="userFirstName">First Name</label>
+    </div>
+
+    <div class="md-form w-15-p min-width-120 mr-3">
+      <input type="text" id="userLastName" formControlName="userLastName" class="form-control" mdbInput>
+      <label for="userLastName">Last Name</label>
+    </div>
+
+    <div class="md-form w-15-p min-width-120 mr-3">
+      <mdb-date-picker class="form-control"
+                       id="auditFromDateStr"
+                       formControlName="auditFromDateStr"
+                       [placeholder]="'Audit open from date'"
+                       [inline]="true"
+                       required></mdb-date-picker>
+    </div>
+
+    <div class="md-form w-15-p min-width-120 mr-3">
+      <mdb-date-picker class="form-control"
+                       id="auditToDateStr"
+                       formControlName="auditToDateStr"
+                       [placeholder]="'Audit open to date'"
+                       [inline]="true"
+                       required></mdb-date-picker>
+    </div>
+    <div class="mr-3 d-flex p-2 flex-row">
+      <button (click)="doSearch()" class="medium-button" type="button" mdbBtn color="light" mdbWavesEffect>Search
+      </button>
+      <button (click)="clearSearch()" class="medium-button" type="button" mdbBtn color="light" mdbWavesEffect>Clear
+      </button>
+    </div>
+  </form>
+</div>
+
+<div *ngIf="auditList.length == 0" class="alert alert-warning" role="alert">
+  No Audit(s) Found !
+</div>
+
+<ng-container *ngIf="auditList.length > 0">
+  <div class="table-responsive section">
+    <table class="table">
+      <thead>
+      <tr>
+        <ng-container *ngFor="let col of tableColumns">
+          <th scope="col">{{col}}</th>
+        </ng-container>
+      </tr>
+      </thead>
+      <tbody>
+      <ng-container *ngFor="let audit of auditList">
+        <tr (click)="openAuditContentModal(audit)" class="table-clickable-row">
+          <td>{{audit.userName}}</td>
+          <td>{{audit.userFirstName}}</td>
+          <td>{{audit.userLastName}}</td>
+          <td>
+            {{auditSubCategoryConst[audit.auditSubCategory]}}
+          </td>
+          <td>{{audit.auditedDateTimeStr}}</td>
+        </tr>
+      </ng-container>
+      </tbody>
+    </table>
+  </div>
+
+  <app-paginator
+    [pageIndex]="pageSize.pageIndex"
+    [length]="pageSize.length"
+    [pageSize]="pageSize.pageSize"
+    [pageSizeOptions]="pageSize.pageSizeOptions"
+    (page)="onPageEvent($event)"
+  ></app-paginator>
+</ng-container>

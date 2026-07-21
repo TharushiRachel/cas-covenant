@@ -1,0 +1,381 @@
+<div class="modal-header modal-topic">
+  <!--  <div class="modal-header text-center">-->
+  <h4 *ngIf="isNewFacility()" class="modal-title w-100 font-weight-bold">Add New Facility</h4>
+  <h4 *ngIf="!isNewFacility()" class="modal-title w-100 font-weight-bold">
+    {{facility.creditFacilityTemplateDTO?.creditFacilityName}}
+    <span *ngIf="facility.facilityRefCode">{{ " - " + facility.facilityRefCode}}</span>
+
+    <span class="fs-1-1 fw-400">
+      ({{ facility.creditFacilityTemplateDTO?.facilityTypeName }})
+    </span>
+  </h4>
+  <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="mdbModalRef.hide()">
+    <span aria-hidden="true">&times;</span>
+  </button>
+  <!--  </div>-->
+</div>
+<div class="modal-body mx-3 modal-detail form-margin">
+
+  <div class="comments-changes p-0 mx-0 my-2" *ngIf="!isNewFacility() && commentHistory.length > 0">
+    <mat-accordion class="custom-accordion">
+      <mat-expansion-panel class="custom-expansion-panel">
+        <mat-expansion-panel-header>
+          <h6 class="w-100 font-weight-bold">Changes List</h6>
+
+        </mat-expansion-panel-header>
+        <div style="max-height: 250px;overflow-y: auto;" class="p-0 m-0">
+          <div class="m-0 p-0 w-100" *ngFor="let item of commentHistory">
+            <div class="row d-flex chat-item">
+
+              <span class="text-1">
+                <div>{{item.comment}}</div>
+                <span class="text-1" style="color: #33b5e5;">
+                  by {{item.addedBy}} on {{item.date}}
+                </span>
+              </span>
+            </div>
+            <div class="m-0 pl-4 pr-0" *ngFor="let child of item.childCmnt">
+              <div class="row d-flex chat-item">
+
+                <span class="text-1">
+                  <div>{{child.comment}}</div>
+                  <span class="text-1" style="color: #33b5e5;">
+                    by {{child.addedBy}} on {{child.date}}
+                  </span>
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </mat-expansion-panel>
+    </mat-accordion>
+  </div>
+
+  <form class="d-flex p-2 flex-column justify-content-start align-items-start w-100-p" [formGroup]="componentForm">
+
+    <div class="d-flex flex-row justify-content-between w-100-p">
+      <div class="md-form w-33-p">
+        <mdb-select mdbValidate required label="Credit Facility Group *" id="creditFacilityTypeID"
+          [options]="creditFacilityGroups" [allowClear]="true" formControlName="creditFacilityTypeID"
+          class="form-control">
+        </mdb-select>
+        <mdb-error class="m-top-15px" *ngIf="formErrors.creditFacilityTypeID.required">Credit Facility Group is
+          required
+        </mdb-error>
+      </div>
+
+      <div class="md-form w-33-p">
+        <mdb-select mdbValidate required label="Credit Facility Template *" id="creditFacilityTemplateID"
+          [options]="creditFacilityTemplateOptionList" [allowClear]="true" formControlName="creditFacilityTemplateID"
+          class="form-control">
+        </mdb-select>
+        <mdb-error class="m-top-15px" *ngIf="formErrors.creditFacilityTemplateID.required">Credit Facility Template is
+          required
+        </mdb-error>
+      </div>
+
+      <div class="md-form w-33-p">
+        <mdb-select mdbValidate id="parentFacility" label="Parent Facility" [options]="creditFacilityOptionList"
+          [allowClear]="true" formControlName="parentFacilityID" class="form-control">
+        </mdb-select>
+      </div>
+    </div>
+
+    <div class="d-flex flex-row justify-content-between w-100-p">
+      <div class="md-form w-100-p m-right-left-2px">
+        <input mdbValidate type="text" id="facilityRefCode" maxlength="50" formControlName="facilityRefCode"
+          class="form-control" mdbInput>
+        <label for="facilityRefCode">Facility Reference Code *</label>
+        <mdb-error *ngIf="formErrors.facilityRefCode.required">Facility Reference Code is required
+        </mdb-error>
+        <mdb-error *ngIf="getRefCodeLength() > 50">Facility Reference Code should be less
+          than or equal to 50 characters
+        </mdb-error>
+      </div>
+    </div>
+
+    <div class="row d-flex flex-row m-bottom-20px w-100-p pb-2 mx-0 three-column-selection">
+      <div class="md-form flex-row justify-content-between m-right-left-2px">
+        <mdb-checkbox formControlName="isNew">New Facility</mdb-checkbox>
+      </div>
+
+      <div class="md-form flex-row justify-content-between m-right-left-2px">
+        <mdb-checkbox formControlName="directFacility">Funded</mdb-checkbox>
+      </div>
+
+      <div class="md-form flex-row justify-content-between m-right-left-2px">
+        <mdb-checkbox formControlName="isAnnual">Annual Review</mdb-checkbox>
+      </div>
+
+      <div class="md-form flex-row ustify-content-between m-right-left-2px">
+        <mdb-checkbox formControlName="isOneOff">One-Off</mdb-checkbox>
+      </div>
+
+      <div class="md-form flex-row justify-content-between m-right-left-2px">
+        <mdb-checkbox formControlName="seriesOfLoans">Series of loans</mdb-checkbox>
+      </div>
+
+      <div class="md-form flex-row justify-content-between m-right-left-2px">
+        <mdb-checkbox formControlName="revolving">Revolving</mdb-checkbox>
+      </div>
+
+      <div class="md-form flex-row justify-content-between m-right-left-2px">
+        <mdb-checkbox formControlName="reduction">Reduction</mdb-checkbox>
+      </div>
+
+      <div class="md-form flex-row justify-content-between m-right-left-2px">
+        <mdb-checkbox formControlName="enhancement">Enhancement</mdb-checkbox>
+      </div>
+
+      <div class="md-form flex-row justify-content-between m-right-left-2px">
+        <mdb-checkbox formControlName="isAdditional">Additional</mdb-checkbox>
+      </div>
+
+      <div class="md-form flex-row justify-content-between m-right-left-2px">
+        <mdb-checkbox formControlName="isTermsAmended">Terms Amended</mdb-checkbox>
+      </div>
+
+      <div class="md-form flex-row justify-content-between m-right-left-2px">
+        <mdb-checkbox formControlName="isReStructure">Re-Structure</mdb-checkbox>
+      </div>
+
+      <div class="md-form flex-row justify-content-between m-right-left-2px">
+        <mdb-checkbox formControlName="isReSchedule">Re-Schedule</mdb-checkbox>
+      </div>
+    </div>
+
+    <div class="d-flex flex-row jc-start ai-center w-100-p">
+      <div class="md-form w-50-p" [class.w-25-p]="isExchangeRateEnabled()">
+        <mdb-select mdbValidate required label="Currency *" id="facilityCurrency" [options]="currencyTypesOpt"
+          [allowClear]="true" formControlName="facilityCurrency" class="form-control">
+        </mdb-select>
+        <mdb-error class="m-top-12px" *ngIf="formErrors.facilityCurrency.required">Currency is required</mdb-error>
+      </div>
+      <div class="md-form w-25-p" *ngIf="isExchangeRateEnabled()">
+        <input mdbValidate type="text" id="exchangeRate" maxlength="20" formControlName="exchangeRate"
+          (focusout)="setCurrencyFormatValue('exchangeRate')" class="form-control" mdbInput>
+        <label for="exchangeRate">Exchange Rate</label>
+        <mdb-error class="m-bottom-10px" *ngIf="formErrors.exchangeRate.isCommaSeparatedValueError">Invalid
+          Value
+        </mdb-error>
+      </div>
+      <div class="md-form w-50-p" [class.w-25-p]="isExchangeRateEnabled()">
+        <input mdbValidate type="text" id="disbursementAccNumber" maxlength="20" formControlName="disbursementAccNumber"
+          class="form-control" mdbInput>
+        <label for="disbursementAccNumber">Disbursement Account</label>
+        <mdb-error *ngIf="formErrors.disbursementAccNumber.required">Disbursement Account is required</mdb-error>
+        <mdb-error *ngIf="formErrors.disbursementAccNumber.maxLength">Disbursement Account max length is 100</mdb-error>
+        <mdb-error *ngIf="formErrors.disbursementAccNumber.isCommaSeparatedValueError">Invalid Value</mdb-error>
+      </div>
+    </div>
+
+    <div class="d-flex flex-row m-bottom-10px jc-start ai-center w-100-p">
+
+      <div class="md-form w-25-p" *ngIf="!markedAsNewFacility()" [class.w-33-p]="!isOriginalAmountEnable()">
+        <input mdbValidate type="text" id="existingAmount" maxlength="20" formControlName="existingAmount"
+          (focusout)="setCurrencyFormatValue('existingAmount')" class="form-control" mdbInput>
+        <label for="existingAmount">Existing Limit <b>(Mn)</b> <span *ngIf="!markedAsNewFacility()">*</span></label>
+        <mdb-error class="m-bottom-10px" *ngIf="formErrors.existingAmount.isCommaSeparatedValueError">Invalid
+          Value
+        </mdb-error>
+      </div>
+      <div class="md-form w-25-p" *ngIf="!markedAsNewFacility()" [class.w-33-p]="!isOriginalAmountEnable()">
+        <input mdbValidate type="text" id="outstandingAmount" maxlength="20" formControlName="outstandingAmount"
+          (focusout)="setCurrencyFormatValue('outstandingAmount')" class="form-control" mdbInput>
+        <label for="outstandingAmount">Outstanding Amount <b>(Mn)</b> <span
+            *ngIf="!markedAsNewFacility()">*</span></label>
+        <mdb-error class="m-bottom-10px" *ngIf="formErrors.outstandingAmount.isCommaSeparatedValueError">Invalid
+          Value
+        </mdb-error>
+      </div>
+      <div class="md-form w-25-p" [class.w-50-p]="markedAsNewFacility()" [class.w-33-p]="!isOriginalAmountEnable()">
+        <input mdbValidate required type="text" id="facilityAmount" maxlength="20" formControlName="facilityAmount"
+          (focusout)="setCurrencyFormatValue('facilityAmount')" class="form-control" mdbInput>
+        <label for="facilityAmount">
+          Proposed Limit <b>(Mn)</b>*
+        </label>
+        <mdb-error *ngIf="formErrors.facilityAmount.required">
+          Proposed Amount is required
+        </mdb-error>
+        <mdb-error class="m-bottom-10px" *ngIf="formErrors.facilityAmount.isCommaSeparatedValueError">Invalid Value
+        </mdb-error>
+      </div>
+      <div class="md-form w-25-p" [class.w-50-p]="markedAsNewFacility()" *ngIf="isOriginalAmountEnable()">
+        <input mdbValidate type="text" id="originalAmount" maxlength="20" formControlName="originalAmount"
+          (focusout)="setCurrencyFormatValue('originalAmount')" class="form-control" mdbInput>
+        <label for="outstandingAmount">Original/Disbursed Amount <b>(Mn)</b></label>
+        <mdb-error class="m-bottom-10px" *ngIf="formErrors.originalAmount.isCommaSeparatedValueError">Invalid
+          Value
+        </mdb-error>
+      </div>
+    </div>
+
+    <div class="d-flex flex-row justify-content-between w-100-p" *ngIf="markedAsNewFacility()">
+      <div class="md-form w-50-p">
+        <mdb-select mdbValidate id="sectorID" label="Facility Sector *" [options]="sectorOptionList" [allowClear]="true"
+          formControlName="sectorID" class="form-control">
+        </mdb-select>
+        <mdb-error class="m-top-12px" *ngIf="formErrors.sectorID.required">Facility Sector is required</mdb-error>
+      </div>
+      <div class="md-form w-50-p">
+        <mdb-select mdbValidate id="subSectorID" label="Facility Sub Sector *" [options]="subSectorOptionList"
+          [allowClear]="true" formControlName="subSectorID" class="form-control">
+        </mdb-select>
+        <mdb-error class="m-top-12px" *ngIf="formErrors.subSectorID.required">Facility Sub Sector is required
+        </mdb-error>
+      </div>
+    </div>
+
+    <div class="d-flex flex-row justify-content-between w-100-p" *ngIf="markedAsNewFacility()">
+      <div class="md-form w-50-p m-right-left-2px">
+        <mdb-select [allowClear]="true" [filterEnabled]="true" [options]="purposeOfAdvancedOptionList"
+          class="form-control" formControlName="purposeOfAdvance" id="purposeOfAdvance" label="Purpose of Advance *"
+          mdbValidate>
+        </mdb-select>
+        <mdb-error *ngIf="formErrors.purposeOfAdvance.required" class="m-top-12px">Purpose of Advance is
+          required</mdb-error>
+      </div>
+
+      <div class="md-form w-50-p">
+        <mdb-select mdbValidate id="cashFlowGenerationSectorID" label="Facility Cash Flow Generation Sector *"
+          [options]="cashFlowGenerationSectorList" [filterEnabled]="true" [allowClear]="true"
+          formControlName="cashFlowGenerationSectorID" class="form-control">
+        </mdb-select>
+        <mdb-error class="m-top-12px" *ngIf="formErrors.cashFlowGenerationSectorID.required">Facility Cash Flow
+          Generation Sector is required
+        </mdb-error>
+      </div>
+    </div>
+
+    <div class="d-flex flex-row justify-content-between w-100-p" *ngIf="fpInterestList.length > 0">
+      <div class="w-100-p">
+        <div>
+          <h5 class="strong">Interest</h5>
+        </div>
+        <div class="table-responsive w-100-p">
+          <table class="table table-bordered">
+            <thead>
+              <tr>
+                <ng-container *ngFor="let col of tableColumnsForFacilityInterestRate">
+                  <th scope="col">{{col}}</th>
+                </ng-container>
+              </tr>
+            </thead>
+            <tbody>
+              <ng-container *ngFor="let item of fpInterestList; let id = index">
+                <tr>
+                  <td style="width: 120px;">{{creditFacilityInterestRateMap[item.cftInterestRateID]}}</td>
+                  <td style="width: 120px;">{{item.rateCode}}</td>
+                  <td style="width: 120px;" class="editable-span" contenteditable="true" (keyup)="changeValue(id, 'value', $event)"
+                    (blur)="updateList(id, 'value', $event)">{{item.value}}
+                  </td>
+                  <!-- <td class="editable-span" contenteditable="true" (keyup)="changeValue(id, 'userComment', $event)"
+                    (blur)="updateUserComment(id, 'userComment', $event)">{{item.userComment}}
+                  </td> -->
+                  <td>
+                    <textarea mdbValidate type="text" id="userComment"
+                      [value]="item.userComment ? item.userComment : ''"
+                      (change)="updateUserComment(id, 'userComment', $event)" class="form-control border-bottom"
+                      appTextAreaAutoHeight mdbInput style="outline: none !important;box-shadow: none !important;">
+                    </textarea>
+                  </td>
+                </tr>
+              </ng-container>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <ng-container *ngIf="showPurpose">
+      <div class="d-flex flex-row justify-content-between w-100-p">
+        <div class="md-form w-100-p m-right-left-2px">
+          <textarea mdbValidate type="text" id="purpose" formControlName="purpose" class="form-control border-bottom"
+            appTextAreaAutoHeight mdbInput>
+        </textarea>
+          <label for="purpose">Purpose *</label>
+          <mdb-error class="m-bottom-10px" *ngIf="formErrors.purpose.maxlength">Max length exceeded</mdb-error>
+          <mdb-error class="m-bottom-10px" *ngIf="formErrors.purpose.required">Purpose Required</mdb-error>
+        </div>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="showRepayment">
+      <div class="d-flex flex-row justify-content-between w-100-p">
+        <div class="md-form w-100-p  m-top-15px m-bottom-1px m-right-left-2px">
+          <textarea mdbValidate type="text" id="repayment" formControlName="repayment"
+            class="form-control border-bottom" appTextAreaAutoHeight mdbInput>
+        </textarea>
+          <label for="repayment">Repayment *</label>
+          <mdb-error class="m-bottom-10px" *ngIf="formErrors.repayment.maxlength">Max length exceeded</mdb-error>
+          <mdb-error class="m-bottom-10px" *ngIf="formErrors.repayment.required">Repayment Required</mdb-error>
+        </div>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="showCondition">
+      <div class="d-flex flex-row justify-content-between w-100-p">
+        <div class="md-form w-100-p  m-top-15px m-bottom-10px m-right-left-2px">
+          <textarea mdbValidate required type="text" id="condition" formControlName="condition"
+            class="form-control border-bottom" appTextAreaAutoHeight mdbInput>
+        </textarea>
+          <label for="condition">Condition *</label>
+          <mdb-error class="m-bottom-10px" *ngIf="formErrors.condition.required">Condition is required</mdb-error>
+          <mdb-error class="m-bottom-10px" *ngIf="formErrors.condition.maxlength">Max length exceeded</mdb-error>
+        </div>
+      </div>
+    </ng-container>
+    <ng-container *ngIf="showRemark">
+      <div class="d-flex flex-row justify-content-between w-100-p">
+        <div class="md-form  w-100-p  m-top-15px m-bottom-10px m-right-left-2px">
+          <textarea mdbValidate required type="text" id="remark" formControlName="remark"
+            class="form-control border-bottom" appTextAreaAutoHeight mdbInput>
+        </textarea>
+          <label for="remark">Remark *</label>
+          <mdb-error class="m-bottom-10px" *ngIf="formErrors.remark.required">Remark is required</mdb-error>
+          <mdb-error class="m-bottom-10px" *ngIf="formErrors.remark.maxlength">Max length exceeded</mdb-error>
+        </div>
+      </div>
+    </ng-container>
+
+    <div class="w-100-p" *ngIf="fpVitalInfoDataDTOList.length > 0">
+      <!--      <div>-->
+      <!--        <h5 class="strong">Vital Questions</h5>-->
+      <!--      </div>-->
+      <ng-container *ngFor="let item of fpVitalInfoDataDTOList; let id = index">
+        <div class="d-flex flex-row justify-content-between w-100-p">
+          <div class="md-form  w-100-p m-right-left-2px m-top-10px">
+            <input mdbValidate type="text" id="vitalInfo-{{item.cftVitalInfoID}}"
+              formControlName="vitalInfo-{{item.cftVitalInfoID}}" class="form-control" maxlength="1000" mdbInput>
+            <label for="vitalInfo-{{item.cftVitalInfoID}}">
+              {{item.vitalInfoName}}
+              {{ item.mandatory == 'Y' ? "*" : "" }}
+            </label>
+          </div>
+        </div>
+      </ng-container>
+    </div>
+
+  </form>
+
+</div>
+<div class="modal-footer modal-end">
+  <!--  <button *ngIf="!isNewFacility()" type="button" mdbBtn color="secondary" class="relative waves-light" mdbWavesEffect-->
+  <!--          [disabled]="componentForm.invalid" (click)="onRemove()">Remove-->
+  <!--  </button>-->
+  
+
+  <app-finacle-data-structure  *ngIf="!markedAsNewFacility()"
+    (updateExOutstandingDate)="setExOutAmmounts($event)" 
+    [facilityPaper]="facilityPaper"
+    [facility]="facility">
+  </app-finacle-data-structure>
+ 
+
+  <button *ngIf="!isNewFacility()" type="button" mdbBtn color="secondary" class="relative waves-light" mdbWavesEffect
+    [disabled]="!isValid()" (click)="onAddEdit()">Update
+  </button>
+  <button *ngIf="isNewFacility()" type="button" mdbBtn color="secondary" class="relative waves-light" mdbWavesEffect
+    [disabled]="!isValid()" (click)="onAddEdit()">Save
+  </button>
+</div>

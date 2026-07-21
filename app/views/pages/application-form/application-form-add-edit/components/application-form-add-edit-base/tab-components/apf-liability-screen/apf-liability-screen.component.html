@@ -1,0 +1,26 @@
+<mdb-card>
+  <mdb-card-body class="custom-card-body">
+    <div class="d-flex flex-column justify-content-center w-100-p ">
+      <ng-container *ngIf="basicDetails.length > 0">
+        <app-tabs class="w-100-p" [selectedTabIndex]="selectedTabIndex" (onTabSelect)="setTabIndex($event)">
+          <ng-container *ngFor="let basicDetail of basicDetails; let i =index">
+
+            <app-tab [tabTitle]="basicDetail.identificationType + ' :'+ basicDetail.identificationNo"
+                     [showBadge]="basicDetail.primaryInformation=='Y'"
+                     [badgeContent]="'P'"
+                     [badgeColor]="'red'"
+                     [active]="i == selectedTabIndex">
+              <div class="d-flex flex-column justify-content-start width-100">
+                <app-apf-financial-obligations
+                  [basicInformation]="basicDetail"
+                  [applicationForm]="applicationForm">
+                </app-apf-financial-obligations>
+              </div>
+
+            </app-tab>
+          </ng-container>
+        </app-tabs>
+      </ng-container>
+    </div>
+  </mdb-card-body>
+</mdb-card>

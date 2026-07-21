@@ -1,0 +1,82 @@
+<div class="modal-header">
+  <div class="modal-header text-center no-border">
+    <h4 class="modal-title w-100 font-weight-bold">Add CFT Interest Rate</h4>
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="mdbModalRef.hide()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+</div>
+
+<div class="modal-body mx-3">
+  <form class="d-flex p-2 flex-column justify-content-start align-items-start w-100-p" [formGroup]="componentForm">
+
+    <div class="md-form m-top-10px m-bottom-10px w-100-p">
+      <input mdbValidate type="text" id="rateName" maxlength="200" formControlName="rateName" class="form-control"
+             mdbInput>
+      <label for="rateName">Rate Name</label>
+      <mdb-error *ngIf="formErrors.rateName.required">Rate Name required</mdb-error>
+    </div>
+
+    <div class="md-form m-top-10px m-bottom-10px w-100-p">
+      <mdb-select
+        [options]="subCategoryInterestRates"
+        formControlName="interestRatingSubCategory"
+        id="interestRatingSubCategory"
+        placeholder="interestRatingSubCategory"></mdb-select>
+      <label for="interestRatingSubCategory">Sub Category</label>
+      <mdb-error *ngIf="formErrors.interestRatingSubCategory.required">Sub Category required</mdb-error>
+    </div>
+
+    <div class="md-form m-top-10px m-bottom-10px w-100-p">
+      <input mdbValidate type="text" id="rateCode" maxlength="200" formControlName="rateCode" class="form-control"
+             mdbInput>
+      <label for="rateCode">Rate Code</label>
+      <mdb-error *ngIf="formErrors.rateCode.required">Rate Code required</mdb-error>
+    </div>
+
+    <div class="md-form m-top-10px m-bottom-10px w-100-p">
+      <input mdbValidate type="text" id="value" maxlength="200" formControlName="value" class="form-control"
+             mdbInput>
+      <label for="value">Value (%)</label>
+      <mdb-error *ngIf="formErrors.value.required">Value required</mdb-error>
+      <mdb-error *ngIf="formErrors.value.percentageValueError && !formErrors.value.required" >Invalid percentage value</mdb-error>
+    </div>
+
+    <div class="md-form m-top-10px m-bottom-10px w-100-p">
+      <mdb-select
+        [options]="yesNo"
+        formControlName="isEditable"
+        id="isEditable"
+        placeholder="isEditable"></mdb-select>
+      <label for="isEditable">Is Editable</label>
+      <mdb-error *ngIf="formErrors.isEditable.required">Is Editable required</mdb-error>
+    </div>
+
+    <div class="md-form m-top-10px m-bottom-10px w-100-p">
+      <mdb-select
+        [options]="yesNo"
+        formControlName="isDefault"
+        id="isDefault"
+        placeholder="isDefault"></mdb-select>
+      <label for="isDefault">Is Default</label>
+      <mdb-error *ngIf="formErrors.isDefault.required">Is Default required</mdb-error>
+    </div>
+
+    <div class="md-form m-top-10px m-bottom-10px w-100-p">
+      <mdb-select
+        [options]="optionsSelect"
+        formControlName="status"
+        id="status"
+        placeholder="Status"></mdb-select>
+      <label for="status">Status</label>
+      <mdb-error *ngIf="formErrors.status.required">Status required</mdb-error>
+    </div>
+  </form>
+</div>
+
+<div class="modal-footer">
+  <button type="button" mdbBtn color="primary" class="relative waves-light" mdbWavesEffect
+          [disabled]="componentForm.invalid" (click)="onAdd()">ADD
+  </button>
+</div>
+

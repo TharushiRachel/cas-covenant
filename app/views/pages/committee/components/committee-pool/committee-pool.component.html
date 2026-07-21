@@ -1,0 +1,118 @@
+<div mdbSticky class="d-flex flex-row justify-content-between page-header">
+  <div class="d-flex flex-row align-items-center">
+    <h5><i class="fas fa-dice-d20 header-icon"></i> Pool(s)</h5>
+  </div>
+
+  <div class="d-flex flex-row align-items-center">
+    <ng-container>
+      <button (click)="loadAddPoolUsers()" class="custom-button" mdbBtn type="button" color="default" outline="true"
+        mdbWavesEffect>Add New User
+      </button>
+    </ng-container>
+  </div>
+</div>
+
+<ng-container *ngIf="poolUsers">
+  <div class="section table-responsive mb-15p">
+    <table class="table">
+      <thead>
+        <tr>
+          <ng-container *ngFor="let col of tableColumns1">
+            <th scope="col">{{col}}</th>
+          </ng-container>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-container *ngFor="let users of getSliceUsers()">
+          <tr class="table-clickable-row">
+            <td>{{users.userDisplayName}}</td>
+            <td>{{users.referenceName}}</td>
+            <td>{{users.groupCode}}</td>
+            <td>
+              <span [class.color-green]="users.approveStatus == approvedStatusConst.APPROVED"
+                [class.color-red]="users.approveStatus == approvedStatusConst.REJECTED"
+                [class.color-blue]="users.approveStatus == approvedStatusConst.PENDING">
+                {{approvedStatus[users.approveStatus]}}
+              </span>
+            </td>
+            <td>
+              <span [class.color-green]="users.userStatus === statusConst.ACT"
+                [class.color-red]="users.userStatus === statusConst.INA">
+                {{status[users.userStatus]}}
+              </span>
+            </td>
+            <td>
+              <label class="switch" *ngIf="!users.parentRecordID">
+                <input type="checkbox" [checked]="users.userStatus == statusConst.ACT"
+                  (change)="handleStatusChange($event,users)">
+                <span class="slider round"></span>
+              </label>
+              <span *ngIf="users.parentRecordID">-</span>
+            </td>
+            <td>
+              <ng-container>
+                <button (click)="deleteUser(users)" mdbBtn class="custom-button" type="button" color="danger"
+                  outline=true; mdbWavesEffect>
+                  <span>Remove</span>
+                </button>
+              </ng-container>
+            </td>
+          </tr>
+        </ng-container>
+      </tbody>
+    </table>
+  </div>
+    <app-paginator [pageIndex]="pageSize.pageIndex" [length]="pageSize.length" [pageSize]="pageSize.pageSize"
+      [pageSizeOptions]="pageSize.pageSizeOptions" (page)="onPageEvent($event)"></app-paginator>
+  
+</ng-container>
+
+
+<ng-container *ngIf="pendingPoolUsers">
+  <div class="section table-responsive mb-15p">
+    <h6 class="fs-0-10 fw-500 mb-2">Pending Approval Pool User(s)</h6>
+    <table class="table">
+      <thead>
+        <tr>
+          <ng-container *ngFor="let col of tableColumns2">
+            <th scope="col">{{col}}</th>
+          </ng-container>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-container *ngFor="let users of pendingPoolUsers">
+          <tr class="table-clickable-row">
+            <td>{{users.userDisplayName}}</td>
+            <td>{{users.referenceName}}</td>
+            <td>
+              <span [class.color-green]="users.approveStatus == approvedStatusConst.APPROVED"
+                [class.color-red]="users.approveStatus == approvedStatusConst.REJECTED || users.approveStatus == approvedStatusConst.PENDING_RMV"
+                [class.color-blue]="users.approveStatus == approvedStatusConst.PENDING">
+                {{approvedStatus[users.approveStatus]}}
+              </span>
+            </td>
+            <td>
+              <span [class.color-green]="users.userStatus === statusConst.ACT"
+                [class.color-red]="users.userStatus === statusConst.INA || users.userStatus === statusConst.RMV">
+                {{status[users.userStatus]}}
+              </span>
+            </td>
+            <td>
+              <ng-container *ngIf="users.isEnabled">
+                <button (click)="approveOrRejectUser(users,approvedStatusConst.APPROVED)" mdbBtn class="custom-button"
+                  type="button" color="success" outline=true; mdbWavesEffect>
+                  <span>Approve</span>
+                </button>
+                <button (click)="approveOrRejectUser(users,approvedStatusConst.REJECTED)" mdbBtn type="button"
+                  class="custom-button" color="danger" outline="true" mdbWavesEffect>
+                  <span>Reject</span>
+                </button>
+              </ng-container>
+              <span *ngIf="!users.isEnabled">-</span>
+            </td>
+          </tr>
+        </ng-container>
+      </tbody>
+    </table>
+  </div>
+</ng-container>

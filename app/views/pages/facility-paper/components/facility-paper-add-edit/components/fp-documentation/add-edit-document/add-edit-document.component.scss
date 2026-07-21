@@ -1,0 +1,68 @@
+.div-margin {
+  margin: 0 0 2rem 0;
+}
+
+.div-float-left {
+  float: left;
+}
+
+.div-float-right {
+  float: right;
+}
+
+.table-width {
+  width: 100%;
+}
+
+.td-width {
+  width: 26%;
+
+}
+
+.table-display{
+ display: table;
+}
+
+.highlight-field{
+    background-color: #f5fcff;
+}
+
+.highlight-field-border{
+    border-bottom: 1px solid #bdbdbd;
+}
+
+.field-padding{
+    padding-top: 2px;
+}
+
+.field-width{
+    width : 600px;
+}
+
+.field-height{
+    height : 30px;
+}
+
+.tr-highlight{
+  background-color: #e5fdec;
+  font-weight: 500;
+}
+
+.hidden {display:none;}
+
+.mxl-4{
+  margin-left: 4rem !important;
+}
+
+.table-display-flex{
+  display: flex;
+}
+
+.t-transform {
+  display: inline-block;
+  text-transform: lowercase
+}
+
+.t-transform::first-letter {
+  text-transform: uppercase
+}

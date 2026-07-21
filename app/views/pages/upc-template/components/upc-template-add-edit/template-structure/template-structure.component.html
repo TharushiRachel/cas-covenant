@@ -1,0 +1,87 @@
+<div class="d-flex p-2 flex-row justify-content-between align-items-start w-100-p">
+
+
+  <div class="w-49-p">
+
+    <div class="m-top-15px">
+      <h6>Drag and drop UPC Sections to create the UPC Template</h6>
+    </div>
+
+    <div class="m-top-20px">
+      <tree-root #tree id="tree2" [focused]="true" [nodes]="nodes" [options]="options">
+        <ng-template #treeNodeFullTemplate let-node let-index="index" let-templates="templates">
+          <div
+            [class]="node.getClass()"
+            [class.tree-node]="true"
+            [class.tree-node-expanded]="node.isExpanded && node.hasChildren"
+            [class.tree-node-collapsed]="node.isCollapsed && node.hasChildren"
+            [class.tree-node-leaf]="node.isLeaf"
+            [class.tree-node-active]="node.isActive"
+            [class.tree-node-focused]="node.isFocused"
+          >
+
+            <tree-node-drop-slot
+              *ngIf="index === 0"
+              [dropIndex]="node.index"
+              [node]="node.parent">
+            </tree-node-drop-slot>
+
+            <tree-node-wrapper [node]="node" [index]="index" [templates]="templates">
+            </tree-node-wrapper>
+
+            <tree-node-children [node]="node" [templates]="templates">
+            </tree-node-children>
+
+            <ng-template #treeNodeTemplate let-node let-index="index">
+              <span>{{ node.data.name }}</span>
+              <mdb-icon class="item-remove-btn"
+                        (click)="removeItem(tree.treeModel, node)"
+                        fas icon="times"></mdb-icon>
+            </ng-template>
+
+            <tree-node-drop-slot [dropIndex]="node.index + 1" [node]="node.parent">
+            </tree-node-drop-slot>
+          </div>
+        </ng-template>
+      </tree-root>
+    </div>
+  </div>
+
+  <div class="w-49-p">
+    <div class="display-flex w-100-p flex-row">
+      <div class="display-flex w-24-p m-top-15px ">
+        <h6>UPC Sections </h6>
+      </div>
+      <div class="display-flex w-74-p ">
+        <form [formGroup]="upcSearchForm" class="w-100-p">
+          <div class="md-form w-100-p">
+            <input type="text" id="upcSectionSearchID" formControlName="searchKeyWord" class="form-control" mdbInput>
+            <label for="upcSectionSearchID">Search Key Word</label>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <ng-container *ngIf="allUpcSectionData.length > 0">
+      <ng-container *ngFor="let item of allUpcSectionData">
+        <ng-container *ngIf="addEligible(item)">
+          <div
+            class="draggable-item"
+            [treeDrag]="{name: item.upcSectionName, item : item}"
+            [treeDragEnabled]="true">
+            {{item.upcSectionName}}
+          </div>
+        </ng-container>
+      </ng-container>
+    </ng-container>
+
+    <ng-container *ngIf="allUpcSectionData.length == 0">
+      <p>
+        No Upc section(s) found
+      </p>
+    </ng-container>
+
+  </div>
+</div>
+
+

@@ -1,0 +1,25 @@
+<mdb-card>
+  <mdb-card-body class="custom-card-body">
+    <div class="d-flex flex-row w-100-p flex-wrap justify-content-between">
+      <div>
+        <ng-container *ngIf="currentIndex != 0">
+          <button mdbBtn color="light-blue" size="sm" type="button" class="margin-unset" mdbWavesEffect
+                  (click)="showPreviousTab($event)">
+            <mdb-icon fas icon="angle-left" aria-hidden="true"></mdb-icon>
+            Previous
+          </button>
+        </ng-container>
+      </div>
+
+      <div>
+        <ng-container *ngIf="currentIndex != lastIndex">
+          <button mdbBtn color="light-blue" size="sm" type="button" class="margin-unset" mdbWavesEffect
+                  (click)="showNextTab($event)">
+            Next
+            <mdb-icon fas icon="angle-right" aria-hidden="true"></mdb-icon>
+          </button>
+        </ng-container>
+      </div>
+    </div>
+  </mdb-card-body>
+</mdb-card>

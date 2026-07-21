@@ -1,0 +1,62 @@
+.view-mode {
+  text-align: right;
+}
+
+.edit-mode {
+  position: relative;
+  right: 50px;
+}
+
+.da-table {
+  width: 100%;
+  text-align: center;
+  border-collapse: collapse;
+}
+
+.da-table th,
+.da-table td {
+  border: 1px solid #ccc;
+  padding: 4px;
+}
+
+.no-border {
+  border: none;
+  border-color: transparent;
+}
+
+.header {
+  font-weight: bold;
+  text-align: center;
+  margin: 20px;
+}
+
+.PendingTable {
+  margin-top: 100px;
+}
+
+.container {
+  text-align: center;
+}
+
+.btn-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.btn-center button {
+  width: auto;
+  border-color: #7ac7d4;
+}
+
+.highlight-row-1 {
+  background-color: rgb(221, 241, 248);
+}
+
+.highlight-row-2 {
+  background-color: rgba(222, 226, 230, 0.9);
+}
+
+.highlight-row-3 {
+  background-color: rgba(147, 163, 187, 0.733);
+}

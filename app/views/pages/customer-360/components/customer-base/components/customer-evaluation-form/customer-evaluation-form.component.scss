@@ -1,0 +1,38 @@
+ul {
+    list-style-type: none;
+  }
+
+  .sStyle {
+    // color: rgb(8, 8, 8);
+    font-size: 20px;
+    font-weight: bold;
+    //padding-bottom: 20px;
+}
+
+.qst{
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.ans{
+    font-weight: 400;
+    color: #808080;
+    font-size: 14px;
+}
+
+.heading-1{
+    text-align: center;
+}
+
+.fieldset-s{
+    border: 1px solid #e3e5ef;
+    padding: 5px;
+    margin: 10px;
+    border-radius: 5px;
+}
+
+.qst-score{
+    font-weight: 600;
+    font-size: 14px;
+    text-align: center;
+}

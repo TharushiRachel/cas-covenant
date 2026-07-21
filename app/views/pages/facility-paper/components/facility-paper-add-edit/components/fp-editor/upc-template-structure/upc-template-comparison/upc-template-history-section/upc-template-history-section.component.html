@@ -1,0 +1,76 @@
+<div class="modal-body m-3 modal-detail form-margin px-0" style="height: 75vh;">
+  <div class="md-form w-18-p min-width-120">
+    <div class="d-flex justify-content-start security-summary-heading">
+      Comparison of the Changes
+    </div>
+  </div>
+  <ng-container *ngIf="comparisonDateContent.length == 0 || !comparisonDateContent">
+    <br />
+    <div class="alert alert-warning" role="alert">
+      No Content found !
+    </div>
+  </ng-container>
+
+  <ng-container *ngIf="comparisonDateContent.length > 0">
+    <hr class="solid">
+
+    <div id="container">
+      <div id="sidebar">
+        <div id="menuSidebarHeader"><b>Created Date</b></div>
+        <div id="menuSidebar">
+          <ng-container *ngFor="let dateData of comparisonDateContent">
+            <a (click)="toggleUPCTemplateContent(dateData.createdDate)"> {{dateData.createdDate||"-" }}</a>
+          </ng-container>
+        </div>
+      </div>
+      <div id="contentContainer">
+        <div id="header">
+          <div id="logo"><b>History</b></div>
+        </div>
+        <div id="content">
+          <div style="text-align: center" *ngIf="historyContent.length <= 0 && isButtonClicked">
+            <span class="text-center w-100 my-3">There are no history for Desired Date...</span>
+        </div>
+
+        <div style="text-align: center" *ngIf="!isButtonClicked">
+          <span class="text-center w-100 my-3">Click Desired Date...</span>
+      </div>
+
+          <ng-container *ngFor="let templateData of historyContent">
+            <div id="cardContent">
+
+              <mat-accordion class="custom-accordion">
+                <mat-expansion-panel class="custom-expansion-panel">
+                  <mat-expansion-panel-header>
+                    <span class="text-1" style="color: #33b5e5;">
+                      by {{templateData.modifiedUserDisplayName}} on {{templateData.date}}
+                    </span>
+                  </mat-expansion-panel-header>
+                  <!-- <div class="d-flex flex-column">
+                    <span style="text-align: right;color: #33b5e5; ">Created By :
+                      <b>{{templateData.createdBy||"-"}}</b> </span>
+                  </div> -->
+                  <div class="width-100 d-flex flex-row m-bottom-10px">
+                    <div class="card p-3 bg-white"
+                      style="position: relative; border:2px solid rgba(222, 226, 230, 0.5) !important; border-radius: 3px; width: 100%;">
+                      <div [innerHTML]="templateData['data'] || '-' | safeHtml"></div>
+                    </div>
+                  </div>
+                  <div class="col-12 row d-flex mx-0 px-0 pb-2 justify-content-end">
+                    <button (click)="openUPCCommentModal(templateData)" type="button" mdbTooltip="View All Comments"
+                      placement="left" class="btn btn-success " mdbBtn>
+                      <mdb-icon fas icon="fas fa-comments"></mdb-icon>
+                    </button>
+                  </div>
+                </mat-expansion-panel>
+              </mat-accordion>
+
+            </div>
+          </ng-container>
+        </div>
+      </div>
+    </div>
+
+  </ng-container>
+
+</div>

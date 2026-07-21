@@ -1,0 +1,9 @@
+#overflow-edit-status-model {
+    height: auto;
+    max-height: 55vh;
+    overflow-y: auto;
+    overflow-x:hidden;
+    position: relative;
+    flex-direction: column;
+    margin: 20px;
+  }

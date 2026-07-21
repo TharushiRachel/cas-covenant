@@ -1,0 +1,58 @@
+<div class="mx-0 my-3 border border-1 rounded p-2" *ngIf="opinions && opinions.length > 0"
+    style="box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075) !important;">
+    <app-tabs (onTabSelect)="onTabSelect($event)" [selectedTabIndex]="selectedTabIndex" class="w-100-p">
+        <ng-container *ngFor="let item of opinions;">
+            <app-tab [tabTitle]="item.tabTitle">
+                <div class="m-0 p-0" style="max-height: 30vh; overflow-y: auto;">
+
+                    <div class="row d-flex mx-0">
+                        <div class="col-md-4 p-0 d-flex align-items-center mx-0">
+                            <span style="font-size: 13px; color: #9fa0ae;">
+                                {{getActionBy(item)}}
+                            </span>
+                        </div>
+                        <div class="col-md-8 row d-flex mx-0 justify-content-end mx-0 p-0">
+                            <ng-container *ngIf="selectedTabIndex === 0">
+                                <button class="btn-sm btn-outline-info my-0" type="button" mdbTooltip="Edit Opinion"
+                                    placement="right" (click)="editOpinion()" mdbBtn
+                                    *ngIf="showEditOpinionButton(item)">
+                                    <mdb-icon fas icon="pencil-alt"></mdb-icon>
+                                </button>
+                                <button class="btn-sm btn-outline-info my-0" type="button" mdbTooltip="Add Reply"
+                                    placement="right" (click)="handleReply()" mdbBtn *ngIf="showAddReplyButton(item)">
+                                    Add Reply
+                                </button>
+                                <button class="btn-sm btn-outline-primary my-0" type="button" mdbTooltip="Remove"
+                                    placement="right" (click)="handleDelete(item)" mdbBtn
+                                    *ngIf="showEditOpinionButton(item)">
+                                    <mdb-icon fas icon="trash-alt"></mdb-icon>
+                                </button></ng-container>
+                        </div>
+                    </div>
+                    <div class="my-1 p-1">
+                        <span [innerHTML]="item.opinion | safeHtml"></span>
+                    </div>
+
+                    <div class="m-0 p-0" style="border-top: 0.5px solid #efefef;">
+                        <div class="row d-flex align-items-center mx-0 mt-2">
+                            <h6><strong>ESG Risk Reply</strong></h6>
+                            <button class="btn-sm btn-outline-info my-0 ml-auto" type="button" mdbTooltip="Edit Reply"
+                                placement="right" (click)="handleReply(item.riskOpinionReply)" mdbBtn
+                                *ngIf="item.riskOpinionReply && showEditReplyButton(item)">
+                                <mdb-icon fas icon="pencil-alt"></mdb-icon>
+                            </button>
+                        </div>
+                        <div class="my-1 p-1" *ngIf="item.riskOpinionReply">
+                            <span style="font-size: 13px; color: #9fa0ae;">
+                                {{getActionBy(item.riskOpinionReply)}}
+                            </span>
+                        </div>
+                        <div class="my-1 px-2" *ngIf="item.riskOpinionReply">
+                            <span [innerHTML]="item.riskOpinionReply.reply | safeHtml"></span>
+                        </div>
+                    </div>
+                </div>
+            </app-tab>
+        </ng-container>
+    </app-tabs>
+</div>

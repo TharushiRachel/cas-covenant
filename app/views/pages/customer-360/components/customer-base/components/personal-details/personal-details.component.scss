@@ -1,0 +1,91 @@
+
+.item-wrapper {
+  padding: 10px;
+}
+
+.personal-data-lbl {
+  padding-left: 5px;
+  padding-right: 5px;
+  min-width: 255px;
+  font-weight: bold;
+}
+
+.identity-data-lbl {
+  padding-left: 5px;
+  padding-right: 5px;
+  min-width: 255px;
+  font-weight: bold;
+}
+
+.identity-data-header {
+  padding-top: 15px;
+  padding-left: 5px;
+  padding-right: 5px;
+  min-width: 275px;
+  font-weight: bold;
+}
+
+.personal-data-header {
+  font-weight: bold;
+  display: inline;
+  width: fit-content;
+}
+
+.lst-updated-date {
+  display: inline;
+  font-size: 0.75em;
+}
+
+.flex-box-2 {
+  display: flex;
+  width: 750px;
+  justify-content: flex-end;
+}
+
+.tbl-height {
+  height: 25px;
+}
+
+.tr {
+  padding: 0px;
+  height: 15px;
+}
+
+.tbl-btn {
+  padding: 0px;
+}
+
+.input-size {
+  margin: 5px;
+}
+
+.cft-btn {
+  padding: 7px;
+  height: 30px;
+  float: right;
+  width: 30px;
+  border-radius: 50%;
+  position: relative;
+  top: 10px;
+}
+
+mdb-date-picker {
+  margin-top: 0 !important;
+}
+
+.a-color {
+  color: #0b51c5 !important;
+  margin-left: 600px !important;
+}
+
+.td-width {
+  width: 60% !important;
+}
+
+.main-td-width {
+  width: 60% !important;
+}
+
+.table tr {
+  border-bottom: 0px solid;
+}

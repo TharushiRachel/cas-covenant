@@ -1,0 +1,75 @@
+<div class="d-flex p-2 flex-column justify-content-start align-items-start w-100-p jumbotron">
+  <div class="d-flex flex-row w-100-p justify-content-end" id="fp-sec-cmp">
+    <ng-container
+      *ngIf="afFacilityList.length > 0 && isAbleToEdit()">
+
+      <button mdbBtn
+              type="button"
+              class="action-button-padding btn-outline-info btn-sm"
+              outline="true"
+              mdbWavesEffect
+              (click)="toggleViewMode($event)">
+        <ng-container *ngIf="!isPreviewMode">
+          <mdb-icon fas icon="eye" aria-hidden="true"></mdb-icon>
+          Preview Mode
+        </ng-container>
+        <ng-container *ngIf="isPreviewMode">
+          <mdb-icon fas icon="pencil-alt" aria-hidden="true"></mdb-icon>
+          Edit Mode
+        </ng-container>
+      </button>
+
+      <button mdbBtn
+              type="button"
+              mdbTooltip="Manage Security"
+              color="info"
+              class="btn-width"
+              size="sm"
+              mdbWavesEffect
+              (click)="manageSecurity()">
+        <!--            <i class="fas fa-plus"></i>-->
+        Manage Security
+      </button>
+    </ng-container>
+  </div>
+
+  <ng-container *ngIf="afFacilityList.length > 0 && !isPreviewMode">
+    <app-tabs class="w-100-p" [selectedTabIndex]="selectedTabIndex" (onTabSelect)="setTabIndex($event)">
+      <ng-container *ngFor="let facility of afFacilityList; let i =index">
+
+        <app-tab [tabTitle]="'Facility: ' + (i + 1)"
+                 [showBadge]="facility.isNew=='Y'"
+                 [badgeContent]="'N'"
+                 [badgeColor]="'red'" [active]="i == selectedTabIndex">
+
+          <ng-container *ngIf="selectedTabIndex == i">
+            <app-apf-facility-security-data
+              [facilityData]="facility"
+              [lastIndex]="afFacilityList.length - 1"
+              [currentIndex]="i"
+              (setTabIndex)="setTabIndex($event)"
+              (onAddEditSecurityDetails)="saveOrUpdateFPFacility($event)"
+              (addSecurityThroughFacility)="addSecurityThroughFacility($event)"
+            >
+            </app-apf-facility-security-data>
+          </ng-container>
+        </app-tab>
+      </ng-container>
+    </app-tabs>
+  </ng-container>
+
+  <ng-container *ngIf="afFacilityList.length > 0 && isPreviewMode">
+    <div class="d-flex flex-row w-100-p justify-content-center" id="af-sec-prev-mod">
+      <app-apf-securities-preview [applicationForm]="applicationForm" class="width-100">
+      </app-apf-securities-preview>
+    </div>
+  </ng-container>
+
+  <div class="d-flex flex-row w-100-p justify-content-start">
+    <ng-container *ngIf="afFacilityList.length == 0">
+      <div class="alert alert-warning section" style="margin-bottom: 0px" role="alert">
+        No Security(ies) Found !
+      </div>
+    </ng-container>
+  </div>
+</div>

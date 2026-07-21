@@ -1,0 +1,67 @@
+<div class="modal-header  modal-topic">
+  <h4 class="modal-title w-100 font-weight-bold">CRIB Details</h4>
+  <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="mdbModalRef.hide()">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
+<div class="modal-body mx-3 modal-detail form-margin">
+
+  <section id="cribSaveForm" *ngIf="isEditEnabled">
+    <form class="d-flex flex-column justify-content-start align-items-start w-100-p" [formGroup]="componentForm">
+      <div class="d-flex w-100-p mb-10p" >
+        <div class="md-form  w-100-p">
+          <mdb-select
+            [options]="optionsCribStatusSelect"
+            formControlName="cribStatus"
+            required="cribStatus"
+            id="cribStatus"
+            placeholder="CRIB Status"></mdb-select>
+          <label for="cribStatus">CRIB Status *</label>
+          <mdb-error *ngIf="formErrors.cribStatus.required">CRIB Status required</mdb-error>
+        </div>
+
+        <div class="md-form  w-100-p">
+          <label for="cribDateStr" style="margin-top: -23px">Issued Date *</label>
+          <mdb-date-picker class="form-control mt-1"
+                           id="cribDateStr"
+                           required="cribDateStr"
+                           formControlName="cribDateStr"
+                           [options]="myDatePickerOptions"
+                           [inline]="true"
+          ></mdb-date-picker>
+          <mdb-error class="m-top-20px" *ngIf="formErrors.cribDateStr.required">CRIB Issue Date required
+          </mdb-error>
+        </div>
+      </div>
+      <div class="d-flex w-100-p">
+        <div class="md-form w-100-p m-top-10px mt-2">
+        <textarea type="text"
+                  id="remark"
+                  class="form-control comment-area"
+                  formControlName="remark"
+                  placeholder="Remark"
+                  appTextAreaAutoHeight
+                  mdbInput></textarea>
+        </div>
+      </div>
+
+      <div class="w-100-p d-flex flex-row justify-content-end align-content-center mt-0">
+        <button
+          (click)="onSave()"
+          mdbBtn
+          color="info"
+          class="my-4 editor-save-btn"
+          [disabled]="componentForm.invalid">Save
+        </button>
+      </div>
+    </form>
+  </section>
+
+  <section id="cribDetails">
+    <ng-container *ngIf="htmlContent">
+      <div id="printContentDiv" [innerHTML]="htmlContent | safeHtml"></div>
+    </ng-container>
+  </section>
+
+</div>

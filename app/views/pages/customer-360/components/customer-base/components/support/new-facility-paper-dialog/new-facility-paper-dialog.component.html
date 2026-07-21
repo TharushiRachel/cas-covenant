@@ -1,0 +1,104 @@
+<div class="modal-header modal-topic">
+  <button type="button" class="close pull-right" aria-label="Close" (click)="onNoClick()">
+    <span aria-hidden="true">×</span>
+  </button>
+  <h4 class="modal-title w-100" id="myModalLabel">New Facility Paper</h4>
+</div>
+<div class="modal-body modal-detail">
+  <div class="d-flex p-2 flex-row justify-content-between">
+
+    <div class="account-detail-section">
+      <div class="d-flex flex-row justify-content-between">
+        <label class="info-caption">Customer</label>
+        <span class="info-caption w-5">:</span>
+        <span class="font-weight-bold info-details">{{customer360Details.customerName || '-'}}</span>
+      </div>
+
+      <div class="d-flex flex-row justify-content-between">
+        <label class="info-caption">CIF ID</label>
+        <span class="info-caption w-5">:</span>
+        <span class="font-weight-bold info-details">{{customer360Details.customerFinancialID || '-'}}</span>
+      </div>
+    </div>
+
+    <div class="account-detail-section">
+      <!--            <div class="d-flex flex-row justify-content-between">-->
+      <!--              <label class="info-caption">Branch</label>-->
+      <!--              <span class="info-caption w-5">:</span>-->
+      <!--              <span class="font-weight-bold info-details">{{selectedBankAccountBranch?.branchName || '-'}}</span>-->
+      <!--            </div>-->
+
+      <div class="d-flex flex-row justify-content-between">
+        <label class="info-caption">Bank Account</label>
+        <span class="info-caption w-5">:</span>
+        <span class="font-weight-bold info-details">{{selectedBankAccount?.bankAccountNumber || '-'}}</span>
+      </div>
+
+      <div class="d-flex flex-row justify-content-between">
+        <label class="info-caption">Account Type</label>
+        <span class="info-caption w-5">:</span>
+        <span class="font-weight-bold info-details">{{selectedBankAccount?.schmType || '-'}}</span>
+      </div>
+    </div>
+  </div>
+
+
+  <form
+    class="d-flex flex-row flex-fill flex-wrap align-items-center"
+    [formGroup]="searchForm">
+
+    <div class="d-flex w-100-p  p-2 branch-name">
+      <p>Branch Name *</p>
+    </div>
+
+    <div class="d-flex w-100-p  p-2">
+      <div class="md-form min-width-120 mr-3 flex-fill">
+        <input
+          formControlName="branchName"
+          type="text"
+          class="completer-input form-control mdb-autocomplete mb-0"
+          [mdbAutoCompleter]="auto"
+          placeholder="Select *"
+        />
+        <mdb-auto-completer #auto="mdbAutoCompleter" textNoResults="No Branch(s) Found">
+          <ng-container *ngFor="let option of results | async">
+            <mdb-option [value]="option.branchName">
+              {{ option.branchName }}
+            </mdb-option>
+          </ng-container>
+        </mdb-auto-completer>
+      </div>
+      <div class="md-form min-width-120 mr-3 flex-fill">
+        <!--              <mdb-checkbox formControlName="cooperate">Is Co-operate</mdb-checkbox>-->
+        <!-- <mdb-checkbox formControlName="cooperate">Include Board Paper Limit Summary</mdb-checkbox> -->
+        <mdb-checkbox formControlName="committee">Committee Paper</mdb-checkbox>
+      </div>
+    </div>
+    <div class="d-flex w-100-p  p-2">
+      <div class="md-form min-width-120 mr-3 flex-fill">
+        <mdb-select
+          [options]="templateOption"
+          formControlName="workFlow"
+          placeholder="Work Flow"></mdb-select>
+      </div>
+    </div>
+  </form>
+</div>
+<div class="modal-footer modal-end">
+  <button type="button"
+          mdbBtn
+          class="medium-button"
+          aria-label="Close"
+          (click)="onNoClick()"
+          mdbWavesEffect>Close
+  </button>
+  <button
+    type="button"
+    mdbBtn
+    color="secondary"
+    class="relative medium-button"
+    [disabled]="!isValid()"
+    (click)="draft()"
+    mdbWavesEffect>Draft
+  </button>
+</div>

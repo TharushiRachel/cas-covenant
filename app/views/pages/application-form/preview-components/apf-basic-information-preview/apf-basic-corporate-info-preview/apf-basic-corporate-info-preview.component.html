@@ -1,0 +1,176 @@
+<div class="d-flex flex-row flex-wrap justify-content-start w-100-p">
+
+  <div class="width-50 d-flex flex-row m-bottom-10px" *ngIf="customerDetails.customerName">
+    <div class="topic width-48">
+      Customer Full Name (Finacle)
+    </div>
+    <div class="width-2">:</div>
+    <div class="width-50">
+      {{customerDetails.customerName || '-'}}
+    </div>
+  </div>
+
+  <div class="width-50 d-flex flex-row m-bottom-10px" *ngIf="customerDetails.customerFinancialID">
+    <div class="topic width-48">
+      Finacle ID
+    </div>
+    <div class="width-2">:</div>
+    <div class="width-50">
+      {{customerDetails.customerFinancialID || '-'}}
+    </div>
+  </div>
+
+  <div class="width-50 d-flex flex-row m-bottom-10px">
+    <div class="topic width-48">
+      Name of the Business
+    </div>
+    <div class="width-2">:</div>
+    <div class="width-50">
+      {{basicInformation.nameOfBusiness}}
+    </div>
+  </div>
+
+  <div class="width-50 d-flex flex-row m-bottom-10px">
+    <div class="topic width-48">
+      Registration No
+    </div>
+    <div class="width-2">:</div>
+    <div class="width-50">
+      {{basicInformation.registrationNo}}
+    </div>
+  </div>
+
+  <div class="width-50 d-flex flex-row m-bottom-10px">
+    <div class="topic width-48">
+      Date of Incorporation
+    </div>
+    <div class="width-2">:</div>
+    <div class="width-50">
+      {{basicInformation.dateOfIncorporateStr}}
+    </div>
+  </div>
+
+  <div class="width-50 d-flex flex-row m-bottom-10px">
+    <div class="topic width-48">
+      Citizenship
+    </div>
+    <div class="width-2">:</div>
+    <div class="width-50">
+      {{basicInformation.citizenship}}
+    </div>
+  </div>
+
+  <div class="width-50 d-flex flex-row m-bottom-10px">
+    <div class="topic width-48">
+      Constitution
+    </div>
+    <div class="width-2">:</div>
+    <div class="width-50">
+      {{constitution[basicInformation.constitution]}}
+    </div>
+  </div>
+
+  <div class="width-50 d-flex flex-row m-bottom-10px">
+    <div class="topic width-48">
+      Nature of Business
+    </div>
+    <div class="width-2">:</div>
+    <div class="width-50">
+      {{basicInformation.natureOfBusiness}}
+    </div>
+  </div>
+
+  <div class="width-50 d-flex flex-row m-bottom-10px">
+    <div class="topic width-48">
+      Date of Commencement of the Business
+    </div>
+    <div class="width-2">:</div>
+    <div class="width-50">
+      {{basicInformation.dateOfCommencementStr}}
+    </div>
+  </div>
+
+  <div class="width-50 d-flex flex-row m-bottom-10px">
+    <div class="topic width-48">
+      Address
+    </div>
+    <div class="width-2">:</div>
+    <div class="width-50">
+      {{basicInformation.officialAddress}}
+    </div>
+  </div>
+
+  <ng-container *ngIf="customerDetails.afCustomerAddressDTOList && customerDetails.afCustomerAddressDTOList.length > 0">
+    <ng-container *ngFor="let address of customerDetails.afCustomerAddressDTOList">
+      <div class="width-50 d-flex flex-row m-bottom-10px">
+        <div class="topic width-48">
+          {{addressType[address.addressType] ? addressType[address.addressType] : address.addressType }} Address
+        </div>
+        <div class="width-2">:</div>
+        <div class="width-50">
+          {{address.address1}} {{address.address2 ? ' ,' + address.address2 : ''}} {{address.city ? ' ,' + address.city : ''}}
+        </div>
+      </div>
+    </ng-container>
+  </ng-container>
+
+  <ng-container
+    *ngIf="customerDetails.afCustomerTelephoneDTOList && customerDetails.afCustomerTelephoneDTOList.length > 0">
+    <ng-container *ngFor="let  telephone of customerDetails.afCustomerTelephoneDTOList; let i = index;">
+      <div class="width-50 d-flex flex-row m-bottom-10px">
+        <div class="topic width-48">
+          Contact Number {{i + 1}}
+        </div>
+        <div class="width-2">:</div>
+        <div class="width-50">
+          {{telephone.contactNumber ? telephone.contactNumber : '-'}}
+          <span *ngIf="telephone.contactNumber && telephone.description">({{telephone.description}})</span>
+        </div>
+      </div>
+    </ng-container>
+  </ng-container>
+
+
+  <div class="width-50 d-flex flex-row m-bottom-10px">
+    <div class="topic width-48">
+      Email (Primary)
+    </div>
+    <div class="width-2">:</div>
+    <div class="width-50">
+      {{customerDetails.emailAddress || '-'}}
+    </div>
+  </div>
+
+  <ng-container *ngIf="isPrivateLTD()">
+    <div class="width-50 d-flex flex-row m-bottom-10px">
+      <div class="topic width-48">
+        Capital Authorized
+      </div>
+      <div class="width-2">:</div>
+      <div class="width-50">
+        {{this.getFormattedValue(basicInformation.capitalAuthorized)}}
+      </div>
+    </div>
+
+    <div class="width-50 d-flex flex-row m-bottom-10px">
+      <div class="topic width-48">
+        Capital Issued
+      </div>
+      <div class="width-2">:</div>
+      <div class="width-50">
+        {{this.getFormattedValue(basicInformation.capitalIssued)}}
+      </div>
+    </div>
+
+    <div class="width-50 d-flex flex-row m-bottom-10px">
+      <div class="topic width-48">
+        Capital PaidUp
+      </div>
+      <div class="width-2">:</div>
+      <div class="width-50">
+        {{this.getFormattedValue(basicInformation.capitalPaidUp)}}
+      </div>
+    </div>
+  </ng-container>
+
+</div>

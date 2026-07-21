@@ -1,0 +1,20 @@
+<div class="container-fluid header-container">
+    <!-- Show dropdown and cards only if records exist -->
+    <ng-container *ngIf="hasRecords; else noRecordsTemplate">
+
+        <div class="upc-list">
+            <div *ngFor="let item of upc; let i = index" class="cardx">
+                <h5 class="legend">{{ i + 1 }}. {{ item.label }}</h5>
+                <div [innerHTML]="decodeHTML(item.fileContent)"></div><br>
+                <span class="modified"> Last Modified: </span><span>{{ item.lastModDate }}</span>
+            </div>
+        </div>
+    </ng-container>
+
+    <!-- Show "No Records Found" when hasRecords is false -->
+    <ng-template #noRecordsTemplate>
+        <div class="text-center mt-4">
+            <h5 class="text-muted">No Records Found</h5>
+        </div>
+    </ng-template>
+</div>

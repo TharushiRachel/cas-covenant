@@ -1,0 +1,173 @@
+<div class="w-100-p">
+  <ng-container *ngIf="previousLockedComments.length>0">
+    <div id="noPint01">
+      <div class="text-align-center topic">
+        <h5>Previous Risk Opinions</h5>
+      </div>
+      <div class="table-responsive">
+        <table class="w-100-p table">
+          <thead>
+          <tr>
+            <th>Created User</th>
+            <th>Created On</th>
+            <th>Modified User</th>
+            <th>Modified On</th>
+            <th class="text-align-center">View Opinion</th>
+          </tr>
+          </thead>
+          <tbody>
+          <ng-container *ngFor="let item of previousLockedComments">
+            <tr>
+              <td class="width-16">{{item.createdUserName || '-'}}</td>
+              <td class="width-13">{{item.createdDateStr || '-'}}</td>
+              <td class="width-16">{{item.modifiedUserName || '-'}}</td>
+              <td class="width-13">{{item.modifiedDateStr || '-'}}</td>
+              <td class="width-13 text-align-center">
+                <button class="btn btn-sm btn-secondary cta-btn margin-unset" type="button" mdbWavesEffect
+                        mdbTooltip="View Risk Opinion"
+                        (click)="view(item)"
+                        placement="left">
+                  <mdb-icon fas icon="file-alt" aria-hidden="true"></mdb-icon>
+                </button>
+              </td>
+            </tr>
+          </ng-container>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </ng-container>
+
+
+ <!-- <div class="w-100-p mt-5p" *ngIf="activeRiskComment">
+    <ng-container>
+      <div class="active-risk-Comment-body">
+        <div class="d-flex flex-row mb-3 w-100-p flex-wrap">
+          <span class="risk-opinion-topic">Risk Opinion</span>
+        </div>
+
+        <div id="printContentDiv"
+             [innerHTML]="getCommentWithPreTag(activeRiskComment.creditRiskComment) | safeHtml"></div>
+        <div>
+          <table class="width-100">
+            <thead>
+            <tr>
+              <th>Created by</th>
+              <th>
+                <span *ngIf="activeRiskComment.modifiedUserName">
+                  Updated by
+                </span>
+              </th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+              <td class="width-16">{{activeRiskComment.createdUserName || '-'}}
+                : {{activeRiskComment.createdDateStr || '-'}}</td>
+              <td class="width-16">
+                 <span *ngIf="activeRiskComment.modifiedUserName">
+                {{activeRiskComment.modifiedUserName || '-'}}
+                   : {{activeRiskComment.modifiedDateStr || '-'}}
+                </span>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </ng-container>
+  </div>
+  <br> -->
+  <div *ngIf="isLoad || isLoading">
+    <div class="w-100-p" *ngIf="activeRiskComment">
+      <ng-container>
+        <div class="text-align-center topic">
+          <h5>Risk Opinion and Reply</h5>
+        </div>
+        <div class="active-risk-Comment-body">
+          <div class="d-flex flex-row mb-3 w-100-p flex-wrap">
+            <span class="risk-opinion-topic">Risk Opinion</span>
+          </div>
+
+          <div id="printContentDiv"
+               [innerHTML]="activeRiskComment.creditRiskComment | safeHtml"></div>
+          <div>
+            <table class="width-100">
+              <thead>
+              <tr>
+                <th>Created by</th>
+                <th>
+                <span *ngIf="activeRiskComment.modifiedUserName">
+                  Updated by
+                </span>
+                </th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr>
+                <td class="width-16">{{activeRiskComment.createdUserName || '-'}}
+                  : {{activeRiskComment.createdDateStr || '-'}}</td>
+                <td class="width-16">
+                 <span *ngIf="activeRiskComment.modifiedUserName">
+                {{activeRiskComment.modifiedUserName || '-'}}
+                   : {{activeRiskComment.modifiedDateStr || '-'}}
+                </span>
+                </td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </ng-container>
+    </div>
+  </div>
+
+  <br>
+
+  <div *ngIf="isLoad || isLoading">
+    <div class="w-100-p risk-reply-div" *ngIf="creditRiskReply">
+      <ng-container>
+        <div class="risk-reply-body">
+          <div class="d-flex flex-row mb-3 w-100-p flex-wrap">
+            <span class="risk-opinion-topic">Risk Reply</span>
+          </div>
+
+          <div
+            [innerHTML]="getCommentWithPreTag(creditRiskReply ? creditRiskReply.replyComment : '') | safeHtml">
+          </div>
+
+          <div>
+            <table class="width-100">
+              <thead>
+              <tr>
+                <th>Created by</th>
+                <th>
+                  <span *ngIf="creditRiskReply.modifiedUserName">
+                    Updated by
+                  </span>
+                </th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr>
+                <td class="width-16">{{creditRiskReply.createdUserName || '-'}}
+                  : {{creditRiskReply.createdDateStr || '-'}}</td>
+                <td class="width-16">
+                   <span *ngIf="creditRiskReply.modifiedUserName">
+                  {{creditRiskReply.modifiedUserName || '-'}}
+                     : {{creditRiskReply.modifiedDateStr || '-'}}
+                  </span>
+                </td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </ng-container>
+    </div>
+  </div>
+
+  <ng-container *ngIf="riskCommentList == null || !activeRiskComment">
+    <p class="heading-topics">No Risk Comments</p>
+  </ng-container>
+</div>

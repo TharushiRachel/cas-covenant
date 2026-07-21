@@ -1,0 +1,41 @@
+@import "variables";
+@import "mixins";
+
+.page-header {
+
+  background-color: #FFFFFF;
+  color: #3a3a3a;
+  @extend .default-box-styles;
+  @include border-radius(3px);
+  font-weight: 700;
+  min-height: 3.2rem;
+
+  > div {
+    padding: 2px 5px;
+  }
+
+  .header-icon-back {
+    margin-right: 20px;
+    font-size: 20px;
+  }
+
+  .header-icon {
+    margin-right: 10px;
+    margin-top: -1px;
+  }
+
+  h5 {
+    margin: 5px;
+    font-weight: 600;
+  }
+
+  .custom-button {
+    padding: 0.2rem 1rem !important;
+    font-size: 100%;
+  }
+}
+
+.page-search-section {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}

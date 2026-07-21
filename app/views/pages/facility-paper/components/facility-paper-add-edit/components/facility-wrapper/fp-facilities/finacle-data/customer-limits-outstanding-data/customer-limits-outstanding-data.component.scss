@@ -1,0 +1,42 @@
+.scrollable-content {   
+    max-height: 85vh;
+   
+  }
+
+  #accountSelectBtn {
+    float: right;  
+  }
+
+  .header-cell {
+    background-color: rgb(58, 221, 233);
+    text-align: center; 
+    font-weight: bold; 
+    font-size: 20px;
+  }
+
+  .align-top-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end; 
+  justify-content: flex-start; 
+  height: 100%; 
+  text-align: right; 
+}
+
+td {
+  vertical-align: top; 
+}
+
+.table thead th {
+  position: sticky;
+  top: 0; 
+  background-color: #f8f9fa; 
+  z-index: 1; 
+}
+
+.table-container {
+  position: relative;
+  max-height: 60vh; 
+  overflow: auto;
+}
+

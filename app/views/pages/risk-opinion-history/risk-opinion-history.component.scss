@@ -1,0 +1,32 @@
+.risk-option{
+    background-color: #ADD8E6;
+}
+
+.risk-opinion-sec{
+    // margin-left: 20px;
+    background-color: #F5F5F5;
+    padding: 20px 20px 0 20px;
+    font-size: 15px;
+}
+
+.name-container{
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.h4-sec{
+    font-weight: 600;
+    text-align: center;
+    padding-top: 30px;
+}
+
+.history-sec{
+    overflow-y: auto;
+}
+
+.no-comment-msg{
+    padding: 10px;
+    font-size: 15px;
+    text-align: center;
+}

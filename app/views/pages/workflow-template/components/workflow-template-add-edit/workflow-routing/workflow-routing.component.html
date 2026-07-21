@@ -1,0 +1,24 @@
+<div class="d-flex w-100-p border p-2 flex-row flex-start flex-wrap align-items-center">
+
+  <ng-container *ngFor="let wfrData of workflowRoutingDataArray; let i = index;">
+    <app-workflow-routing-data
+      class="w-15-p"
+      (removeEvent)="removeWFRData($event)"
+      (changeData)="changeData($event)"
+      [wfrDataDTO]="wfrData"
+      [indexOfList]="i"
+    >
+    </app-workflow-routing-data>
+
+    <ng-container *ngIf="i<workflowRoutingDataArray.length">
+      <span class="p-3">
+      <i class="fa fa-arrow-right icon-color"></i>
+        </span>
+    </ng-container>
+    <ng-container *ngIf="i==workflowRoutingDataArray.length-1">
+      <a mdbBtn floating="true" size="2x" class="waves-effect bg-color" (click)="addNewWorkflowRoutingData($event)">
+        <mdb-icon class="icon-color" size="2x" fas icon="plus-circle"></mdb-icon>
+      </a>
+    </ng-container>
+  </ng-container>
+</div>

@@ -1,0 +1,20 @@
+<div class="modal-header flex-center modal-topic">
+    <h4 class="modal-title w-100 font-weight-bold" *ngIf="status != activestatusConst.RMV">Save Status</h4>
+    <h4 class="modal-title w-100 font-weight-bold" *ngIf="status == activestatusConst.RMV">Remove Pool User</h4>
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="close()">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+
+<div class="modal-body modal-detail form-margin">
+    <span>Do you want to<b> {{activestatus[status]}} </b> the <b>{{userDisplayName}}</b>?</span>
+
+    <div class="w-100-p d-flex flex-row justify-content-end align-content-center">
+        <button mdbBtn color="info" class="my-4 editor-save-btn" (click)="save()">Yes
+        </button>
+        <ng-container>
+            <button mdbBtn color="danger" class="my-4 editor-save-btn" (click)="close()">No
+            </button>
+        </ng-container>
+    </div>
+</div>

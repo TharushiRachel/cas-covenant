@@ -1,0 +1,1235 @@
+<div class="d-flex justify-content-end">
+
+    <app-fp-add-committe-inqury-button [facilityPaper]="facilityPaper">
+    </app-fp-add-committe-inqury-button>
+    <button (click)="generatePdf()" type="button" class=" medium-button btn btn-info cta-btn" data-toggle="tooltip"
+        data-placement="left" [title]='"Committee Paper Preview"' mdbBtn>
+        <i class="fas fa-eye"></i>
+    </button>
+
+    <button (click)="fullPaperWindow()" type="button" class=" medium-button btn btn-info cta-btn" data-toggle="tooltip"
+        data-placement="bottom" [title]='"Open In New Window"' mdbBtn>
+        <i class="fas fa-book-open"></i>
+    </button>
+</div>
+<div class="d-flex justify-content-center mx-0 pb-5" id="filter-full-paper-view-section">
+
+    <app-fp-customer-float-view [facilityPaper]="facilityPaper"></app-fp-customer-float-view>
+    <div class="width-90 m-top-20px">
+        <div class="page" id="print-section">
+            <div class="row d-flex flex-column align-items-center mx-0 mb-3 justify-content-center main-heading">
+                <h3 class="pdf-heading">CREDIT PROPOSAL - REF NO: {{facilityPaper.fpRefNumber}}</h3>
+                <h4 class="pdf-sub-heading" *ngIf="getBranchName(facilityPaper.branchCode)">
+                    {{getBranchName(facilityPaper.branchCode)}}
+                </h4>
+            </div>
+
+            <div class="mx-0 px-0" *ngIf="upcTemplateFormat && upcTemplateFormat.length > 0">
+                <ng-container *ngFor="let parent of upcTemplateFormat;let parentIndex = index">
+                    <ng-container>
+                        <div class="topic"
+                            [ngStyle]="{'margin': fpFinalStatusData.isShow ? '35px 0px 0px 0px' : '35px 0px 20px 0px'}">
+                            <h5 class="pdf-content-heading"
+                                style="font-family: Arial, Helvetica, sans-serif !important;word-spacing: normal;"
+                                [ngStyle]="{'padding-right': fpFinalStatusData.isShow ? '50px' : '0px'}">
+                                <b>{{parentIndex +1 }}.0 {{parent.name}}</b>
+                            </h5>
+                            <div class="topic-r-div">
+                                <button class="btn"
+                                    [ngClass]="getCmntCountById(parent.item.fpUpcSectionDataID) > 0 && isCommentable() ? 'btn-primary' : 'btn-info'"
+                                    type="button" mdbTooltip="Comments/Changes" placement="top"
+                                    (click)="openModalUPCTemplateComment(parent.item)"
+                                    *ngIf="isHigherWCUser() && parent.item.upcSectionID != 0">
+                                    <mdb-icon aria-hidden="true" fas icon="comments"></mdb-icon>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="watermark row d-flex" *ngIf="fpFinalStatusData.isShow"
+                            [ngStyle]="{'border': fpFinalStatusData.isShow ? '1px solid '+fpFinalStatusData.color : 'none'}">
+                            <img src="{{fpFinalStatusData.src}}" alt="Watermark">
+                            <span class="pdf-font-text">{{fpFinalStatusData.description}}</span>
+                        </div>
+                        <div class="sub-topic" *ngIf="parent.isFacility && parent.item.data">
+                            <h6 class="text-start pdf-sub-heading"
+                                style="font-weight: 700 !important; font-family: Arial, Helvetica, sans-serif !important;word-spacing: normal;">
+                                2.1 Purpose
+                            </h6>
+                        </div>
+                        <div class="treeview__level__content html-content-view pdf-font-text" *ngIf="parent.item.data"
+                            [innerHTML]="getFormatedContent(parent.item.data) | safeHtml">
+                        </div>
+
+                        <!-- Specific Facility Section -->
+                        <div class="m-0 p-0" *ngIf="parent.isFacility">
+
+                            <div class="html2pdf__page-break"></div>
+                            <div class="mx-0 my-3 p-0">
+                                <table class="table table-bordered fc-table">
+                                    <thead>
+                                        <th class="pdf-font-heading small-th" style="width: 10%; max-width: 10%;">
+                                            Existing Limit (Rs.Mn)</th>
+                                        <th class="pdf-font-heading small-th" style="width: 10%; max-width: 10%;">O/s as
+                                            at
+                                            {{facilityPaper.outstandingDateStr}}</th>
+                                        <th style="width: 70%; max-width: 70%;"></th>
+                                        <th class="pdf-font-heading small-th" style="width: 10%; max-width: 10%;">
+                                            Proposed Limit (Rs.Mn)</th>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td class="pdf-font-bold" colspan="4" style="text-align: start;">
+                                                <b>Funded</b>
+                                            </td>
+                                        </tr>
+
+                                        <tr
+                                            *ngFor="let facility of getFilterFacilites(facilityPaper.facilityDTOList,'Y'); let i = index;">
+                                            <td class="pdf-font-text">
+                                                <span *ngIf="isForeignCrny(facility.facilityCurrency)">
+                                                    {{facility.facilityCurrency}}
+                                                </span>
+                                                {{getFormattedThreeDecimalValues(getMillionValue(facility.existingAmount))}}
+                                                <br />
+                                                <span *ngIf="facility.originalAmount">
+                                                    (Original amount
+                                                    <span>{{facility.facilityCurrency}} </span>
+                                                    {{getFormattedThreeDecimalValues(getMillionValue(facility.originalAmount))}}
+                                                    Mn)
+                                                </span>
+                                            </td>
+                                            <td class="pdf-font-text">
+                                                <span *ngIf="isForeignCrny(facility.facilityCurrency)">
+                                                    {{facility.facilityCurrency}}
+                                                </span>
+                                                {{getFormattedThreeDecimalValues(getMillionValue(facility.outstandingAmount))}}
+                                            </td>
+                                            <td>
+                                                <div class="mx-0 px-1">
+
+                                                    <div class="row mx-0 mt-0 justify-content-end"
+                                                        *ngIf="isHigherWCUser()">
+                                                        <button class="btn mt-0 mx-0"
+                                                            [ngClass]="getUnReadFacilityCommentsCount(facility) > 0 && isCommentable() ? 'btn-primary' : 'btn-info'"
+                                                            (click)="openReportModal(facility)"
+                                                            mdbTooltip="Comments/Changes" placement="top"
+                                                            style="padding: 8px 14px !important;">
+                                                            <mdb-icon aria-hidden="true" fas icon="comments"></mdb-icon>
+                                                        </button>
+                                                    </div>
+
+                                                    <div class="row d-flex table-item mx-0 mb-2">
+                                                        <span class="text-1 pdf-font-bold"><b>Facility
+                                                                {{facility.index}}</b></span>
+                                                        <span class="text-2">-</span>
+                                                        <span class="text-3">
+                                                            <strong class="pdf-font-bold" style="word-spacing: 2px;">
+                                                                {{facility.creditFacilityTemplateDTO.creditFacilityName}}{{"
+                                                                "}}
+                                                                <span class="pdf-font-bold" style="word-spacing: 2px;"
+                                                                    *ngIf="facility.facilityRefCode">
+                                                                    ( {{facility.facilityRefCode}} )
+                                                                </span>
+                                                                <span class="pdf-font-bold" style="word-spacing: 2px;"
+                                                                    *ngIf="facility.parentIndex > 0">
+                                                                    ( Sub limit of facility {{facility.parentIndex}} -
+                                                                    {{facility.parentFacility.creditFacilityTemplateDTO?.creditFacilityName}}
+                                                                    for
+                                                                    {{facility.parentFacility.facilityCurrency}}
+                                                                    {{getFormattedThreeDecimalValues(getMillionValue(facility.parentFacility.facilityAmount))}}Mn
+                                                                    )
+                                                                </span>
+                                                            </strong>
+                                                            <div class="row d-flex mx-0">
+                                                                <div class="mr-2 my-1">
+                                                                    <h4 *ngIf="facility.isNew === yesNoConst.Y">
+                                                                        <mdb-badge class="pdf-font-text"
+                                                                            default="true">New</mdb-badge>
+                                                                    </h4>
+                                                                    <h4 *ngIf="facility.isNew === yesNoConst.N">
+                                                                        <mdb-badge class="pdf-font-text"
+                                                                            default="true">Exist</mdb-badge>
+                                                                    </h4>
+                                                                </div>
+                                                                <div class="mr-2 my-1"
+                                                                    *ngIf="facility.parentFacilityID != null">
+                                                                    <h4>
+                                                                        <mdb-badge class="pdf-font-text"
+                                                                            default="true">Child</mdb-badge>
+                                                                    </h4>
+                                                                </div>
+                                                                <div class="mr-2 my-1"
+                                                                    *ngIf="facility.directFacility === yesNoConst.Y">
+                                                                    <h4>
+                                                                        <mdb-badge class="pdf-font-text"
+                                                                            default="true">Funded</mdb-badge>
+                                                                    </h4>
+                                                                </div>
+                                                                <div class="mr-2 my-1"
+                                                                    *ngIf="facility.directFacility !== yesNoConst.Y">
+                                                                    <h4>
+                                                                        <mdb-badge class="pdf-font-text"
+                                                                            default="true">Non-Funded</mdb-badge>
+                                                                    </h4>
+                                                                </div>
+                                                                <div class="mr-2 my-1"
+                                                                    *ngIf="facility.isOneOff === yesNoConst.Y">
+                                                                    <h4>
+                                                                        <mdb-badge class="pdf-font-text"
+                                                                            default="true">One-Off</mdb-badge>
+                                                                    </h4>
+                                                                </div>
+                                                                <div class="mr-2 my-1"
+                                                                    *ngIf="facility.isCommittee === yesNoConst.Y">
+                                                                    <h4>
+                                                                        <mdb-badge class="pdf-font-text"
+                                                                            default="true">Committee</mdb-badge>
+                                                                    </h4>
+                                                                </div>
+                                                                <div class="mr-2 my-1"
+                                                                    *ngIf="facility.seriesOfLoans === yesNoConst.Y">
+                                                                    <h4>
+                                                                        <mdb-badge class="pdf-font-text"
+                                                                            default="true">Series of
+                                                                            Loans</mdb-badge>
+                                                                    </h4>
+                                                                </div>
+                                                                <div class="mr-2 my-1"
+                                                                    *ngIf="facility.revolving === yesNoConst.Y">
+                                                                    <h4>
+                                                                        <mdb-badge class="pdf-font-text"
+                                                                            default="true">Revolving</mdb-badge>
+                                                                    </h4>
+                                                                </div>
+                                                                <div class="mr-2 my-1"
+                                                                    *ngIf="facility.reduction === yesNoConst.Y">
+                                                                    <h4>
+                                                                        <mdb-badge class="pdf-font-text"
+                                                                            default="true">Reduction</mdb-badge>
+                                                                    </h4>
+                                                                </div>
+                                                                <div class="mr-2 my-1"
+                                                                    *ngIf="facility.enhancement === yesNoConst.Y">
+                                                                    <h4>
+                                                                        <mdb-badge class="pdf-font-text"
+                                                                            default="true">Enhancement</mdb-badge>
+                                                                    </h4>
+                                                                </div>
+
+                                                                <div class="mr-2 my-1"
+                                                                    *ngIf="facility.isAnnual === yesNoConst.Y">
+                                                                    <h4>
+                                                                        <mdb-badge class="pdf-font-text"
+                                                                            default="true">Annual
+                                                                            Review</mdb-badge>
+                                                                    </h4>
+                                                                </div>
+
+                                                                <div class="mr-2 my-1"
+                                                                    *ngIf="facility.isAdditional === yesNoConst.Y">
+                                                                    <h4>
+                                                                        <mdb-badge class="pdf-font-text"
+                                                                            default="true">Additional</mdb-badge>
+                                                                    </h4>
+                                                                </div>
+
+                                                                <div class="mr-2 my-1"
+                                                                    *ngIf="facility.isTermsAmended === yesNoConst.Y">
+                                                                    <h4>
+                                                                        <mdb-badge class="pdf-font-text"
+                                                                            default="true">Terms
+                                                                            Amended</mdb-badge>
+                                                                    </h4>
+                                                                </div>
+
+                                                                <div class="mr-2 my-1"
+                                                                    *ngIf="facility.isReStructure === yesNoConst.Y">
+                                                                    <h4>
+                                                                        <mdb-badge class="pdf-font-text"
+                                                                            default="true">Re-Structure</mdb-badge>
+                                                                    </h4>
+                                                                </div>
+
+                                                                <div class="mr-2 my-1"
+                                                                    *ngIf="facility.isReSchedule === yesNoConst.Y">
+                                                                    <h4>
+                                                                        <mdb-badge class="pdf-font-text"
+                                                                            default="true">Re-Schedule</mdb-badge>
+                                                                    </h4>
+                                                                </div>
+                                                            </div>
+                                                        </span>
+                                                    </div>
+
+                                                    <div class="row d-flex table-item mx-0 mb-2"
+                                                        *ngIf="facility.purpose">
+                                                        <span class="text-1">Purpose</span>
+                                                        <span class="text-2">-</span>
+                                                        <span class="text-3">
+                                                            <pre
+                                                                class="custom-pre-tag-with-spaces text-justify mx-0">{{facility.purpose}}</pre>
+                                                        </span>
+                                                    </div>
+
+                                                    <div class="row d-flex table-item mx-0 mb-2"
+                                                        *ngIf="facility.repayment">
+                                                        <span class="text-1">Repayment</span>
+                                                        <span class="text-2">-</span>
+                                                        <span class="text-3">
+                                                            <pre
+                                                                class="custom-pre-tag-with-spaces text-justify mx-0">{{facility.repayment}}</pre>
+                                                        </span>
+
+                                                    </div>
+
+                                                    <div class="row d-flex table-item mx-0 mb-2"
+                                                        *ngIf="facility.facilityInterestRateList && facility.facilityInterestRateList.length > 0 &&
+                                                               facility.facilityInterestRateList[0] && facility.facilityInterestRateList[0].userComment">
+                                                        <span class="text-1">Interest Rate</span>
+                                                        <span class="text-2">-</span>
+                                                        <span class="text-3">
+                                                            <pre
+                                                                class="custom-pre-tag-with-spaces text-justify mx-0">{{facility.facilityInterestRateList[0].userComment}}</pre>
+                                                        </span>
+                                                    </div>
+
+                                                    <ng-container class="m-0 p-0"
+                                                        *ngIf="facility.facilityVitalInfoDataDTOList && facility.facilityVitalInfoDataDTOList.length > 0">
+                                                        <div class="row d-flex table-item mx-0 mb-2"
+                                                            *ngFor="let item of facility.facilityVitalInfoDataDTOList">
+                                                            <span class="text-1">{{item.vitalInfoName}}</span>
+                                                            <span class="text-2">-</span>
+                                                            <span class="text-3">
+                                                                <pre
+                                                                    class="custom-pre-tag-with-spaces text-justify mx-0">{{item.vitalInfoData}}</pre>
+                                                            </span>
+                                                        </div>
+                                                    </ng-container>
+
+                                                    <div class="row d-flex table-item mx-0 mb-2"
+                                                        *ngIf="facility.remark">
+                                                        <span class="text-1">Remark</span>
+                                                        <span class="text-2">-</span>
+                                                        <span class="text-3">
+                                                            <pre
+                                                                class="custom-pre-tag-with-spaces text-justify mx-0">{{facility.remark}}</pre>
+                                                        </span>
+                                                    </div>
+
+                                                    <div class="row d-flex table-item mx-0 mb-2"
+                                                        *ngIf="facility.facilitySecurityDTOList && filterFacilitySecurities(facility.facilitySecurityDTOList).length > 0">
+                                                        <span class="text-1">Security</span>
+                                                        <span class="text-2">-</span>
+                                                        <div class="row mx-0 flex-column text-3">
+                                                            <ol style="padding-left: 15px;">
+                                                                <li class="mb-1 pdf-font-text"
+                                                                    *ngFor="let security of filterFacilitySecurities(facility.facilitySecurityDTOList); let x = index;">
+                                                                    <pre
+                                                                        class="custom-pre-tag-with-spaces text-justify mx-0">{{security.securityDetail}}</pre>
+                                                                </li>
+                                                            </ol>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="row d-flex table-item mx-0 mb-2"
+                                                        *ngIf="getCovenantByFacility(facility.facilityID).length > 0 || isFacilityConditionExists(facility)">
+                                                        <span class="text-1">Conditions</span>
+                                                        <span class="text-2">-</span>
+                                                        <div class="text-3 d-flex row mx-0">
+                                                            <ol style="padding-left: 15px;">
+                                                                <li class="mb-1 pdf-font-text"
+                                                                    *ngIf="isFacilityConditionExists(facility)">
+                                                                    <pre
+                                                                        class="custom-pre-tag-with-spaces text-justify mx-0">{{facility.condition}}</pre>
+                                                                </li>
+                                                                <li class="mb-1 pdf-font-text"
+                                                                    style="word-break: break-all;"
+                                                                    *ngFor="let item of getCovenantByFacility(facility.facilityID); let x = index;">
+                                                                    <span class="mx-0" style="word-break: break-all;">{{item.description}}.</span>
+                                                                    <br />
+                                                                    <div class="mx-0">
+                                                                        (
+                                                                        <span class="pdf-font-text"
+                                                                            *ngIf="item.frequency">Frequency :
+                                                                            {{getCovenantFrequencyLabel(item.frequency)}}</span>
+                                                                        <span class="pdf-font-text" *ngIf="item.date">
+                                                                            {{" | Due Date : "}}{{item.date | date :
+                                                                            "yyyy-MM-dd"}}
+                                                                        </span>
+                                                                        )
+                                                                    </div>
+                                                                </li>
+                                                            </ol>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+                                            </td>
+                                            <td class="pdf-font-text">
+                                                <span *ngIf="isForeignCrny(facility.facilityCurrency)">
+                                                    {{facility.facilityCurrency}}
+                                                </span>
+                                                {{getFormattedThreeDecimalValues(getMillionValue(facility.facilityAmount))}}
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="pdf-font-text">
+                                                {{getFormattedThreeDecimalValues(getMillionValue(facilityPaper.totalDirectExposureExisting))}}
+                                            </td>
+                                            <td class="pdf-font-text">
+                                                {{getFormattedThreeDecimalValues(getMillionValue(facilityPaper.totalDirectExposurePrevious))}}
+                                            </td>
+                                            <td class="pdf-font-bold" style="text-align: start;"><b>Total Funded</b>
+                                            </td>
+                                            <td class="pdf-font-text">
+                                                {{getFormattedThreeDecimalValues(getMillionValue(facilityPaper.totalDirectExposureNew))}}
+                                            </td>
+                                        </tr>
+
+                                        <tr>
+                                            <td class="pdf-font-bold" colspan="4" style="text-align: start;">
+                                                <b>Non-Funded</b>
+                                            </td>
+                                        </tr>
+                                        <tr
+                                            *ngFor="let facility of getFilterFacilites(facilityPaper.facilityDTOList,'N'); let i = index;">
+                                            <td class="pdf-font-text">
+                                                <span *ngIf="isForeignCrny(facility.facilityCurrency)">
+                                                    {{facility.facilityCurrency}}
+                                                </span>
+                                                {{getFormattedThreeDecimalValues(getMillionValue(facility.existingAmount))}}<br />
+                                                <span *ngIf="facility.originalAmount">
+                                                    (Original amount
+                                                    <span>{{facility.facilityCurrency}}</span>
+                                                    {{getFormattedThreeDecimalValues(getMillionValue(facility.originalAmount))}}
+                                                    Mn)
+                                                </span>
+                                            </td>
+                                            <td class="pdf-font-text">
+                                                <span *ngIf="isForeignCrny(facility.facilityCurrency)">
+                                                    {{facility.facilityCurrency}}
+                                                </span>
+                                                {{getFormattedThreeDecimalValues(getMillionValue(facility.outstandingAmount))}}
+                                            </td>
+                                            <td>
+                                                <div class="mx-0 px-1">
+                                                    <div class="row mx-0 justify-content-end" *ngIf="isHigherWCUser()">
+                                                        <button class="btn mt-0 mx-0"
+                                                            [ngClass]="getUnReadFacilityCommentsCount(facility) > 0 && isCommentable() ? 'btn-primary' : 'btn-info'"
+                                                            (click)="openReportModal(facility)"
+                                                            mdbTooltip="Comments/Changes" placement="top"
+                                                            style="padding: 8px 14px !important;">
+                                                            <mdb-icon aria-hidden="true" fas icon="comments"></mdb-icon>
+                                                        </button>
+                                                    </div>
+
+                                                    <div class="row d-flex table-item mx-0 mb-2">
+                                                        <span class="text-1 pdf-font-bold"><b>Facility
+                                                                {{facility.index}}</b></span>
+                                                        <span class="text-2">-</span>
+                                                        <span class="text-3">
+                                                            <strong class="pdf-font-bold" style="word-spacing: 2px;">
+                                                                {{facility.creditFacilityTemplateDTO.creditFacilityName}}{{"
+                                                                "}}
+                                                                <span class="pdf-font-bold" style="word-spacing: 2px;"
+                                                                    *ngIf="facility.facilityRefCode">(
+                                                                    {{facility.facilityRefCode}} )</span>
+                                                                <span class="pdf-font-bold" style="word-spacing: 2px;"
+                                                                    *ngIf="facility.parentIndex > 0">
+                                                                    ( Sub limit of facility {{facility.parentIndex}} -
+                                                                    {{facility.parentFacility.creditFacilityTemplateDTO?.creditFacilityName}}
+                                                                    for
+                                                                    {{facility.parentFacility.facilityCurrency}}
+                                                                    {{getFormattedThreeDecimalValues(getMillionValue(facility.parentFacility.facilityAmount))}}Mn
+                                                                    )
+                                                                </span>
+                                                            </strong>
+                                                            <div class="row d-flex mx-0">
+                                                                <div class="mr-2 my-1">
+                                                                    <h4 *ngIf="facility.isNew === yesNoConst.Y">
+                                                                        <mdb-badge class="pdf-font-text"
+                                                                            default="true">New</mdb-badge>
+                                                                    </h4>
+                                                                    <h4 *ngIf="facility.isNew === yesNoConst.N">
+                                                                        <mdb-badge class="pdf-font-text"
+                                                                            default="true">Exist</mdb-badge>
+                                                                    </h4>
+                                                                </div>
+                                                                <div class="mr-2 my-1"
+                                                                    *ngIf="facility.parentFacilityID != null">
+                                                                    <h4>
+                                                                        <mdb-badge class="pdf-font-text"
+                                                                            default="true">Child</mdb-badge>
+                                                                    </h4>
+                                                                </div>
+                                                                <div class="mr-2 my-1"
+                                                                    *ngIf="facility.directFacility === yesNoConst.Y">
+                                                                    <h4>
+                                                                        <mdb-badge class="pdf-font-text"
+                                                                            default="true">Funded</mdb-badge>
+                                                                    </h4>
+                                                                </div>
+                                                                <div class="mr-2 my-1"
+                                                                    *ngIf="facility.directFacility !== yesNoConst.Y">
+                                                                    <h4>
+                                                                        <mdb-badge class="pdf-font-text"
+                                                                            default="true">Non-Funded</mdb-badge>
+                                                                    </h4>
+                                                                </div>
+                                                                <div class="mr-2 my-1"
+                                                                    *ngIf="facility.isOneOff === yesNoConst.Y">
+                                                                    <h4>
+                                                                        <mdb-badge class="pdf-font-text"
+                                                                            default="true">One-Off</mdb-badge>
+                                                                    </h4>
+                                                                </div>
+                                                                <div class="mr-2 my-1"
+                                                                    *ngIf="facility.isCommittee === yesNoConst.Y">
+                                                                    <h4>
+                                                                        <mdb-badge class="pdf-font-text"
+                                                                            default="true">Committee</mdb-badge>
+                                                                    </h4>
+                                                                </div>
+                                                                <div class="mr-2 my-1"
+                                                                    *ngIf="facility.seriesOfLoans === yesNoConst.Y">
+                                                                    <h4>
+                                                                        <mdb-badge class="pdf-font-text"
+                                                                            default="true">Series of
+                                                                            Loans</mdb-badge>
+                                                                    </h4>
+                                                                </div>
+                                                                <div class="mr-2 my-1"
+                                                                    *ngIf="facility.revolving === yesNoConst.Y">
+                                                                    <h4>
+                                                                        <mdb-badge class="pdf-font-text"
+                                                                            default="true">Revolving</mdb-badge>
+                                                                    </h4>
+                                                                </div>
+                                                                <div class="mr-2 my-1"
+                                                                    *ngIf="facility.reduction === yesNoConst.Y">
+                                                                    <h4>
+                                                                        <mdb-badge class="pdf-font-text"
+                                                                            default="true">Reduction</mdb-badge>
+                                                                    </h4>
+                                                                </div>
+                                                                <div class="mr-2 my-1"
+                                                                    *ngIf="facility.enhancement === yesNoConst.Y">
+                                                                    <h4>
+                                                                        <mdb-badge class="pdf-font-text"
+                                                                            default="true">Enhancement</mdb-badge>
+                                                                    </h4>
+                                                                </div>
+
+                                                                <div class="mr-2 my-1"
+                                                                    *ngIf="facility.isAnnual === yesNoConst.Y">
+                                                                    <h4>
+                                                                        <mdb-badge class="pdf-font-text"
+                                                                            default="true">Annual
+                                                                            Review</mdb-badge>
+                                                                    </h4>
+                                                                </div>
+
+                                                                <div class="mr-2 my-1"
+                                                                    *ngIf="facility.isAdditional === yesNoConst.Y">
+                                                                    <h4>
+                                                                        <mdb-badge class="pdf-font-text"
+                                                                            default="true">Additional</mdb-badge>
+                                                                    </h4>
+                                                                </div>
+
+                                                                <div class="mr-2 my-1"
+                                                                    *ngIf="facility.isTermsAmended === yesNoConst.Y">
+                                                                    <h4>
+                                                                        <mdb-badge class="pdf-font-text"
+                                                                            default="true">Terms
+                                                                            Amended</mdb-badge>
+                                                                    </h4>
+                                                                </div>
+
+                                                                <div class="mr-2 my-1"
+                                                                    *ngIf="facility.isReStructure === yesNoConst.Y">
+                                                                    <h4>
+                                                                        <mdb-badge class="pdf-font-text"
+                                                                            default="true">Re-Structure</mdb-badge>
+                                                                    </h4>
+                                                                </div>
+
+                                                                <div class="mr-2 my-1"
+                                                                    *ngIf="facility.isReSchedule === yesNoConst.Y">
+                                                                    <h4>
+                                                                        <mdb-badge class="pdf-font-text"
+                                                                            default="true">Re-Schedule</mdb-badge>
+                                                                    </h4>
+                                                                </div>
+                                                            </div>
+                                                        </span>
+                                                    </div>
+
+                                                    <div class="row d-flex table-item mx-0 mb-2"
+                                                        *ngIf="facility.purpose">
+                                                        <span class="text-1">Purpose</span>
+                                                        <span class="text-2">-</span>
+                                                        <span class="text-3">
+                                                            <pre
+                                                                class="custom-pre-tag-with-spaces text-justify mx-0">{{facility.purpose}}</pre>
+                                                        </span>
+                                                    </div>
+
+                                                    <div class="row d-flex table-item mx-0 mb-2"
+                                                        *ngIf="facility.repayment">
+                                                        <span class="text-1">Repayment</span>
+                                                        <span class="text-2">-</span>
+                                                        <span class="text-3">
+                                                            <pre
+                                                                class="custom-pre-tag-with-spaces text-justify mx-0">{{facility.repayment}}</pre>
+                                                        </span>
+                                                    </div>
+
+                                                    <div class="row d-flex table-item mx-0 mb-2"
+                                                        *ngIf="facility.facilityInterestRateList && facility.facilityInterestRateList.length > 0
+                                                               && facility.facilityInterestRateList[0] && facility.facilityInterestRateList[0].userComment">
+                                                        <span class="text-1">Interest Rate</span>
+                                                        <span class="text-2">-</span>
+                                                        <span class="text-3">
+                                                            <pre
+                                                                class="custom-pre-tag-with-spaces text-justify mx-0">{{facility.facilityInterestRateList[0].userComment}}</pre>
+                                                        </span>
+                                                    </div>
+
+                                                    <ng-container class="m-0 p-0"
+                                                        *ngIf="facility.facilityVitalInfoDataDTOList && facility.facilityVitalInfoDataDTOList.length > 0">
+                                                        <div class="row d-flex table-item mx-0 mb-2"
+                                                            *ngFor="let item of facility.facilityVitalInfoDataDTOList">
+                                                            <span class="text-1">{{item.vitalInfoName}}</span>
+                                                            <span class="text-2">-</span>
+                                                            <span class="text-3">
+                                                                <pre
+                                                                    class="custom-pre-tag-with-spaces text-justify mx-0">{{item.vitalInfoData}}</pre>
+                                                            </span>
+                                                        </div>
+                                                    </ng-container>
+
+                                                    <div class="row d-flex table-item mx-0 mb-2"
+                                                        *ngIf="facility.remark">
+                                                        <span class="text-1">Remark</span>
+                                                        <span class="text-2">-</span>
+                                                        <span class="text-3">
+                                                            <pre
+                                                                class="custom-pre-tag-with-spaces text-justify mx-0">{{facility.remark}}</pre>
+                                                        </span>
+                                                    </div>
+
+                                                    <div class="row d-flex table-item mx-0 mb-2"
+                                                        *ngIf="facility.facilitySecurityDTOList && filterFacilitySecurities(facility.facilitySecurityDTOList).length > 0">
+                                                        <span class="text-1">Security</span>
+                                                        <span class="text-2">-</span>
+                                                        <div class="row mx-0 flex-column text-3">
+                                                            <ol style="padding-left: 15px;">
+                                                                <li class="mb-1 pdf-font-text"
+                                                                    *ngFor="let security of filterFacilitySecurities(facility.facilitySecurityDTOList); let x = index;">
+                                                                    <pre
+                                                                        class="custom-pre-tag-with-spaces text-justify mx-0"> {{security.securityDetail}}</pre>
+                                                                </li>
+                                                            </ol>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="row d-flex table-item mx-0 mb-2"
+                                                        *ngIf="getCovenantByFacility(facility.facilityID).length > 0 || isFacilityConditionExists(facility)">
+                                                        <span class="text-1">Conditions</span>
+                                                        <span class="text-2">-</span>
+                                                        <div class="text-3 mx-0">
+                                                            <ol style="padding-left: 15px;">
+                                                                <li class="mb-1 pdf-font-text"
+                                                                    *ngIf="isFacilityConditionExists(facility)">
+                                                                    <pre
+                                                                        class="custom-pre-tag-with-spaces text-justify mx-0">{{facility.condition}}</pre>
+                                                                </li>
+                                                                <li class="mb-1 pdf-font-text"
+                                                                    *ngFor="let item of getCovenantByFacility(facility.facilityID); let x = index;">
+                                                                    <span class="mx-0" style="word-break: break-all;">{{item.description}}.</span>
+                                                                    <br />
+                                                                    <div class="mx-0">
+                                                                        (
+                                                                        <span class="pdf-font-text"
+                                                                            *ngIf="item.frequency">
+                                                                            Frequency
+                                                                            :{{getCovenantFrequencyLabel(item.frequency)}}
+                                                                        </span>
+                                                                        <span class="pdf-font-text" *ngIf="item.date">
+                                                                            {{" | Due Date : "}}{{item.date | date :
+                                                                            "yyyy-MM-dd"}}
+                                                                        </span>
+                                                                        )
+                                                                    </div>
+                                                                </li>
+                                                            </ol>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td class="pdf-font-text">
+                                                <span *ngIf="isForeignCrny(facility.facilityCurrency)">
+                                                    {{facility.facilityCurrency}}
+                                                </span>
+                                                {{getFormattedThreeDecimalValues(getMillionValue(facility.facilityAmount))}}
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="pdf-font-text">
+                                                {{getFormattedThreeDecimalValues(getMillionValue(facilityPaper.totalIndirectExposureExisting))}}
+                                            </td>
+                                            <td class="pdf-font-text">
+                                                {{getFormattedThreeDecimalValues(getMillionValue(facilityPaper.totalIndirectExposurePrevious))}}
+                                            </td>
+                                            <td class="pdf-font-bold" style="text-align: start;"><b>Total Non-Funded</b>
+                                            </td>
+                                            <td class="pdf-font-text">
+                                                {{getFormattedThreeDecimalValues(getMillionValue(facilityPaper.totalIndirectExposureNew))}}
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="4" style="text-align: start; padding: 0.75rem;">
+                                                <div>
+                                                    <strong class="pdf-font-bold" style="word-spacing: 2px;">
+                                                        Collateral :
+                                                    </strong>
+                                                    <div class="row flex-column mx-0" *ngIf="facilityCommonSecurities">
+                                                        <ol style="padding-left: 15px;">
+                                                            <li class="mb-1 pdf-font-text"
+                                                                *ngFor="let item of facilityCommonSecurities;let i = index;">
+                                                                {{item.securityCode}}
+                                                                <br />
+                                                                <pre
+                                                                    class="custom-pre-tag-with-spaces text-justify mx-0 mt-2">{{item.securityDetail}}</pre>
+                                                            </li>
+                                                        </ol>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <!-- Security-Summary -->
+                            <div class="mx-0 my-3 p-0">
+                                <div class="text-align-center topic">
+                                    <h5 class="pdf-sub-heading"
+                                        style="font-family: Arial, Helvetica, sans-serif !important;word-spacing: normal;">
+                                        Security Summary
+                                    </h5>
+                                </div>
+                                <div class="my-3 mx-0 p-0">
+                                    <app-preview-security-summary [facilityPaper]="facilityPaper" [isView]="true"
+                                        [isCommitteeTab]="true">
+                                    </app-preview-security-summary>
+                                </div>
+                            </div>
+
+                            <!-- Special Conditions -->
+                            <div class="mx-0 my-3 p-0">
+                                <div class="text-align-center topic"
+                                    *ngIf="customerCovenants.length > 0 || covenantsWithMultipleFacilities.length > 0">
+                                    <h5 class="pdf-sub-heading"
+                                        style="font-family: Arial, Helvetica, sans-serif !important;word-spacing: normal;">
+                                        Special Conditions
+                                    </h5>
+                                </div>
+                                <div class="row d-flex mx-0" *ngIf="customerCovenants.length > 0">
+                                    <b class="my-2 w-100 pdf-font-heading">Customer Covenants</b>
+                                    <br />
+                                    <ol style="padding-left: 15px;">
+                                        <li class="mb-1 pdf-font-text"
+                                            *ngFor="let covenant of customerCovenants;let i = index;">
+                                            {{covenant.covenant_Description}}.
+                                            <br />
+                                            <div class="mx-0">
+                                                (
+                                                <span class="pdf-font-text"
+                                                    *ngIf="covenant.covenant_Frequency">Frequency :
+                                                    {{getCovenantFrequencyLabel(covenant.covenant_Frequency)}}</span>
+                                                <span class="pdf-font-text" *ngIf="covenant.covenant_Due_Date"> {{" |
+                                                    Due Date :
+                                                    "}}{{covenant.covenant_Due_Date |
+                                                    date : "yyyy-MM-dd"}}</span>
+                                                )
+                                            </div>
+                                        </li>
+                                    </ol>
+                                </div>
+
+                                <div class="row d-flex mx-0" *ngIf="covenantsWithMultipleFacilities.length > 0">
+                                    <b class="my-2 pdf-font-heading">Common Facility Covenants</b>
+                                    <div class="width-100 mx-0">
+                                        <table class="table table-bordered"
+                                            style="border-collapse: initial !important; border-spacing: 0px !important;">
+                                            <tr>
+                                                <th class="pdf-font-text" style="text-align: center;width: 25%;">
+                                                    Facility</th>
+                                                <th class="pdf-font-text" style="text-align: center;width: 75%;">
+                                                    Description</th>
+                                            </tr>
+                                            <ng-container *ngFor="let covenant of covenantsWithMultipleFacilities">
+                                                <ng-container *ngFor="let cov of covenant.covValue; let i = index">
+                                                    <tr>
+                                                        <td class="pdf-font-text" *ngIf="i == 0"
+                                                            [attr.rowspan]="covenant.covValue.length">
+                                                            <ng-container
+                                                                *ngFor="let facility of cov.applicationCovenantFacilityDTOS">
+                                                                {{ facility.displayOrder }}. {{
+                                                                facility.creditFacilityName
+                                                                }} - {{
+                                                                facility.facilityCurrency }}
+                                                                {{getFormattedThreeDecimalValues(getMillionValue(facility.facilityAmount))}}
+                                                                Mn
+                                                                <br>
+                                                            </ng-container>
+                                                        </td>
+                                                        <td class="facility-description-common pdf-font-text">
+                                                            {{ cov.covenant_Description }}
+                                                            <br />
+                                                            <div class="mx-0">
+                                                                (
+                                                                <span class="pdf-font-text"
+                                                                    *ngIf="cov.covenant_Frequency">Frequency :
+                                                                    {{getCovenantFrequencyLabel(cov.covenant_Frequency)}}</span>
+                                                                <span class="pdf-font-text"
+                                                                    *ngIf="cov.covenant_Due_Date"> {{" | Due Date :
+                                                                    "}}{{cov.covenant_Due_Date |
+                                                                    date : "yyyy-MM-dd"}}
+                                                                </span>
+                                                                )
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                </ng-container>
+                                            </ng-container>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- BRANCH MANAGER/RELATIONSHIP MANAGER -->
+                            <div class="row d-flex mx-0 my-2"
+                                *ngIf="getSpecificSignature(committeeSignatureWC.RB,'').name">
+                                <span class="my-2 w-100 pdf-font-text">
+                                    I confirm that all details pertaining to security documents have been duly updated
+                                    in the core banking system.
+                                </span>
+                                <table style="border-collapse: inherit; margin: 16px 0px 16px 0px; width: 100%;">
+                                    <tr>
+                                        <td style="text-align: center;">
+                                            {{getSpecificSignature(committeeSignatureWC.RB,'').name | titlecase}}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td
+                                            style="text-align: center;font-family: Arial, Helvetica, sans-serif !important;">
+                                            <b>
+                                                {{getSpecificSignature(committeeSignatureWC.RB,'').designation}}
+                                                <span *ngIf="getSpecificSignature(committeeSignatureWC.RB,'').units">{{"
+                                                    -
+                                                    "}}{{getSpecificSignature(committeeSignatureWC.RB,'').units}}</span>
+                                            </b>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+
+                            <!-- LEGAL OFFICER -->
+                            <div class="row d-flex mx-0 my-2"
+                                *ngIf="getSpecificSignature(committeeSignatureWC.LO,'').name">
+                                <span class="my-2 w-100 pdf-font-text">
+                                    I confirm that the security documents stated above has been obtained, were checked
+                                    by me
+                                    and
+                                    found to be in order.
+                                </span>
+                                <table style="border-collapse: inherit; margin: 16px 0px 16px 0px; width: 100%;">
+                                    <tr>
+                                        <td style="text-align: center;">
+                                            {{getSpecificSignature(committeeSignatureWC.LO,'').name | titlecase}}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td
+                                            style="text-align: center;font-family: Arial, Helvetica, sans-serif !important;">
+                                            <b>
+                                                {{getSpecificSignature(committeeSignatureWC.LO,'').designation}}
+                                                <span *ngIf="getSpecificSignature(committeeSignatureWC.LO,'').units">{{"
+                                                    -
+                                                    "}}{{getSpecificSignature(committeeSignatureWC.LO,'').units}}</span>
+                                            </b>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+
+                            <!-- Facilities Child Section -->
+                            <ng-container>
+                                <div class="mx-0 px-0"
+                                    *ngIf="parent.children && parent.children.length > 0 && parent.isFacility">
+                                    <ng-container *ngFor="let child of parent.children;let childIndex = index">
+                                        <ng-container *ngIf="child.item.data">
+                                            <div class="sub-topic">
+                                                <h6 class="text-start pdf-sub-heading"
+                                                    style="font-weight: 700 !important; font-family: Arial, Helvetica, sans-serif !important;word-spacing: normal;">
+                                                    {{child.name}}
+                                                </h6>
+                                                <button class="btn"
+                                                    [ngClass]="getCmntCountById(child.item.fpUpcSectionDataID) > 0 && isCommentable() ? 'btn-primary' : 'btn-info'"
+                                                    type="button" mdbTooltip="Comments/Changes" placement="top"
+                                                    (click)="openModalUPCTemplateComment(child.item)"
+                                                    *ngIf="isHigherWCUser() && child.item.upcSectionID != 0">
+                                                    <mdb-icon aria-hidden="true" fas icon="comments"></mdb-icon>
+                                                </button>
+                                            </div>
+                                            <div class="treeview__level__content html-content-view pdf-font-text"
+                                                *ngIf="child.item.data"
+                                                [innerHTML]="getFormatedContent(child.item.data) | safeHtml">
+                                            </div>
+                                        </ng-container>
+                                    </ng-container>
+                                </div>
+                            </ng-container>
+
+                            <!-- Exposure Table -->
+                            <table class="table table-bordered my-3 exposure-table"
+                                style="border-collapse: initial !important; border-spacing: 0px !important;text-align: center;">
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            {{getFormattedThreeDecimalValues(getMillionValue(facilityPaperData.totalDirectExposureExisting))}}
+                                        </td>
+                                        <td>
+                                            {{getFormattedThreeDecimalValues(getMillionValue(facilityPaperData.totalDirectExposurePrevious))}}
+                                        </td>
+                                        <td>Total Funded Exposure</td>
+                                        <td>
+                                            {{getFormattedThreeDecimalValues(getMillionValue(facilityPaperData.totalDirectExposureNew))}}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            {{getFormattedThreeDecimalValues(getMillionValue(facilityPaperData.totalIndirectExposureExisting))}}
+                                        </td>
+                                        <td>
+                                            {{getFormattedThreeDecimalValues(getMillionValue(facilityPaperData.totalIndirectExposurePrevious))}}
+                                        </td>
+                                        <td>Total Non-Funded Exposure</td>
+                                        <td>
+                                            {{getFormattedThreeDecimalValues(getMillionValue(facilityPaperData.totalIndirectExposureNew))}}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            {{getFormattedThreeDecimalValues(getMillionValue(facilityPaperData.totalExposureExisting))}}
+                                        </td>
+                                        <td>
+                                            {{getFormattedThreeDecimalValues(getMillionValue(facilityPaperData.totalExposurePrevious))}}
+                                        </td>
+                                        <td>Total Exposure - Company</td>
+                                        <td>
+                                            {{getFormattedThreeDecimalValues(getMillionValue(facilityPaperData.totalExposureNew))}}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            {{getFormattedThreeDecimalValues(getMillionValue(facilityPaperData.existingCashMargin))}}
+                                        </td>
+                                        <td>
+                                            {{getFormattedThreeDecimalValues(getMillionValue(facilityPaperData.outstandingCashMargin))}}
+                                        </td>
+                                        <td>Less: Cash Margin</td>
+                                        <td>
+                                            {{getFormattedThreeDecimalValues(getMillionValue(facilityPaperData.proposedCashMargin))}}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            {{getFormattedThreeDecimalValues(getMillionValue(facilityPaperData.netTotalExposureExisting))}}
+                                        </td>
+                                        <td>
+                                            {{getFormattedThreeDecimalValues(getMillionValue(facilityPaperData.netTotalExposurePrevious))}}
+                                        </td>
+                                        <td class="pdf-font-bold"><b>Net - Total Company Exposure</b></td>
+                                        <td>
+                                            {{getFormattedThreeDecimalValues(getMillionValue(facilityPaperData.netTotalExposureNew))}}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            {{getFormattedThreeDecimalValues(getMillionValue(facilityPaperData.groupTotalDirectExposureExisting))}}
+                                        </td>
+                                        <td>
+                                            {{getFormattedThreeDecimalValues(getMillionValue(facilityPaperData.groupTotalDirectExposurePrevious))}}
+                                        </td>
+                                        <td>Total Funded Group Exposure</td>
+                                        <td>
+                                            {{getFormattedThreeDecimalValues(getMillionValue(facilityPaperData.groupTotalDirectExposureNew))}}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            {{getFormattedThreeDecimalValues(getMillionValue(facilityPaperData.groupTotalIndirectExposureExisting))}}
+                                        </td>
+                                        <td>
+                                            {{getFormattedThreeDecimalValues(getMillionValue(facilityPaperData.groupTotalIndirectExposurePrevious))}}
+                                        </td>
+                                        <td>Total Non-Funded Group Exposure</td>
+                                        <td>
+                                            {{getFormattedThreeDecimalValues(getMillionValue(facilityPaperData.groupTotalIndirectExposureNew))}}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            {{getFormattedThreeDecimalValues(getMillionValue(facilityPaperData.groupTotalExposureExisting))}}
+                                        </td>
+                                        <td>
+                                            {{getFormattedThreeDecimalValues(getMillionValue(facilityPaperData.groupTotalExposurePrevious))}}
+                                        </td>
+                                        <td>Total Exposure - Group</td>
+                                        <td>
+                                            {{getFormattedThreeDecimalValues(getMillionValue(facilityPaperData.groupTotalExposureNew))}}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            {{getFormattedThreeDecimalValues(getMillionValue(facilityPaperData.groupExistingCashMargin))}}
+                                        </td>
+                                        <td>
+                                            {{getFormattedThreeDecimalValues(getMillionValue(facilityPaperData.groupOutstandingCashMargin))}}
+                                        </td>
+                                        <td>Less: Cash margin</td>
+                                        <td>
+                                            {{getFormattedThreeDecimalValues(getMillionValue(facilityPaperData.groupProposedCashMargin))}}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            {{getFormattedThreeDecimalValues(getMillionValue(facilityPaperData.groupNetTotalExposureExisting))}}
+                                        </td>
+                                        <td>
+                                            {{getFormattedThreeDecimalValues(getMillionValue(facilityPaperData.groupNetTotalExposurePrevious))}}
+                                        </td>
+                                        <td class="pdf-font-bold"><b>Net - Total Group Exposure</b></td>
+                                        <td>
+                                            {{getFormattedThreeDecimalValues(getMillionValue(facilityPaperData.groupNetTotalExposureNew))}}
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <!-- Reccommond Signatures -->
+                            <div class="row d-flex mx-0 w-100"
+                                style="border: 1px solid #000;font-family: Arial, Helvetica, sans-serif !important;">
+                                <div class="w-50 p-2 signature-div">
+                                    <span class="w-100 pdf-sub-heading"><b>RECOMMENDED :</b></span>
+                                    <table style="border-collapse: inherit; margin: 16px 0px 16px 0px; width: 100%;">
+                                        <tr>
+                                            <td *ngIf="getSpecificSignature(committeeSignatureWC.RB,'').name">
+                                                {{getSpecificSignature(committeeSignatureWC.RB,'').name | titlecase}}
+                                            </td>
+                                            <td *ngIf="getSpecificSignature(committeeSignatureWC.SNR_MGR,'').name">
+                                                {{getSpecificSignature(committeeSignatureWC.SNR_MGR,'').name |
+                                                titlecase}}
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td *ngIf="getSpecificSignature(committeeSignatureWC.RB,'').designation">
+                                                <b>
+                                                    {{getSpecificSignature(committeeSignatureWC.RB,'').designation}}
+                                                    <span
+                                                        *ngIf="getSpecificSignature(committeeSignatureWC.RB,'').units">{{"
+                                                        -
+                                                        "}}{{getSpecificSignature(committeeSignatureWC.RB,'').units}}</span>
+                                                </b>
+                                            </td>
+                                            <td
+                                                *ngIf="getSpecificSignature(committeeSignatureWC.SNR_MGR,'').designation">
+                                                <b>
+                                                    {{getSpecificSignature(committeeSignatureWC.SNR_MGR,'').designation}}
+                                                    <span
+                                                        *ngIf="getSpecificSignature(committeeSignatureWC.SNR_MGR,'').units">{{"
+                                                        -
+                                                        "}}{{getSpecificSignature(committeeSignatureWC.SNR_MGR,'').units}}</span>
+                                                </b>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                    <table style="border-collapse: inherit; margin: 16px 0px 16px 0px; width: 100%;">
+                                        <tr>
+                                            <td *ngIf="getSpecificSignature(committeeSignatureWC.CM,'').name">
+                                                {{getSpecificSignature(committeeSignatureWC.CM,'').name | titlecase}}
+                                            </td>
+                                            <td *ngIf="getSpecificSignature(committeeSignatureWC.AGM,'').name">
+                                                {{getSpecificSignature(committeeSignatureWC.AGM,'').name | titlecase}}
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td *ngIf="getSpecificSignature(committeeSignatureWC.CM,'').designation">
+                                                <b>
+                                                    {{getSpecificSignature(committeeSignatureWC.CM,'').designation}}
+                                                    <span
+                                                        *ngIf="getSpecificSignature(committeeSignatureWC.CM,'').units">{{"
+                                                        -
+                                                        "}}{{getSpecificSignature(committeeSignatureWC.CM,'').units}}</span>
+                                                </b>
+                                            </td>
+                                            <td *ngIf="getSpecificSignature(committeeSignatureWC.AGM,'').designation">
+                                                <b>
+                                                    {{getSpecificSignature(committeeSignatureWC.AGM,'').designation}}
+                                                    <span
+                                                        *ngIf="getSpecificSignature(committeeSignatureWC.AGM,'').units">{{"
+                                                        -
+                                                        "}}{{getSpecificSignature(committeeSignatureWC.AGM,'').units}}</span>
+                                                </b>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                    <table style="border-collapse: inherit; margin: 16px 0px 16px 0px; width: 100%;">
+                                        <tr>
+                                            <td *ngIf="getSpecificSignature(committeeSignatureWC.GCRO,'874').name">
+                                                {{getSpecificSignature(committeeSignatureWC.GCRO,'874').name|
+                                                titlecase}}
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td
+                                                *ngIf="getSpecificSignature(committeeSignatureWC.GCRO,'874').designation">
+                                                <b>
+                                                    {{getSpecificSignature(committeeSignatureWC.GCRO,'874').designation}}
+                                                    <span
+                                                        *ngIf="getSpecificSignature(committeeSignatureWC.GCRO,'').units">{{"
+                                                        -
+                                                        "}}{{getSpecificSignature(committeeSignatureWC.GCRO,'').units}}</span>
+                                                </b>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                    <table style="border-collapse: inherit; margin: 16px 0px 16px 0px; width: 100%;">
+                                        <tr>
+                                            <td *ngIf="getSpecificSignature(committeeSignatureWC.SNR_DGM,'').name">
+                                                {{getSpecificSignature(committeeSignatureWC.SNR_DGM,'').name |
+                                                titlecase}}
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td
+                                                *ngIf="getSpecificSignature(committeeSignatureWC.SNR_DGM,'').designation">
+                                                <b>
+                                                    {{getSpecificSignature(committeeSignatureWC.SNR_DGM,'').designation}}
+                                                    <span
+                                                        *ngIf="getSpecificSignature(committeeSignatureWC.SNR_DGM,'').units">{{"
+                                                        -
+                                                        "}}{{getSpecificSignature(committeeSignatureWC.SNR_DGM,'').units}}</span>
+                                                </b>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                    <table style="border-collapse: inherit; margin: 16px 0px 16px 0px; width: 100%;">
+                                        <tr>
+                                            <td *ngIf="getSpecificSignature(committeeSignatureWC.MD,'').name">
+                                                {{getSpecificSignature(committeeSignatureWC.MD,'').name | titlecase}}
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td *ngIf="getSpecificSignature(committeeSignatureWC.MD,'').name">
+                                                <b>{{committeeSignatureDES.MD}}</b>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                                <div class="w-50 p-2" style="border-left: 1px solid #000;">
+
+                                    <span class="pdf-font-text" *ngIf="fpFinalStatusData_Reccomond.isShow">
+                                        <b
+                                            class="pdf-sub-heading">{{fpFinalStatusData_Reccomond.description_1}}</b><br />{{fpFinalStatusData_Reccomond.description_2}}
+                                    </span>
+                                    <div class="watermark-lg d-flex m-0 p-0" *ngIf="fpFinalStatusData_Reccomond.isShow">
+                                        <img src="{{fpFinalStatusData_Reccomond.src}}" alt="Watermark">
+                                        <div>
+                                            <h6 [style.color]="fpFinalStatusData_Reccomond.fontColor">
+                                                {{fpFinalStatusData_Reccomond.status}}</h6>
+                                            <span [style.color]="fpFinalStatusData_Reccomond.fontColor">On
+                                                {{fpFinalStatusData_Reccomond.date}}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Specific Annexes Section -->
+                        <ng-container>
+                            <div class="mx-0 px-0"
+                                *ngIf="parent.children && parent.children.length > 0 && parent.isAnnexes">
+                                <ng-container *ngFor="let child of parent.children;let childIndex = index">
+                                    <!-- *ngIf="child.item.data" -->
+                                    <ng-container>
+                                        <div class="d-flex justify-content-end align-items-center mx-0 my-2">
+                                            <b class="pdf-sub-heading">{{child.name}}</b>
+                                            <button class="btn" style="padding: 6px 10px !important"
+                                                [ngClass]="getCmntCountById(child.item.fpUpcSectionDataID) > 0 && isCommentable() ? 'btn-primary' : 'btn-info'"
+                                                type="button" mdbTooltip="Comments/Changes" placement="top"
+                                                (click)="openModalUPCTemplateComment(child.item)"
+                                                *ngIf="isHigherWCUser() && child.item.upcSectionID != 0">
+                                                <mdb-icon aria-hidden="true" fas icon="comments"></mdb-icon>
+                                            </button>
+                                        </div>
+                                        <div class="treeview__level__content html-content-view pdf-font-text"
+                                            *ngIf="child.item.data"
+                                            [innerHTML]="getFormatedContent(child.item.data) | safeHtml">
+                                        </div>
+                                        <div class="mx-0 my-3 p-0"
+                                            *ngIf="showAnnexesEndBorder(parent.children,childIndex)"
+                                            style="border-top:0.25px dashed #acb0b1;">
+                                        </div>
+                                    </ng-container>
+                                </ng-container>
+                            </div>
+                        </ng-container>
+
+                        <!-- Children List -->
+                        <div class="mx-0 px-0"
+                            *ngIf="parent.children && parent.children.length > 0 && !parent.isFacility && !parent.isAnnexes">
+                            <ng-container *ngFor="let child of parent.children;let childIndex = index">
+                                <ng-container>
+                                    <div class="sub-topic">
+                                        <h6 class="text-start pdf-sub-heading"
+                                            style="font-weight: 700 !important; font-family: Arial, Helvetica, sans-serif !important;word-spacing: normal;">
+                                            {{parentIndex + 1}}.{{childIndex + 1}} {{child.name}}
+                                        </h6>
+                                        <button class="btn"
+                                            [ngClass]="getCmntCountById(child.item.fpUpcSectionDataID) > 0 && isCommentable() ? 'btn-primary' : 'btn-info'"
+                                            type="button" mdbTooltip="Comments/Changes" placement="top"
+                                            (click)="openModalUPCTemplateComment(child.item)"
+                                            *ngIf="isHigherWCUser() && child.item.upcSectionID != 0">
+                                            <mdb-icon aria-hidden="true" fas icon="comments"></mdb-icon>
+                                        </button>
+                                    </div>
+                                    <div class="treeview__level__content html-content-view pdf-font-text"
+                                        *ngIf="child.item.data"
+                                        [innerHTML]="getFormatedContent(child.item.data) | safeHtml">
+                                    </div>
+                                    <ng-container *ngIf="isESGPaper && child.item.upcSectionName == 'ESG SUMMARY'">
+                                        <app-esg-summary-view [facilityPaper]="facilityPaper" [isCommitteePaper]="true">
+                                        </app-esg-summary-view>
+                                    </ng-container>
+                                </ng-container>
+                            </ng-container>
+                        </div>
+                    </ng-container>
+
+                    <div *ngIf="parentIndex < upcTemplateFormat.length - 1" class="html2pdf__page-break"></div>
+                </ng-container>
+            </div>
+
+            <div class="d-flex row justify-content-center mx-0 mt-5 px-0 py-3 align-items-center"
+                style="border-top: 0.25px dashed #acb0b1;">
+                <strong class="pdf-font-bold" style="font-size: 16px; word-spacing: 2px;">End</strong>
+            </div>
+        </div>
+    </div>
+</div>
+
+<app-scroll-to-top></app-scroll-to-top>

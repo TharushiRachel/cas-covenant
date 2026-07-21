@@ -1,0 +1,28 @@
+<div class="modal-header modal-topic flex-center">
+    <button type="button" class="close pull-right" aria-label="Close" (click)="onClose()">
+        <span aria-hidden="true">×</span>
+    </button>
+    <h4 class="modal-title w-100 heading-align" id="myModalLabel" style="font-size: 1rem ; font-weight: bold">
+        {{heading}}
+    </h4>
+</div>
+<div class="modal-body modal-detail form-margin mt-0 px-3 mb-2"
+    style="min-height: 20vh; max-height: 80vh; overflow-y: auto;">
+    <ng-container *ngIf="items && items.length > 0">
+        <ngx-sortable class="sortable-wrapper" [items]="items" [showHeader]="false"
+            [listStyle]="'{ widith: 100%; height: fit-content;}'" (listSorted)="listOrderChanged($event)">
+            <ng-template let-item>
+                <div class="sortable-list-item my-2">
+                    {{item.name}}
+                </div>
+            </ng-template>
+        </ngx-sortable>
+    </ng-container>
+</div>
+
+<div class="modal-footer modal-end pt-0 border border-top-1">
+    <button type="button" mdbBtn color="info" size="sm" class="waves-light" aria-label="Close" mdbWavesEffect
+        (click)="handleSortSubmit()">
+        Save
+    </button>
+</div>

@@ -1,0 +1,181 @@
+<div mdbSticky class="d-flex flex-row justify-content-between page-header">
+  <div class="d-flex flex-row align-items-center">
+    <h5><i class="fas fa-newspaper header-icon"></i> My Facility Paper(s)</h5>
+  </div>
+
+  <div class="d-flex flex-row align-items-center">
+    <ng-container *appHasAnyPrivilege="masterDataPrivilege.ICAS_SETTINGS_FACILITY_PAPER_ADD">
+      <ng-container *appBlockedByUPMs>
+        <ng-container *ngIf="!isAgent">
+          <button (click)="loadCustomer360()" type="button" class=" medium-button btn btn-success" data-toggle="tooltip"
+            data-placement="bottom" [title]='"Create Paper"' mdbBtn>
+            <i class="fas fa-file-signature"></i>
+          </button>
+        </ng-container>
+      </ng-container>
+    </ng-container>
+
+  </div>
+</div>
+
+<div class="card mt-1r default-box-styles">
+  <div class="card-body">
+
+    <div class="w-100-p mt-10p mb-10p display-flex flex-row jc-space-around ai-center">
+
+      <app-count-box class="box-width" [selectedStatus]="this.status" [count]="facilityPaperCounts.draftFacilityPaper"
+        [status]="facilityPaperStatusConst.DRAFT" (onClick)="loadPageData($event)"></app-count-box>
+
+      <app-count-box class="box-width" [selectedStatus]="this.status"
+        [count]="facilityPaperCounts.inProgressFacilityPaper" [status]="facilityPaperStatusConst.IN_PROGRESS"
+        (onClick)="loadPageData($event)"></app-count-box>
+
+      <app-count-box class="box-width" [selectedStatus]="this.status"
+        [count]="facilityPaperCounts.approvedFacilityPaper" [status]="facilityPaperStatusConst.APPROVED"
+        (onClick)="loadPageData($event)"></app-count-box>
+
+      <app-count-box class="box-width" [selectedStatus]="this.status" [count]="facilityPaperCounts.cancelFacilityPaper"
+        [status]="facilityPaperStatusConst.CANCEL" (onClick)="loadPageData($event)"></app-count-box>
+
+      <app-count-box class="box-width" [selectedStatus]="this.status"
+        [count]="facilityPaperCounts.rejectedFacilityPaper" [status]="facilityPaperStatusConst.REJECTED"
+        (onClick)="loadPageData($event)"></app-count-box>
+
+    </div>
+
+  </div>
+</div>
+
+<div class="scroll-view" #dynamicScrollDiv>
+  <ng-container *ngIf="isSearchTriggered">
+    <div *ngIf="selectedFacilityPapers.length == 0" class="alert alert-warning" role="alert">
+      No Facility Paper(s) Found !
+    </div>
+  </ng-container>
+
+
+  <ng-container *ngIf="this.pageSize.length > 0">
+    <ng-container *ngIf="selectedFacilityPapers.length > 0">
+      <div class="section table-responsive mb-15p">
+        <table class="table">
+          <thead>
+
+            <tr>
+              <th>Customer Name</th>
+              <th>Ref Number
+                <ng-container *ngIf="this.status==this.facilityPaperStatusConst.APPROVED">
+                  <span class="badge text-color-w ml-3p" style="background-color: #cc000073" data-toggle="tooltip"
+                    data-placement="left" [title]="'No. of Review Rejected'">
+                    {{facilityPaperCounts.reviewRejectedPaper}}
+                  </span>
+                </ng-container>
+              </th>
+              <th class="width-12">Account Number</th>
+              <th>Branch</th>
+              <th class="width-13">
+                {{dateHeading}}
+              </th>
+              <th>Assigned User</th>
+              <th class="text-align-center  ">Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <ng-container *ngFor="let paper of selectedFacilityPapers">
+              <tr (click)="loadFacilityPaper(paper.facilityPaperID, paper.committeeType)" class="table-clickable-row">
+                <td class="customer-name-col">{{paper.customerName || '-'}}
+                  <ng-container *ngIf="paper.isCommittee == 'Y'">
+                    <ng-container *ngIf="paper.committeeType == 'REG'">
+                      <span class="badge text-color-w ml-3p" style="background-color:#007e338a" data-toggle="tooltip"
+                        data-placement="left" [title]="'Committee Paper'">
+                        Committee Paper
+                      </span>
+                    </ng-container>
+                    <ng-container *ngIf="paper.committeeType != 'REG' && paper.committeeType != 'COM_INQ' ">
+                      <span class="badge text-color-w ml-3p" style="background-color:#007e338a" data-placement="right">
+                        Committee Paper - {{paper.committeeType}}
+                      </span>
+                    </ng-container>
+                    <!-- Show when committeeType is COM_INQ -->
+                    <ng-container *ngIf="paper.committeeType === 'COM_INQ'">
+                      <span class="badge text-color-w ml-3p" style="background-color:#000000" data-placement="right">
+                        Committee Inquiries
+                      </span>
+                    </ng-container>
+                  </ng-container>
+
+                  <ng-container *ngIf="paper.upcTemplateName">
+                    <span class="badge text-color-w ml-3p" style="background-color:#007e338a" data-toggle="tooltip"
+                      data-placement="left">
+                      {{paper.upcTemplateName}}
+                    </span>
+                  </ng-container>
+
+                  <ng-container *ngIf="isESGPaper(paper)">
+                    <span class="badge text-color-w ml-3p" style="background-color:#007e338a" data-toggle="tooltip"
+                      data-placement="left" [title]="'Environmental and Social Governance Paper'">
+                      ESG Paper
+                    </span>
+                  </ng-container>
+                </td>
+                <td class="fp-ref-number-header">{{paper.fpRefNumber || '-'}}
+                  <ng-container *ngIf="this.status==this.facilityPaperStatusConst.APPROVED">
+                    <app-facility-paper-reviewer-label [facilityPaper]="paper">
+                    </app-facility-paper-reviewer-label>
+                  </ng-container>
+                  <app-facility-paper-upc-label [facilityPaper]="paper">
+                  </app-facility-paper-upc-label>
+                </td>
+                <td>{{paper.bankAccountID || '-'}}</td>
+                <td>{{getBranchName(paper.branchCode) || '-'}}</td>
+                <td>
+                  {{paper.lastActionDateStr || '-'}}
+                  <app-facility-paper-date-count-label [facilityPaper]="paper">
+                  </app-facility-paper-date-count-label>
+                </td>
+                <td>{{paper.assignUserDisplayName || getBranchName(paper.assignDepartmentCode) || '-'}}</td>
+                <td class="status-icon">
+
+                  <a *ngIf="paper.currentFacilityPaperStatus == this.facilityPaperStatusConst.IN_PROGRESS"
+                    data-toggle="tooltip" data-placement="left" [title]='"Created on "+paper.createdDateStr'
+                    class="icon-padding">
+                    <img class="status-img-width" src="assets/media/images/fpstatusicon/inprogress.png"
+                      alt="First slide">
+                  </a>
+
+                  <a *ngIf="paper.currentFacilityPaperStatus == this.facilityPaperStatusConst.APPROVED"
+                    data-toggle="tooltip" data-placement="left" [title]='"Created on " + paper.createdDateStr'
+                    class="icon-padding">
+                    <img class="status-img-width" src="assets/media/images/fpstatusicon/approved.png" alt="First slide">
+                  </a>
+
+                  <a *ngIf="paper.currentFacilityPaperStatus == this.facilityPaperStatusConst.CANCEL"
+                    data-toggle="tooltip" data-placement="left" [title]='"Created on "+paper.createdDateStr'
+                    class="icon-padding">
+                    <img class="status-img-width" src="assets/media/images/fpstatusicon/return.png" alt="First slide">
+                  </a>
+
+                  <a *ngIf="paper.currentFacilityPaperStatus == this.facilityPaperStatusConst.REJECTED"
+                    data-toggle="tooltip" data-placement="left" [title]='"Created on "+ paper.createdDateStr'
+                    class="icon-padding">
+                    <img class="status-img-width" src="assets/media/images/fpstatusicon/rejected.png" alt="First slide">
+                  </a>
+
+                  <a *ngIf="paper.currentFacilityPaperStatus == this.facilityPaperStatusConst.DRAFT"
+                    data-toggle="tooltip" data-placement="left" [title]='"Created on " + paper.createdDateStr'
+                    class="icon-padding">
+                    <img class="status-img-width" src="assets/media/images/fpstatusicon/draft.png" alt="First slide">
+                  </a>
+
+                </td>
+              </tr>
+            </ng-container>
+          </tbody>
+        </table>
+
+        <app-paginator [pageIndex]="pageSize.pageIndex" [length]="pageSize.length" [pageSize]="pageSize.pageSize"
+          [pageSizeOptions]="pageSize.pageSizeOptions" (page)="onPageEvent($event)"></app-paginator>
+
+      </div>
+    </ng-container>
+  </ng-container>
+</div>

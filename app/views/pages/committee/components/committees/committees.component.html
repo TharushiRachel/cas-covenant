@@ -1,0 +1,106 @@
+<div mdbSticky class="d-flex flex-row justify-content-between page-header">
+    <div class="d-flex flex-row align-items-center">
+        <h5><i class="fas fa-dice-d20 header-icon"></i> Committee(s)</h5>
+    </div>
+
+    <div class="d-flex flex-row align-items-center">
+        <ng-container>
+            <button (click)="loadSaveCommittee(null,'')" class="custom-button" mdbBtn type="button" color="default"
+                outline="true" mdbWavesEffect>Add New Committee
+            </button>
+        </ng-container>
+    </div>
+</div>
+
+<ng-container *ngIf="committes">
+    <div class="section table-responsive mb-15p">
+        <table class="table">
+            <thead>
+                <tr>
+                    <ng-container *ngFor="let col of tableColumns">
+                        <th scope="col">{{col}}</th>
+                    </ng-container>
+                </tr>
+            </thead>
+            <tbody>
+                <ng-container *ngFor="let committe of committes">
+                  <ng-container *ngIf="committe.committeeTypeName != 'BCC'">
+                    <tr class="table-clickable-row" (click)="loadSaveCommittee(committe.committeeId,'OPTN')">
+                      <td>{{committe.committeeName}}</td>
+                      <td>{{committe.committeeTypeName ? committe.committeeTypeName : "-"}}</td>
+                      <td>
+                            <span [class.color-green]="committe.status === statusConst.ACT"
+                                  [class.color-red]="committe.status === statusConst.INA">
+                                {{status[committe.status]}}
+                            </span>
+                      </td>
+                      <td>
+                            <span *ngIf="committe.approveStatus"
+                                  [class.color-gray]="committe.approveStatus == approvedStatusConst.PENDING"
+                                  [class.color-green]="committe.approveStatus == approvedStatusConst.APPROVED"
+                                  [class.color-red]="committe.approveStatus == approvedStatusConst.REJECTED">
+                                {{approvedStatus[committe.approveStatus]}}
+                            </span>
+                        <span *ngIf="!committe.approveStatus">-</span>
+                      </td>
+                      <td>
+                            <span *ngIf="committe.committeeStatus" [class.color-green]="committe.committeeStatus">
+                                {{committeeStatus[committe.committeeStatus]}}
+                            </span>
+                        <span *ngIf="!committe.committeeStatus">-</span>
+                      </td>
+                    </tr>
+                  </ng-container>
+                </ng-container>
+            </tbody>
+        </table>
+    </div>
+        <app-paginator [pageIndex]="pageSize.pageIndex" [length]="pageSize.length" [pageSize]="pageSize.pageSize"
+            [pageSizeOptions]="pageSize.pageSizeOptions" (page)="onPageEvent($event)"></app-paginator>
+    
+</ng-container>
+
+
+<ng-container *ngIf="pendingCommittes">
+    <div class="section table-responsive mb-15p">
+        <h6 class="fs-0-10 fw-500 mb-2">Pending Approval Committee(s)</h6>
+        <table class="table">
+            <thead>
+                <tr>
+                    <ng-container *ngFor="let col of tableColumns">
+                        <th scope="col">{{col}}</th>
+                    </ng-container>
+                </tr>
+            </thead>
+            <tbody>
+                <ng-container *ngFor="let committe of pendingCommittes">
+                    <tr class="table-clickable-row" (click)="loadSaveCommittee(committe.committeeId,'TEMP')">
+                        <td>{{committe.committeeName}}</td>
+                        <td>{{committe.committeeTypeName ? committe.committeeTypeName : "-"}}</td>
+                        <td>
+                            <span [class.color-green]="committe.status === statusConst.ACT"
+                                [class.color-red]="committe.status === statusConst.INA">
+                                {{status[committe.status]}}
+                            </span>
+                        </td>
+                        <td>
+                            <span *ngIf="committe.approveStatus"
+                                [class.color-gray]="committe.approveStatus == approvedStatusConst.PENDING"
+                                [class.color-green]="committe.approveStatus == approvedStatusConst.APPROVED"
+                                [class.color-red]="committe.approveStatus == approvedStatusConst.REJECTED">
+                                {{approvedStatus[committe.approveStatus]}}
+                            </span>
+                            <span *ngIf="!committe.approveStatus">-</span>
+                        </td>
+                        <td>
+                            <span *ngIf="committe.committeeStatus" [class.color-green]="committe.committeeStatus">
+                                {{committeeStatus[committe.committeeStatus]}}
+                            </span>
+                            <span *ngIf="!committe.committeeStatus">-</span>
+                        </td>
+                    </tr>
+                </ng-container>
+            </tbody>
+        </table>
+    </div>
+</ng-container>

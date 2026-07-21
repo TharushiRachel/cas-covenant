@@ -1,0 +1,160 @@
+<div class="modal-header flex-center modal-topic">
+  <h4 class="modal-title w-100 font-weight-bold">
+    {{status==='forward'? 'Forward': status==='toBeResubmitted'? 'To Be Resubmit': status==='transferOption'? 'Transfer
+    Option':''}}
+  </h4>
+  <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)='onCloseModel()'>
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
+<div class="modal-body mx-3 modal-detail form-margin">
+  <ng-container *ngIf="status==='forward'">
+    <div class="card p-3 bg-white">
+      <h6><b>Forward Paper</b></h6>
+      <form class="d-flex flex-column justify-content-start align-items-start w-100-p" [formGroup]="forwardACAEForm">
+        <div class="d-flex m-top-10px flex-row flex-wrap w-100-p justify-content-between">
+          <ng-container>
+            <div class="md-form m-top-10px m-bottom-10px w-48-p">
+              <mdb-select [options]="forwardUserGroupLOV" [filterEnabled]="true" formControlName="forwardUserGroup"
+                id="forwardUserGroup" label="Select User Group">
+              </mdb-select>
+
+            </div>
+            <div class="md-form m-top-10px m-bottom-10px w-48-p">
+              <mdb-select [options]="forwardUserLOV" [filterEnabled]="true" formControlName="forwardUser"
+                id="forwardUser" label="Select User"></mdb-select>
+            </div>
+          </ng-container>
+          <div class="display-flex flex-1 flex-row jc-end ai-center">
+            <button (click)="doForwardACAEPaper()" type="button" class="medium-button btn btn-info" mdbBtn>
+              Forward
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </ng-container>
+
+  <ng-container *ngIf="status==='reject'">
+    <div class="card p-3 bg-white">
+      <h6><b>Return Paper</b></h6>
+      <br />
+      <form class="d-flex flex-column justify-content-start align-items-start w-100-p" [formGroup]="rejectACAEForm">
+        <div class="d-flex m-top-10px flex-row flex-wrap w-100-p justify-content-between">
+          <!-- <ng-container>
+            <div class="md-form m-top-10px m-bottom-10px w-48-p">
+              <mdb-select [options]="rejectUserGroupLOV" [filterEnabled]="true" formControlName="rejectUserGroup"
+                id="rejectUserGroup" label="Select User Group">
+              </mdb-select>
+            </div>
+            <div class="md-form m-top-10px m-bottom-10px w-48-p">
+              <mdb-select [options]="rejectUserLOV" [filterEnabled]="true" formControlName="rejectUser" id="rejectUser"
+                label="Select User"></mdb-select>
+            </div>
+          </ng-container> -->
+          <div class="md-form m-top-10px m-bottom-10px w-48-p">
+            <mdb-select [options]="previousUsersLOV" [filterEnabled]="true" formControlName="previousUsers"
+              id="previousUsers" label="Select User">
+            </mdb-select>
+          </div>
+          <ng-container *ngIf="status==='reject'">
+            <div class="display-flex flex-1 flex-row jc-end ai-center">
+              <button (click)="doRejectACAEPaper()" type="button" class="medium-button btn btn-info" mdbBtn>
+                Return
+              </button>
+            </div>
+          </ng-container>
+        </div>
+      </form>
+    </div>
+  </ng-container>
+
+  <ng-container *ngIf="status==='toBeResubmitted'">
+    <div class="card p-3 bg-white">
+      <h6><b>To Be Resubmit Paper</b></h6>
+      <br />
+      <form class="d-flex flex-column justify-content-start align-items-start w-100-p"
+        [formGroup]="toBeResubmitACAEForm">
+        <div class="d-flex m-top-10px flex-row flex-wrap w-100-p justify-content-between">
+          <ng-container>
+            <div class="md-form m-top-10px m-bottom-10px w-48-p">
+              <mdb-select [options]="previousUsersLOV" [filterEnabled]="true" formControlName="previousUsers"
+                id="previousUsers" label="Select User">
+              </mdb-select>
+            </div>
+            <div class="md-form m-top-10px m-bottom-10px w-48-p">
+              <mdb-select [options]="escalateWithinLOV" [filterEnabled]="true" formControlName="escalateWithin"
+                id="escalateWithin" label="Escalate within (Days)"></mdb-select>
+            </div>
+          </ng-container>
+          <ng-container *ngIf="status==='toBeResubmitted'">
+            <div class="display-flex flex-1 flex-row jc-end ai-center">
+              <button (click)="doResubmitACAEPaper()" type="button" class="medium-button btn btn-info" mdbBtn>
+                Resubmit
+              </button>
+            </div>
+          </ng-container>
+        </div>
+      </form>
+    </div>
+  </ng-container>
+
+
+  <ng-container *ngIf="status==='transferOption'">
+    <div class="card p-3 bg-white">
+      <h6><b>Transfer Option</b></h6>
+      <br />
+      <form class="d-flex flex-column justify-content-start align-items-start w-100-p" [formGroup]="transferOptionForm">
+        <div class="d-flex m-top-10px flex-row flex-wrap w-100-p justify-content-between">
+          <ng-container>
+            <div class="md-form m-top-10px m-bottom-10px w-30-p">
+              <input type="text" id="transferUserSolId" formControlName="transferUserSolId" class="form-control" mdbInput />
+              <label for="transferUserSolId">Transfer User SolId</label>
+            </div>
+            <div class="md-form m-top-10px m-bottom-10px w-30-p">
+              <mdb-select [options]="transferUserGroupLOV" [filterEnabled]="true" formControlName="transferUserGroup"
+                id="transferUserGroup" label="Select User Group">
+              </mdb-select>
+            </div>
+            <div class="md-form m-top-10px m-bottom-10px w-30-p">
+              <mdb-select [options]="transferUserLOV" [filterEnabled]="true" formControlName="rejectUser" id="rejectUser"
+                label="Select User"></mdb-select>
+            </div>
+
+            <div class="d-flex flex-row w-100-p">
+                <!-- <div class="md-form m-top-10px m-bottom-10px w-100-p "> -->
+                  <label for="comment" style="color: black"></label>
+                  <textarea type="text" class="form-control rounded-0 comment-area" id="comment"
+                    placeholder="Comment here..." formControlName="comment" maxlength="4000" rows="5" mdbInput>
+                </textarea>
+                <!-- </div> -->
+            </div>
+
+            <!-- <div class="display-flex w-100-p flex-row jc-start ai-center flex-wrap flex-2-gap">
+              <b>Anticipated date of Regularization : </b>
+              <div class="md-form w-18-p min-width-120">
+                <mdb-date-picker class="form-control" id="anticipatedDateStr" formControlName="anticipatedDateStr"
+                  [options]="myDatePickerOptions" [(ngModel)]="anticipatedDateStr" [placeholder]="'Select Date'"
+                  [inline]="false" required>
+                </mdb-date-picker>
+              </div>
+            </div> -->
+
+          </ng-container>
+          <ng-container *ngIf="status==='transferOption'">
+            <div class="display-flex flex-1 flex-row jc-end ai-center">
+              <button (click)="doTransfer()" type="button" class="medium-button btn btn-info" [disabled]="!isValid()"
+                mdbBtn>
+                Transfer
+              </button>
+            </div>
+          </ng-container>
+        </div>
+      </form>
+    </div>
+  </ng-container>
+
+  <br />
+  <br />
+</div>

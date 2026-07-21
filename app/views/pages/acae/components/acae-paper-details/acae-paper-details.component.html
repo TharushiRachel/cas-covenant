@@ -1,0 +1,676 @@
+<div class="modal-header flex-center modal-topic" style="height: max-content;">
+  <h5 class="modal-title w-100 font-weight-bold">ACAE Paper Information</h5>
+  <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="onCloseModel()">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
+<!-- Paper Navigation  -->
+<div class="modal-body mx-3" style="padding:0.5rem;">
+  <!-- <div style="padding:0.5rem;"> -->
+  <ng-container *ngIf='isPaperNavigationEnable()'>
+    <div class="card p-1 bg-white" style="height: max-content;">
+      <div class="display-flex flex-1 flex-row jc-end ai-center">
+        <button (click)="getSpecificACAEPaper('first','')" type="button" [title]="'Get First ACAE Paper'"
+          class="medium-button btn btn-light" [disabled]="isLoadingAllACAEPapers" mdbBtn>
+          <span *ngIf="isLoadingAllACAEPapers" class="spinner-border spinner-border-sm" role="status"
+            aria-hidden="true"></span>
+          First
+        </button>
+        <button (click)="getSpecificACAEPaper('previous','')" type="button" [title]="'Get Previous ACAE Paper'"
+          class="medium-button btn btn-light" [disabled]="isLoadingAllACAEPapers" mdbBtn>
+          <span *ngIf="isLoadingAllACAEPapers" class="spinner-border spinner-border-sm" role="status"
+            aria-hidden="true"></span>
+          Previous
+        </button>
+        <button (click)="getSpecificACAEPaper('next','')" type="button" [title]="'Get Next ACAE Paper'"
+          class="medium-button btn btn-info" [disabled]="isLoadingAllACAEPapers" mdbBtn>
+          <span *ngIf="isLoadingAllACAEPapers" class="spinner-border spinner-border-sm" role="status"
+            aria-hidden="true"></span>
+          Next
+        </button>
+        <button (click)="getSpecificACAEPaper('last','')" type="button" [title]="'Get Last ACAE Paper'"
+          class="medium-button btn btn-info" [disabled]="isLoadingAllACAEPapers" mdbBtn>
+          <span *ngIf="isLoadingAllACAEPapers" class="spinner-border spinner-border-sm" role="status"
+            aria-hidden="true"></span>
+          Last
+        </button>
+      </div>
+    </div>
+  </ng-container>
+
+  <div id="overflow-edit-status-model"
+    [class]="isCommentSectionEnable() ? 'overflow-edit-status-model-with-cmt':'overflow-edit-status-model'">
+    <div style="border: 2px solid gray; border-radius: 2px;">
+
+      <!-- Customer's Information  -->
+      <div class="card p-3 bg-white" style="padding:0.5rem;">
+        <h6><b>Customer's Information</b></h6>
+        <div style="width: 100%; padding: 5px;">
+          <div class="row">
+            <div style="width: 50%; padding: 10px;">
+              <div class="d-flex flex-row justify-content-between mb-10p ">
+                <label class="w-25-p font-weight-bold">Customer's Name</label>
+                <span class="w-5 font-weight-bold">:</span>
+                <span class="width-70">{{ commonDetails["accountName"] || "-" }}</span>
+              </div>
+              <div class="d-flex flex-row justify-content-between mb-10p">
+                <label class="w-25-p font-weight-bold">Reviewing Date</label>
+                <span class="w-5 font-weight-bold">:</span>
+                <span class="width-70">{{ advanceCusDetails["reviewingDate"]||"-" }}</span>
+              </div>
+
+              <div class="d-flex flex-row justify-content-between mb-10p">
+                <label class="w-25-p font-weight-bold">Classification Id</label>
+                <span class="w-5 font-weight-bold">:</span>
+                <span class="width-70">{{ advanceCusDetails["classificationStatus"]||"-" }} since
+                  {{advanceCusDetails["classificationDate"]||"-"}} ({{numberOfClassifiedDays||"0"}}
+                  Days)</span>
+              </div>
+            </div>
+            <div style="width: 50%; padding: 10px;">
+              <div class="d-flex flex-row justify-content-between mb-10p">
+                <label class="w-25-p font-weight-bold">Account Number</label>
+                <span class="w-5 font-weight-bold">:</span>
+                <span class="width-70">{{ commonDetails["accountNumber"] || "-" }}</span>
+              </div>
+              <div class="d-flex flex-row justify-content-between mb-10p">
+                <label class="w-25-p font-weight-bold">Risk Grade</label>
+                <span class="w-5 font-weight-bold">:</span>
+                <span class="width-70">{{advanceCusDetails["riskGrade"]||"-" }}</span>
+              </div>
+              <div class="d-flex flex-row justify-content-between mb-10p">
+                <label class="w-25-p font-weight-bold">Watch listed</label>
+                <span class="w-5 font-weight-bold">:</span>
+                <span class="width-70">{{ advanceCusDetails["watchListed"]||"-" }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Current user's Information  -->
+      <ng-container *ngIf='isCurrentUserEnable()'>
+        <div class="card p-3 bg-white" style="padding:0.5rem;">
+          <div class="row">
+            <div style="width: 50%; padding: 12px;">
+              <div class="d-flex flex-row justify-content-between mb-10p ">
+                <label class="w-25-p font-weight-bold">Assigned User</label>
+                <span class="w-5 font-weight-bold">:</span>
+                <span class="width-70">{{ currentUserInfo["userName"] || "-" }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+      <!-- Account Balance  -->
+      <div class="card p-3 bg-white">
+        <div class="md-form w-18-p min-width-120">
+          <h6><b>Account Balance</b></h6>
+        </div>
+        <ng-container *ngIf="isLoadingAccountBalance">
+          <div class="d-flex justify-content-center">
+            <div class="spinner-grow text-info spinner-grow-sm" role="status">
+              <span class="visually-hidden"></span>
+            </div>
+            <div class="spinner-grow text-info spinner-grow-sm" role="status">
+              <span class="visually-hidden"></span>
+            </div>
+            <div class="spinner-grow text-info spinner-grow-sm" role="status">
+              <span class="visually-hidden"></span>
+            </div>
+            <div class="spinner-grow text-info spinner-grow-sm" role="status">
+              <span class="visually-hidden"></span>
+            </div>
+            <div class="spinner-grow text-info spinner-grow-sm" role="status">
+              <span class="visually-hidden"></span>
+            </div>
+          </div>
+        </ng-container>
+        <ng-container *ngIf="!isLoadingAccountBalance">
+          <div class="section table-responsive mb-15p">
+            <table class="custom-bordered-table width-100">
+              <thead>
+                <tr style="height: 30px" class="table-heading-color">
+                  <th scope="col">Balance</th>
+                  <th scope="col">Sanction Limit</th>
+                  <th scope="col">TOD</th>
+                  <th scope="col">UAL</th>
+                  <th scope="col">Post Dated Cheques</th>
+                  <th scope="col">Current Float Balance</th>
+                  <th scope="col">Debit Balance Limit (DBL)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="value-cel-red">{{getCurrencyFormat(accountBalanceDetails["clearBalance"]) || "-" }}</td>
+                  <td class="value-cel-red">{{getCurrencyFormat(accountBalanceDetails["sanctionLimit"])|| "-" }}
+                  </td>
+                  <td class="value-cel-red">{{getCurrencyFormat(accountBalanceDetails["cleanEmergencyAdvance"]) || "-"
+                    }}
+                  </td>
+                  <td class="value-cel-red">{{getCurrencyFormat(accountBalanceDetails["emergencyAdvance"] )|| "-" }}
+                  </td>
+                  <td class="value-cel-red">{{"-" }}</td>
+                  <td class="value-cel-red">{{accountBalanceDetails["floatBalance"] || "-" }}</td>
+                  <td class="value-cel-red">{{getCurrencyFormat(accountBalanceDetails["debitBalanceLimit"]) || "-" }}
+                  </td>
+                </tr>
+                <tr>
+                  <td colspan="7" class="value-cel-red"><b>* Finacle Current balances are indicated in 'red'.</b></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </ng-container>
+      </div>
+
+      <!-- Outstandings  -->
+      <div class="card p-3 bg-white">
+        <div class="md-form w-18-p min-width-120">
+          <h6><b>Outstandings</b></h6>
+        </div>
+        <div *ngIf="!isBasicOutstandingAvailable && !isBasicOutstandingLoading" class="alert alert-warning"
+          role="alert">
+          No Outstanding found !
+        </div>
+        <ng-container *ngIf="isBasicOutstandingLoading">
+          <div class="d-flex justify-content-center">
+            <div class="spinner-grow text-info spinner-grow-sm" role="status">
+              <span class="visually-hidden"></span>
+            </div>
+            <div class="spinner-grow text-info spinner-grow-sm" role="status">
+              <span class="visually-hidden"></span>
+            </div>
+            <div class="spinner-grow text-info spinner-grow-sm" role="status">
+              <span class="visually-hidden"></span>
+            </div>
+            <div class="spinner-grow text-info spinner-grow-sm" role="status">
+              <span class="visually-hidden"></span>
+            </div>
+            <div class="spinner-grow text-info spinner-grow-sm" role="status">
+              <span class="visually-hidden"></span>
+            </div>
+          </div>
+        </ng-container>
+        <ng-container *ngIf="!isBasicOutstandingLoading">
+          <div id="cardContent" *ngIf="isFirstOutstanding">
+            <mat-accordion class="custom-accordion">
+              <mat-expansion-panel class="custom-expansion-panel" [expanded]="true" (opened)="true">
+                <mat-expansion-panel-header>
+                  <span class="text-1" style="color: black;">
+                    <b>Account No : {{firstOutstandingData["acctNum"]}} Account Type :
+                      {{firstOutstandingData["acctType"]}} -
+                      Last 12 months</b>
+                  </span>
+                </mat-expansion-panel-header>
+                <ng-container *ngIf="isBasicOutstandingAvailable  ; else : noData">
+                  <div class="section table-responsive mb-15p">
+                    <ng-container *ngIf="firstOutstandingData['statByAcctData'].length === 0"
+                      class="alert alert-warning" role="alert">
+                      No Data found !
+                    </ng-container>
+                    <ng-container *ngIf="firstOutstandingData['statByAcctData'].length > 0">
+                      <table class="custom-bordered-table width-100">
+                        <thead>
+                          <tr style="height: 30px" class="table-heading-color">
+                            <th scope="col">Start Date</th>
+                            <th scope="col">High Balance</th>
+                            <th scope="col">Low Balance</th>
+                            <th scope="col">Average Balance</th>
+                            <th scope="col">Total Debit</th>
+                            <th scope="col">Total Credit</th>
+                            <th scope="col">Cheque Return(RD)</th>
+                            <th scope="col">Float Amount</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <ng-container *ngFor="let data of firstOutstandingData['statByAcctData']">
+                            <tr>
+                              <td class="text-align-start">{{ data["StartDate"] || "-" }}</td>
+                              <td class="value-cel">{{ getCurrencyFormat(data["HighBal"]) || "-" }}</td>
+                              <td class="value-cel">{{ getCurrencyFormat(data["LowBal"]) || "-" }}</td>
+                              <td class="value-cel">{{ getCurrencyFormat(data["AvgBal"] )|| "-" }}</td>
+                              <td class="value-cel">{{ getCurrencyFormat(data["TotalDr"]) || "-" }}</td>
+                              <td class="value-cel">{{ getCurrencyFormat(data["TotalCr"]) || "-" }}</td>
+                              <td class="value-cel">{{ getCurrencyFormat(data["CheqRet"]) || "-" }}</td>
+                              <td class="value-cel">{{ getCurrencyFormat(data["FloatAmt"]) || "-" }}</td>
+                            </tr>
+                          </ng-container>
+                        </tbody>
+                      </table>
+                    </ng-container>
+                  </div>
+                </ng-container>
+              </mat-expansion-panel>
+            </mat-accordion>
+          </div>
+        </ng-container>
+        <ng-container *ngFor="let data of outstandingData">
+          <div id="cardContent">
+            <mat-accordion class="custom-accordion">
+              <mat-expansion-panel class="custom-expansion-panel" (click)="getAdvanceOutstandingData(data)">
+                <mat-expansion-panel-header>
+                  <span class="text-1" style="color: black;">
+                    <b>Account No : {{data.acctNum}} Account Type : {{data.acctType}} - Last 12 months</b>
+                  </span>
+                </mat-expansion-panel-header>
+                <ng-container *ngIf="isAdvanceOutstandingLoading">
+                  <div class="d-flex justify-content-center">
+                    <div class="spinner-border" role="status">
+                      <span class="sr-only"></span>
+                    </div>
+                  </div>
+                </ng-container>
+                <ng-container *ngIf="!isAdvanceOutstandingLoading">
+                  <ng-container *ngIf="isAdvanceOutstandingAvailable  ; else : noData">
+                    <div class="section table-responsive mb-15p">
+                      <ng-container *ngIf="data['statByAcctData'].length === 0" class="alert alert-warning"
+                        role="alert">
+                        No Data found !
+                      </ng-container>
+                      <ng-container *ngIf="data['statByAcctData'].length > 0">
+                        <table class="custom-bordered-table width-100">
+                          <thead>
+                            <tr style="height: 30px" class="table-heading-color">
+                              <th scope="col">Start Date</th>
+                              <th scope="col">High Balance</th>
+                              <th scope="col">Low Balance</th>
+                              <th scope="col">Average Balance</th>
+                              <th scope="col">Total Debit</th>
+                              <th scope="col">Total Credit</th>
+                              <th scope="col">Cheque Return(RD)</th>
+                              <th scope="col">Float Amount</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <ng-container *ngFor="let dataRec of data['statByAcctData']">
+                              <tr>
+                                <td class="text-align-start">{{ dataRec["StartDate"] || "-" }}</td>
+                                <td class="value-cel">{{ getCurrencyFormat(dataRec["HighBal"]) || "-" }}</td>
+                                <td class="value-cel">{{ getCurrencyFormat(dataRec["LowBal"]) || "-" }}</td>
+                                <td class="value-cel">{{ getCurrencyFormat(dataRec["AvgBal"] )|| "-" }}</td>
+                                <td class="value-cel">{{ getCurrencyFormat(dataRec["TotalDr"]) || "-" }}</td>
+                                <td class="value-cel">{{ getCurrencyFormat(dataRec["TotalCr"]) || "-" }}</td>
+                                <td class="value-cel">{{ getCurrencyFormat(dataRec["CheqRet"]) || "-" }}</td>
+                                <td class="value-cel">{{ getCurrencyFormat(dataRec["FloatAmt"]) || "-" }}</td>
+                              </tr>
+                            </ng-container>
+                          </tbody>
+                        </table>
+                      </ng-container>
+                    </div>
+                  </ng-container>
+                  <ng-template #noData>
+                    <p class="not-auth-message">
+                      No Records Available
+                    </p>
+                  </ng-template>
+                </ng-container>
+              </mat-expansion-panel>
+            </mat-accordion>
+          </div>
+        </ng-container>
+      </div>
+
+      <!-- Related Accounts  -->
+      <div class="card p-3 bg-white">
+        <div class="md-form w-18-p min-width-120">
+          <h6><b>Related Accounts</b></h6>
+        </div>
+        <div *ngIf="!isRelatedDetailLoading && (relatedAccountData.length == 0 || !relatedAccountData)"
+          class="alert alert-warning" role="alert">
+          No Related Account found !
+        </div>
+        <ng-container *ngIf="isRelatedDetailLoading">
+          <div class="d-flex justify-content-center">
+            <div class="spinner-grow text-info spinner-grow-sm" role="status">
+              <span class="visually-hidden"></span>
+            </div>
+            <div class="spinner-grow text-info spinner-grow-sm" role="status">
+              <span class="visually-hidden"></span>
+            </div>
+            <div class="spinner-grow text-info spinner-grow-sm" role="status">
+              <span class="visually-hidden"></span>
+            </div>
+            <div class="spinner-grow text-info spinner-grow-sm" role="status">
+              <span class="visually-hidden"></span>
+            </div>
+            <div class="spinner-grow text-info spinner-grow-sm" role="status">
+              <span class="visually-hidden"></span>
+            </div>
+          </div>
+        </ng-container>
+        <ng-container *ngIf="relatedAccountData.length > 0 && !isRelatedDetailLoading">
+          <div class="section table-responsive mb-15p">
+            <table class="custom-bordered-table width-100">
+              <thead>
+                <tr style="height: 30px" class="table-heading-color">
+                  <th scope="col">Account Type</th>
+                  <th scope="col">Account Number</th>
+                  <th scope="col">Lien Amount</th>
+                  <th scope="col">Reserved</th>
+                  <th scope="col">Balance</th>
+                  <th scope="col">Currency</th>
+                </tr>
+              </thead>
+              <tbody>
+                <ng-container *ngFor="let data of relatedAccountData">
+                  <tr>
+                    <td class="value-cel-start">{{ data["acctType"] || "-" }}</td>
+                    <td class="value-cel">{{ data["acctNum"] || "-" }}</td>
+                    <td class="value-cel">{{ getCurrencyFormat(data["lienAmount"]) || "-" }}</td>
+                    <td class="value-cel">{{ getCurrencyFormat(data["reservedAmount"] )|| "-" }}</td>
+                    <td class="value-cel">{{ getCurrencyFormat(data["balance"]) || "-" }}</td>
+                    <td class="value-cel">{{ data["currency"] || "-" }}</td>
+                  </tr>
+                </ng-container>
+              </tbody>
+            </table>
+          </div>
+        </ng-container>
+      </div>
+
+      <!-- Loan Accounts  -->
+      <div class="card p-3 bg-white">
+        <div class="md-form w-18-p min-width-120">
+          <h6><b>Loan Accounts</b></h6>
+        </div>
+        <div *ngIf="!isLoanDetailLoading && (loanDetails.length == 0 || !loanDetails)" class="alert alert-warning"
+          role="alert">
+          No Loan Accounts found !
+        </div>
+        <ng-container *ngIf="isLoanDetailLoading">
+          <div class="d-flex justify-content-center">
+            <div class="spinner-grow text-info spinner-grow-sm" role="status">
+              <span class="visually-hidden"></span>
+            </div>
+            <div class="spinner-grow text-info spinner-grow-sm" role="status">
+              <span class="visually-hidden"></span>
+            </div>
+            <div class="spinner-grow text-info spinner-grow-sm" role="status">
+              <span class="visually-hidden"></span>
+            </div>
+            <div class="spinner-grow text-info spinner-grow-sm" role="status">
+              <span class="visually-hidden"></span>
+            </div>
+            <div class="spinner-grow text-info spinner-grow-sm" role="status">
+              <span class="visually-hidden"></span>
+            </div>
+          </div>
+        </ng-container>
+        <ng-container *ngIf="!isLoanDetailLoading">
+          <ng-container *ngIf="loanDetails.length > 0">
+            <div class="section table-responsive mb-15p">
+              <table class="custom-bordered-table width-100">
+                <thead>
+                  <tr style="height: 30px" class="table-heading-color">
+                    <th scope="col">Facility Name</th>
+                    <th scope="col">Account Number</th>
+                    <th scope="col">Sanction Limit</th>
+                    <th scope="col">Clear Balance</th>
+                    <th scope="col">Currency</th>
+                    <th scope="col">Sub Classification User</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <ng-container *ngFor="let data of loanDetails">
+                    <tr>
+                      <td class="value-cel-start">{{ data["facilityName"] || "-" }}</td>
+                      <td class="value-cel">{{ data["foracId"] || "-" }}</td>
+                      <td class="value-cel">{{ getCurrencyFormat(data["sanctLim"]) || "-" }}</td>
+                      <td class="value-cel">{{ getCurrencyFormat(data["clrBalAmt"] )|| "-" }}</td>
+                      <td class="value-cel">{{ data["acctCrncyCode"] || "-" }}</td>
+                      <td class="value-cel">{{ data["subClassificationUser"] || "-" }}</td>
+                    </tr>
+                  </ng-container>
+                </tbody>
+              </table>
+            </div>
+          </ng-container>
+        </ng-container>
+      </div>
+
+      <!-- Balances After Payment  -->
+      <div class="card p-3 bg-white">
+        <div class="md-form w-18-p min-width-120">
+          <h6><b>Balances After Payment</b></h6>
+        </div>
+        <ng-container *ngIf="isLoadingBalancesAfterPayment">
+          <div class="d-flex justify-content-center">
+            <div class="spinner-grow text-info spinner-grow-sm" role="status">
+              <span class="visually-hidden"></span>
+            </div>
+            <div class="spinner-grow text-info spinner-grow-sm" role="status">
+              <span class="visually-hidden"></span>
+            </div>
+            <div class="spinner-grow text-info spinner-grow-sm" role="status">
+              <span class="visually-hidden"></span>
+            </div>
+            <div class="spinner-grow text-info spinner-grow-sm" role="status">
+              <span class="visually-hidden"></span>
+            </div>
+            <div class="spinner-grow text-info spinner-grow-sm" role="status">
+              <span class="visually-hidden"></span>
+            </div>
+          </div>
+        </ng-container>
+        <ng-container *ngIf="!isLoadingBalancesAfterPayment">
+          <div class="section table-responsive mb-15p">
+            <table class="custom-bordered-table width-100">
+              <thead>
+                <tr style="height: 30px" class="table-heading-color">
+                  <th>Tran' Date</th>
+                  <td scope="col"><b>{{balancesAfterPaymentData.vdate_1|| '-'}} </b>
+                    <ng-container>
+                      <i (click)="onRangeInquiryOpenModal(balancesAfterPaymentData.vdate_1)"
+                        class="fas fa-eye icon-button mr-3"></i>
+                    </ng-container>
+                  </td>
+                  <td scope="col"><b>{{balancesAfterPaymentData.vdate_2 || '-'}} </b>
+                    <ng-container>
+                      <i (click)="onRangeInquiryOpenModal(balancesAfterPaymentData.vdate_2)"
+                        class="fas fa-eye icon-button"></i>
+                    </ng-container>
+                  </td>
+                  <td scope="col"><b>{{balancesAfterPaymentData.vdate_3 || '-'}} </b>
+                    <ng-container>
+                      <i (click)="onRangeInquiryOpenModal(balancesAfterPaymentData.vdate_3)"
+                        class="fas fa-eye icon-button"></i>
+                    </ng-container>
+                  </td>
+                  <td scope="col"><b>{{balancesAfterPaymentData.vdate_4 || '-'}} </b>
+                    <ng-container>
+                      <i (click)="onRangeInquiryOpenModal(balancesAfterPaymentData.vdate_4)"
+                        class="fas fa-eye icon-button"></i>
+                    </ng-container>
+                  </td>
+                  <td scope="col"><b>{{balancesAfterPaymentData.vdate_5 || '-'}} </b>
+                    <ng-container>
+                      <i (click)="onRangeInquiryOpenModal(balancesAfterPaymentData.vdate_5)"
+                        class="fas fa-eye icon-button"></i>
+                    </ng-container>
+                  </td>
+                  <td scope="col"><b>{{balancesAfterPaymentData.vdate_6 || '-'}} </b>
+                    <ng-container>
+                      <i (click)="onRangeInquiryOpenModal(balancesAfterPaymentData.vdate_6)"
+                        class="fas fa-eye icon-button"></i>
+                    </ng-container>
+                  </td>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <th style="width: 200px; text-align: left;">Day End Balance </th>
+                  <td class="value-cel">{{ getCurrencyFormat(balancesAfterPaymentData.vbal_1) || '-' }}</td>
+                  <td class="value-cel">{{ getCurrencyFormat(balancesAfterPaymentData.vbal_2 )|| '-'}} </td>
+                  <td class="value-cel">{{ getCurrencyFormat(balancesAfterPaymentData.vbal_3)|| '-' }} </td>
+                  <td class="value-cel">{{ getCurrencyFormat(balancesAfterPaymentData.vbal_4) || '-'}} </td>
+                  <td class="value-cel">{{ getCurrencyFormat(balancesAfterPaymentData.vbal_5) || '-'}} </td>
+                  <td class="value-cel">{{ getCurrencyFormat(balancesAfterPaymentData.vbal_6 )|| '-'}} </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </ng-container>
+      </div>
+
+      <!-- User Comments -->
+      <ng-container *ngIf="isACAECommentGridEnable">
+        <div class="card p-3 bg-white">
+          <div class="md-form w-18-p min-width-120">
+            <h6><b>User Comments</b></h6>
+          </div>
+
+          <div *ngIf="!isLoadingUserComment && (userCommentList.length == 0 || !userCommentList)"
+            class="alert alert-warning" role="alert">
+            No Comments found !
+          </div>
+          <ng-container *ngIf="isLoadingUserComment">
+            <div class="d-flex justify-content-center">
+              <div class="spinner-grow text-info spinner-grow-sm" role="status">
+                <span class="visually-hidden"></span>
+              </div>
+              <div class="spinner-grow text-info spinner-grow-sm" role="status">
+                <span class="visually-hidden"></span>
+              </div>
+              <div class="spinner-grow text-info spinner-grow-sm" role="status">
+                <span class="visually-hidden"></span>
+              </div>
+              <div class="spinner-grow text-info spinner-grow-sm" role="status">
+                <span class="visually-hidden"></span>
+              </div>
+              <div class="spinner-grow text-info spinner-grow-sm" role="status">
+                <span class="visually-hidden"></span>
+              </div>
+            </div>
+          </ng-container>
+          <ng-container *ngIf="!isLoadingUserComment">
+            <ng-container *ngIf="userCommentList.length > 0">
+              <div class="section table-responsive mb-15p">
+                <table class="custom-bordered-table width-100">
+                  <thead>
+                    <tr style="height: 30px" class="table-heading-color">
+                      <th scope="col">User</th>
+                      <th scope="col">Date</th>
+                      <th scope="col">Remark</th>
+                      <th scope="col">Previous Reg Date</th>
+                      <th scope="col">Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <ng-container *ngFor="let paper of userCommentList">
+                      <tr>
+                        <td style="width: 200px; text-align: center;">{{ paper.firstName || '-'}} {{ paper.lastName ||
+                          '-'}}</td>
+                        <td style="width: 200px; text-align: center;">{{ paper.remardDate || '-'}}</td>
+                        <td class="text-align-start">{{ paper.remark || '-'}}</td>
+                        <td style="width: 200px; text-align: center;">{{ paper.regDate || '-'}}</td>
+                        <td style="width: 200px; text-align: center;">{{ paper.remStatus || '-'}}</td>
+                      </tr>
+                    </ng-container>
+                  </tbody>
+                </table>
+              </div>
+            </ng-container>
+          </ng-container>
+        </div>
+      </ng-container>
+      <!-- Anticipated date of Regularization visibility -->
+      <ng-container *ngIf='isAnticipatedDateVisible()'>
+        <div class="card p-3 bg-white">
+          <b>Anticipated date of Regularization : <div style="color: red;">{{activeAnticipatedDateStr || '-'}}</div>
+          </b>
+        </div>
+      </ng-container>
+    </div>
+  </div>
+
+  <!-- Comment Section -->
+  <ng-container *ngIf='isCommentSectionEnable()'>
+    <div class="card p-1 bg-white">
+      <form [formGroup]="remarkForm">
+        <div class="d-flex flex-row justify-content-start w-100-p">
+          <div class="md-form m-top-10px m-bottom-10px side-margin w-100-p">
+            <div style="border: 2px solid gray;border-radius: 2px;">
+              <div class="autocomplete">
+                <textarea type="text" id="myInput" class="form-control rounded-20 comment-area m-top-10px"
+                  maxlength="999" placeholder="Comment here.." formControlName="remark" [value]="activeComment"
+                  (ngModelChange)="getRefreshComment($event)" customHeight="120px" mdbInput>
+                  </textarea>
+                <b><label for="remarklabel">Remarks</label></b>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="display-flex w-100-p flex-row jc-start ai-center flex-wrap flex-2-gap"
+          style="position: relative; z-index: 1;">
+          <ng-container *ngIf='isAnticipatedDateEditable()'>
+            <b>Anticipated date of Regularization : </b>
+            <div class="md-form w-18-p min-width-120">
+              <mdb-date-picker class="form-control" id="anticipatedDateStr" formControlName="anticipatedDateStr"
+                [options]="myDatePickerOptions" [(ngModel)]="anticipatedDateStr" [placeholder]="'Select Date'"
+                [inline]="false" required>
+              </mdb-date-picker>
+            </div>
+          </ng-container>
+
+          <div class="display-flex flex-1 flex-row jc-end ai-center">
+            <button type="button" mdbBtn [disabled]="!isCommentEdited" [title]="'Save Comment'" size="sm"
+              class="medium-button btn btn-info" (click)="addComment()">
+              Save
+            </button>
+            <!-- <button mdbBtn type="button" class="medium-button btn btn-light" outline="true" data-toggle="tooltip"
+              data-placement="bottom" [title]="'Clear Comment'" mdbWavesEffect (click)="clearComment()">
+              Clear
+            </button> -->
+          </div>
+        </div>
+      </form>
+    </div>
+  </ng-container>
+
+  <!-- Forward Section -->
+  <div class="display-flex flex-1 flex-row jc-end ai-center">
+    <ng-container *ngIf="isACAEForwardPaperEnable()">
+      <button mdbBtn type="button" class="medium-button btn btn-info" (click)="openModalACAETransferDetails('forward')"
+        [disabled]="isCommentNotAdded()" [title]="'Paper will be Forward'">
+        Forward
+      </button>
+    </ng-container>
+    <ng-container *ngIf="isACAERejectEnable()">
+      <button mdbBtn type="button" class="medium-button btn btn-light" data-toggle="tooltip" data-placement="bottom"
+        [title]="'Paper will be Returned'" mdbWavesEffect [disabled]="isCommentNotAdded()"
+        (click)="openModalACAETransferDetails('reject')">
+        Return
+      </button>
+    </ng-container>
+    <ng-container *ngIf="isACAEToBeResubmittedEnable()">
+      <button mdbBtn type="button" class="medium-button btn btn-info" data-toggle="tooltip" data-placement="bottom"
+        [title]="'To User Groups'" mdbWavesEffect [disabled]="isCommentNotAdded()"
+        (click)="openModalACAETransferDetails('toBeResubmitted')">
+        To Be Resubmit
+      </button>
+    </ng-container>
+    <ng-container *ngIf="isACAEApproveEnable()">
+      <!-- <button mdbBtn type="button" class="medium-button btn btn-light" [title]="'Approve Paper'" size="sm"
+        mdbWavesEffect (click)="openApproveConformDialog()"  [disabled] = "isLoadingApproveButton"> 
+        Approve
+      </button> -->
+
+
+      <button mdbBtn type="button" class="medium-button btn btn-light" [title]="'Approve Paper'" size="sm"
+        mdbWavesEffect (click)="openApproveConformDialog()" [disabled]="isLoadingApproveButton">
+
+        <ng-container *ngIf="isLoadingApproveButton; else approveText">
+          <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+          Loading...
+        </ng-container>
+        <ng-template #approveText>
+          Approve
+        </ng-template>
+
+      </button>
+
+    </ng-container>
+  </div>
+</div>

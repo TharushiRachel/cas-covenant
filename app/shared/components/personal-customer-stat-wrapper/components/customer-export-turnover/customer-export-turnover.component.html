@@ -1,0 +1,152 @@
+<div class="d-flex p-2 flex-column justify-content-start align-items-start w-100-p">
+    <div class="width-100">
+      <ng-container>
+        <div *ngIf="updateButtonIsEnabled">
+          <form [formGroup]="componentForm">
+            <div class="d-flex align-items-center">
+              <div class="md-form w-15-p min-width-120 mr-3">
+  
+                <mdb-select [options]="yearOptions" formControlName="startDate" id="startDate"
+                  placeholder="Select the year" ></mdb-select>
+  
+                <mdb-error style="margin-top: 10px" *ngIf="selectedStartDate == null">Required</mdb-error>
+              </div>
+
+         
+              <button (click)="onSubmit()" type="button" [disabled]="disableGetButton()"
+                mdbTooltip="get turnovers" placement="right" class="medium-button btn-sm btn-info relative-icon"
+                mdbBtn>
+                GET TURNOVERS
+              </button>
+            </div>
+  
+          </form>
+  
+        </div>
+  
+        <div  class="ng-container" *ngIf="isTableShow" >
+          <p style="margin-top: 20px; text-align: center" class="font-weight-bold">
+            Export Turnovers as at {{createdDate}}
+          </p>
+  
+          <table class="custom-bordered-table width-100 table table-striped">
+            <thead>
+              <tr class="table-heading-color">
+                <th rowspan="2">Year</th>
+                <th colspan="2">Export Bill T/O</th>
+                <th colspan="2">DC T/O</th>
+                <th colspan="2">Inward TT Export T/O</th>
+                <th colspan="2">Total T/O Exports</th>
+              </tr>
+              <tr class="table-heading-color">
+                <th>FC</th>
+                <th>LKR</th> 
+                <th>FC</th>
+                <th>LKR</th> 
+                <th>FC</th>
+                <th>LKR</th> 
+                <th>FC</th>
+                <th>LKR</th>              
+              </tr>
+            </thead>
+            <tbody>
+              
+            <ng-container *ngFor="let year of selectedYearArray; let i = index">
+             
+                <tr *ngIf="loading[year.value] ; else  exportDataTemplate">
+                  <td>{{year.label}}</td>
+                  <td colspan="8" >
+                    <div class="d-flex justify-content-center">
+                      <div class="spinner-border custom-spinner" role="status">
+                        <span class="sr-only"></span>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+              
+              <ng-template  #exportDataTemplate> 
+                <ng-container *ngIf="exportDataArray[year.value].length ; else  yearwithNoExData">                          
+              <tr>
+                <td [attr.rowspan]="getCurrencyArray(year.value).length" >{{year.label}}</td>
+                <td *ngIf="getCurrencyArray(year.value)[0] == 'LKR' ; else  elseTemplateBillTOP" > - </td>
+                <ng-template #elseTemplateBillTOP>
+                  <td class="text-align-end" >  {{getExportValue(year.value,getCurrencyArray(year.value)[0],exportTypes.exportBill,"billAmount")|| '-'}}  </td>
+                </ng-template>
+                <td class="text-align-end" >{{getExportValue(year.value,getCurrencyArray(year.value)[0],exportTypes.exportBill,"convertedAmount") || '-'}}  </td>
+                <td *ngIf="getCurrencyArray(year.value)[0] == 'LKR'; else  elseTemplateDCTOP" > - </td>
+                <ng-template #elseTemplateDCTOP>
+                  <td class="text-align-end" > {{getExportValue(year.value,getCurrencyArray(year.value)[0],exportTypes.exportDc,"billAmount")|| '-'}}</td>
+                </ng-template>
+                <td class="text-align-end">{{getExportValue(year.value,getCurrencyArray(year.value)[0],exportTypes.exportDc,"convertedAmount")|| '-'}}  </td>
+                <td *ngIf="getCurrencyArray(year.value)[0] == 'LKR' ; else  elseTemplateInwardTOP" > - </td>
+                <ng-template #elseTemplateInwardTOP>
+                  <td class="text-align-end" >  {{getExportValue(year.value,getCurrencyArray(year.value)[0],exportTypes.exportInward,"billAmount")|| '-'}}  </td>
+                </ng-template>
+                <td class="text-align-end">{{getExportValue(year.value,getCurrencyArray(year.value)[0],exportTypes.exportInward,"convertedAmount")||'-'}}  </td> 
+
+                <td *ngIf="getCurrencyArray(year.value)[0] == 'LKR' ; else  elseTemplateTotalFCP" > - </td>
+                <ng-template #elseTemplateTotalFCP>
+                  <td class="text-align-end">  {{getTotalValueFC(year.value,getCurrencyArray(year.value)[0])|| '-'}}  </td>
+                </ng-template>
+                <td class="text-align-end" [attr.rowspan]="getCurrencyArray(year.value).length">{{getTotalValueLKR(year.value)}}</td> 
+                
+            </tr>  
+            <ng-container *ngFor="let currencyCode of getCurrencyArray(year.value); let j = index">
+              <tr *ngIf="j > 0" >
+                <td *ngIf="currencyCode == 'LKR' ; else  elseTemplateBillTOS" > - </td>
+                <ng-template #elseTemplateBillTOS>
+                  <td class="text-align-end">{{getExportValue(year.value,currencyCode,exportTypes.exportBill,"billAmount")|| '-'}} </td>  
+                </ng-template>
+                <td class="text-align-end">{{getExportValue(year.value,currencyCode,exportTypes.exportBill,"convertedAmount")|| '-'}}  </td>
+                <td *ngIf="currencyCode == 'LKR'; else  elseTemplateDCTOS" > - </td>
+                <ng-template #elseTemplateDCTOS>
+                  <td class="text-align-end">  {{getExportValue(year.value,currencyCode,exportTypes.exportDc,"billAmount")|| '-'}}</td>
+                </ng-template>
+                <td class="text-align-end">{{getExportValue(year.value,currencyCode,exportTypes.exportDc,"convertedAmount")|| '-'}}  </td>
+                <td *ngIf="currencyCode == 'LKR' ; else  elseTemplateInwardTOS" > - </td>
+                <ng-template #elseTemplateInwardTOS>
+                  <td class="text-align-end">{{getExportValue(year.value,currencyCode,exportTypes.exportInward,"billAmount")|| '-'}}</td>
+                </ng-template>
+                <td class="text-align-end">{{getExportValue(year.value,currencyCode,exportTypes.exportInward,"convertedAmount")||'-'}}  </td> 
+
+                <td *ngIf="currencyCode == 'LKR' ; else  elseTemplateTotalFCS" > - </td>
+                <ng-template #elseTemplateTotalFCS>
+                  <td class="text-align-end">  {{getTotalValueFC(year.value,currencyCode)|| '-'}}  </td>
+                </ng-template>
+            </tr>
+            
+            </ng-container>
+                </ng-container> 
+              <ng-template #yearwithNoExData>
+                <tr>
+                  <td>{{year.label}}</td>
+                  <td class="text-align-end">-</td>
+                  <td class="text-align-end">-</td>
+                  <td class="text-align-end">-</td>
+                  <td class="text-align-end">-</td>
+                  <td class="text-align-end">-</td>
+                  <td class="text-align-end">-</td>
+                  <td class="text-align-end">-</td>
+                  <td class="text-align-end">-</td>
+                </tr>
+              </ng-template>
+              </ng-template>  
+            </ng-container>
+            </tbody>
+          </table>
+          <div class="row d-flex justify-content-end mx-0">
+            <button *ngIf="isShowSaveButton" style="margin-right: 10px" (click)="save()" type="button"
+              mdbTooltip="Save" placement="right"
+              class="medium-button btn-sm btn-info relative-icon bottom-right-button" mdbBtn>
+              Save
+            </button>
+          </div>
+  
+          <br />
+        </div>
+      </ng-container>
+      <p *ngIf="noRecordsAvailableMsg" class="not-auth-message">
+        No Records Available
+      </p>
+    </div>
+  </div>

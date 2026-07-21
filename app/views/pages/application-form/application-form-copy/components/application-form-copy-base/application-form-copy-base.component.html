@@ -1,0 +1,136 @@
+<div class="d-flex flex-row justify-content-between page-header">
+  <div class="d-flex flex-row align-items-center">
+    <h5><i class="fas fa-newspaper header-icon"></i>Copy Application Form</h5>
+  </div>
+</div>
+
+<form [formGroup]="searchForm">
+  <div class="d-flex flex-column justify-content-between w-100-p">
+    <div class="d-flex flex-row justify-content-start w-100-p m-bottom-10px flex-2-gap">
+
+      <div class="md-form width-25">
+        <mdb-select
+          [options]="identityOptionSelect"
+          formControlName="identificationType"
+          id="identificationType"
+          class=""
+        >
+        </mdb-select>
+      </div>
+
+      <div class="md-form width-25 mt-5p">
+        <input type="text" id="identificationNumber" formControlName="identificationNumber" class="form-control"
+               mdbInput>
+        <label for="identificationNumber">Identification Number</label>
+      </div>
+
+      <div class="md-form width-25 mt-5p">
+        <input type="text" id="afRefNumber" formControlName="afRefNumber" class="form-control" mdbInput>
+        <label for="afRefNumber">Ref Number</label>
+      </div>
+
+      <div class="display-flex flex-1 flex-row jc-end ai-center">
+        <button [disabled]="!isValid()" (click)="doSearch()" type="button" class=" medium-button btn btn-info" mdbBtn>
+          Search
+        </button>
+        <button (click)="clearSearch()" class=" medium-button btn btn-outline-info clear-btn" mdbBtn type="button">
+          Clear
+        </button>
+      </div>
+    </div>
+  </div>
+</form>
+<!--<div *ngIf="applicationForms.length == 0" class="alert alert-warning" role="alert">-->
+<!--  No Application Form(s) Found !-->
+<!--</div>-->
+
+<ng-container *ngIf="applicationForms.length > 0">
+  <div class="section table-responsive mb-15p">
+    <table class="table">
+      <thead>
+      <tr>
+        <th>Reference</th>
+        <th>Customer Name</th>
+        <th>Branch</th>
+        <th>Created On</th>
+        <th>Created By</th>
+        <th>Assigned User</th>
+        <th class="text-align-center">Status</th>
+        <th class="text-align-center">Actions</th>
+      </tr>
+      </thead>
+      <tbody>
+      <ng-container *ngFor="let paper of applicationForms">
+        <tr
+          class="table-clickable-row">
+
+          <td class="fp-ref-number-header">{{paper.afRefNumber || '-'}} </td>
+          <td>{{getBranchName(paper.customerName) || '-'}}
+            <ng-container *ngIf="paper.primaryInformation!='Y'">
+              <span
+                class="badge ml-3p"
+                style="background-color: #33B5E5; color: white"
+                data-toggle="tooltip" data-placement="left" [title]='"As Joint Party"'
+              >J</span>
+            </ng-container>
+          </td>
+          <td>{{getBranchName(paper.branchCode) || '-'}}</td>
+          <td>{{paper.createdDateStr || '-'}}</td>
+          <td class="assign-user-col">{{paper.createdUserDisplayName || '-'}}</td>
+          <td class="assign-user-col">{{paper.assignUserDisplayName || '-'}}</td>
+          <td class="status-icon status-col text-align-center">
+
+            <a *ngIf="paper.currentApplicationFormStatus == this.applicationFormCurrentStatusConst.IN_PROGRESS"
+               data-toggle="tooltip" data-placement="left" title="In Progress" class="icon-padding">
+              <img class="status-img-width" src="assets/media/images/fpstatusicon/inprogress.png" alt="In Progress">
+            </a>
+
+            <a *ngIf="paper.currentApplicationFormStatus == this.applicationFormCurrentStatusConst.RETURNED"
+               data-toggle="tooltip" data-placement="left" title="Returned" class="icon-padding">
+              <img class="status-img-width" src="assets/media/images/fpstatusicon/return.png" alt="Returned">
+            </a>
+
+            <a *ngIf="paper.currentApplicationFormStatus == this.applicationFormCurrentStatusConst.DECLINED"
+               data-toggle="tooltip" data-placement="left" title="Declined" class="icon-padding">
+              <img class="status-img-width" src="assets/media/images/fpstatusicon/rejected.png" alt="Declined">
+            </a>
+
+            <a *ngIf="paper.currentApplicationFormStatus == this.applicationFormCurrentStatusConst.DRAFT"
+               data-toggle="tooltip" data-placement="left" title="Drafted" class="icon-padding">
+              <img class="status-img-width" src="assets/media/images/fpstatusicon/draft.png" alt="Drafted">
+            </a>
+
+          </td>
+          <td class="text-align-center">
+            <div class="d-flex flex-row justify-content-center">
+              <button class="btn btn-sm btn-secondary cta-btn" type="button" mdbWavesEffect
+                      mdbTooltip="View Application Form"
+                      (click)="loadApplicationForm(paper.applicationFormID)"
+                      placement="left">
+                <mdb-icon fas icon="eye" aria-hidden="true" style="color: #FFFFFF;"></mdb-icon>
+              </button>
+              <button class="btn btn-sm btn-success cta-btn" type="button" mdbWavesEffect
+                      (click)="copy($event,paper)"
+                      mdbTooltip="Copy" placement="left">
+                <mdb-icon fas icon="copy" aria-hidden="true" style="color: #FFFFFF;"></mdb-icon>
+              </button>
+            </div>
+          </td>
+        </tr>
+      </ng-container>
+      </tbody>
+    </table>
+
+    <app-paginator
+      [pageIndex]="pageSize.pageIndex"
+      [length]="pageSize.length"
+      [pageSize]="pageSize.pageSize"
+      [pageSizeOptions]="pageSize.pageSizeOptions"
+      (page)="onPageEvent($event)"
+    ></app-paginator>
+  </div>
+</ng-container>
+
+<div *ngIf="noRecords()" class="alert alert-warning section" role="alert">
+  No Application Form(s) Found !
+</div>

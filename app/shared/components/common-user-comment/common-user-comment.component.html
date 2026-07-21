@@ -1,0 +1,52 @@
+<div class="table-responsive">
+  <table class="table">
+    <thead>
+    <tr *ngIf="comments.length>0">
+      <th>User</th>
+      <th>Branch/Department</th>
+      <th class="text-align-center" style="width: 130px !important;">Date</th>
+      <th>Action</th>
+      <th>Comment</th>
+    </tr>
+    </thead>
+
+    <!--<tr *ngIf="comments.length>0">
+      <th>User</th>
+      <th>Branch/Department</th>
+      <th class="text-align-center" style="width: 130px !important;">Date</th>
+      <th>Action</th>
+      <th>Comment</th>
+    </tr>-->
+
+    <ng-container *ngFor="let comment of comments">
+      <tr *ngIf="viewComment(comment)">
+        <td>{{comment.createdUserDisplayName}}</td>
+        <td>{{getBranchDepartmentName(comment.createdUserDivCode)}}</td>
+        <td>{{comment.modifiedDateStr ? comment.modifiedDateStr : comment.createdDateStr}}</td>
+        <td [mdbTooltip]="getActionMessageToolTip(comment)">{{getActionMessage(comment)}}</td>
+        <td>
+          <div class="d-flex flex-row">
+            <pre class="comment-pre-tag border-0">{{comment.comment}}
+          </pre>
+            <mdb-icon class="ml-3p" *ngIf="isAbleToAddEdit && isAbleToUpdate(comment) && !hasPrivilegeToViewBCCPapers && !isLegalOfficer"
+                      (click)="update(comment)"
+                      fas icon="pencil-alt"
+                      aria-hidden="true"
+                      [mdbTooltip]="'Edit Your Comment'">
+            </mdb-icon>
+          </div>
+        </td>
+      </tr>
+    </ng-container>
+    <tr *ngIf="comments.length==0">
+      <th colspan="5" class="text-align-center">
+        <p class="no-data-message">
+          No Comments.
+        </p>
+      </th>
+    </tr>
+  </table>
+</div>
+<app-sme-answers></app-sme-answers>
+<app-scroll-to-top></app-scroll-to-top>
+

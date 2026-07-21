@@ -1,0 +1,56 @@
+<div mdbSticky class="d-flex flex-row justify-content-between page-header">
+  <div class="d-flex flex-row align-items-center">
+    <a appGoBack class="d-flex flex-row align-items-center">
+      <i class="fas fa-angle-left header-icon-back"></i>
+    </a>
+    <h5><i class="fas fa-edit header-icon"></i>
+      <ng-container *ngIf="applicationForm.afRefNumber ; else topic">
+          <span>Application Form - Ref No : {{this.applicationForm.afRefNumber}} <br *ngIf="this.scrWidth < 1450">
+            (<span
+              [ngStyle]="getColour(this.applicationForm.currentApplicationFormStatus)"> {{applicationFormStatus[this.applicationForm.currentApplicationFormStatus]}}</span> )</span>
+      </ng-container>
+
+      <ng-template #topic>
+        Application Form
+      </ng-template>
+    </h5>
+  </div>
+
+
+  <div class="float-right">
+    <div class="d-flex flex-row align-items-center">
+      <ng-container *ngIf="this.showTransferButton(applicationForm)">
+        <button data-placement="bottom" mdbBtn
+                type="button"
+                mdbTooltip="Transfer Application Form"
+                class="action-button-padding btn-outline-success btn-sm"
+                outline="true"
+                mdbWavesEffect
+                (click)="clickStatusChange(applicationForm,applicationFormStatusConst.IN_PROGRESS)">
+          <span>Transfer</span>
+        </button>
+      </ng-container>
+    </div>
+  </div>
+</div>
+
+  <mdb-card>
+    <mdb-card-body class="custom-card-bod">
+      <div class="d-flex flex-column justify-content-center w-100-p">
+        <app-apf-lps-basic-details [applicationForm]="applicationForm">
+        </app-apf-lps-basic-details>
+        <app-apf-documents-preview [applicationForm]="applicationForm">
+        </app-apf-documents-preview>
+        <app-apf-facilities-preview [applicationForm]="applicationForm">
+        </app-apf-facilities-preview>
+        <app-apf-lps-executive-summary-topics [applicationForm]="applicationForm">
+        </app-apf-lps-executive-summary-topics>
+        <app-apf-status-history-preview [applicationForm]="applicationForm">
+        </app-apf-status-history-preview>
+      </div>
+    </mdb-card-body>
+    <mdb-card-footer class="custom-card-footer">
+    </mdb-card-footer>
+  </mdb-card>
+
+

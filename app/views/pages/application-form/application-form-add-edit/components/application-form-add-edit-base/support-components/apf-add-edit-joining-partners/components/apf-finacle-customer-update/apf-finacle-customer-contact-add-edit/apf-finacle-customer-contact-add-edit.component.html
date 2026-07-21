@@ -1,0 +1,27 @@
+<form [formGroup]="finacleCustomerTelephoneForm">
+  <table class="width-100 mt-10p">
+    <tbody formArrayName="afCustomerTelephoneDTOList">
+    <tr>
+      <ng-container *ngFor="let item of finacleCustomerTelephoneForm.get('afCustomerTelephoneDTOList')['controls'];
+           let i = index;"
+                    [formGroupName]="i">
+        <td>
+          <div class="md-form width-100 m-top-12px">
+            <input mdbValidate
+                   type="text"
+                   id="'{{item.value.description}}'"
+                   maxlength="200"
+                   formControlName="contactNumber"
+                   class="form-control"
+                   mdbInput
+            >
+            <label for="'{{item.value.description}}'">Telephone
+              ({{item.value.description ? item.value.description : ""}})
+              *</label>
+          </div>
+        </td>
+      </ng-container>
+    </tr>
+    </tbody>
+  </table>
+</form>

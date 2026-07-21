@@ -1,0 +1,94 @@
+<div class="modal-header flex-center modal-topic">
+    <h4 class="modal-title w-100 font-weight-bold">Group Exposure Details</h4>
+
+    <mdb-icon class="header-icon" fas icon="sync" style="color: #198ddb;" (click)="handleRefresh()"></mdb-icon>
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="mdbModalRef.hide()">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+
+<div class="modal-body" style="max-height: 75vh; overflow-y: auto;">
+
+    <table class="table table-bordered" *ngIf="exposureDetails.length > 0; else noDataAvailable">
+        <thead>
+            <tr>
+                <th rowspan="2" class="text-center" style="vertical-align: middle;"
+                    mdbTooltip="Customer Name / CIF / Relationship Code">
+                    Customer Details
+                </th>
+                <th colspan="2" class="text-center">Funded</th>
+                <th colspan="2" class="text-center">Non-Funded</th>
+                <th colspan="2" class="text-center" style="vertical-align: middle;">Total</th>
+                <th rowspan="2" class="text-center" style="vertical-align: middle;">Cash Balance (Lien)</th>
+            </tr>
+            <tr>
+                <th class="text-center">Total Sanction Limit (Rs)</th>
+                <th class="text-center">OS Amount (Rs)</th>
+                <th class="text-center">Total Sanction Limit (Rs)</th>
+                <th class="text-center">OS Amount (Rs)</th>
+                <th class="text-center">Total Sanction Limit (Rs)</th>
+                <th class="text-center">OS Amount (Rs)</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let detail of exposureDetails;let i=index"
+                [ngStyle]="{'border-bottom-width' : i !== (exposureDetails.length - 1), '3px !important' : '0.5px' }">
+                <td>
+                    <mdb-checkbox [(ngModel)]="detail.isSelected" [disabled]="detail.isPrimary">
+                        {{ detail.customerName ? detail.customerName + ' - ' : '' }}
+                        {{ detail.customerID }}
+                        {{ detail.relationshipCode ? ' (' + detail.relationshipCode + ')' : '' }}
+                    </mdb-checkbox>
+                </td>
+                <td class="text-right" [mdbTooltip]="getToolTip(detail.fundedTotalLimit)">
+                    {{ detail.fundedTotalLimit == 0 ? ' - ' : getFormattedMnValue(detail.fundedTotalLimit) + ' Mn'
+                    }}
+                </td>
+                <td class="text-right" [mdbTooltip]="getToolTip(detail.fundedOutstandingAmount)">
+                    {{ detail.fundedOutstandingAmount == 0 ? ' - ' :
+                    getFormattedMnValue(detail.fundedOutstandingAmount)
+                    + ' Mn' }}
+                </td>
+                <td class="text-right" [mdbTooltip]="getToolTip(detail.nonFundedTotalLimit)">
+                    {{ detail.nonFundedTotalLimit == 0 ? ' - ' : getFormattedMnValue(detail.nonFundedTotalLimit) + '
+                    Mn'
+                    }}
+                </td>
+                <td class="text-right" [mdbTooltip]="getToolTip(detail.nonFundedOutstandingAmount)">
+                    {{ detail.nonFundedOutstandingAmount == 0 ? ' - ' :
+                    getFormattedMnValue(detail.nonFundedOutstandingAmount) + ' Mn' }}
+                </td>
+                <td class="text-right" [mdbTooltip]="getToolTip(detail.totalSanctionLimit)">
+                    {{ detail.totalSanctionLimit == 0 ? ' - ' : getFormattedMnValue(detail.totalSanctionLimit) + '
+                    Mn'
+                    }}
+                </td>
+                <td class="text-right" [mdbTooltip]="getToolTip(detail.outstandingAmount)">
+                    {{ detail.outstandingAmount == 0 ? ' - ' : getFormattedMnValue(detail.outstandingAmount) + ' Mn'
+                    }}
+                </td>
+                <td class="text-right" [mdbTooltip]="getToolTip(detail.lienAmount)">
+                    {{ detail.lienAmount == 0 ? ' - ' : getFormattedMnValue(detail.lienAmount) + ' Mn' }}
+                </td>
+
+            </tr>
+        </tbody>
+    </table>
+
+    <ng-template #noDataAvailable>
+        <div class="row flex-row m-0 justify-content-center" *ngIf="!loading">
+            <h6>No data available.</h6>
+        </div>
+    </ng-template>
+
+    <div *ngIf="loading" class="text-center">
+        <h6>Loading...</h6>
+    </div>
+
+</div>
+
+<div class="modal-footer py-1">
+    <button type="button" class="btn btn-secondary" (click)="handleSubmit()"
+        [disabled]="!isSubmitDesabled()">Submit</button>
+    <button type="button" class="btn btn-secondary" (click)="mdbModalRef.hide()">Close</button>
+</div>

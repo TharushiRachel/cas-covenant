@@ -1,0 +1,56 @@
+<div class="d-flex flex-column justify-content-start align-items-start w-100-p">
+
+  <div class="d-flex flex-row justify-content-between w-100-p flex-wrap">
+    <label class="font-weight-bold">Facility(ies)</label>
+  </div>
+
+  <div class="table-responsive">
+    <table class="table custom-table">
+      <thead>
+      <tr>
+        <th>Nature</th>
+        <th>Sanction Limit</th>
+        <th>Operative Account</th>
+        <th>Facility Account</th>
+        <th>Interest Rate (% p.a.)</th>
+        <th>OS Amount</th>
+        <th>Asset Classification</th>
+        <th>Currency</th>
+      </tr>
+      </thead>
+      <tbody>
+      <ng-container *ngIf="resizedFpCustomerFacilitiesList.length>0; else noData">
+        <ng-container *ngFor="let item of resizedFpCustomerFacilitiesList; let i = index">
+          <tr>
+            <td>{{startCaseFormat(item.nature)}}</td>
+            <td class="text-align-end">{{this.getCurrencyFormat(item.sanctionLimit)}}</td>
+            <td>{{item.operativeAccount}}</td>
+            <td>{{item.facilityAccount}}</td>
+            <td class="text-align-center">{{this.getCurrencyFormat(item.intRate)}}</td>
+            <td class="text-align-end">{{this.getCurrencyFormat(item.outstandingAomunt)}}</td>
+            <td class="text-align-center">{{item.assetClassification}}</td>
+            <td class="text-align-center">{{item.currency}}</td>
+          </tr>
+        </ng-container>
+      </ng-container>
+      <ng-template #noData>
+        <tr>
+          <th colspan="8" class="text-align-center">
+            <p class="table-no-records">
+              No Bank Account(s)
+            </p>
+          </th>
+        </tr>
+      </ng-template>
+      </tbody>
+    </table>
+    <app-list-to-paginator
+      [inputArray]="facilityDetails"
+      [listType]="''"
+      [pageSize]="pageSize"
+      [currentEndIndex]="pageSize"
+      (resizedArray)="onLoadResizedList($event)">
+    </app-list-to-paginator>
+  </div>
+</div>
+

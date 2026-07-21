@@ -1,0 +1,140 @@
+<div class="modal-header modal-topic">
+  <h4 class="modal-title w-100 font-weight-bold">Credit Calculator</h4>
+
+  <button (click)="mdbModalRef.hide()" aria-label="Close" class="close" data-dismiss="modal" type="button">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
+<div class="modal-body mx-3 modal-detail form-margin modal-dialog-scrollable">
+  <app-tabs (onTabSelect)="onTabSelect($event)" [selectedTabIndex]="selectedTabIndex" class="w-100-p">
+    <app-tab [tabTitle]="'System Outputs'">
+      <ng-container *ngFor="let item of creditCalculatorData;">
+        <ng-container *ngIf="item.output == true">
+          <div class="flex-row justify-content-between flex-container">
+            <dt class="w-30">{{item.name}}</dt>
+            <dt>:</dt>
+            <dd class="text-align-right-margin-right w-70">
+            <pre *ngIf="item.currency == true"
+                 class="pre-set-texts div-margin">{{this.getFormattedValue(item.value) || '-'}}</pre>
+              <pre *ngIf="item.percentage == true"
+                   class="pre-set-texts div-margin">{{((item.value / 100) | percent: '.2') || '-'}}</pre>
+              <pre *ngIf="item.currency == false && item.percentage == false"
+                   class="pre-set-texts div-margin">{{item.value || '-'}}</pre>
+            </dd>
+          </div>
+        </ng-container>
+      </ng-container>
+    </app-tab>
+    <app-tab [tabTitle]="'Lease/Hire Purchase Schedule'">
+      <div class="row">
+        <div class="col-12">
+          <div *ngIf="creditScheduleData.length == 0" class="alert alert-warning section" role="alert">
+            No Schedule Found !
+          </div>
+
+          <ng-container *ngIf="creditScheduleData.length > 0">
+            <div class="section table-responsive mb-15p">
+              <table class="table">
+                <thead>
+                <tr>
+                  <ng-container *ngFor="let col of tableColumns">
+                    <th scope="col">{{col}}</th>
+                  </ng-container>
+                </tr>
+                </thead>
+                <tbody>
+                <ng-container *ngFor="let item of creditScheduleData">
+                  <tr mdbTableCol>
+                    <td>{{item.index}}</td>
+                    <td>{{this.getFormattedValue(item.capitalOutstanding)}}</td>
+                    <td>{{this.getFormattedValue(item.vat)}}</td>
+                    <td>{{this.getFormattedValue(item.interest)}}</td>
+                    <td>{{this.getFormattedValue(item.capital)}}</td>
+                    <td>{{this.getFormattedValue(item.sanctionOutstanding)}}</td>
+                    <td>{{this.getFormattedValue(item.grossRentalOutstanding)}}</td>
+                    <td>{{this.getFormattedValue(item.rentalWithoutVat)}}</td>
+                    <td>{{this.getFormattedValue(item.rentalWithVat)}}</td>
+                  </tr>
+                </ng-container>
+                </tbody>
+              </table>
+            </div>
+          </ng-container>
+          <div class="section table-responsive mb-15p" hidden="hidden" id="print-section">
+            <table class="table">
+              <thead>
+              <tr>
+                <ng-container *ngFor="let col of tableColumns">
+                  <th scope="col">{{col}}</th>
+                </ng-container>
+              </tr>
+              </thead>
+              <tbody>
+              <ng-container *ngFor="let item of creditScheduleData">
+                <tr mdbTableCol>
+                  <td>{{item.index}}</td>
+                  <td>{{this.getFormattedValue(item.rentalWithoutVat)}}</td>
+                  <td>{{this.getFormattedValue(item.rentalWithVat)}}</td>
+                  <td>{{this.getFormattedValue(item.interest)}}</td>
+                  <td>{{this.getFormattedValue(item.capital)}}</td>
+                  <td>{{this.getFormattedValue(item.vat)}}</td>
+                  <td>{{this.getFormattedValue(item.capitalOutstanding)}}</td>
+                  <td>{{this.getFormattedValue(item.sanctionOutstanding)}}</td>
+                  <td>{{this.getFormattedValue(item.grossRentalOutstanding)}}</td>
+                </tr>
+              </ng-container>
+              </tbody>
+            </table>
+          </div>
+          <app-cas-print-button
+            [PDFPaperTitle]="'Credit Schedule'"
+            [actionMessage]="'DOWNLOAD'"
+            [printSectionId]="'print-section'"
+            [styleSheetFileUrl]="'assets/css/pdfprintcustomcss/_default_view_print.css'"
+            [toolTipMessage]="'Print Credit Schedule'">
+          </app-cas-print-button>
+        </div>
+      </div>
+    </app-tab>
+    <app-tab [tabTitle]="'SLV'">
+      <div class="row">
+        <div class="col-12">
+          <div *ngIf="slvData.length == 0" class="alert alert-warning section" role="alert">
+            No Schedule Found !
+          </div>
+
+          <ng-container *ngIf="slvData.length > 0">
+            <div class="section table-responsive mb-15p">
+              <table class="table">
+                <thead>
+                <tr>
+                  <ng-container *ngFor="let col of slvTableColumns">
+                    <th scope="col">{{col}}</th>
+                  </ng-container>
+                </tr>
+                </thead>
+                <tbody>
+                <ng-container *ngFor="let item of slvData">
+                  <tr *ngIf="item.colored" class="yellow-background" mdbTableCol>
+                    <td>{{item.term}}</td>
+                    <td>{{this.getFormattedValue(item.stipulatedLossValue)}}</td>
+                    <td>{{this.getFormattedValue(item.interest)}}</td>
+                    <td>{{this.getFormattedValue(item.capital)}}</td>
+                  </tr>
+                  <tr *ngIf="!item.colored" mdbTableCol>
+                    <td>{{item.term}}</td>
+                    <td>{{this.getFormattedValue(item.stipulatedLossValue)}}</td>
+                    <td>{{this.getFormattedValue(item.interest)}}</td>
+                    <td>{{this.getFormattedValue(item.capital)}}</td>
+                  </tr>
+                </ng-container>
+                </tbody>
+              </table>
+            </div>
+          </ng-container>
+        </div>
+      </div>
+    </app-tab>
+  </app-tabs>
+</div>

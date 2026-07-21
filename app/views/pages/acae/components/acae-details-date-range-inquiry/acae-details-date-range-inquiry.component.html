@@ -1,0 +1,66 @@
+<div mdbSticky class="d-flex flex-row justify-content-between page-header">
+  <div class="d-flex flex-row align-items-center">
+    <h5><i class="fas fa-calendar-minus"></i> Inquire by Date Range</h5>
+  </div>
+</div>
+<div class="page-search-section section display-flex flex-column jc-start p-2 pt-3 pb-3 default-box-styles align-start">
+  <div class="card p-3 bg-white">
+    <form class="display-flex w-100-p flex-row jc-start ai-center flex-wrap flex-2-gap"
+      [formGroup]="rangeForm">
+      <div class="md-form w-18-p min-width-120">
+        <input type="text" id="solId" formControlName="solId" class="form-control" mdbInput />
+        <label for="solId">Branch Code</label>
+      </div>
+      <div class="md-form w-18-p min-width-120">
+        <mdb-date-picker class="form-control" id="fromDate" formControlName="fromDate" [options]="myDatePickerOptions"
+          [placeholder]="'From'" [inline]="true"  [(ngModel)]="fromDate"  required></mdb-date-picker>
+      </div>
+
+      <div class="md-form w-18-p min-width-120">
+        <mdb-date-picker class="form-control" id="toDate" formControlName="toDate" [options]="myDatePickerOptions"
+          [placeholder]="'To'" [inline]="true" [(ngModel)]="toDate"  required></mdb-date-picker>
+      </div>
+
+      <div class="display-flex flex-1 flex-row jc-end ai-center">
+        <button (click)="searchData()" type="button" class="medium-button btn btn-info" mdbBtn>
+          Fetch Records
+        </button>
+        <button (click)="clearSearch()" class="medium-button btn btn-outline-info clear-btn" mdbBtn type="button">
+          Clear
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+<ng-container *ngIf="isAcaeDateRageSearch">
+  <div *ngIf="acaeSearchData.length == 0" class="alert alert-warning" role="alert">
+    No matching records found !
+  </div>
+</ng-container>
+<ng-container *ngIf="acaeSearchData.length > 0">
+  <div class="section table-responsive mb-15p">
+    <table class="table">
+      <thead>
+        <tr>
+          <th scope="col">SOL Id/User Id</th>
+            <th scope="col">Account Number</th>
+            <th scope="col">Customer 's Name</th>
+            <th scope="col">Recieved Date</th>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-container *ngFor="let item of acaeSearchData">
+          <tr  (click)='openModal(item)' class="table-clickable-row">
+            <td scope="col">{{ item.solUserId ||"-" }}</td>
+            <td scope="col">{{ item.accountNumber ||"-" }}</td>
+            <td scope="col">{{ item.customerName ||"-" }}</td>
+            <td scope="col">{{ item.recievedDate||"-" }}</td>
+          </tr>
+        </ng-container>
+      </tbody>
+    </table>
+
+    <!-- <app-paginator [pageIndex]="pageSize.pageIndex" [length]="pageSize.length" [pageSize]="pageSize.pageSize"
+      [pageSizeOptions]="pageSize.pageSizeOptions" (page)="onPageEvent($event)"></app-paginator> -->
+  </div>
+</ng-container>

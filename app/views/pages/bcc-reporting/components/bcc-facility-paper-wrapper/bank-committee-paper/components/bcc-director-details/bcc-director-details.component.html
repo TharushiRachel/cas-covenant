@@ -1,0 +1,92 @@
+<form [formGroup]="companyDirectorGroup">
+  <div class="d-flex flex-column justify-content-start">
+    <table class="table custom-bordered-table">
+      <thead>
+      <tr>
+        <th class="text-align-center w-25 vertical-align-middle">Share Holder</th>
+        <th class="text-align-center w-40 vertical-align-middle">Director or Non Director</th>
+        <th class="text-align-center w-15 vertical-align-middle">Share Holding (%)</th>
+        <th class="text-align-center w-15 vertical-align-middle">Credit Card</th>
+        <th class="text-align-center w-5 ">
+          <button class="btn btn-sm btn-secondary cta-btn" type="button" mdbWavesEffect
+                  (click)="addCompanyManagerRow()"
+                  mdbTooltip="Add New Record" placement="left">
+            <mdb-icon fas icon="fas fa-plus" aria-hidden="true"></mdb-icon>
+          </button>
+        </th>
+      </tr>
+      </thead>
+      <tbody
+        formArrayName="bccCompanyDirectorDTOS"
+      >
+      <tr *ngFor="let item of this.companyDirectorGroup.get('bccCompanyDirectorDTOS')['controls'];
+           let i = index;"
+          [formGroupName]="i"
+
+          [ngClass]="{
+          'add-record': !item.value.bccCompanyDirectorID
+          }"
+      >
+        <td class="text-align-center">
+          <input mdbValidate
+                 type="text"
+                 id="directorName"
+                 formControlName="companyDirectorName"
+                 class="custom-text-input"
+                 [class.custom-text-input-error]="item.get('companyDirectorName') && item.get('companyDirectorName').dirty && !item.get('companyDirectorName').valid ?  item.get('companyDirectorName').errors.required : false "
+                 mdbInput>
+        </td>
+
+        <td>
+          <mdb-select
+            id="paperType"
+            [options]="optionsConstitutionTypeSelect"
+            formControlName="constitutionType"></mdb-select>
+        </td>
+
+        <td>
+          <input mdbValidate
+                 type="text"
+                 id="shareHolding"
+                 maxlength="6"
+                 formControlName="shareHolding"
+                 placeholder="0.0%"
+                 (keydown)="validateNumber($event)"
+                 (focusout)="currencyService.patchFormControllerValue(item, 'shareHolding')"
+                 class="custom-text-input text-align-end"
+                 [class.custom-text-input-error]="item.get('shareHolding') && item.get('shareHolding').dirty && !item.get('shareHolding').valid ?  item.get('shareHolding').errors.percentageValueError : false "
+                 mdbInput>
+        </td>
+
+        <td>
+          <mdb-select
+            id="creditCard"
+            [options]="optionsYesNoSelect"
+            formControlName="creditCard">
+          </mdb-select>
+        </td>
+        <ng-container *appHasAnyPrivilege="masterDataPrivilege.ICAS_SETTINGS_FACILITY_PAPER_GENERATE_BCC_PAPER">
+          <td class="w-5">
+            <div class="d-flex flex-row justify-content-end">
+              <ng-container *ngIf="item.value.bccCompanyDirectorID">
+                <button class="btn btn-sm cta-btn delete-button" type="button" mdbWavesEffect
+                        (click)="removeCompanyDirector(item)"
+                        mdbTooltip="Remove" placement="left">
+                  <mdb-icon fas icon="trash-alt" aria-hidden="true"></mdb-icon>
+                </button>
+              </ng-container>
+              <ng-container *ngIf="!item.value.bccCompanyDirectorID">
+                <button class="btn btn-sm cta-btn delete-button" type="button" mdbWavesEffect
+                        (click)="removeCompanyManagerRow(i)"
+                        mdbTooltip="Remove" placement="left">
+                  <mdb-icon fas icon="trash-alt" aria-hidden="true"></mdb-icon>
+                </button>
+              </ng-container>
+            </div>
+          </td>
+        </ng-container>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</form>

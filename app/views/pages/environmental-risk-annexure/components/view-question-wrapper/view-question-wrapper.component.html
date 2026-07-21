@@ -1,0 +1,68 @@
+<ng-container *ngIf="questions.length > 0">
+    <div class="row d-flex w-100 mx-0 my-3 border border-1 rounded question-item"
+        *ngFor="let question of getSortedList(questions);let i = index;">
+
+        <div class="col-md-10 p-2">
+            <pre class="custom-pre-tag-with-spaces m-0" style="font-weight: 600;">{{question.question}}</pre>
+        </div>
+        <div class="col-md-2 p-2 d-flex flex-row mx-0 justify-content-end">
+            <ng-container *ngIf="isActionShow(question.actionStatus)">
+                <mdb-badge class="m-0" [default]="false" [style.color]="getActionColor(question.actionStatus)"
+                    [style.border-color]="getActionColor(question.actionStatus)">
+                    {{getActionStatus(question.actionStatus)}}
+                </mdb-badge>
+            </ng-container>
+            <ng-container *ngIf="isEditEnabled">
+                <button class="btn" (click)="handleSortAnswers(question)" *ngIf="isSortEnabled(question.answers)">
+                    Sort Answers
+                </button>
+                <button class="btn" mdbTooltip="Add New Answer" (click)="handleAddEditAnswer(question,null)"
+                    *ngIf="isMCQ(question) || isSubQuestion(question) || isSubMCQ(question)">
+                    <mdb-icon fas icon="plus"></mdb-icon>
+                </button>
+                <button class="btn" mdbTooltip="Edit Question" (click)="handleAddEdit(question)">
+                    <mdb-icon style="cursor: pointer;" fas icon="pencil-alt"></mdb-icon>
+                </button>
+                <button class="btn" mdbTooltip="Remove Question" (click)="handleRemoveQuestion(question)">
+                    <mdb-icon style="cursor: pointer;color: #dc3545;" fas icon="trash-alt"></mdb-icon>
+                </button>
+            </ng-container>
+        </div>
+        <div class="col-md-6 p-2 d-flex flex-row m-0">
+            <mdb-badge class="m-0" default="true" style="color: #ffc107 !important; border-color: #ffc107 !important;">
+                {{answerType[question.answerType]}}
+            </mdb-badge>
+            <mdb-badge class="mx-2" default="true" style="color: #ffc107 !important; border-color: #ffc107 !important;"
+                *ngIf="question.isMandatory === 'Y'">
+                Mandatory
+            </mdb-badge>
+        </div>
+
+        <div class="col-md-12 row d-flex p-2 m-0" *ngIf="question.answers.length > 0">
+            <h6 class="font-weight-bold mb-2 w-100">{{isSubQuestion(question) ? "Sub Questions" : "Answers"}}</h6>
+            <div class="row d-flex ml-0 mr-2 border border-1 rounded p-2 my-2" style="width: fit-content;"
+                *ngFor="let ans of getSortedList(question.answers)">
+                <span [class]="isEditEnabled ? 'mr-3' : 'mx-0'">
+                    <pre class="custom-pre-tag-with-spaces m-0">{{ans.answer}}</pre>
+                    <ng-container *ngIf="isActionShow(ans.actionStatus)">&nbsp;</ng-container>
+                    <mdb-badge class="m-0" [default]="false" *ngIf="isActionShow(ans.actionStatus)"
+                        [style.color]="getActionColor(ans.actionStatus)"
+                        [style.border-color]="getActionColor(ans.actionStatus)" style="padding: 3px 6px !important;">
+                        {{getActionStatus(ans.actionStatus)}}
+                    </mdb-badge>
+                </span>
+
+                <div class="row d-flex p-0 m-0 justify-content-end" *ngIf="isEditEnabled">
+                    <mdb-icon style="cursor: pointer;" fas icon="pencil-alt" class="mx-2"
+                        (click)="handleAddEditAnswer(question,ans)"></mdb-icon>
+                    <mdb-icon style="cursor: pointer;" fas icon="trash-alt"
+                        (click)="handleRemoveAnswer(question,ans)"></mdb-icon>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-12 text-align-center p-2" *ngIf="question.error">
+            <span class="text-danger">{{question.error}}</span>
+        </div>
+    </div>
+</ng-container>

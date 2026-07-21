@@ -1,0 +1,30 @@
+<div class="modal-header flex-center modal-topic">
+    <h4 class="modal-title w-100 font-weight-bold">UPC Notification</h4>
+</div>
+
+<div class="modal-body mx-3 modal-detail form-margin">
+    <div class="row d-flex justify-content-center flex-column mx-0 p-0">
+        <span>{{message}}</span>
+        <button class="btn btn-info ml-auto mr-0" (click)="handleAction(1)" style="width: fit-content;"
+            *ngIf="modalAction == 'R'">
+            Save and Continue
+        </button>
+        <div class="row d-flex justify-content-end mx-0" *ngIf="modalAction == 'C'">
+            <button class="btn btn-info" (click)="handleAction(2)" style="width: fit-content;">
+                Yes
+            </button>
+            <button class="btn btn-primary" (click)="handleAction(3)" style="width: fit-content;">
+                No
+            </button>
+        </div>
+
+        <div class="row d-flex justify-content-end mx-0" *ngIf="modalAction == 'S'">
+            <button class="btn btn-info" (click)="handleAction(4)" style="width: fit-content;">
+                Yes
+            </button>
+            <button class="btn btn-primary" (click)="handleAction(5)" style="width: fit-content;">
+                No
+            </button>
+        </div>
+    </div>
+</div>

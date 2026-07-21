@@ -1,0 +1,30 @@
+.login-page-container {
+  background-image: url("../../../../../assets/media/images/login_bg.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  height: calc(100vh);
+
+  .login-form-container {
+    min-width: 450px;
+  }
+
+  .md-form {
+    margin-bottom: 2rem;
+    margin-top: 2rem;
+  }
+}
+
+label {
+  text-align: left;
+}
+
+.itechro-link {
+  position: relative;
+  top: -2px;
+}
+
+.show-password-icon {
+  position: absolute;
+  margin-left: 94% !important;
+  margin-top: 3% !important;
+}

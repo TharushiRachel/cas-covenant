@@ -1,0 +1,28 @@
+<div class="modal-header flex-center modal-topic">
+  <h4 class="modal-title w-100 font-weight-bold">{{header}}</h4>
+  <button type="button" class="btn btn-info mr-5" (click)="handleRefreshContent()"
+    *ngIf="isRefreshEnabled">
+    <mdb-icon fas icon="sync"></mdb-icon>
+  </button>
+  <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="handleCloseModal()">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
+<div class="modal-body mx-3 modal-detail form-margin">
+  <div class="editor-container">
+    <app-upc-template-view-comment [nodeData]="nodeData">
+    </app-upc-template-view-comment>
+    <ng-container *ngIf="isTinyMCEEnabled">
+      <app-tiny-mce-editor id="tiny-mce-editor" [html]="givenData" (onContentSave)="save($event)"
+        (onContentSaveAndClose)="saveAndClose($event)" (notifySaveContent)="notifySaveData($event)"
+        (setContentByClose)="setContentByClose($event)"
+        [isSaveAndCloseEnabled]="true"></app-tiny-mce-editor>
+    </ng-container>
+
+    <ng-container *ngIf="!isTinyMCEEnabled">
+      <app-rich-text-editor [html]="givenData" (onContentSave)="save($event)"></app-rich-text-editor>
+    </ng-container>
+
+  </div>
+</div>

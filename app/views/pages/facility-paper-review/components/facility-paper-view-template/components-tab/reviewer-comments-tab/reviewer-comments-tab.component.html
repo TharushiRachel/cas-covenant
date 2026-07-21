@@ -1,0 +1,122 @@
+<div class="w-100-p">
+  <div class="float-right">
+    <div class="d-flex flex-row align-items-center">
+      <!--  <button mdbBtn
+                type="button"
+                mdbTooltip="Add comment"
+                class="action-button-padding btn-outline-info btn-sm comment"
+                outline="true"
+                mdbWavesEffect
+                [disabled]="!isButtonEnabled()"
+                (click)="openCommentModal(facilityPaper)">
+          <span>{{getButtonLabel(this.facilityPaper.paperReviewStatus)}}</span>
+        </button>-->
+      <ng-container *ngIf="isUserActionEnable()">
+        <button
+          type="button"
+          mdbBtn color="light"
+          class="btn-sm relative waves-light"
+          mdbWavesEffect
+          (click)="clickBtnSave()"
+        >Save
+        </button>
+
+
+        <ng-container *ngIf="!isOwnApprovedFacilityPaper()">
+          <button
+            type="button"
+            mdbBtn
+            color="danger"
+            class="btn-sm relative waves-light"
+            mdbWavesEffect
+            (click)="clickBtnReject()">Reject
+          </button>
+
+          <button
+            type="button"
+            mdbBtn color="success"
+            class="btn-sm relative waves-light"
+            mdbWavesEffect
+            (click)="clickBtnApprove()">Approve
+          </button>
+        </ng-container>
+
+        <button *ngIf="isOwnApprovedFacilityPaper()"
+                type="button"
+                mdbBtn color="success"
+                class="btn-sm relative waves-light"
+                mdbWavesEffect
+                (click)="clickBtnReplied()">Reply
+        </button>
+      </ng-container>
+    </div>
+  </div>
+  <ng-container *ngIf="fpReviewCommentsNotInSavedStatus.length>0">
+    <div class="table-responsive">
+      <table class="table table-sm align-middle">
+        <thead>
+        <tr>
+          <ng-container *ngFor="let col of tableColumns">
+            <th scope="col">{{col}}</th>
+          </ng-container>
+        </tr>
+        </thead>
+        <tbody>
+        <ng-container *ngFor="let item of fpReviewCommentsNotInSavedStatus">
+          <tr>
+            <td class="width-16">{{item.createdUserDisplayName || '-'}}</td>
+            <td class="width-13">{{item.commentedTimeStr || '-'}}</td>
+            <!--            <td class="width-9">{{item.upmID || '-'}}</td>-->
+            <td class="width-12">{{paperReviewStatus[item.paperReviewStatus] || '-'}}</td>
+            <td class="width-50 comment-align">
+              <app-table-comment-viewer
+                [commentDto]="item"
+                [toolTipDescription]="'View Comment'">
+              </app-table-comment-viewer>
+            </td>
+            <!--    <span><i class="fas fa-eye" mdbTooltip="View Comment" aria-hidden="true"
+                         (click)="openModalViewComment(item)"></i></span>-->
+            <!--    <td class="width-10">
+                  <button class="btn btn-sm btn-info cta-btn"
+                                              type="button"
+                                              mdbTooltip="View Comment"
+                                              (click)="openModalViewComment(item)">
+                  <i class="fas fa-eye" aria-hidden="true"></i>
+                </button></td>-->
+          </tr>
+        </ng-container>
+        </tbody>
+      </table>
+      <app-paginator
+        [pageIndex]="pageSize.pageIndex"
+        [length]="pageSize.length"
+        [pageSize]="pageSize.pageSize"
+        [pageSizeOptions]="pageSize.pageSizeOptions"
+        (page)="onPageEvent($event)"
+      ></app-paginator>
+    </div>
+  </ng-container>
+  <ng-container *ngIf="fpReviewCommentsNotInSavedStatus.length==0">
+    <p style="text-align: center; margin-top: 2% ">No Comments Available</p>
+  </ng-container>
+
+  <div class="">
+    <ng-container *ngIf="isUserActionEnable()">
+      <ng-container *ngIf="isTinyMCEEnabled">
+        <app-tiny-mce-inline-editor
+          [textAreaHeight]="'35vh'"
+          [isSaveAndCloseEnabled]="false"
+          [isSaveEnabled]="false"
+          [html]="editorHTML"
+          (onTyping)="onEditorTyping($event)"
+          (hasDefaultValue)="onEditorHasDefaultVal($event)"
+        ></app-tiny-mce-inline-editor>
+      </ng-container>
+
+      <ng-container *ngIf="!isTinyMCEEnabled">
+        <app-rich-text-editor
+        ></app-rich-text-editor>
+      </ng-container>
+    </ng-container>
+  </div>
+</div>

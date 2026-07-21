@@ -1,0 +1,66 @@
+<div class="modal-header modal-topic flex-center">
+    <h4 class="modal-title w-100 font-weight-bold">Return Covering Approval</h4>
+    <button type="button" class="close" aria-label="Close" (click)="closeModal()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+
+<div class="modal-body">
+    <form #returnForm="ngForm">
+      
+        <div class="form-group d-flex flex-column">
+            <div class="d-flex align-items-center mb-2">
+                <label for="userSelection" class="form-label me-3" style="width: 150px;">Select User : </label>
+                <select
+                    id="userSelection"
+                    class="form-control selectedUser"
+                    [(ngModel)]="selectedUserID"
+                    name="userSelection"
+                    required
+                    #userSelection="ngModel"
+                >
+                    <option *ngFor="let user of users" [value]="user.assignUserID">
+                        {{ user.assignUserDisplayName }} - {{ user.referenceName }}
+                    </option>
+                </select>
+            </div>
+            <div *ngIf="userSelection.invalid && userSelection.touched" class="error-text text-danger">
+                User selection is required.
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <div class="d-flex  mb-2">
+            <label for="userComment" class="form-label" style="width: 150px;">Comment:</label>
+            <textarea
+                id="userComment"
+                class="form-control textarea"
+                [(ngModel)]="userComment"
+                name="userComment"
+                rows="4"
+                placeholder="Enter your comment here"
+                required
+                #userCommentField="ngModel"
+            ></textarea>
+            <div *ngIf="userCommentField.invalid && userCommentField.touched" class="error-text text-danger">
+                Comment is required.
+            </div>
+            </div>
+        </div>
+        
+
+    </form>
+</div>
+
+<div class="modal-footer modal-end">
+    <button type="button" mdbBtn color="light" class="btn-sm relative waves-light" (click)="closeModal()">Close</button>
+    <button 
+      type="button" 
+      mdbBtn color="info" 
+      class="btn-sm relative waves-light" 
+      [disabled]="returnForm.invalid" 
+      (click)="confirmSelection()" 
+    >
+      Return
+    </button>
+</div>

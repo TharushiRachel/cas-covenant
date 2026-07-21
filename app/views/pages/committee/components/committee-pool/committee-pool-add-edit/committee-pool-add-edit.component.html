@@ -1,0 +1,38 @@
+<div mdbSticky class="d-flex flex-row justify-content-between page-header">
+  <div class="d-flex flex-row align-items-center">
+    <a appGoBack class="d-flex flex-row align-items-center">
+      <i class="fas fa-angle-left header-icon-back"></i>
+    </a>
+    <h5><i class="fa fa-group header-icon"></i>
+      <span>Add Committee Pool User</span>
+    </h5>
+  </div>
+</div>
+
+<div class="modal-body m-0 p-1 modal-detail form-margin">
+  <ng-container>
+
+    <form class="d-flex flex-column justify-content-start align-items-start w-100-p" [formGroup]="componentForm">
+      <div class="d-flex m-top-10px flex-row flex-wrap w-100-p justify-content-between">
+        <ng-container>
+          <div class="md-form m-top-10px m-bottom-10px w-48-p">
+            <mdb-select [options]="userGroup" [filterEnabled]="true" formControlName="userGroup" id="userGroup"
+              label="Select User Group">
+            </mdb-select>
+
+          </div>
+          <div class="md-form m-top-10px m-bottom-10px w-48-p">
+            <mdb-select [options]="userList" [filterEnabled]="true" formControlName="userName" id="forwardUser"
+              label="Select User"></mdb-select>
+          </div>
+        </ng-container>
+        <div class="md-form m-top-10px m-bottom-10px w-100-p row d-flex justify-content-end mx-0">
+          <button (click)="savePoolUser()" type="button" class="medium-button btn btn-info" mdbBtn>
+            ADD
+          </button>
+        </div>
+      </div>
+    </form>
+
+  </ng-container>
+</div>

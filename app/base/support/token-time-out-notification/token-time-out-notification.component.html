@@ -1,0 +1,21 @@
+<div>
+  <div class="modal-header modal-topic flex-center">
+<!--    <button type="button" class="close pull-right" aria-label="Close" (click)="onNoClick()">-->
+<!--      <span aria-hidden="true">×</span>-->
+<!--    </button>-->
+    <h4 class="modal-title w-100 heading-align" id="myModalLabel"
+        style="font-size: 1rem ; font-weight: bold"></h4>
+  </div>
+  <div class="modal-body modal-detail form-margin">
+    <h6 style="font-size: 0.9rem">Your Session will be expire within {{message}}</h6>
+  </div>
+  <div class="modal-footer modal-end">
+        <button type="button" mdbBtn color="warning" size="sm" class="waves-light" aria-label="Close"
+                (click)="loggedOut()" mdbWavesEffect>Log out
+        </button>
+    <button type="button" mdbBtn color="success" size="sm" class="relative waves-light" (click)="onYesClick()"
+            [mdbTooltip]="''"
+            mdbWavesEffect>Keep Me Sign In
+    </button>
+  </div>
+</div>

@@ -1,0 +1,39 @@
+<!-- <div *ngIf="groupedAnswers && objectKeys(groupedAnswers).length > 0; else noData">
+  <div *ngFor="let key of objectKeys(groupedAnswers)" class="key-block">
+    <h3>Answers by {{ key }}</h3>
+    <div *ngFor="let answer of groupedAnswers[key]" class="answer-block">
+      <p>{{ answer.createdUserDisplayName }} {{ answer.answerDescription }} on {{ answer.createdDate | date:'medium' }}</p>
+    </div>
+  </div>
+</div>
+
+<ng-template #noData>
+  <p>No answers available.</p>
+</ng-template> -->
+
+<div *ngIf="groupedAnswers && objectKeys(groupedAnswers).length > 0; else noData">
+  <div *ngFor="let key of objectKeys(groupedAnswers)" class="key-block">
+    <ng-container *ngIf="getGroupCreatedDate(groupedAnswers[key]) as groupDate; else perAnswerDate">
+      <h3>
+        Answers by {{ key }}
+        <span *ngIf="groupDate">on {{ groupDate | date:'medium' }}</span>
+      </h3>
+      <div *ngFor="let answer of groupedAnswers[key]" class="answer-block">
+        <p>{{ answer.createdUserDisplayName }} {{ answer.answerDescription }}</p>
+      </div>
+    </ng-container>
+    <ng-template #perAnswerDate>
+      <h3>Answers by {{ key }}</h3>
+      <div *ngFor="let answer of groupedAnswers[key]" class="answer-block">
+        <p>
+          {{ answer.createdUserDisplayName }} {{ answer.answerDescription }}
+          on {{ answer.createdDate | date:'medium' }}
+        </p>
+      </div>
+    </ng-template>
+  </div>
+</div>
+
+<ng-template #noData>
+  <p>No answers available.</p>
+</ng-template>

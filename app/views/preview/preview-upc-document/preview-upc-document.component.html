@@ -1,0 +1,19 @@
+<div class="d-flex padding-unset flex-column justify-content-center w-100-p jumbotron">
+  <div *ngIf="facilityPaper.upcTemplateName" class="text-align-center topic">
+    <h5>{{facilityPaper.upcTemplateName}}</h5>
+  </div>
+
+  <div class="d-flex flex-row justify-content-between align-items-center w-100-p default-upc-section-structure"
+       style="margin-top: -5px">
+    <app-preview-upc-template-structure
+      [initNodeRowData]="initNodeRowData"
+      [isCommentEnable]="isCommentEnable"
+      [facilityPaperId]="facilityPaperId"
+      [currentAssignUser]="currentAssignUser"
+      [currentFPStatus]="currentFPStatus"
+      [currentFPWC]="currentFPWC"
+      [assignDepartmentCode]="assignDepartmentCode"
+      >
+    </app-preview-upc-template-structure>
+  </div>
+</div>

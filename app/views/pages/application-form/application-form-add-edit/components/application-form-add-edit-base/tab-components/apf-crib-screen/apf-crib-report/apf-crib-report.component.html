@@ -1,0 +1,33 @@
+<mdb-card>
+  <mdb-card-body class="custom-card-body">
+    <ng-container>
+      <div class="d-flex flex-column justify-content-between w-100-p">
+        <app-tabs class="w-100-p" [selectedTabIndex]="selectedTabIndex" (onTabSelect)="onTabSelect($event)">
+          <ng-container *ngFor="let basicInformation of basicInformationDTOList; let i =index">
+            <app-tab
+              [tabTitle]="(basicInformation.identificationType) + ' :'+(basicInformation.identificationNo)"
+              [showBadge]="basicInformation.primaryInformation=='Y'"
+              [badgeContent]="'P'"
+              [badgeColor]="'red'"
+              [active]="i == selectedTabIndex">
+              <div class="d-flex flex-column justify-content-start width-100">
+                <app-apf-crib-report-record
+                  [basicInformation]="basicInformation"
+                  [applicationForm]="applicationForm"
+                  class="width-100">
+                </app-apf-crib-report-record>
+                <app-apf-crib-attachments [basicInformation]="basicInformation" [applicationForm]="applicationForm">
+                </app-apf-crib-attachments>
+                <app-apf-borrower-guarantor
+                  [basicInformation]="basicInformation"
+                  [applicationForm]="applicationForm">
+                </app-apf-borrower-guarantor>
+              </div>
+            </app-tab>
+          </ng-container>
+        </app-tabs>
+      </div>
+    </ng-container>
+  </mdb-card-body>
+</mdb-card>
+<a class="download-link" #downloadLink></a>

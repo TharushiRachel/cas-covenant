@@ -1,0 +1,164 @@
+<div class="d-flex p-2 flex-column justify-content-start align-items-start w-100-p">
+    <div class="width-100">
+      <ng-container *ngIf="isDataAvailable  ; else : noData">
+        <ng-container *ngFor="let item of customerComprehensiveDetails">
+
+          <p class="font-weight-bold">Account Number: {{item.accNum}} ({{item.accCrncy}})</p>
+
+          <table class="custom-bordered-table width-100 table table-striped">
+
+            <thead>
+              <tr style="height: 30px" class="table-heading-color">
+                <th style="min-width: 100px;" rowspan="2">Date</th>
+                <th colspan="11">Credit</th>
+              </tr>
+              <tr class="table-heading-color">
+                <th style="min-width: 100px;">Cash</th>
+                <th style="min-width: 100px;">Instrument</th>
+                <th style="min-width: 100px;">Card payment collections</th>
+                <th style="min-width: 100px;">Foreign remittances</th>
+                <th style="min-width: 100px;">Export</th>
+                <th style="min-width: 100px;">Loan Proceeds</th>
+                <th style="min-width: 100px;">Error (if any)</th>
+                <th style="min-width: 100px;">Standing orders</th>
+                <th style="min-width: 100px;">Interest</th>
+                <th style="min-width: 100px;">Transfer</th>
+                <th style="min-width: 100px;">Total</th>
+                
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let data of item.tranData" style="font-size: 11px;">
+                  <td class="text-align-center">{{data.yearMonth}}</td>
+                  <td class="text-align-end">{{this.getCurrencyFormat(data.crCash)}}</td>
+                  <td class="text-align-end">{{this.getCurrencyFormat(data.crInstrument)}}</td>
+                  <td class="text-align-end">{{this.getCurrencyFormat(data.crCard)}}</td>
+                  <td class="text-align-end">{{this.getCurrencyFormat(data.crFc)}}</td>
+                  <td class="text-align-end">{{this.getCurrencyFormat(data.crExport)}}</td>
+                  <td class="text-align-end">{{this.getCurrencyFormat(data.crLoan)}}</td>
+                  <td class="text-align-end">{{this.getCurrencyFormat(data.crError)}}</td>
+                  <td class="text-align-end">{{this.getCurrencyFormat(data.crSweeps)}}</td>
+                  <td class="text-align-end">{{this.getCurrencyFormat(data.crChgAndInt)}}</td>
+                  <td class="text-align-end">{{this.getCurrencyFormat(data.crOther)}}</td>
+                  <td class="text-align-end" style="background: #e4e1c9;">{{this.getCurrencyFormat(data.crTotal)}}</td>
+              </tr>
+              <tr style="background: #e4e1c9; font-size: 11px;">
+                <td class="text-align-center">Total</td>
+                <td class="text-align-end">{{this.getCurrencyFormat(item.tranData | calculateTotal: 'crCash')}}</td>
+                <td class="text-align-end">{{this.getCurrencyFormat(item.tranData | calculateTotal: 'crInstrument')}}</td>
+                <td class="text-align-end">{{this.getCurrencyFormat(item.tranData | calculateTotal: 'crCard')}}</td>
+                <td class="text-align-end">{{this.getCurrencyFormat(item.tranData | calculateTotal: 'crFc')}}</td>
+                <td class="text-align-end">{{this.getCurrencyFormat(item.tranData | calculateTotal: 'crExport')}}</td>
+                <td class="text-align-end">{{this.getCurrencyFormat(item.tranData | calculateTotal: 'crLoan')}}</td>
+                <td class="text-align-end">{{this.getCurrencyFormat(item.tranData | calculateTotal: 'crError')}}</td>
+                <td class="text-align-end">{{this.getCurrencyFormat(item.tranData | calculateTotal: 'crSweeps')}}</td>
+                <td class="text-align-end">{{this.getCurrencyFormat(item.tranData | calculateTotal: 'crChgAndInt')}}</td>
+                <td class="text-align-end">{{this.getCurrencyFormat(item.tranData | calculateTotal: 'crOther')}}</td>
+                <td class="text-align-end" style="background: #e4e1c9;">{{this.getCurrencyFormat(item.tranData | calculateTotal: 'crTotal')}}</td>
+                
+              </tr>
+              <tr style="background: #e4e1c9; font-size: 11px;">
+                <td class="text-align-center">Average</td>
+                <td class="text-align-end">{{item.tranData | calculateAverage: 'crCash' | number:'1.2-2'}}</td>
+                <td class="text-align-end">{{item.tranData | calculateAverage: 'crInstrument' | number:'1.2-2'}}</td>
+                <td class="text-align-end">{{item.tranData | calculateAverage: 'crCard' | number:'1.2-2'}}</td>
+                <td class="text-align-end">{{item.tranData | calculateAverage: 'crFc' | number:'1.2-2'}}</td>
+                <td class="text-align-end">{{item.tranData | calculateAverage: 'crExport' | number:'1.2-2'}}</td>
+                <td class="text-align-end">{{item.tranData | calculateAverage: 'crLoan' | number:'1.2-2'}}</td>
+                <td class="text-align-end">{{item.tranData | calculateAverage: 'crError' | number:'1.2-2'}}</td>
+                <td class="text-align-end">{{item.tranData | calculateAverage: 'crSweeps' | number:'1.2-2'}}</td>
+                <td class="text-align-end">{{item.tranData | calculateAverage: 'crChgAndInt' | number:'1.2-2'}}</td>
+                <td class="text-align-end">{{item.tranData | calculateAverage: 'crOther' | number:'1.2-2'}}</td>
+                <td class="text-align-end" style="background: #e4e1c9;">{{item.tranData | calculateAverage: 'crTotal' | number:'1.2-2'}}</td>
+                
+              </tr>
+            </tbody>
+            <thead>
+              <tr style="height: 30px">
+                <th colspan="12"></th>
+              </tr>
+            </thead>
+            <thead>
+              <tr style="height: 30px" class="table-heading-color">
+                <th style="min-width: 100px;" rowspan="2">Date</th>
+                <th colspan="11">Debit</th>
+              </tr>
+              <tr class="table-heading-color">
+                <th style="min-width: 100px;">Cash</th>
+                <th style="min-width: 100px;">Instrument</th>
+                <th style="min-width: 100px;">Card payments</th>
+                <th style="min-width: 100px;">Foreign Payments</th>
+                <th style="min-width: 100px;">Export Payments</th>
+                <th style="min-width: 100px;">Loan Repayments</th>
+                <th style="min-width: 100px;">Error(if any)</th>
+                <th style="min-width: 100px;">Standing orders</th>
+                <th style="min-width: 100px;">Bank Charges/fees</th>
+                <th style="min-width: 100px;">Transfer</th>
+                <th style="min-width: 100px;">Total</th>
+                
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let data of item.tranData" style="font-size: 11px;">
+                  <td class="text-align-center">{{data.yearMonth}}</td>
+                  <td class="text-align-end">{{this.getCurrencyFormat(data.drCash)}}</td>
+                  <td class="text-align-end">{{this.getCurrencyFormat(data.drInstrument)}}</td>
+                  <td class="text-align-end">{{this.getCurrencyFormat(data.drCard)}}</td>
+                  <td class="text-align-end">{{this.getCurrencyFormat(data.drFc)}}</td>
+                  <td class="text-align-end">{{this.getCurrencyFormat(data.drExport)}}</td>
+                  <td class="text-align-end">{{this.getCurrencyFormat(data.drLoan)}}</td>
+                  <td class="text-align-end">{{this.getCurrencyFormat(data.drError)}}</td>
+                  <td class="text-align-end">{{this.getCurrencyFormat(data.drSweeps)}}</td>
+                  <td class="text-align-end">{{this.getCurrencyFormat(data.drChgAndInt)}}</td>
+                  <td class="text-align-end">{{this.getCurrencyFormat(data.drOther)}}</td>
+                  <td class="text-align-end" style="background: #e4e1c9;">{{this.getCurrencyFormat(data.drTotal)}}</td>
+                  
+              </tr>
+              <tr style="background: #e4e1c9; font-size: 11px;">
+                <td class="text-align-center">Total</td>
+                <td class="text-align-end">{{this.getCurrencyFormat(item.tranData | calculateTotal: 'drCash')}}</td>
+                <td class="text-align-end">{{this.getCurrencyFormat(item.tranData | calculateTotal: 'drInstrument')}}</td>
+                <td class="text-align-end">{{this.getCurrencyFormat(item.tranData | calculateTotal: 'drCard')}}</td>
+                <td class="text-align-end">{{this.getCurrencyFormat(item.tranData | calculateTotal: 'drFc')}}</td>
+                <td class="text-align-end">{{this.getCurrencyFormat(item.tranData | calculateTotal: 'drExport')}}</td>
+                <td class="text-align-end">{{this.getCurrencyFormat(item.tranData | calculateTotal: 'drLoan')}}</td>
+                <td class="text-align-end">{{this.getCurrencyFormat(item.tranData | calculateTotal: 'drError')}}</td>
+                <td class="text-align-end">{{this.getCurrencyFormat(item.tranData | calculateTotal: 'drSweeps')}}</td>
+                <td class="text-align-end">{{this.getCurrencyFormat(item.tranData | calculateTotal: 'drChgAndInt')}}</td>
+                <td class="text-align-end">{{this.getCurrencyFormat(item.tranData | calculateTotal: 'drOther')}}</td>
+                <td class="text-align-end" style="background: #e4e1c9;">{{this.getCurrencyFormat(item.tranData | calculateTotal: 'drTotal')}}</td>
+                
+              </tr>
+              <tr style="background: #e4e1c9; font-size: 11px;">
+                <td class="text-align-center">Average</td>
+                <td class="text-align-end">{{item.tranData | calculateAverage: 'drCash' | number:'1.2-2'}}</td>
+                <td class="text-align-end">{{item.tranData | calculateAverage: 'drInstrument' | number:'1.2-2'}}</td>
+                <td class="text-align-end">{{item.tranData | calculateAverage: 'drCard' | number:'1.2-2'}}</td>
+                <td class="text-align-end">{{item.tranData | calculateAverage: 'drFc' | number:'1.2-2'}}</td>
+                <td class="text-align-end">{{item.tranData | calculateAverage: 'drExport' | number:'1.2-2'}}</td>
+                <td class="text-align-end">{{item.tranData | calculateAverage: 'drLoan' | number:'1.2-2'}}</td>
+                <td class="text-align-end">{{item.tranData | calculateAverage: 'drError' | number:'1.2-2'}}</td>
+                <td class="text-align-end">{{item.tranData | calculateAverage: 'drSweeps' | number:'1.2-2'}}</td>
+                <td class="text-align-end">{{item.tranData | calculateAverage: 'drChgAndInt' | number:'1.2-2'}}</td>
+                <td class="text-align-end">{{item.tranData | calculateAverage: 'drOther' | number:'1.2-2'}}</td>
+                <td class="text-align-end" style="background: #e4e1c9;">{{item.tranData | calculateAverage: 'drTotal' | number:'1.2-2'}}</td>
+                
+              </tr>
+              <tr></tr>
+            </tbody>
+          </table>
+          <br>
+
+
+
+        </ng-container>
+        
+      </ng-container>
+      <ng-template #noData>
+        <p class="not-auth-message">
+          No Records Available
+        </p>
+      </ng-template>
+    </div>
+  </div>
+  

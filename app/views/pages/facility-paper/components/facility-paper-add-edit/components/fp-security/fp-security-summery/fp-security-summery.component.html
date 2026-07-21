@@ -1,0 +1,422 @@
+<mdb-card class="w-100-p border-none-card">
+  <div class="d-flex flex-row justify-content-between">
+    <div class="d-flex justify-content-start security-summary-heading">
+      Security Summary
+    </div>
+    <div class="d-flex justify-content-end">
+      <ng-container *appHasAnyPrivilege="masterDataPrivilege.ICAS_SETTINGS_FACILITY_PAPER_EDIT">
+        <ng-container *ngIf="isAbleToUpdate();else emptyDiv">
+          <ng-container *ngIf="!isGroupSecuritySummary()">
+            <button class="btn btn-sm btn-secondary cta-btn" type="button" mdbWavesEffect
+                    (click)="setFacilityGroupSecurity()"
+                    mdbTooltip="Add Groups" placement="left">
+              <mdb-icon fas icon="fas fa-plus" aria-hidden="true"></mdb-icon>
+            </button>
+          </ng-container>
+          <ng-container *ngIf="isGroupSecuritySummary()">
+            <button class="btn btn-sm btn-danger cta-btn delete-button" type="button" mdbWavesEffect
+                    (click)="setFacilityIndividualSecurity()"
+                    mdbTooltip="Remove Groups" placement="left">
+              <mdb-icon fas icon="trash-alt" aria-hidden="true"></mdb-icon>
+            </button>
+          </ng-container>
+        </ng-container>
+        <ng-template #emptyDiv>
+          <div style="height: 30px">
+          </div>
+        </ng-template>
+      </ng-container>
+    </div>
+  </div>
+
+  <form [formGroup]="componentForm">
+    <table class="custom-bordered-table width-100">
+      <thead>
+      <tr>
+        <th rowspan="2" colspan="2">Security Type</th>
+        <th colspan="2">Company (LKR)</th>
+        <th colspan="2" *ngIf="isGroupSecuritySummary()">
+          Group (LKR)
+        </th>
+      </tr>
+      <tr>
+        <th class="text-align-end">Value (Rs. Mn)</th>
+        <th>%</th>
+        <th *ngIf="isGroupSecuritySummary()" class="text-align-end">Value (Rs. Mn)
+        </th>
+        <th *ngIf="isGroupSecuritySummary()">%</th>
+      </tr>
+
+
+      <!--First Class Started-->
+      <tr>
+        <th class="text-align-start" colspan="2">
+          <div class="d-flex flex-row justify-content-between" style="padding-left: 4px !important;">
+            <div class="width-20 custom-td-height ">First Class</div>
+            <div class="width-80">
+              <ng-container *ngIf="isAbleToUpdate() && getFirstClassOptions().length >0">
+                <select id="firstClassSecurityTypeSelect" formControlName="firstClassSecurityType"
+                        class="custom-select-input border-bottom-none">
+                  <option></option>
+                  <option *ngFor="let item of getFirstClassOptions() "
+                          [value]="item.securityType">{{item.securityType}}</option>
+                </select>
+              </ng-container>
+            </div>
+          </div>
+
+        </th>
+        <th colspan="4"></th>
+      </tr>
+      </thead>
+
+      <tbody formArrayName="firstClassSecuritySummaryTopicsDTOs">
+      <tr *ngFor="let item of componentForm.get('firstClassSecuritySummaryTopicsDTOs')['controls'];
+           let i = index;"
+          [formGroupName]="i">
+        <td class="text-align-center width-60 justify-content-between" colspan="2">
+          <div class="d-flex flex-row justify-content-between w-100-p">
+            <p class="security-type">{{item.value.securityType}}</p>
+            <ng-container *ngIf="isAbleToUpdate()">
+              <ng-container *ngIf="item.value.fpSecuritySummaryTopicID">
+                <button class="btn btn-sm cta-btn topic-delete-button" type="button" mdbWavesEffect
+                        (click)="removeFirstClassSecuritySummaryTopic(item,i)"
+                        mdbTooltip="Remove" placement="left">
+                  <mdb-icon fas icon="trash-alt" aria-hidden="true"></mdb-icon>
+                </button>
+              </ng-container>
+
+              <ng-container *ngIf="!item.value.fpSecuritySummaryTopicID">
+                <button class="btn btn-sm cta-btn topic-delete-button" type="button" mdbWavesEffect
+                        (click)="removeFirstClassSecuritySummaryTopicFormRow(item,i)"
+                        mdbTooltip="Remove" placement="left">
+                  <mdb-icon fas icon="trash-alt" aria-hidden="true"></mdb-icon>
+                </button>
+              </ng-container>
+            </ng-container>
+          </div>
+        </td>
+        <td>
+          <input mdbValidate
+                 type="text"
+                 id="companyValue"
+                 (keydown)="validateNumber($event)"
+                 formControlName="companyValue"
+                 class="custom-text-input text-align-end"
+                 (focusout)="mnCurrencyService.patchFormControllerValue(item, 'companyValue')"
+                 mdbInput>
+        </td>
+        <td>
+          {{getGroupPercentage(item, 'companyValue', 'COMPANY')}}
+        </td>
+        <td *ngIf="isGroupSecuritySummary()">
+          <input mdbValidate
+                 type="text"
+                 id="groupValue"
+                 (keydown)="validateNumber($event)"
+                 formControlName="groupValue"
+                 class="custom-text-input text-align-end"
+                 [ngClass]="{'group-disabled': !isGroupSecuritySummary()}"
+                 (focusout)="mnCurrencyService.patchFormControllerValue(item, 'groupValue')"
+                 mdbInput>
+        </td>
+        <td *ngIf="isGroupSecuritySummary()">
+          {{getGroupPercentage(item, 'groupValue', 'GROUP')}}
+        </td>
+
+      </tr>
+      <tr>
+        <td colspan="2" class="text-align-start font-weight-bold custom-td-height"
+            style="padding-left: 6px !important;">Sub Total -
+          First Class
+        </td>
+        <td class="text-align-end font-weight-bold"
+            style="padding-right: 6px !important;">{{getCurrencyFormat(subTotalFirstClassCompany)}}</td>
+        <td class="font-weight-bold">{{subTotalFirstClassCompanyPercentage}}</td>
+        <td class="text-align-end font-weight-bold" style="padding-right: 6px !important;"
+            *ngIf="isGroupSecuritySummary()">{{getCurrencyFormat(subTotalFirstClassGroup)}}</td>
+        <td *ngIf="isGroupSecuritySummary()" class="font-weight-bold">{{subTotalFirstClassGroupPercentage}}</td>
+      </tr>
+      </tbody>
+
+      <!--First Class Ended-->
+
+
+
+      <!--Other Started-->
+
+      <thead>
+      <tr>
+        <th class="text-align-start" colspan="2">
+          <div class="d-flex flex-row justify-content-between">
+            <div class="width-20 custom-td-height" style="padding-left: 4px !important;">Other Securities</div>
+            <div class="width-80">
+              <ng-container *ngIf="isAbleToUpdate() && getOtherOptions().length >0">
+                <select id="otherSecurityTypeSelect" formControlName="otherSecurityType"
+                        class="custom-select-input border-bottom-none">
+                  <option></option>
+                  <option *ngFor="let item of getOtherOptions() "
+                          [value]="item.securityType">{{item.securityType}}</option>
+                </select>
+              </ng-container>
+            </div>
+          </div>
+        </th>
+        <th colspan="4"></th>
+      </tr>
+      </thead>
+
+      <tbody formArrayName="otherSecuritySummaryTopicsDTOs">
+      <tr *ngFor="let item of componentForm.get('otherSecuritySummaryTopicsDTOs')['controls'];
+           let i = index;"
+          [formGroupName]="i">
+        <td class="text-align-center width-60 justify-content-between" colspan="2">
+          <div class="d-flex flex-row justify-content-between w-100-p">
+            <p class="security-type">{{item.value.securityType}}</p>
+            <ng-container *ngIf="isAbleToUpdate()">
+              <ng-container *ngIf="item.value.fpSecuritySummaryTopicID">
+                <button class="btn btn-sm cta-btn topic-delete-button" type="button" mdbWavesEffect
+                        (click)="removeOtherSecuritySummaryTopic(item,i)"
+                        mdbTooltip="Remove" placement="left">
+                  <mdb-icon fas icon="trash-alt" aria-hidden="true"></mdb-icon>
+                </button>
+              </ng-container>
+              <ng-container *ngIf="!item.value.fpSecuritySummaryTopicID">
+                <button class="btn btn-sm cta-btn topic-delete-button" type="button" mdbWavesEffect
+                        (click)="removeOtherSecuritySummaryTopicFormRow(item,i)"
+                        mdbTooltip="Remove" placement="left">
+                  <mdb-icon fas icon="trash-alt" aria-hidden="true"></mdb-icon>
+                </button>
+              </ng-container>
+            </ng-container>
+          </div>
+        </td>
+        <td>
+          <input mdbValidate
+                 type="text"
+                 id="otherCompanyValue"
+                 (keydown)="validateNumber($event)"
+                 formControlName="companyValue"
+                 (focusout)="mnCurrencyService.patchFormControllerValue(item, 'companyValue')"
+                 class="custom-text-input text-align-end"
+                 mdbInput>
+
+        </td>
+        <td>
+          {{getGroupPercentage(item, 'companyValue', 'COMPANY')}}
+        </td>
+        <td *ngIf="isGroupSecuritySummary()">
+          <input mdbValidate
+                 type="text"
+                 id="otherGroupValue"
+                 (keydown)="validateNumber($event)"
+                 formControlName="groupValue"
+                 (focusout)="mnCurrencyService.patchFormControllerValue(item, 'groupValue')"
+                 class="custom-text-input text-align-end"
+                 [ngClass]="{'group-disabled': !isGroupSecuritySummary()}"
+                 mdbInput>
+        </td>
+        <td *ngIf="isGroupSecuritySummary()">
+          {{getGroupPercentage(item, 'groupValue', 'GROUP')}}
+        </td>
+      </tr>
+      <!-- </tbody> -->
+
+      <!--Other Ended-->
+
+      <!-- New Start-->
+        <tr>
+          <td colspan="2" class="text-align-start font-weight-bold custom-td-height"
+              style="padding-left: 6px !important;">Sub Total -
+            Other Securities
+          </td>
+          <td class="text-align-end font-weight-bold"
+              style="padding-right: 6px !important;">{{getCurrencyFormat(subTotalOtherCompany)}}</td>
+          <td class="font-weight-bold">{{subTotalOtherCompanyPercentage}}</td>
+          <td class="text-align-end font-weight-bold" style="padding-right: 6px !important;"
+              *ngIf="isGroupSecuritySummary()">{{getCurrencyFormat(subTotalOtherCompanyGroup)}}</td>
+          <td *ngIf="isGroupSecuritySummary()" class="font-weight-bold">{{subTotalOtherCompanyGroupPercentage}}</td>
+        </tr>
+        <!-- New End-->
+
+
+      <tr>
+        <td colspan="2" class="text-align-start font-weight-bold custom-td-height"
+            style="padding-left: 6px !important;">Sub Total - (1st
+          class + Other Securities)
+        </td>
+        <td class="text-align-end font-weight-bold"
+            style="padding-right: 6px !important;">{{getCurrencyFormat(subTotalFirstClassPlusOthersCompany)}}</td>
+        <td class="font-weight-bold">{{subTotalFirstClassPlusOthersCompanyPercentage}}</td>
+        <td class="text-align-end font-weight-bold" style="padding-right: 6px !important;"
+            *ngIf="isGroupSecuritySummary()">{{getCurrencyFormat(subTotalFirstClassPlusOthersGroup)}}</td>
+        <td *ngIf="isGroupSecuritySummary()"
+            class="font-weight-bold">{{subTotalFirstClassPlusOthersGroupPercentage}}</td>
+      </tr>
+      </tbody>
+
+      <!--Clean Started-->
+      <thead>
+      <tr>
+        <th class="text-align-start" colspan="2">
+          <div class="d-flex flex-row justify-content-between">
+            <div class="width-20" style="padding-left: 4px !important;"></div>
+            <div class="width-80">
+              <ng-container *ngIf="isAbleToUpdate() && getDefaultOptions().length >0">
+                <select id="defaultSecurityTypeSelect" formControlName="defaultSecurityType"
+                        class="custom-select-input border-bottom-none">
+                  <option></option>
+                  <option *ngFor="let item of getDefaultOptions()"
+                          [value]="item.securityType">{{item.securityType}}</option>
+                </select>
+              </ng-container>
+            </div>
+          </div>
+        </th>
+        <th colspan="4"></th>
+      </tr>
+      </thead>
+
+      <tbody formArrayName="defaultSecuritySummaryTopicsDTOs">
+      <tr *ngFor="let item of componentForm.get('defaultSecuritySummaryTopicsDTOs')['controls'];
+           let i = index;"
+          [formGroupName]="i">
+        <td class="text-align-center width-60 justify-content-between" colspan="2">
+          <div class="d-flex flex-row justify-content-between w-100-p">
+            <p class="security-type">{{item.value.securityType}}</p>
+            <ng-container *ngIf="isAbleToUpdate()">
+              <ng-container *ngIf="item.value.fpSecuritySummaryTopicID">
+                <button class="btn btn-sm cta-btn topic-delete-button" type="button" mdbWavesEffect
+                        (click)="removeDefaultSecuritySummaryTopic(item,i)"
+                        mdbTooltip="Remove" placement="left">
+                  <mdb-icon fas icon="trash-alt" aria-hidden="true"></mdb-icon>
+                </button>
+              </ng-container>
+              <ng-container *ngIf="!item.value.fpSecuritySummaryTopicID">
+                <button class="btn btn-sm cta-btn topic-delete-button" type="button" mdbWavesEffect
+                        (click)="removeDefaultSecuritySummaryTopicFormRow(item,i)"
+                        mdbTooltip="Remove" placement="left">
+                  <mdb-icon fas icon="trash-alt" aria-hidden="true"></mdb-icon>
+                </button>
+              </ng-container>
+            </ng-container>
+          </div>
+        </td>
+        <td>
+          <input mdbValidate
+                 type="text"
+                 id="defaultCompanyValue"
+                 (keydown)="validateNumber($event)"
+                 formControlName="companyValue"
+                 (focusout)="mnCurrencyService.patchFormControllerValue(item, 'companyValue')"
+                 class="custom-text-input text-align-end"
+                 mdbInput>
+        </td>
+        <td>
+          {{getGroupPercentage(item, 'companyValue', 'COMPANY')}}
+        </td>
+        <td *ngIf="isGroupSecuritySummary()">
+          <input mdbValidate
+                 type="text"
+                 id="defaultGroupValue"
+                 (keydown)="validateNumber($event)"
+                 formControlName="groupValue"
+                 (focusout)="mnCurrencyService.patchFormControllerValue(item, 'groupValue')"
+                 class="custom-text-input text-align-end"
+                 [ngClass]="{'group-disabled': !isGroupSecuritySummary()}"
+                 mdbInput>
+        </td>
+        <td *ngIf="isGroupSecuritySummary()" class="padding-right-6px">
+          {{getGroupPercentage(item, 'groupValue', 'GROUP')}}
+        </td>
+      </tr>
+
+      <!-- Clean Total Start-->
+      <tr>
+        <td colspan="2" class="text-align-start font-weight-bold custom-td-height"
+            style="padding-left: 6px !important;">Sub Total -
+          Clean
+        </td>
+        <td class="text-align-end font-weight-bold"
+            style="padding-right: 6px !important;">{{getCurrencyFormat(subTotalClean)}}</td>
+        <td class="font-weight-bold">{{subTotalCleanPercentage}}</td>
+        <td class="text-align-end font-weight-bold" style="padding-right: 6px !important;"
+            *ngIf="isGroupSecuritySummary()">{{getCurrencyFormat(subTotalCleanGroup)}}</td>
+        <td *ngIf="isGroupSecuritySummary()" class="font-weight-bold">{{subTotalCleanGroupPercentage}}</td>
+      </tr>
+      <!-- Clean Total End-->
+
+      <!--Clean Ended-->
+
+
+      <tr>
+        <td colspan="2" class="text-align-start font-weight-bold custom-td-height"
+            style="padding-left: 6px !important;">Grand Total
+        </td>
+        <td class="text-align-end font-weight-bold"
+            style="padding-right: 6px !important;">{{getCurrencyFormat(totalCompany)}}</td>
+        <td class="font-weight-bold">{{totalCompanyPercentage}}</td>
+        <td class="text-align-end font-weight-bold" style="padding-right: 6px !important;"
+            *ngIf="isGroupSecuritySummary()">{{getCurrencyFormat(totalGroup)}}</td>
+        <td *ngIf="isGroupSecuritySummary()" class="font-weight-bold">{{totalGroupPercentage}}</td>
+      </tr>
+      </tbody>
+    </table>
+  </form>
+  <div class="d-flex justify-content-end">
+    <ng-container *appHasAnyPrivilege="masterDataPrivilege.ICAS_SETTINGS_FACILITY_PAPER_EDIT">
+      <ng-container *ngIf="isAbleToUpdate()">
+        <button type="button"
+                mdbBtn
+                size="sm"
+                color="light"
+                [disabled]="!isValid()"
+                (click)="saveUpdateSecuritySummery()"
+                mdbWavesEffect>Update
+        </button>
+      </ng-container>
+    </ng-container>
+  </div>
+  <div class="mt-15p">
+    <ng-container>
+      <div class="d-flex justify-content-start security-summary-heading">
+        <ng-container *ngIf="!isDisabled">
+          <button mdbBtn
+                  *ngIf="!fpSecuritySummeryDTO.limitSummery"
+                  type="button"
+                  mdbTooltip="Add Summary Remark"
+                  color="info"
+                  class="btn-width margin-unset"
+                  size="sm"
+                  outline="true"
+                  mdbWavesEffect
+                  (click)="addContent($event,fpSecuritySummeryDTO.limitSummery)">
+            <span>Add Summary Remark</span>
+          </button>
+
+          <div *ngIf="fpSecuritySummeryDTO.limitSummery" class="d-flex justify-content-start security-summary-heading">
+            <span>
+              Summary Remark
+            <button
+              type="button"
+              class="btn btn-sm cta-btn summary-edit-button"
+              (click)="addContent($event,fpSecuritySummeryDTO.limitSummery)"
+              mdbWavesEffect
+              mdbTooltip="Edit Remark"
+              placement="left">
+            <mdb-icon fas icon="pencil-alt" aria-hidden="true"></mdb-icon>
+          </button>
+          </span>
+          </div>
+        </ng-container>
+      </div>
+      <div class="d-flex justify-content-start security-summary-heading" *ngIf="isDisabled">
+        Summary Remark
+      </div>
+      <div style="text-align: unset !important;"
+           [innerHTML]="getDataWithPreTag(fpSecuritySummeryDTO.limitSummery ? fpSecuritySummeryDTO.limitSummery : '') | safeHtml">
+      </div>
+    </ng-container>
+  </div>
+
+</mdb-card>

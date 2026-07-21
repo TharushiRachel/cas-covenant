@@ -1,0 +1,1345 @@
+<div class="modal-header modal-topic">
+    <h4 class="modal-title w-100 font-weight-bold"> Edit Digital Application Form <br>
+        <h4 class="modal-title w-100 font-weight-bold">{{ getDefualtDocumentName() }} </h4>
+    </h4>
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="mdbModalRef.hide()">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+
+<div class="modal-body mx-3 modal-detail form-margin">
+
+    <table class="table border-0">
+        <tr *ngFor="let feild of documentInputFields">
+            <ng-container *ngIf="feild.showInput 
+                && !isInsuranceConsentFieldId(feild.id) 
+                && !isSection6Field(feild.id) 
+                && !isSection7Field(feild.id) 
+                && !isSection10Field(feild.id) 
+                && !isSection5Field(feild.id)
+                && !isOfficeUseField(feild.id)
+                && isConditionalFieldVisible(feild.id)
+                && !isSecurityToBeOffered(feild.id)
+                && !isSection6SurplusField(feild.id) ">
+                <td class="label-td">
+                    <label [for]="feild.id">
+                        {{ feild.label }}
+                        <ng-container *ngIf="feild.isRequired">*</ng-container>
+                    </label>
+                </td>
+                <td>
+                    <ng-container *ngIf="feild.inputType === 'date'">
+                        <mdb-date-picker [id]="feild.id" class="form-control m-0 px-2 py-0" [(ngModel)]="feild.value"
+                            [options]="datePickerOptions" [inline]="true" [disabled]="feild.disabled">
+                        </mdb-date-picker>
+                    </ng-container>
+
+                    <ng-container *ngIf="feild.inputType === 'text'">
+                        <input [type]="feild.inputType" [id]="feild.id" class="form-control" [(ngModel)]="feild.value"
+                            mdbInput [disabled]="feild.disabled">
+                    </ng-container>
+
+                    <ng-container *ngIf="feild.inputType === 'textarea'">
+                        <textarea [id]="feild.id" class="form-control" [(ngModel)]="feild.value" mdbInput
+                            [disabled]="feild.disabled"></textarea>
+                    </ng-container>
+
+                    <ng-container *ngIf="feild.inputType === 'decimal'">
+                        <input type="text" [id]="feild.id" class="form-control"
+                            (focusout)="setCurrencyFormatValue(feild)" [(ngModel)]="feild.value" mdbInput
+                            [disabled]="isSection6TotalField(feild.id) || feild.disabled">
+                        <span class="text-danger">{{feild.error}}</span>
+                    </ng-container>
+
+                    <!-- select/selectText -->
+                    <ng-container *ngIf="feild.inputType === 'select' || feild.inputType === 'selectText'">
+                        <mdb-select class="m-0 px-2 py-0" [id]="feild.id" [options]="feild.selectOptions"
+                            [allowClear]="true" [(ngModel)]="feild.value" [disabled]="feild.disabled"
+                            (ngModelChange)="onSelectChange(feild, $event)">
+                        </mdb-select>
+                    </ng-container>
+
+                    <!-- MultiSelect (Nationality gets a custom UI; others stay mdb-select) -->
+                    <ng-container *ngIf="feild.inputType === 'multiSelect'">
+                        <!-- Nationality: custom checkbox list -->
+                        <ng-container *ngIf="isNationalityFieldId(feild.id); else genericMultiSelect">
+                            <div class="border rounded p-2" style="background: #fff;">
+                                <div class="form-check" *ngFor="let opt of feild.selectOptions">
+                                    <input class="form-check-input" type="checkbox" [id]="feild.id + '_' + opt.value"
+                                        [checked]="isChecked(feild, opt.value)"
+                                        (change)="toggleMultiOption(feild, opt.value, $event.target.checked)"
+                                        [disabled]="feild.disabled">
+                                    <label class="form-check-label" [for]="feild.id + '_' + opt.value">
+                                        {{ opt.label }}
+                                    </label>
+                                </div>
+                            </div>
+                        </ng-container>
+
+                        <!-- Non-nationality multi-selects: keep mdb-select exactly as before -->
+                        <ng-template #genericMultiSelect>
+                            <mdb-select class="m-0 px-2 py-0" [id]="feild.id" [options]="feild.selectOptions"
+                                [multiple]="true" [allowClear]="true" [(ngModel)]="feild.value"
+                                [disabled]="feild.disabled">
+                            </mdb-select>
+                        </ng-template>
+                    </ng-container>
+                    <!-- Companion “Other” field rendered BELOW the base field -->
+                    <!-- <ng-container >
+                        <div class="mt-2" style="font-size: 13px;">
+                            <input class="form-control form-control-sm m-0 px-2 py-0" [id]="getOtherFieldId(feild.id)"
+                                [(ngModel)]="getOtherFieldModel(feild).value"
+                                [disabled]="getOtherFieldModel(feild).disabled" [required]="true"
+                                placeholder="Please specify" />
+                        </div>
+                    </ng-container> -->
+
+                </td>
+            </ng-container>
+        </tr>
+    </table>
+    <!-- 3. Generic assets sections (LB, MV, STD, LIP)  -->
+    <ng-container *ngFor="let sec of assetSectionsOrdered">
+        <div class="card mt-3">
+            <div class="card-header py-2">
+                <strong>{{ sec.title }}</strong>
+            </div>
+
+            <div class="card-body py-2">
+                <div class="row">
+                    <div class="col-md-6 mb-2" *ngFor="let col of sec.columns; let i = index">
+                        <label class="form-label">{{ col.label || col.key }}</label>
+
+                        <!-- textarea for first column only when LB (asset description) -->
+                        <textarea *ngIf="sec.key === 'LB' && i === 0" class="form-control" rows="3"
+                            [(ngModel)]="sec.formModel[col.key]"
+                            style="border: 1px solid #eef2f6 !important; border-radius: 5px !important;"></textarea>
+
+                        <!-- number/text input -->
+                        <input *ngIf="!(sec.key === 'LB' && i === 0)" [type]="col.type === 'currency' ? 'text' : 'text'"
+                            class="form-control" inputmode="decimal"
+                            [ngClass]="{ 'is-invalid': assetErrors[sec.key] && assetErrors[sec.key][col.key] }"
+                            style="border: 1px solid #eef2f6 !important; border-radius: 5px !important;"
+                            [(ngModel)]="sec.formModel[col.key]"
+                            (input)="onAssetInputChange(sec.key, col, $event.target.value)" />
+                        <div *ngIf="assetErrors[sec.key] && assetErrors[sec.key][col.key]"
+                            class="invalid-feedback d-block">
+                            {{ assetErrors[sec.key][col.key] }}
+                        </div>
+                    </div>
+
+                    <div class="col-12">
+                        <button type="button" class="btn btn-primary btn-sm" (click)="addRow(sec.key)"
+                            [disabled]="!canAddAssetRow(sec.key)">
+                            Add row
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Preview -->
+        <div class="card mt-2" *ngIf="sec.rows.length > 0">
+            <div class="card-header py-2">
+                <strong>{{ sec.title.replace('Add Row', 'Preview') }}</strong>
+            </div>
+            <div class="card-body py-2">
+                <div class="table-responsive">
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th *ngFor="let col of sec.columns">{{ col.label || col.key }}</th>
+                                <th style="width: 60px;"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let r of sec.rows; let i = index">
+                                <td *ngFor="let col of sec.columns">
+                                    <ng-container *ngIf="col.type === 'currency'; else textCell">
+                                        {{ formatCurrency(r[col.key]) }}
+                                    </ng-container>
+                                    <ng-template #textCell>{{ r[col.key] }}</ng-template>
+                                </td>
+                                <td>
+                                    <button type="button" class="btn btn-link btn-sm text-danger"
+                                        (click)="removeRow(sec.key, i)">
+                                        Remove
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="d-flex justify-content-end mt-2" *ngIf="sec.sumKey">
+                    <div class="text-end">
+                        <div style="font-weight: 600;">
+                            {{ sec.key === 'LB' ? 'Total Market Value'
+                            : sec.key === 'MV' ? 'Total Market Value'
+                            : sec.key === 'STD' ? 'Total Value'
+                            : sec.key === 'LIP' ? 'Total Sum Assured' : 'Total' }}
+                        </div>
+                        <div>{{ formatCurrency(computeTotal(sec.key)) }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </ng-container>
+
+    <!-- 4. FACILITY DETAILS – form only -->
+    <ng-container *ngIf="showFacilityDetailsSection">
+        <div class="card mt-3">
+            <div class="card-header py-2">
+                <strong>4. FACILITY DETAILS</strong>
+            </div>
+
+            <div class="card-body py-2">
+                <div class="table-responsive" *ngIf="facilityRows?.length > 0; else noFacilityRows">
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th>4.1 Type of facility required</th>
+                                <th>4.2 Purpose of facility</th>
+                                <th>4.3 Amount of facility requested</th>
+                                <th>4.4 No. of years required for repayment.</th>
+                                <th>4.5 Repayment Option</th>
+                                <th>4.6 Preferred loan deduction date</th>
+                                <th>4.7 Applicant’s contribution(Equity)</th>
+                                <th>4.8 Advance payments (if any)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let r of facilityRows; let i = index">
+                                <!-- read-only server-sourced -->
+                                <td>{{ r.typeOfFacilityRequired }}</td>
+                                <td>{{ r.purposeOfFacility }}</td>
+                                <td style="text-align:right;">{{ formatCurrency(r.amountOfFaclity) }}</td>
+                                <td>{{ r.numberOfYearsRequired }}</td>
+
+                                <!-- editable; add ngModelChange to trigger live sync -->
+                                <td>
+                                    <mdb-select class="m-0 px-2 py-0" [options]="repaymentOptions" [allowClear]="true"
+                                        [(ngModel)]="r.repaymentOption" (ngModelChange)="onFacilityCellChange()">
+                                    </mdb-select>
+                                </td>
+                                <td>
+                                    <mdb-select class="m-0 px-2 py-0" [options]="preferedLoanDedDate"
+                                        [allowClear]="true" [(ngModel)]="r.preferedLoanDedDate"
+                                        (ngModelChange)="onFacilityCellChange()">
+                                    </mdb-select>
+                                </td>
+
+                                <td>
+                                    <input type="text" class="form-control" inputmode="decimal"
+                                        [(ngModel)]="r.applicantsContribution"
+                                        (input)="validateFacilityNumericInline(r, 'applicantsContribution')"
+                                        (ngModelChange)="onFacilityCellChange()"
+                                        style="border:1px solid #eef2f6 !important; border-radius:5px !important;">
+                                </td>
+
+                                <td>
+                                    <input type="text" class="form-control" [(ngModel)]="r.advancePayement"
+                                        (ngModelChange)="onFacilityCellChange()"
+                                        style="border:1px solid #eef2f6 !important; border-radius:5px !important;">
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <ng-template #noFacilityRows>
+                    <div class="text-muted">No facilities found for this lead.</div>
+                </ng-template>
+            </div>
+        </div>
+    </ng-container>
+
+    <!-- 5. SECURITY TO BE OFFERED  -->
+    <ng-container *ngIf="showSecurotyToBeOfferedSection">
+        <div class="card mt-3">
+            <div class="card-header py-2">
+                <strong>5. SECURITY TO BE OFFERED</strong>
+            </div>
+
+            <div class="card-body py-2">
+                <div class="row">
+
+                    <!-- 5.0 Description (free text) -->
+                    <div class="col-12 mb-3" *ngIf="getField(SECURITY_TO_OFFERED_IDS.toBeOffered) as f">
+                        <label class="form-label">Description of the property to be mortgaged (if applicable)</label>
+                        <textarea class="form-control" rows="4" [id]="f.id" [(ngModel)]="f.value"
+                            style="border: 1px solid #eef2f6 !important; border-radius: 5px !important;"
+                            [disabled]="f.disabled"></textarea>
+                    </div>
+
+                    <!-- 5.1 Location -->
+                    <div class="col-md-6 mb-2" *ngIf="getField(SECURITY_TO_OFFERED_IDS.location) as f">
+                        <label class="form-label">Location</label>
+                        <input type="text" class="form-control" [id]="f.id" [(ngModel)]="f.value"
+                            style="border: 1px solid #eef2f6 !important; border-radius: 5px !important;"
+                            [disabled]="f.disabled" />
+                    </div>
+
+                    <!-- 5.2 Plan No -->
+                    <div class="col-md-6 mb-2" *ngIf="getField(SECURITY_TO_OFFERED_IDS.plan) as f">
+                        <label class="form-label">Plan No</label>
+                        <input type="text" class="form-control" [id]="f.id" [(ngModel)]="f.value"
+                            style="border: 1px solid #eef2f6 !important; border-radius: 5px !important;"
+                            [disabled]="f.disabled" />
+                    </div>
+
+                    <!-- 5.3 Lot No -->
+                    <div class="col-md-6 mb-2" *ngIf="getField(SECURITY_TO_OFFERED_IDS.lotNo) as f">
+                        <label class="form-label">Lot No</label>
+                        <input type="text" class="form-control" [id]="f.id" [(ngModel)]="f.value"
+                            style="border: 1px solid #eef2f6 !important; border-radius: 5px !important;"
+                            [disabled]="f.disabled" />
+                    </div>
+
+                    <!-- 5.4 Extent -->
+                    <div class="col-md-6 mb-2" *ngIf="getField(SECURITY_TO_OFFERED_IDS.extent) as f">
+                        <label class="form-label">Extent</label>
+                        <input type="text" class="form-control" [id]="f.id" [(ngModel)]="f.value"
+                            style="border: 1px solid #eef2f6 !important; border-radius: 5px !important;"
+                            [disabled]="f.disabled" />
+                    </div>
+
+                    <!-- 5.5 Ownership -->
+                    <div class="col-md-6 mb-2" *ngIf="getField(SECURITY_TO_OFFERED_IDS.ownership) as f">
+                        <label class="form-label">Ownership</label>
+                        <input type="text" class="form-control" [id]="f.id" [(ngModel)]="f.value"
+                            style="border: 1px solid #eef2f6 !important; border-radius: 5px !important;"
+                            [disabled]="f.disabled" />
+                    </div>
+
+                    <!-- 5.6 Name of Land -->
+                    <div class="col-md-6 mb-2" *ngIf="getField(SECURITY_TO_OFFERED_IDS.nameOfLand) as f">
+                        <label class="form-label">Name of Land</label>
+                        <input type="text" class="form-control" [id]="f.id" [(ngModel)]="f.value"
+                            style="border: 1px solid #eef2f6 !important; border-radius: 5px !important;"
+                            [disabled]="f.disabled" />
+                    </div>
+
+                    <!-- 5.7 Floor Area (sq.ft.) -->
+                    <div class="col-md-6 mb-2" *ngIf="getField(SECURITY_TO_OFFERED_IDS.floorArea) as f">
+                        <label class="form-label">Floor Area of the building (if any) – sq.ft.</label>
+                        <input type="text" class="form-control" inputmode="decimal" [id]="f.id" [(ngModel)]="f.value"
+                            (focusout)="setCurrencyFormatValue(f)"
+                            (input)="validateSecrityTobeOffered('floorArea', f.value)"
+                            [ngClass]="{ 'is-invalid': securityToBeOfferedErros.floorArea }"
+                            style="border: 1px solid #eef2f6 !important; border-radius: 5px !important;"
+                            [disabled]="f.disabled" />
+                        <div *ngIf="securityToBeOfferedErros.floorArea" class="invalid-feedback d-block">
+                            {{ securityToBeOfferedErros.floorArea }}
+                        </div>
+                    </div>
+
+                    <!-- 5.8 Present Market Value - Rs. -->
+                    <div class="col-md-6 mb-2" *ngIf="getField(SECURITY_TO_OFFERED_IDS.marketValue) as f">
+                        <label class="form-label">Present Market Value - Rs.</label>
+                        <input type="text" class="form-control" inputmode="decimal" [id]="f.id" [(ngModel)]="f.value"
+                            (focusout)="setCurrencyFormatValue(f)"
+                            style="border: 1px solid #eef2f6 !important; border-radius: 5px !important;"
+                            (input)="validateSecrityTobeOffered('marketValue', f.value)" [disabled]="f.disabled" />
+                        <div *ngIf="securityToBeOfferedErros.marketValue" class="invalid-feedback d-block">
+                            {{ securityToBeOfferedErros.marketValue }}
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </ng-container>
+
+    <!--  5.1 INSURANCE CONSENT – paragraph with inline inputs  -->
+    <div class="card mt-3">
+        <div class="card-header py-2"><strong>5.1 INSURANCE CONSENT</strong></div>
+        <div class="card-body py-2">
+            <div class="consent-cell">
+                <!-- First paragraph -->
+                <p class="consent-text">
+                    <span class="font-weight-bold">{{ isPluralApplicants ? 'We' : 'I' }}</span> hereby
+                    <!-- agree/disagree -->
+
+                    <ng-container *ngIf="agreeDisagreeField">
+                        <mdb-select class="mx-1" [id]="agreeDisagreeField.id"
+                            [options]="agreeDisagreeField.selectOptions" [allowClear]="true"
+                            [(ngModel)]="agreeDisagreeField.value" [disabled]="agreeDisagreeField.disabled">
+                        </mdb-select>
+                    </ng-container>
+
+                    to authorize Sampath Bank Plc to provide information to Insurance companies given by
+                    <span class="font-weight-bold">{{ isPluralApplicants ? 'us' : 'me' }}</span>
+                    through,
+                </p>
+
+                <!-- Annexures -->
+                <div class="annex-list">
+                    <ng-container *ngIf="annexuresField">
+                        <mdb-select class="m-0 px-2 py-0" [id]="annexuresField.id"
+                            [options]="annexuresField.selectOptions" [multiple]="true" [allowClear]="true"
+                            [(ngModel)]="annexuresField.value" [disabled]="annexuresField.disabled">
+                        </mdb-select>
+                    </ng-container>
+                </div>
+
+                <!-- Second paragraph + Account No -->
+                <p class="consent-text">
+                    and request the insurance policy to be channeled through Sampath Bank Bancassurance until the expiry
+                    of the
+                    credit facility with Sampath Bank Plc. <span class="font-weight-bold">{{ isPluralApplicants ? 'We' :
+                        'I' }}</span>
+                    hereby authorize the Bank to debit aforesaid
+                    <span class="font-weight-bold">{{ isPluralApplicants ? 'our' : 'my' }}</span> nominated account no
+                    <ng-container *ngIf="accountNoField">
+                        <input type="text" class="form-control d-inline-block mx-1"
+                            style="width: 220px; border-bottom: 1px solid #eef2f6 !important;" [id]="accountNoField.id"
+                            [(ngModel)]="accountNoField.value" [disabled]="accountNoField.disabled" />
+                    </ng-container>
+                    (or any other account held by <span class="font-weight-bold">{{ isPluralApplicants ? 'us' : 'me'
+                        }}</span>,
+                    if the nominated accounts hold insufficient funds) to recover relevant insurance premium/s in full.
+                </p>
+
+                <!-- Loan required -->
+                <p class="consent-text" style="margin-top: 15px; font-weight: bold;">
+                    Insurance Loan Required -
+                    <ng-container *ngIf="loanRequiredField">
+                        <mdb-select class="mx-1" [id]="loanRequiredField.id" [options]="loanRequiredField.selectOptions"
+                            [allowClear]="true" [(ngModel)]="loanRequiredField.value"
+                            [disabled]="loanRequiredField.disabled">
+                        </mdb-select>
+                    </ng-container>
+                </p>
+
+                <p class="consent-text" style="margin-top: 15px; color: red;">
+                    (Only applicable for leasing facilities)
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 6. MONTHLY INCOME & EXPENDITURE OF APPLICANT/S – applicant-wise form -->
+    <ng-container *ngIf="showSection6 && section6Applicants?.length">
+        <div class="card mt-3">
+            <div class="card-header py-2">
+                <strong>6. MONTHLY INCOME &amp; EXPENDITURE OF APPLICANT/S</strong>
+                <div style="font-size: 12px; font-weight: 600;">(Documentary evidence to be submitted for income)</div>
+            </div>
+
+            <div class="card-body py-2">
+                <div class="row">
+                    <!-- One sub-card per applicant -->
+                    <div class="col-12 mb-3" *ngFor="let a of section6Applicants">
+                        <div class="card">
+                            <div class="card-header py-2">
+                                <strong>Applicant {{ a.applicantIndex }}</strong>
+                            </div>
+                            <div class="card-body py-2">
+                                <div class="row">
+                                    <!-- Left: INCOME -->
+                                    <div class="col-md-6">
+                                        <div class="mb-2"><strong>Income</strong></div>
+
+                                        <label class="form-label">Profession / Employment</label>
+                                        <input type="text" class="form-control"
+                                            style="border: 1px solid #eef2f6 !important; border-radius: 5px !important;"
+                                            [(ngModel)]="a.income.professionEmployment"
+                                            (focusout)="onSection6AmountBlur(a.applicantIndex, 'Income', 'professionEmployment')" />
+
+                                        <label class="form-label mt-2">Business</label>
+                                        <input type="text" class="form-control" inputmode="decimal"
+                                            [(ngModel)]="a.income.business"
+                                            (input)="validateSection6Input(a.applicantIndex, 'Income', 'business', a.income.business)"
+                                            [ngClass]="{'is-invalid': isSection6FieldInvalid(a.applicantIndex, 'Income', 'business')}"
+                                            style="border: 1px solid #eef2f6 !important; border-radius: 5px !important;" />
+
+                                        <div *ngIf="isSection6FieldInvalid(a.applicantIndex, 'Income', 'business')"
+                                            class="invalid-feedback d-block">
+                                            {{ getSection6Error(a.applicantIndex, 'Income', 'business') }}
+                                        </div>
+
+                                        <label class="form-label mt-2">Industry</label>
+                                        <input type="text" class="form-control" [(ngModel)]="a.income.industry"
+                                            style="border: 1px solid #eef2f6 !important; border-radius: 5px !important;"
+                                            (focusout)="onSection6AmountBlur(a.applicantIndex, 'Income', 'industry')" />
+
+                                        <label class="form-label mt-2">Agriculture</label>
+                                        <input type="text" class="form-control" [(ngModel)]="a.income.agriculture"
+                                            style="border: 1px solid #eef2f6 !important; border-radius: 5px !important;"
+                                            (focusout)="onSection6AmountBlur(a.applicantIndex, 'Income', 'agriculture')" />
+
+                                        <label class="form-label mt-2">Interest</label>
+                                        <input type="text" class="form-control" [(ngModel)]="a.income.interest"
+                                            style="border: 1px solid #eef2f6 !important; border-radius: 5px !important;"
+                                            (focusout)="onSection6AmountBlur(a.applicantIndex, 'Income', 'interest')" />
+
+                                        <label class="form-label mt-2">Dividends</label>
+                                        <input type="text" class="form-control" [(ngModel)]="a.income.dividends"
+                                            style="border: 1px solid #eef2f6 !important; border-radius: 5px !important;"
+                                            (focusout)="onSection6AmountBlur(a.applicantIndex, 'Income', 'dividends')" />
+
+                                        <label class="form-label mt-2">Rent / Lease</label>
+                                        <input type="text" class="form-control" [(ngModel)]="a.income.rentLease"
+                                            style="border: 1px solid #eef2f6 !important; border-radius: 5px !important;"
+                                            (focusout)="onSection6AmountBlur(a.applicantIndex, 'Income', 'rentLease')" />
+
+                                        <label class="form-label mt-2">Commissions</label>
+                                        <input type="text" class="form-control" [(ngModel)]="a.income.commissions"
+                                            style="border: 1px solid #eef2f6 !important; border-radius: 5px !important;"
+                                            (focusout)="onSection6AmountBlur(a.applicantIndex, 'Income', 'commissions')" />
+
+                                        <label class="form-label mt-2">Others (Pls specify)</label>
+                                        <input type="text" class="form-control" [(ngModel)]="a.income.others"
+                                            style="border: 1px solid #eef2f6 !important; border-radius: 5px !important;"
+                                            (focusout)="onSection6AmountBlur(a.applicantIndex, 'Income', 'others')" />
+
+                                        <label class="form-label mt-2">Total (Income)</label>
+                                        <input type="text" class="form-control" [value]="a.income.total" disabled
+                                            style="border: 1px solid #eef2f6 !important; border-radius: 5px !important;" />
+                                    </div>
+
+                                    <!-- Right: EXPENDITURE -->
+                                    <div class="col-md-6">
+                                        <div class="mb-2"><strong>Expenditure</strong></div>
+
+                                        <label class="form-label">House rent</label>
+                                        <input type="text" class="form-control" [(ngModel)]="a.expenditure.houseRent"
+                                            (focusout)="onSection6AmountBlur(a.applicantIndex, 'Expenditure', 'houseRent')"
+                                            style="border: 1px solid #eef2f6 !important; border-radius: 5px !important;" />
+
+                                        <label class="form-label mt-2">Household expenses</label>
+                                        <input type="text" class="form-control"
+                                            [(ngModel)]="a.expenditure.householdExpenses"
+                                            (focusout)="onSection6AmountBlur(a.applicantIndex, 'Expenditure', 'householdExpenses')"
+                                            style="border: 1px solid #eef2f6 !important; border-radius: 5px !important;" />
+
+                                        <label class="form-label mt-2">Clothing</label>
+                                        <input type="text" class="form-control" [(ngModel)]="a.expenditure.clothing"
+                                            (focusout)="onSection6AmountBlur(a.applicantIndex, 'Expenditure', 'clothing')"
+                                            style="border: 1px solid #eef2f6 !important; border-radius: 5px !important;" />
+
+                                        <label class="form-label mt-2">Children’s education</label>
+                                        <input type="text" class="form-control"
+                                            [(ngModel)]="a.expenditure.childrensEducation"
+                                            (focusout)="onSection6AmountBlur(a.applicantIndex, 'Expenditure', 'childrensEducation')"
+                                            style="border: 1px solid #eef2f6 !important; border-radius: 5px !important;" />
+
+                                        <label class="form-label mt-2">Personal</label>
+                                        <input type="text" class="form-control" [(ngModel)]="a.expenditure.personal"
+                                            (focusout)="onSection6AmountBlur(a.applicantIndex, 'Expenditure', 'personal')"
+                                            style="border: 1px solid #eef2f6 !important; border-radius: 5px !important;" />
+
+                                        <label class="form-label mt-2">Traveling</label>
+                                        <input type="text" class="form-control" [(ngModel)]="a.expenditure.traveling"
+                                            (focusout)="onSection6AmountBlur(a.applicantIndex, 'Expenditure', 'traveling')"
+                                            style="border: 1px solid #eef2f6 !important; border-radius: 5px !important;" />
+
+                                        <label class="form-label mt-2">Medical</label>
+                                        <input type="text" class="form-control" [(ngModel)]="a.expenditure.medical"
+                                            (focusout)="onSection6AmountBlur(a.applicantIndex, 'Expenditure', 'medical')"
+                                            style="border: 1px solid #eef2f6 !important; border-radius: 5px !important;" />
+
+                                        <label class="form-label mt-2">Loan repayment</label>
+                                        <input type="text" class="form-control"
+                                            [(ngModel)]="a.expenditure.loanRepayment"
+                                            (focusout)="onSection6AmountBlur(a.applicantIndex, 'Expenditure', 'loanRepayment')"
+                                            style="border: 1px solid #eef2f6 !important; border-radius: 5px !important;" />
+
+                                        <label class="form-label mt-2">Credit Card Payment</label>
+                                        <input type="text" class="form-control"
+                                            [(ngModel)]="a.expenditure.creditCardPayment"
+                                            (focusout)="onSection6AmountBlur(a.applicantIndex, 'Expenditure', 'creditCardPayment')"
+                                            style="border: 1px solid #eef2f6 !important; border-radius: 5px !important;" />
+
+                                        <label class="form-label mt-2">Rates &amp; Taxes</label>
+                                        <input type="text" class="form-control"
+                                            [(ngModel)]="a.expenditure.ratesAndTaxes"
+                                            (focusout)="onSection6AmountBlur(a.applicantIndex, 'Expenditure', 'ratesAndTaxes')"
+                                            style="border: 1px solid #eef2f6 !important; border-radius: 5px !important;" />
+
+                                        <label class="form-label mt-2">Electricity / Fuel</label>
+                                        <input type="text" class="form-control"
+                                            [(ngModel)]="a.expenditure.electricityFuel"
+                                            (focusout)="onSection6AmountBlur(a.applicantIndex, 'Expenditure', 'electricityFuel')"
+                                            style="border: 1px solid #eef2f6 !important; border-radius: 5px !important;" />
+
+                                        <label class="form-label mt-2">Insurance</label>
+                                        <input type="text" class="form-control" [(ngModel)]="a.expenditure.insurance"
+                                            (focusout)="onSection6AmountBlur(a.applicantIndex, 'Expenditure', 'insurance')"
+                                            style="border: 1px solid #eef2f6 !important; border-radius: 5px !important;" />
+
+                                        <label class="form-label mt-2">Dependents</label>
+                                        <input type="text" class="form-control" [(ngModel)]="a.expenditure.dependents"
+                                            (focusout)="onSection6AmountBlur(a.applicantIndex, 'Expenditure', 'dependents')"
+                                            style="border: 1px solid #eef2f6 !important; border-radius: 5px !important;" />
+
+                                        <label class="form-label mt-2">Others (Pls specify)</label>
+                                        <input type="text" class="form-control" [(ngModel)]="a.expenditure.others"
+                                            (focusout)="onSection6AmountBlur(a.applicantIndex, 'Expenditure', 'others')"
+                                            style="border: 1px solid #eef2f6 !important; border-radius: 5px !important;" />
+
+                                        <label class="form-label mt-2">Total (Expenditure)</label>
+                                        <input type="text" class="form-control" [value]="a.expenditure.total"
+                                            style="border: 1px solid #eef2f6 !important; border-radius: 5px !important;"
+                                            disabled />
+                                        <hr />
+                                        <label class="form-label mt-2">Surplus</label>
+                                        <input type="text" class="form-control"
+                                            [value]="getApplicantSurplus(a) | number:'1.2-2'"
+                                            style="border: 1px solid #eef2f6 !important; border-radius: 5px !important;"
+                                            disabled />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </ng-container>
+
+    <!-- 7. PARTICULARS OF INCOME TAX FOR THE LAST THREE YEARS -->
+    <ng-container *ngIf="showSection7 && section7Applicants?.length">
+        <div class="card mt-3">
+            <div class="card-header py-2">
+                <strong>7. PARTICULARS OF INCOME TAX FOR THE LAST THREE YEARS</strong>
+            </div>
+
+            <div class="card-body py-2">
+                <div class="row">
+                    <!-- One sub-card per applicant -->
+                    <div class="col-12 mb-3" *ngFor="let a of section7Applicants">
+                        <div class="card">
+                            <div class="card-header py-2">
+                                <strong>Applicant {{ a.applicantIndex }}</strong>
+                            </div>
+
+                            <div class="card-body py-2">
+                                <!-- Year 1 -->
+                                <div class="mb-2"><strong>Year 1</strong></div>
+                                <div class="row">
+                                    <div class="col-md-4 mb-2">
+                                        <label class="form-label">Years of assessment</label>
+                                        <input type="text" class="form-control" [(ngModel)]="a.year1.yearLabel"
+                                            style="border: 1px solid #eef2f6 !important; border-radius: 5px !important;"
+                                            (focusout)="onSection7Blur(a.applicantIndex, 1, 'yearLabel')" />
+                                    </div>
+                                    <div class="col-md-4 mb-2">
+                                        <label class="form-label">Statutory Income</label>
+                                        <input type="text" class="form-control" [(ngModel)]="a.year1.statutoryIncome"
+                                            style="border: 1px solid #eef2f6 !important; border-radius: 5px !important;"
+                                            (focusout)="onSection7Blur(a.applicantIndex, 1, 'statutoryIncome')" />
+                                    </div>
+                                    <div class="col-md-4 mb-2">
+                                        <label class="form-label">Assessable Income</label>
+                                        <input type="text" class="form-control" [(ngModel)]="a.year1.assessableIncome"
+                                            style="border: 1px solid #eef2f6 !important; border-radius: 5px !important;"
+                                            (focusout)="onSection7Blur(a.applicantIndex, 1, 'assessableIncome')" />
+                                    </div>
+                                    <div class="col-md-4 mb-2">
+                                        <label class="form-label">Taxable Income</label>
+                                        <input type="text" class="form-control" [(ngModel)]="a.year1.taxableIncome"
+                                            style="border: 1px solid #eef2f6 !important; border-radius: 5px !important;"
+                                            (focusout)="onSection7Blur(a.applicantIndex, 1, 'taxableIncome')" />
+                                    </div>
+                                    <div class="col-md-4 mb-2">
+                                        <label class="form-label">Tax Paid</label>
+                                        <input type="text" class="form-control" [(ngModel)]="a.year1.taxPaid"
+                                            style="border: 1px solid #eef2f6 !important; border-radius: 5px !important;"
+                                            (focusout)="onSection7Blur(a.applicantIndex, 1, 'taxPaid')" />
+                                    </div>
+                                </div>
+                                <hr>
+                                <!-- Year 2 -->
+                                <div class="mt-3 mb-2"><strong>Year 2</strong></div>
+                                <div class="row">
+                                    <div class="col-md-4 mb-2">
+                                        <label class="form-label">Years of assessment</label>
+                                        <input type="text" class="form-control" [(ngModel)]="a.year2.yearLabel"
+                                            style="border: 1px solid #eef2f6 !important; border-radius: 5px !important;"
+                                            (focusout)="onSection7Blur(a.applicantIndex, 2, 'yearLabel')" />
+                                    </div>
+                                    <div class="col-md-4 mb-2">
+                                        <label class="form-label">Statutory Income</label>
+                                        <input type="text" class="form-control" [(ngModel)]="a.year2.statutoryIncome"
+                                            style="border: 1px solid #eef2f6 !important; border-radius: 5px !important;"
+                                            (focusout)="onSection7Blur(a.applicantIndex, 2, 'statutoryIncome')" />
+                                    </div>
+                                    <div class="col-md-4 mb-2">
+                                        <label class="form-label">Assessable Income</label>
+                                        <input type="text" class="form-control" [(ngModel)]="a.year2.assessableIncome"
+                                            style="border: 1px solid #eef2f6 !important; border-radius: 5px !important;"
+                                            (focusout)="onSection7Blur(a.applicantIndex, 2, 'assessableIncome')" />
+                                    </div>
+                                    <div class="col-md-4 mb-2">
+                                        <label class="form-label">Taxable Income</label>
+                                        <input type="text" class="form-control" [(ngModel)]="a.year2.taxableIncome"
+                                            style="border: 1px solid #eef2f6 !important; border-radius: 5px !important;"
+                                            (focusout)="onSection7Blur(a.applicantIndex, 2, 'taxableIncome')" />
+                                    </div>
+                                    <div class="col-md-4 mb-2">
+                                        <label class="form-label">Tax Paid</label>
+                                        <input type="text" class="form-control" [(ngModel)]="a.year2.taxPaid"
+                                            style="border: 1px solid #eef2f6 !important; border-radius: 5px !important;"
+                                            (focusout)="onSection7Blur(a.applicantIndex, 2, 'taxPaid')" />
+                                    </div>
+                                </div>
+                                <hr>
+                                <!-- Year 3 -->
+                                <div class="mt-3 mb-2"><strong>Year 3</strong></div>
+                                <div class="row">
+                                    <div class="col-md-4 mb-2">
+                                        <label class="form-label">Years of assessment</label>
+                                        <input type="text" class="form-control" [(ngModel)]="a.year3.yearLabel"
+                                            style="border: 1px solid #eef2f6 !important; border-radius: 5px !important;"
+                                            (focusout)="onSection7Blur(a.applicantIndex, 3, 'yearLabel')" />
+                                    </div>
+                                    <div class="col-md-4 mb-2">
+                                        <label class="form-label">Statutory Income</label>
+                                        <input type="text" class="form-control" [(ngModel)]="a.year3.statutoryIncome"
+                                            style="border: 1px solid #eef2f6 !important; border-radius: 5px !important;"
+                                            (focusout)="onSection7Blur(a.applicantIndex, 3, 'statutoryIncome')" />
+                                    </div>
+                                    <div class="col-md-4 mb-2">
+                                        <label class="form-label">Assessable Income</label>
+                                        <input type="text" class="form-control" [(ngModel)]="a.year3.assessableIncome"
+                                            style="border: 1px solid #eef2f6 !important; border-radius: 5px !important;"
+                                            (focusout)="onSection7Blur(a.applicantIndex, 3, 'assessableIncome')" />
+                                    </div>
+                                    <div class="col-md-4 mb-2">
+                                        <label class="form-label">Taxable Income</label>
+                                        <input type="text" class="form-control" [(ngModel)]="a.year3.taxableIncome"
+                                            style="border: 1px solid #eef2f6 !important; border-radius: 5px !important;"
+                                            (focusout)="onSection7Blur(a.applicantIndex, 3, 'taxableIncome')" />
+                                    </div>
+                                    <div class="col-md-4 mb-2">
+                                        <label class="form-label">Tax Paid</label>
+                                        <input type="text" class="form-control" [(ngModel)]="a.year3.taxPaid"
+                                            style="border: 1px solid #eef2f6 !important; border-radius: 5px !important;"
+                                            (focusout)="onSection7Blur(a.applicantIndex, 3, 'taxPaid')" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </ng-container>
+
+    <!-- 8 SAMPATH BANK ACCOUNTS – form -->
+    <ng-container *ngIf="showSampathAccountsSection">
+        <div class="card mt-3">
+            <div class="card-header py-2"><strong>8 BANK ACCOUNTS MAINTAINED BY THE APPLICANT/S</strong></div>
+            <div class="card-body py-2">
+                <div class="row">
+                    <div class="col-md-4 mb-2">
+                        <label class="form-label">Name of Bank & Branch</label>
+                        <input type="text" class="form-control" [(ngModel)]="sampathForm.bankAndBranch"
+                            style="border: 1px solid #eef2f6 !important; border-radius: 5px !important;" />
+                    </div>
+                    <div class="col-md-4 mb-2">
+                        <label class="form-label">Type of Account</label>
+                        <input type="text" class="form-control" [(ngModel)]="sampathForm.accountType"
+                            style="border: 1px solid #eef2f6 !important; border-radius: 5px !important;" />
+                    </div>
+                    <div class="col-md-4 mb-2">
+                        <label class="form-label">Account No.</label>
+                        <input type="text" class="form-control" inputmode="numeric" [(ngModel)]="sampathForm.accountNo"
+                            (input)="validateSampath('accountNo')" [ngClass]="{ 'is-invalid': sampathErrors.accountNo }"
+                            style="border: 1px solid #eef2f6 !important; border-radius: 5px !important;" />
+                        <div *ngIf="sampathErrors.accountNo" class="invalid-feedback d-block">
+                            {{ sampathErrors.accountNo }}
+                        </div>
+
+                    </div>
+                    <div class="col-md-4 mb-2">
+                        <label class="form-label">Date Account Opened</label>
+                        <mdb-date-picker [id]="sampathForm.id" class="form-control m-0 px-2 py-0"
+                            [(ngModel)]="sampathForm.dateOpened"
+                            style="border: 1px solid #eef2f6 !important; border-radius: 5px !important; border-bottom:none !important"
+                            [options]="datePickerOptions" [inline]="true" [disabled]="sampathForm.disabled">
+                        </mdb-date-picker>
+
+                    </div>
+                    <div class="col-md-4 mb-2">
+                        <label class="form-label">Present Balance</label>
+                        <input type="text" class="form-control" inputmode="decimal"
+                            [(ngModel)]="sampathForm.presentBalance" (input)="validateSampath('presentBalance')"
+                            (focusout)="sampathForm.presentBalance = sampathForm.presentBalance && !sampathErrors.presentBalance ? formatCurrency(sampathForm.presentBalance) : sampathForm.presentBalance"
+                            [ngClass]="{ 'is-invalid': sampathErrors.presentBalance }"
+                            style="border: 1px solid #eef2f6 !important; border-radius: 5px !important;" />
+                        <div *ngIf="sampathErrors.presentBalance" class="invalid-feedback d-block">
+                            {{ sampathErrors.presentBalance }}
+                        </div>
+
+                    </div>
+                    <div class="col-md-4 mb-2">
+                        <label class="form-label">Name of Account Holder</label>
+                        <input type="text" class="form-control" [(ngModel)]="sampathForm.accountHolderName"
+                            style="border: 1px solid #eef2f6 !important; border-radius: 5px !important;" />
+                    </div>
+
+                    <div class="col-12">
+                        <button type="button" class="btn btn-primary btn-sm" (click)="addSampathRow()"
+                            [disabled]="!canAddSampathRow()">Add row</button>
+                    </div>
+
+                    <!-- Preview -->
+                    <div class="col-12 mt-2" *ngIf="sampathAccounts.length > 0">
+                        <div class="table-responsive">
+                            <table class="table table-sm">
+                                <thead>
+                                    <tr>
+                                        <th>Name of Bank & Branch</th>
+                                        <th>Type of Account</th>
+                                        <th>Account No.</th>
+                                        <th>Date Account Opened</th>
+                                        <th>Present Balance</th>
+                                        <th>Name of Account Holder</th>
+                                        <th style="width: 60px;"></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let r of sampathAccounts; let i = index">
+                                        <td>{{ r.bankAndBranch }}</td>
+                                        <td>{{ r.accountType }}</td>
+                                        <td>{{ r.accountNo }}</td>
+                                        <td>{{ r.dateOpened }}</td>
+                                        <td>{{ formatCurrency(r.presentBalance) }}</td>
+                                        <td>{{ r.accountHolderName }}</td>
+                                        <td>
+                                            <button type="button" class="btn btn-link btn-sm text-danger"
+                                                (click)="removeSampathRow(i)">Remove</button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </ng-container>
+
+    <!-- 8.2 OTHER BANK ACCOUNTS – form -->
+    <!-- <ng-container *ngIf="showOtherBankAccountsSection">
+        <div class="card mt-3">
+            <div class="card-header py-2"><strong>8.2 OTHER BANK ACCOUNTS MAINTAINED BY THE APPLICANT/S</strong></div>
+            <div class="card-body py-2">
+                <div class="row">
+                    <div class="col-md-4 mb-2">
+                        <label class="form-label">Name of Bank & Branch</label>
+                        <input type="text" class="form-control" [(ngModel)]="otherForm.bankAndBranch"
+                            style="border: 1px solid #eef2f6 !important; border-radius: 5px !important;" />
+                    </div>
+                    <div class="col-md-4 mb-2">
+                        <label class="form-label">Type of Account</label>
+                        <input type="text" class="form-control" [(ngModel)]="otherForm.accountType"
+                            style="border: 1px solid #eef2f6 !important; border-radius: 5px !important;" />
+                    </div>
+                    <div class="col-md-4 mb-2">
+                        <label class="form-label">Account No.</label>
+                        <input type="text" class="form-control" inputmode="numeric" [(ngModel)]="otherForm.accountNo"
+                            (input)="validateOtherBank('accountNo')"
+                            [ngClass]="{ 'is-invalid': otherBankErrors.accountNo }"
+                            style="border: 1px solid #eef2f6 !important; border-radius: 5px !important;" />
+                        <div *ngIf="otherBankErrors.accountNo" class="invalid-feedback d-block">
+                            {{ otherBankErrors.accountNo }}
+                        </div>
+
+                    </div>
+                    <div class="col-md-4 mb-2">
+                        <label class="form-label">Date Account Opened</label>
+                        <mdb-date-picker [id]="otherForm.id" class="form-control m-0 px-2 py-0"
+                            [(ngModel)]="otherForm.dateOpened"
+                            style="border: 1px solid #eef2f6 !important; border-radius: 5px !important;  border-bottom:none !important"
+                            [options]="datePickerOptions" [inline]="true" [disabled]="otherForm.disabled">
+                        </mdb-date-picker>
+
+                    </div>
+                    <div class="col-md-4 mb-2">
+                        <label class="form-label">Present Balance</label>
+
+                        <input type="text" class="form-control" inputmode="decimal"
+                            [(ngModel)]="otherForm.presentBalance" (input)="validateOtherBank('presentBalance')"
+                            (focusout)="otherForm.presentBalance = otherForm.presentBalance && !otherBankErrors.presentBalance ? formatCurrency(otherForm.presentBalance) : otherForm.presentBalance"
+                            [ngClass]="{ 'is-invalid': otherBankErrors.presentBalance }"
+                            style="border: 1px solid #eef2f6 !important; border-radius: 5px !important;" />
+                        <div *ngIf="otherBankErrors.presentBalance" class="invalid-feedback d-block">
+                            {{ otherBankErrors.presentBalance }}
+                        </div>
+
+                    </div>
+                    <div class="col-md-4 mb-2">
+                        <label class="form-label">Name of Account Holder</label>
+                        <input type="text" class="form-control" [(ngModel)]="otherForm.accountHolderName"
+                            style="border: 1px solid #eef2f6 !important; border-radius: 5px !important;" />
+                    </div>
+
+                    <div class="col-12">
+                        <button type="button" class="btn btn-primary btn-sm" (click)="addOtherBankRow()"
+                            [disabled]="!canAddOtherBankRow()">Add
+                            row</button>
+                    </div>
+
+                    
+                    <div class="col-12 mt-2" *ngIf="otherAccounts.length > 0">
+                        <div class="table-responsive">
+                            <table class="table table-sm">
+                                <thead>
+                                    <tr>
+                                        <th>Name of Bank & Branch</th>
+                                        <th>Type of Account</th>
+                                        <th>Account No.</th>
+                                        <th>Date Account Opened</th>
+                                        <th>Present Balance</th>
+                                        <th>Name of Account Holder</th>
+                                        <th style="width: 60px;"></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let r of otherAccounts; let i = index">
+                                        <td>{{ r.bankAndBranch }}</td>
+                                        <td>{{ r.accountType }}</td>
+                                        <td>{{ r.accountNo }}</td>
+                                        <td>{{ r.dateOpened }}</td>
+                                        <td>{{ formatCurrency(r.presentBalance) }}</td>
+                                        <td>{{ r.accountHolderName }}</td>
+                                        <td>
+                                            <button type="button" class="btn btn-link btn-sm text-danger"
+                                                (click)="removeOtherBankRow(i)">Remove</button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </ng-container> -->
+
+    <!-- 9. EXSITING LIABILITIES OF THE APPLICANT / S – form -->
+    <ng-container *ngIf="showExistingLiabilitiesSection">
+        <div class="card mt-3">
+            <div class="card-header py-2">
+                <strong>9. EXSITING LIABILITIES OF THE APPLICANT / S</strong>
+            </div>
+
+            <div class="card-body py-2">
+                <div class="row">
+                    <div class="col-md-4 mb-2">
+                        <label class="form-label">Name of Bank/ Finance company/Creditor</label>
+                        <input type="text" class="form-control" [(ngModel)]="liabilitiesForm.creditorName"
+                            style="border: 1px solid #eef2f6 !important; border-radius: 5px !important;" />
+                    </div>
+
+                    <div class="col-md-4 mb-2">
+                        <label class="form-label">Reference No</label>
+                        <input type="text" class="form-control" [(ngModel)]="liabilitiesForm.referenceNo"
+                            style="border: 1px solid #eef2f6 !important; border-radius: 5px !important;" />
+                    </div>
+
+                    <div class="col-md-4 mb-2">
+                        <label class="form-label">Repayment Period</label>
+                        <input type="text" class="form-control" [(ngModel)]="liabilitiesForm.repaymentPeriod"
+                            style="border: 1px solid #eef2f6 !important; border-radius: 5px !important;" />
+                    </div>
+
+                    <div class="col-md-4 mb-2">
+                        <label class="form-label">Security</label>
+                        <input type="text" class="form-control" [(ngModel)]="liabilitiesForm.security"
+                            style="border: 1px solid #eef2f6 !important; border-radius: 5px !important;" />
+                    </div>
+
+                    <div class="col-md-4 mb-2">
+                        <label class="form-label">Amount Borrowed</label>
+                        <input type="text" class="form-control" inputmode="decimal"
+                            [(ngModel)]="liabilitiesForm.amountBorrowed" (input)="validateLiability('amountBorrowed')"
+                            (focusout)="liabilitiesForm.amountBorrowed = liabilitiesForm.amountBorrowed && !liabilitiesErrors.amountBorrowed ? formatCurrency(liabilitiesForm.amountBorrowed) : liabilitiesForm.amountBorrowed"
+                            [ngClass]="{ 'is-invalid': liabilitiesErrors.amountBorrowed }"
+                            style="border: 1px solid #eef2f6 !important; border-radius: 5px !important;" />
+                        <div *ngIf="liabilitiesErrors.amountBorrowed" class="invalid-feedback d-block">
+                            {{ liabilitiesErrors.amountBorrowed }}
+                        </div>
+
+                    </div>
+
+                    <div class="col-md-4 mb-2">
+                        <label class="form-label">Balance Payable Now</label>
+                        <input type="text" class="form-control" inputmode="decimal"
+                            [(ngModel)]="liabilitiesForm.balancePayableNow"
+                            (input)="validateLiability('balancePayableNow')"
+                            (focusout)="liabilitiesForm.balancePayableNow = liabilitiesForm.balancePayableNow && !liabilitiesErrors.balancePayableNow ? formatCurrency(liabilitiesForm.balancePayableNow) : liabilitiesForm.balancePayableNow"
+                            [ngClass]="{ 'is-invalid': liabilitiesErrors.balancePayableNow }"
+                            style="border: 1px solid #eef2f6 !important; border-radius: 5px !important;" />
+                        <div *ngIf="liabilitiesErrors.balancePayableNow" class="invalid-feedback d-block">
+                            {{ liabilitiesErrors.balancePayableNow }}
+                        </div>
+
+                    </div>
+
+                    <div class="col-md-4 mb-2">
+                        <label class="form-label">Balance Period to Complete payment</label>
+                        <input type="text" class="form-control" [(ngModel)]="liabilitiesForm.balancePeriodToComplete"
+                            style="border: 1px solid #eef2f6 !important; border-radius: 5px !important;" />
+                    </div>
+
+                    <div class="col-md-4 mb-2">
+                        <label class="form-label">Borrowed by</label>
+                        <input type="text" class="form-control" [(ngModel)]="liabilitiesForm.borrowedBy"
+                            style="border: 1px solid #eef2f6 !important; border-radius: 5px !important;" />
+                    </div>
+
+                    <div class="col-md-4 mb-2">
+                        <label class="form-label">Purpose</label>
+                        <input type="text" class="form-control" [(ngModel)]="liabilitiesForm.purpose"
+                            style="border: 1px solid #eef2f6 !important; border-radius: 5px !important;" />
+                    </div>
+
+                    <div class="col-12">
+                        <button type="button" class="btn btn-primary btn-sm" (click)="addLiabilityRow()"
+                            [disabled]="!canAddLiabilityRow()">Add
+                            row</button>
+                    </div>
+
+                    <!-- Preview -->
+                    <div class="col-12 mt-2" *ngIf="existingLiabilities.length > 0">
+                        <div class="table-responsive">
+
+                            <table class="table table-sm">
+                                <thead>
+                                    <tr>
+                                        <th>Name of Bank/ Finance company/Creditor</th>
+                                        <th>Reference No</th>
+                                        <th>Repayment Period</th>
+                                        <th>Security</th>
+                                        <th>Amount Borrowed</th>
+                                        <th>Balance Payable Now</th>
+                                        <th>Balance Period to Complete payment</th>
+                                        <th>Borrowed by</th>
+                                        <th>Purpose</th>
+                                        <th style="width: 60px;"></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let r of existingLiabilities; let i = index">
+                                        <td>{{ r.creditorName }}</td>
+                                        <td>{{ r.referenceNo }}</td>
+                                        <td>{{ r.repaymentPeriod }}</td>
+                                        <td>{{ r.security }}</td>
+                                        <td>{{ formatCurrency(r.amountBorrowed) }}</td>
+                                        <td>{{ formatCurrency(r.balancePayableNow) }}</td>
+                                        <td>{{ r.balancePeriodToComplete }}</td>
+                                        <td>{{ r.borrowedBy }}</td>
+                                        <td>{{ r.purpose }}</td>
+                                        <td>
+                                            <button type="button" class="btn btn-link btn-sm text-danger"
+                                                (click)="removeLiabilityRow(i)">Remove</button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                                <!--  totals footer  -->
+                                <tfoot>
+                                    <tr>
+                                        <td colspan="4" class="text-right font-weight-bold">Total</td>
+                                        <td class="font-weight-bold">
+                                            {{ formatCurrency(existingLiabilitiesSum.amountBorrowed) }}
+                                        </td>
+                                        <td class="font-weight-bold">
+                                            {{ formatCurrency(existingLiabilitiesSum.balancePayableNow) }}
+                                        </td>
+                                        <td colspan="3"></td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </ng-container>
+
+    <!-- 10. DECLARATION & CONSENTS – applicant-aware pronouns + inputs -->
+    <div class="card mt-3">
+        <div class="card-header py-2"><strong>10. DECLARATION &amp; CONSENTS</strong></div>
+        <div class="card-body py-2">
+            <div class="col-12 mb-2" style="margin-bottom: 10px;">
+                <ng-container *ngIf="section10JudgmentField">
+                    <label style="font-weight: bold;" class="form-label"><strong>HAVE YOU HAD ANY JUDGEMENTS, WRITS, OR
+                            LEGAL PROCEEDINGS
+                            AGAINST YOU
+                            YES / NO (If yes, give details)</strong>
+                    </label>
+                    <div style="border: 1px solid #eef2f6 !important;">
+                        <textarea class="form-control" [id]="section10JudgmentField.id" rows="2"
+                            style="border: 1px solid #eef2f6 !important; border-radius: 5px !important;"
+                            [(ngModel)]="section10JudgmentField.value"
+                            [disabled]="section10JudgmentField.disabled"></textarea>
+                    </div>
+                </ng-container>
+            </div>
+
+            <!-- 11 PEP -->
+            <div class="col-12 mb-2" *ngIf="section10IsPepField as fPep">
+                <label class="form-label">
+                    <strong>11. Are you or any member of your immediate family a Politically exposed Person (PEP)?</strong>
+                    </label>
+                <mdb-select class="m-0 px-2 py-0" [id]="fPep.id" [options]="yesNo" [allowClear]="true"
+                    [(ngModel)]="fPep.value" [disabled]="fPep.disabled">
+                </mdb-select>
+            </div>
+
+            <!-- If “Yes” – Please specify -->
+            <div class="col-12 mb-2" *ngIf="isYes(section10IsPepField) && section10PepDescriptionField as fPepDesc">
+                <label class="form-label">If “Yes” – Please Specify</label>
+                <textarea class="form-control" rows="2" [id]="fPepDesc.id" [(ngModel)]="fPepDesc.value"
+                    style="border: 1px solid #eef2f6 !important; border-radius: 5px !important;"
+                    [disabled]="fPepDesc.disabled"></textarea>
+            </div>
+
+            <div class="consent-cell card p-3" style="border: 1px solid #e5e7eb; border-radius: 8px;">
+                <!-- Paragraph 1 -->
+                <p class="consent-text" style="line-height: 1.6; text-align: justify;">
+                    <span class="font-weight-bold">{{ isPluralApplicants ? 'We' : 'I' }}</span>
+                    certify that the above information is true and correct and that
+                    <span class="font-weight-bold">{{ isPluralApplicants ? 'We' : 'I' }}</span>
+                    have not knowingly withheld any information that might affect the credit decisions.
+                    <span class="font-weight-bold">{{ isPluralApplicants ? 'We' : 'I' }}</span>
+                    undertake to notify the Bank in writing any material changes in
+                    <span class="font-weight-bold">{{ isPluralApplicants ? 'our' : 'my' }}</span>
+                    financial position in the future.
+                    <span class="font-weight-bold">{{ isPluralApplicants ? 'We' : 'I' }}</span>
+                    authorize you to debit
+                    <span class="font-weight-bold">{{ isPluralApplicants ? 'our' : 'my' }}</span>
+                    nominated account no
+
+                    <ng-container *ngIf="section10AccountNoField">
+                        <input type="text" class="form-control d-inline-block mx-1"
+                            style="width: 220px; border: none; border-bottom: 1px solid #cbd5e1; padding: 2px; display: inline-block;"
+                            [id]="section10AccountNoField.id" [(ngModel)]="section10AccountNoField.value"
+                            [disabled]="section10AccountNoField.disabled" />
+                    </ng-container>
+
+                    (or any other account held by
+                    <span class="font-weight-bold">{{ isPluralApplicants ? 'us' : 'me' }}</span>,
+                    if the nominated account holds insufficient funds) for all charges & fees related to processing of
+                    subject loan facility/ies, repayments and interest payable in relation to the loan.
+                    The undersigned expressly authorize the Bank to obtain from his employer or from any other sources
+                    such
+                    information as may be desired in connection with this application and each such source is hereby
+                    authorized
+                    to provide this Bank with such information as may be requested, and further agree that this
+                    application
+                    shall be and remain the property of the Sampath Bank whether or not any facility is granted to the
+                    undersigned. Further
+                    <span class="font-weight-bold">{{ isPluralApplicants ? 'We' : 'I' }}</span>
+                    hereby give the consent to obtain reports from Credit Information Bureau of Sri Lanka (CRIB),
+                    Consent to
+                    verify National Identity Card information through DRP (Department for Registration of Persons)
+                    system and
+                    to obtain any other information required to evaluate the facility request.
+                </p>
+
+                <!-- Paragraph 2 -->
+                <!-- <p class="consent-text mt-3" style="line-height: 1.6; text-align: justify;">
+                    <span class="font-weight-bold">{{ isPluralApplicants ? 'We' : 'I' }}</span>,
+                    <ng-container *ngIf="section10CustomerNameField">
+                        <input type="text" class="form-control d-inline-block mx-1"
+                            style="width: 280px; border: none; border-bottom: 1px solid #cbd5e1; padding: 2px;"
+                            [id]="section10CustomerNameField.id" [(ngModel)]="section10CustomerNameField.value"
+                            [disabled]="section10CustomerNameField.disabled" placeholder="Customer name here" />
+                    </ng-container>,
+                    hereby give consent to Sampath Bank PLC to use
+                    <span class="font-weight-bold">{{ isPluralApplicants ? 'our' : 'my' }}</span>
+                    Bank statements of the accounts maintained by
+                    <span class="font-weight-bold">{{ isPluralApplicants ? 'us' : 'me' }}</span>
+                    at your Bank and/or any other bank statements provided by
+                    <span class="font-weight-bold">{{ isPluralApplicants ? 'us' : 'me' }}</span>
+                    and to collect and use any other personal data under the Personal Data Protection Act No 9 of 2022
+                    for the purpose of analyzing my financial statements. I/We understand that this information may be
+                    used
+                    by the bank to assess my financial situation and make decisions related to my account/business.
+                </p>
+
+                <p class="consent-text mt-3" style="line-height: 1.6; text-align: justify;">
+                    <span class="font-weight-bold">{{ isPluralApplicants ? 'We' : 'I' }}</span>
+                    further provide
+                    <span class="font-weight-bold">{{ isPluralApplicants ? 'our' : 'my' }}</span>
+                    explicit and informed consent for the collection, use, retention, disclosure, and disposal of
+                    <span class="font-weight-bold">{{ isPluralApplicants ? 'our' : 'my' }}</span>
+                    personal data by Sampath Bank PLC in accordance with the said Act, and confirm that
+                    <span class="font-weight-bold">{{ isPluralApplicants ? 'We' : 'I' }}</span>
+                    have been informed of the purposes for which
+                    <span class="font-weight-bold">{{ isPluralApplicants ? 'our' : 'my' }}</span>
+                    personal data will be processed.
+                </p>
+
+                <p class="consent-text mt-3" style="line-height: 1.6; text-align: justify;">
+                    <span class="font-weight-bold">{{ isPluralApplicants ? 'We' : 'I' }}</span>
+                    also consent to the storage, transmission, and processing of
+                    <span class="font-weight-bold">{{ isPluralApplicants ? 'our' : 'my' }}</span>
+                    personal data through cloud computing systems and other digital platforms, whether within or outside
+                    Sri Lanka, as may be reasonably required for the above purposes.
+                    <span class="font-weight-bold">{{ isPluralApplicants ? 'We' : 'I' }}</span>
+                    understand that the Bank will take reasonable steps to ensure that any third parties involved in
+                    cloud-based processing or storage adhere to appropriate data protection and security measures.
+                </p>
+
+                <p class="consent-text mt-3" style="line-height: 1.6; text-align: justify; margin-bottom: 0;">
+                    <span class="font-weight-bold">{{ isPluralApplicants ? 'We' : 'I' }}</span>
+                    agree to indemnify and hold harmless Sampath Bank PLC from any and all claims, losses, damages,
+                    and liabilities arising from the use of my personal data.
+                </p> -->
+
+            </div>
+
+        </div>
+    </div>
+
+    <!-- For Office Use Only — Proposed Facilities -->
+    <ng-container *ngIf="showProposedFacilitiesSection && proposedFacilities.length > 0">
+        <div class="card mt-3">
+            <div class="card-header py-2">
+                <strong>For Office Use Only</strong>
+            </div>
+            <div class="card-body py-2">
+                <div class="row">
+                    <!-- To: -->
+                    <div class="col-12 mb-2" *ngIf="getField(OFFICE_USE_IDS.to) as f">
+                        <label class="form-label">To</label>
+                        <textarea class="form-control" rows="2" [id]="f.id" [(ngModel)]="f.value"
+                            style="border: 1px solid #eef2f6 !important; border-radius: 5px !important;"
+                            [disabled]="f.disabled"></textarea>
+                    </div>
+                    <div class="col-12 mb-2">
+                        <div>
+                            <strong>Proposed Facilities-</strong>
+                        </div>
+                        <div class="card-body py-2">
+                            <div class="table-responsive" *ngIf="proposedFacilities?.length > 0; else noProposed">
+                                <table class="table table-sm">
+                                    <thead>
+                                        <tr>
+                                            <th>Type of Facility</th>
+                                            <th>Amount</th>
+                                            <th>Purpose</th>
+                                            <th>Interest Rate</th>
+                                            <th>Repayment</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr *ngFor="let r of proposedFacilities; let i = index">
+                                            <!-- 1: Type (from Section 4) -->
+                                            <td>{{ r.typeOfFacilityRequired }}</td>
+                                            <!-- 2: Amount (from Section 4) -->
+                                            <td>{{ formatCurrency(r.amountOfFaclity) }}</td>
+                                            <!-- 3: Purpose (from Section 4) -->
+                                            <td>{{ r.purposeOfFacility }}</td>
+                                            <!-- 4: Interest Rate (editable here only) -->
+                                            <td>
+                                                <input type="text" class="form-control" [(ngModel)]="r.interestRate"
+                                                    placeholder="e.g. 18% p.a."
+                                                    style="border:1px solid #eef2f6 !important; border-radius:5px !important;">
+                                            </td>
+                                            <!-- 5: Repayment (carried from Section 4) -->
+                                            <td>{{ r.repaymentOption }}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <ng-template #noProposed>
+                                <div class="text-muted">No proposed facilities.</div>
+                            </ng-template>
+                        </div>
+                    </div>
+                    <!-- Proposed Facilities – comments -->
+                    <div class="col-12 mb-2" *ngIf="getField(OFFICE_USE_IDS.irregularCrib) as f">
+                        <label class="form-label">Comments on any irregular CRIB records (if any)</label>
+                        <textarea class="form-control" rows="2" [id]="f.id" [(ngModel)]="f.value"
+                            style="border: 1px solid #eef2f6 !important; border-radius: 5px !important;"
+                            [disabled]="f.disabled"></textarea>
+                    </div>
+
+                    <div class="col-12 mb-2" *ngIf="getField(OFFICE_USE_IDS.amendment) as f">
+                        <label class="form-label">Proposed amendment to any existing facility (if any)</label>
+                        <textarea class="form-control" rows="2" [id]="f.id" [(ngModel)]="f.value"
+                            style="border: 1px solid #eef2f6 !important; border-radius: 5px !important;"
+                            [disabled]="f.disabled"></textarea>
+                    </div>
+
+                    <!-- Yes/No selects -->
+                    <div class="col-md-6 mb-2" *ngIf="getField(OFFICE_USE_IDS.immFamilyBankTeam) as f">
+                        <label class="form-label">Immediate family member of a Sampath Bank team member</label>
+                        <mdb-select class="m-0 px-2 py-0" [id]="f.id" [options]="yesNo" [allowClear]="true"
+                            style="border: 1px solid #eef2f6 !important; border-radius: 5px !important;"
+                            [(ngModel)]="f.value" [disabled]="f.disabled"></mdb-select>
+                    </div>
+
+                    <div class="col-md-6 mb-2" *ngIf="getField(OFFICE_USE_IDS.relatedParty) as f">
+                        <label class="form-label">The applicant is a related party</label>
+                        <mdb-select class="m-0 px-2 py-0" [id]="f.id" [options]="yesNo" [allowClear]="true"
+                            style="border: 1px solid #eef2f6 !important; border-radius: 5px !important;"
+                            [(ngModel)]="f.value" [disabled]="f.disabled"></mdb-select>
+                    </div>
+
+                    <!-- Branch Manager -->
+                    <div class="col-12">
+                        <div class="mt-3 mb-1" style="font-weight: 600;">Comments & recommendation by Branch Manager
+                        </div>
+                    </div>
+                    <div class="col-12 mb-2" *ngIf="getField(OFFICE_USE_IDS.bmComments) as f">
+                        <textarea class="form-control" rows="2" [id]="f.id" [(ngModel)]="f.value"
+                            style="border: 1px solid #eef2f6 !important; border-radius: 5px !important;"
+                            [disabled]="f.disabled"></textarea>
+                    </div>
+                    <div class="col-md-6 mb-2" *ngIf="getField(OFFICE_USE_IDS.bmName) as f">
+                        <label class="form-label">Name</label>
+                        <input type="text" class="form-control" [id]="f.id" [(ngModel)]="f.value"
+                            style="border: 1px solid #eef2f6 !important; border-radius: 5px !important;"
+                            [disabled]="f.disabled" />
+                    </div>
+                    <div class="col-md-6 mb-2" *ngIf="getField(OFFICE_USE_IDS.bmDate) as f">
+                        <label class="form-label">Date</label>
+                        <mdb-date-picker [id]="f.id" class="form-control m-0 px-2 py-0" [(ngModel)]="f.value"
+                            style="border: 1px solid #eef2f6 !important; border-radius: 5px !important;"
+                            [options]="datePickerOptions" [inline]="true" [disabled]="f.disabled">
+                        </mdb-date-picker>
+                    </div>
+
+                    <!-- SRM / RM -->
+                    <div class="col-12">
+                        <div class="mt-3 mb-1" style="font-weight: 600;">Comments & recommendation by SRM/RM</div>
+                    </div>
+                    <div class="col-12 mb-2" *ngIf="getField(OFFICE_USE_IDS.rmComments) as f">
+                        <textarea class="form-control" rows="2" [id]="f.id" [(ngModel)]="f.value"
+                            style="border: 1px solid #eef2f6 !important; border-radius: 5px !important;"
+                            [disabled]="f.disabled"></textarea>
+                    </div>
+                    <div class="col-md-6 mb-2" *ngIf="getField(OFFICE_USE_IDS.rmName) as f">
+                        <label class="form-label">Name</label>
+                        <input type="text" class="form-control" [id]="f.id" [(ngModel)]="f.value"
+                            style="border: 1px solid #eef2f6 !important; border-radius: 5px !important;"
+                            [disabled]="f.disabled" />
+                    </div>
+                    <div class="col-md-6 mb-2" *ngIf="getField(OFFICE_USE_IDS.rmDate) as f">
+                        <label class="form-label">Date</label>
+                        <mdb-date-picker [id]="f.id" class="form-control m-0 px-2 py-0" [(ngModel)]="f.value"
+                            style="border: 1px solid #eef2f6 !important; border-radius: 5px !important;"
+                            [options]="datePickerOptions" [inline]="true" [disabled]="f.disabled">
+                        </mdb-date-picker>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </ng-container>
+</div>
+<div class="modal-footer modal-end">
+    <button type="button" mdbBtn color="secondary" class="relative waves-light" mdbWavesEffect (click)="handleSave()">
+        Save
+    </button>
+    <!-- <button type="button" mdbBtn color="secondary" class="relative waves-light" mdbWavesEffect (click)="handlePrint()">
+        Print
+    </button> -->
+</div>

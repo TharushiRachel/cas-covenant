@@ -1,0 +1,146 @@
+@import '~ng-uikit-pro-standard/assets/scss/core/variables';
+
+.table th, .table td {
+  border-top: none !important;
+}
+
+.table thead th {
+  border-bottom: 0.5px solid #dee2e6a1;
+  background-color: #ced4da1f;
+}
+
+.table tr {
+  border-bottom: 0.5px solid #dee2e6a1;
+}
+
+.simple-table {
+  margin: 0;
+
+  th, td {
+    border-top: none !important;
+    padding: 0.3rem;
+  }
+
+  thead th {
+    border-bottom: 0.5px solid #dee2e6a1;
+    background-color: transparent;
+    font-weight: 500;
+  }
+
+}
+
+.card {
+  box-shadow: none !important;
+}
+
+.jumbotron {
+  box-shadow: none !important;
+}
+
+.form-control:disabled, .form-control[readonly] {
+  background-color: #e9ecef6e;
+  color: #aaa;
+}
+
+.side-nav .logo-wrapper {
+  border-bottom: 0px solid rgba(153, 153, 153, .3);
+}
+
+.custom-pre-tag {
+  white-space: pre-line;
+  overflow-x: auto;
+  font-family: $roboto-font-family;
+  font-size: small;
+  margin-bottom: 2px;
+}
+
+.comment-pre-tag {
+  white-space: pre-wrap;
+  font-family: $roboto-font-family;
+  font-size: small;
+  margin-bottom: 2px;
+}
+
+.custom-pre-tag-with-spaces {
+  white-space: pre-wrap;
+  font-family: $roboto-font-family;
+  font-size: small;
+  margin-bottom: 2px;
+  margin-left: 2%;
+  border: unset !important;
+  word-break: keep-all;
+  text-align: justify;
+}
+
+.credit-risk-comment-pre-tag {
+  white-space: pre-wrap;
+  overflow-x: auto;
+  font-family: $roboto-font-family;
+  font-size: small;
+  margin-bottom: 2px;
+  border: unset !important;
+}
+
+.data-with-pre-tag {
+  white-space: pre-wrap;
+  overflow-x: auto;
+  font-family: $roboto-font-family;
+  font-size: 14px;
+  margin-bottom: 2px;
+  border: unset !important;
+  text-align: justify;
+  margin: 4px;
+}
+
+.not-auth-message {
+  margin: 20px;
+  font-weight: 500;
+  color: #ff7d00;
+}
+
+.no-border {
+  border: none !important;
+}
+
+.hide {
+  display: none !important;
+}
+
+.text-align-center {
+  text-align: center !important;
+}
+
+.text-align-end {
+  text-align: end !important;
+}
+
+.text-align-start {
+  text-align: start !important;
+}
+
+.align-item-center {
+  align-items: center !important;
+}
+
+.align-items-end {
+  align-items: end !important;
+}
+
+.custom-card-body {
+  padding: unset !important;
+}
+
+.custom-card-header {
+  padding: unset !important;
+  font-weight: bold !important;
+  background-color: unset !important;
+  border: unset !important;
+  margin: 8px 0px 5px 0px !important;
+}
+
+.custom-card-footer {
+  padding: unset !important;
+  border: unset !important;
+  background-color: unset !important;
+}
+

@@ -1,0 +1,36 @@
+<ng-container *ngIf="fpRiskComment">
+  <mdb-card class="border-none-card">
+    <mdb-card-body>
+      <ng-container>
+        <div class="col">
+          <dl>
+            <div class="d-flex flex-row justify-content-between mb-3">
+              <dt class="w-15-p">Name</dt>
+              <dt class="w-5">:</dt>
+              <dd class="w-80 mb-0">{{fpRiskComment.commentedBy || '-'}}</dd>
+            </div>
+
+            <div class="d-flex flex-row justify-content-between mb-3">
+              <dt class="w-15-p">Commented On</dt>
+              <dt class="w-5">:</dt>
+              <dd class="w-80 mb-0">{{fpRiskComment.commentedTimeStr || '-'}}</dd>
+            </div>
+
+            <div class="d-flex flex-row justify-content-between mb-3">
+              <dt class="w-15-p">UPM Privilege Code</dt>
+              <dt class="w-5">:</dt>
+              <dd class="w-80 mb-0">{{fpRiskComment.upmprivilegeCode || '-'}}</dd>
+            </div>
+
+            <div class="d-flex flex-row justify-content-between mb-3">
+              <dt class="w-15-p">Comment</dt>
+              <dt class="w-5">:</dt>
+              <dd
+                class="w-80 mb-0">{{fpRiskComment.creditRiskComment || '-'}}</dd>
+            </div>
+          </dl>
+        </div>
+      </ng-container>
+    </mdb-card-body>
+  </mdb-card>
+</ng-container>

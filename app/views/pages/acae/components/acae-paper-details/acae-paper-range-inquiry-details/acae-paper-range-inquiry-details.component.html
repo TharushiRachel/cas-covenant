@@ -1,0 +1,71 @@
+<div class="modal-header flex-center modal-topic">
+  <!-- <h5 class="modal-title w-100 font-weight-bold">
+    Range By Inquiry
+  </h5> -->
+  <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)='onCloseModel()'>
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
+<div id="overflow-edit-status-model">
+  <div style="border: 2px solid gray;border-radius: 2px;">
+    <div class="d-flex p-2 flex-column justify-content-start align-items-start w-100-p">
+      <div class="width-100">
+        <ng-container *ngIf="isRangeInquiryLoading">
+          <div class="d-flex justify-content-center">
+            <div class="spinner-border" role="status">
+              <span class="sr-only"></span>
+            </div>
+          </div>
+        </ng-container>
+        <ng-container *ngIf="!isRangeInquiryLoading">
+          <ng-container *ngIf="isDataAvailable  ; else : noData">
+            <div class="row">
+              <div style="width: 30%; padding: 20px">
+                <label style="width: 120px;"><b>Account Number</b></label>
+                <span style="width: 20px;">:</span>
+                <span style="width: 200px;">{{accountNo}}</span>
+              </div>
+              <div style="width: 30%; padding: 20px">
+                <label style="width: 120px;"><b>Transaction Date</b></label>
+                <span style="width: 20px;">:</span>
+                <span style="width: 200px;">{{date }}</span>
+              </div>
+            </div>
+            <table class="custom-bordered-table width-100">
+              <thead>
+                <tr style="height: 30px" class="table-heading-color">
+                  <th style="width: 10%;">Posted Time</th>
+                  <th>Tran Particular</th>
+                  <th style="width: 20%;">Debit</th>
+                  <th style="width: 20%;">Credit</th>
+                  <th>Account Balance</th>
+                </tr>
+                <tr>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let data of rangeInquiryDetails">
+                  <td class="text-align-center">{{data.postedTime }}</td>
+                  <td class="text-align-start">{{data.tranParticular}}</td>
+                  <td class="text-align-end">{{data.drcrInd == "D"? getCurrencyFormat(data.tranAmount) :"-" }}</td>
+                  <td class="text-align-end">{{data.drcrInd == "C"? getCurrencyFormat(data.tranAmount) :"-" }}</td>
+                  <td class="text-align-end">{{getCurrencyFormat(data.acctBalance) }} {{data.acctBalance > 0 ? 'CR' :
+                    'DR'}}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <br />
+          </ng-container>
+          <ng-template #noData>
+            <p class="not-auth-message">
+              No Records Available
+            </p>
+          </ng-template>
+        </ng-container>
+      
+      </div>
+    </div>
+  </div>
+</div>

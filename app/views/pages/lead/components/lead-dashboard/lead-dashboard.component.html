@@ -1,0 +1,162 @@
+<div mdbSticky class="d-flex flex-row justify-content-between page-header">
+  <div class="d-flex flex-row align-items-center">
+    <h5><i class="fas fa-newspaper header-icon"></i> Lead Dashboard </h5>
+    <!-- <ng-container *ngIf="(fromDate != '') && (toDate != '')">
+      ({{fromDate.toLocaleDateString("en-US")}} - {{endDate.toLocaleDateString("en-US")}})
+    </ng-container>-->
+  </div>
+</div>
+<div class="card mt-1r default-box-styles">
+  <div class="card-body">
+
+
+    <div class="w-100-p mt-10p mb-10p display-flex flex-row jc-space-around ai-center">
+      <app-lead-count-box class="box-width" [selectedStatus]="this.status" [count]="leadCounts.inboxLead"
+        [status]="leadDashboardStatusConst.INBOX" (onClick)="loadPageData($event)"></app-lead-count-box>
+
+      <app-lead-count-box class="box-width" [selectedStatus]="this.status" [count]="leadCounts.inProgressLead"
+        [status]="leadDashboardStatusConst.IN_PROGRESS" (onClick)="loadPageData($event)"></app-lead-count-box>
+
+      <app-lead-count-box class="box-width" [selectedStatus]="this.status" [count]="leadCounts.acceptedLead"
+        [status]="leadDashboardStatusConst.ACCEPTED" (onClick)="loadPageData($event)"></app-lead-count-box>
+
+      <app-lead-count-box class="box-width" [selectedStatus]="this.status" [count]="leadCounts.returnedLead"
+        [status]="leadDashboardStatusConst.RETURNED" (onClick)="loadPageData($event)"></app-lead-count-box>
+
+      <app-lead-count-box class="box-width" [selectedStatus]="this.status" [count]="leadCounts.declinedLead"
+        [status]="leadDashboardStatusConst.DECLINED" (onClick)="loadPageData($event)"></app-lead-count-box>
+
+      <app-lead-count-box class="box-width" [selectedStatus]="this.status" [count]="leadCounts.paperApprovedLead"
+        [status]="leadDashboardStatusConst.PAPER_APPROVED" (onClick)="loadPageData($event)"></app-lead-count-box>
+
+    </div>
+
+  </div>
+</div>
+
+
+
+
+<ng-container *ngFor="let leadItem of this.leads | keyvalue">
+  <label class="font-weight-bold status-sub">
+    {{leadItem.key.replaceAll("_"," ")}}
+    <label class="status-sub-header">
+      <ng-container *ngIf="(leadItem.value.length != 0) && (leadItem.value[0].fromDate != null)">
+        ( FROM {{leadItem.value[0].fromDate}} )
+      </ng-container>
+    </label>
+  </label>
+
+
+  <!--<label class ="font-weight-bold float-left"> {{leadItem.key.replaceAll("_"," ")}} </label>-->
+  <ng-container *ngIf="leadItem.value.length == 0">
+    <div class="alert alert-warning" role="alert">
+      No Lead(s) Found !
+    </div>
+  </ng-container>
+
+  <ng-container *ngIf="leadItem.value.length > 0">
+    <div class="section  mb-15p">
+      <table class="table">
+        <thead>
+          <tr>
+            <ng-container *ngFor="let col of tableColumns">
+              <th scope="col">{{col}}</th>
+            </ng-container>
+          </tr>
+        </thead>
+        <tbody>
+
+          <ng-container *ngFor="let lead of leadItem.value">
+            <tr (click)="loadLead(lead)" class="table-clickable-row">
+              <td>
+                {{lead.referenceName}}
+                <ng-container *ngIf="isComprehensive(lead)">
+                  <span class="badge text-color-w ml-3p" style="background-color:#007e338a">
+                    Comprehensive
+                  </span>
+                </ng-container>
+              </td>
+              <td>{{lead.customerName ? lead.customerName : '-'}}</td>
+              <td>{{lead.leadReferenceNumber ? lead.leadReferenceNumber : '-'}}</td>
+              <td>{{lead.afReferenceNumber ? lead.afReferenceNumber : '-'}}</td>
+              <td>{{lead.fpReferenceNumber ? lead.fpReferenceNumber : '-'}}</td>
+              <td>{{lead.identificationNumber ? lead.identificationNumber : '-'}}</td>
+              <td>{{getBranchName(lead.branchCode) || '-'}}</td>
+              <td>{{lead.createdBy ? lead.createdBy : '-'}}</td>
+              <td>{{lead.createdDate}}</td>
+              <td>{{lead.assignedUser ? lead.assignedUser : '-'}}</td>
+
+              <td class="status-icon status-col">
+                <!-- SHOW DRAFT STATUS ICON -->
+                <a *ngIf="leadItem.key == this.leadInboxStatusConst.DRAFT" data-toggle="tooltip" data-placement="left"
+                  title="Draft" class="icon-padding">
+                  <img class="status-img-width" src="assets/media/images/fpstatusicon/draft.png" alt="Draft">
+                </a>
+
+                <!-- SHOW RECEIVED TO ME STATUS ICON -->
+                <a *ngIf="leadItem.key == this.leadInboxStatusConst.RECEIVED_TO_ME" data-toggle="tooltip"
+                  data-placement="left" title="Received to me" class="icon-padding">
+                  <img class="status-img-width" src="assets/media/images/fpstatusicon/assigned.png"
+                    alt="Received to me">
+                </a>
+
+                <!-- SHOW IN PROGRESS STATUS ICON -->
+                <a *ngIf="leadItem.key == this.leadInProgressStatusConst.IN_PROGRESS" data-toggle="tooltip"
+                  data-placement="left" title="In Progress" class="icon-padding">
+                  <img class="status-img-width" src="assets/media/images/fpstatusicon/inprogress.png" alt="In Progress">
+                </a>
+
+                <!-- SHOW RETURN STATUS ICON -->
+                <a *ngIf="(leadItem.key == this.leadAcceptedStatusConst.APPLICATION_RETURNED) ||
+                        (leadItem.key == this.leadAcceptedStatusConst.PAPER_RETURNED) ||
+                        (leadItem.key == this.leadReturnedStatusConst.RETURNED_BY_ME) ||
+                        (leadItem.key == this.leadReturnedStatusConst.RETURNED_BY_OTHERS) ||
+                        (leadItem.key == this.leadInboxStatusConst.RETURNED_TO_ME)" data-toggle="tooltip"
+                  data-placement="left" title="Returned" class="icon-padding">
+                  <img class="status-img-width" src="assets/media/images/fpstatusicon/return.png" alt="Returned">
+                </a>
+
+                <!-- SHOW APPLICATION CREATED STATUS ICON -->
+                <a *ngIf="leadItem.key == this.leadAcceptedStatusConst.APPLICATION_CREATED" data-toggle="tooltip"
+                  data-placement="left" title="Application Created" class="icon-padding">
+                  <img class="status-img-width" src="assets/media/images/fpstatusicon/applicationcreated.png"
+                    alt="Application Created">
+                </a>
+
+                <!-- SHOW PAPER CREATED STATUS ICON -->
+                <a *ngIf="leadItem.key == this.leadAcceptedStatusConst.PAPER_CREATED" data-toggle="tooltip"
+                  data-placement="left" title="Paper Created" class="icon-padding">
+                  <img class="status-img-width" src="assets/media/images/fpstatusicon/papercreated.png"
+                    alt="Paper Created">
+                </a>
+
+                <!-- SHOW PAPER DECLINED STATUS ICON -->
+                <a *ngIf="(leadItem.key == this.leadAcceptedStatusConst.APPLICATION_DECLINED) ||
+                        (leadItem.key == this.leadAcceptedStatusConst.PAPER_DECLINED) ||
+                        (leadItem.key == this.leadDeclinedStatusConst.DECLINED_BY_ME) ||
+                        (leadItem.key == this.leadDeclinedStatusConst.DECLINED_BY_OTHERS)" data-toggle="tooltip"
+                  data-placement="left" title="Declined" class="icon-padding">
+                  <img class="status-img-width" src="assets/media/images/fpstatusicon/decline.png" alt="Declined">
+                </a>
+
+                <!-- SHOW PAPER APPROVED STATUS ICON -->
+                <a *ngIf="leadItem.key == this.leadDashboardStatusConst.PAPER_APPROVED" data-toggle="tooltip"
+                  data-placement="left" title="Paper Approved" class="icon-padding">
+                  <img class="status-img-width" src="assets/media/images/fpstatusicon/approved.png"
+                    alt="Paper Approved">
+                </a>
+
+              </td>
+            </tr>
+          </ng-container>
+
+        </tbody>
+      </table>
+
+      <app-paginator [pageIndex]="this.leadsPage[leadItem.key].currentPageNo - 1"
+        [length]="this.leadsPage[leadItem.key].totalNoOfRecords" [pageSize]="pageSize.pageSize"
+        [pageSizeOptions]="pageSize.pageSizeOptions" (page)="onPageEvent($event, leadItem.key)"></app-paginator>
+    </div>
+  </ng-container>
+</ng-container>

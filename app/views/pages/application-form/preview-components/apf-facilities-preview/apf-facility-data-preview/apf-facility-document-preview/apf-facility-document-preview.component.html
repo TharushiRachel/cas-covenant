@@ -1,0 +1,52 @@
+<div class="modal-header modal-topic">
+  <h4 class="modal-title w-100 font-weight-bold">{{heading}}</h4>
+  <button type="button" class="close pull-right" data-dismiss="modal" aria-label="Close" (click)="mdbModalRef.hide()">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
+<div class="modal-body mx-3 modal-detail form-margin">
+  <div class="table-responsive">
+    <table class="table">
+      <thead>
+      <tr>
+        <th>Supporting Document</th>
+        <th>Mandatory</th>
+        <th>Remark</th>
+        <th>Actions</th>
+      </tr>
+      </thead>
+      <tbody>
+      <ng-container *ngIf="documentList.length>0; else noData">
+        <ng-container *ngFor="let item of documentList; let i=index">
+          <tr *ngIf="item.status == 'ACT'">
+            <td>{{item.supportingDocumentName}}</td>
+            <td>{{yesNo[item.mandatory]}}</td>
+            <td>{{item.remark}}</td>
+            <td>
+              <div>
+                <button class="btn btn-sm btn-success cta-btn" type="button" mdbWavesEffect
+                        (click)="onDownLoadDoc(item)"
+                        mdbTooltip="Download" placement="left">
+                  <mdb-icon fas icon="arrow-alt-circle-down" aria-hidden="true"></mdb-icon>
+                </button>
+              </div>
+            </td>
+          </tr>
+        </ng-container>
+      </ng-container>
+      <ng-template #noData>
+        <tr>
+          <th colspan="5" class="text-align-center" style="border: unset !important;">
+            <p class="no-data-message">
+              No Uploaded Documents
+            </p>
+          </th>
+        </tr>
+      </ng-template>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<a class="download-link" #downloadLink></a>

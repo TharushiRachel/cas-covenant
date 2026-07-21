@@ -1,0 +1,118 @@
+<div class="d-flex p-2 flex-column align-items-center w-100-p jumbotron">
+
+  <ng-container *ngIf="isWalletUpdateEnabled && isEqualLoginAndAssignUser() && !isApproveStatus() && !isRejected()">
+    <div class="row d-flex justify-content-center align-items-center mx-0 mx-0 p-1 border border-1 rounded mb-2 w-100"
+      style="border-color: #ff4a67;">
+      <strong>Facilities / Securities have been changed. Review the "Wallet Share" for changes.</strong>
+      <button class="medium-button btn btn-primary" mdbBtn mdbWavesEffect type="button" mdbBtn
+        (click)="walletShareUpdate()">
+        Update Wallet Share
+      </button>
+    </div>
+  </ng-container>
+
+  <div class="d-flex flex-row w-100-p justify-content-end" id="fp-sec-cmp" [class.width-95]="isPreviewMode">
+    <ng-container *appHasAnyPrivilege="masterDataPrivilege.ICAS_SETTINGS_FACILITY_PAPER_EDIT">
+      <ng-container
+        *ngIf="creditFacilityList.length > 0 && isEqualLoginAndAssignUser() && !isApproveStatus() && !isRejected()">
+
+        <ng-container *ngIf="!isPreviewMode">
+          <button mdbBtn type="button" mdbTooltip="Insurance/Valuation" color="warning" class="btn-width" size="sm"
+            mdbWavesEffect (click)="showInsuranceValuation()">
+            <mdb-icon fas icon="house-damage" aria-hidden="true"></mdb-icon>
+            Insurance/ Valuations
+          </button>
+        </ng-container>
+
+
+        <button mdbBtn type="button" class="action-button-padding btn-outline-info btn-sm" outline="true" mdbWavesEffect
+          (click)="toggleViewMode($event)">
+          <ng-container *ngIf="!isPreviewMode">
+            <mdb-icon fas icon="eye" aria-hidden="true"></mdb-icon>
+            Preview Mode
+          </ng-container>
+          <ng-container *ngIf="isPreviewMode">
+            <mdb-icon fas icon="pencil-alt" aria-hidden="true"></mdb-icon>
+            Edit Mode
+          </ng-container>
+        </button>
+
+        <ng-container *ngIf="!isPreviewMode">
+          <button mdbBtn type="button" mdbTooltip="Manage Security" color="info" class="btn-width" size="sm"
+            mdbWavesEffect (click)="manageSecurity()">
+            <!--            <i class="fas fa-plus"></i>-->
+            Manage Security
+          </button>
+        </ng-container>
+      </ng-container>
+    </ng-container>
+  </div>
+
+  <ng-container *appHasAnyPrivilege="masterDataPrivilege.ICAS_SETTINGS_FACILITY_PAPER_EDIT">
+    <ng-container *ngIf="creditFacilityList.length > 0 && !isPreviewMode">
+      <app-tabs class="w-100-p" [selectedTabIndex]="selectedTabIndex" (onTabSelect)="setTabIndex($event)">
+        <ng-container *ngFor="let creditFacility of creditFacilityList; let i =index">
+
+          <app-tab [tabTitle]="'Facility: ' + (i + 1)" [showBadge]="creditFacility.isNew=='Y'" [badgeContent]="'N'"
+            [badgeColor]="'red'" [active]="i == selectedTabIndex">
+
+            <ng-container *ngIf="selectedTabIndex == i">
+              <app-fp-sec-facility-data [facilityData]="creditFacility" [facilityPaper]="facilityPaper"
+                [lastIndex]="creditFacilityList.length - 1" [currentIndex]="i" (setTabIndex)="setTabIndex($event)"
+                (onAddEditSecurityDetails)="saveOrUpdateFPFacility($event)" [isPreviewMode]="isPreviewMode"
+                (addSecurityThroughFacility)="addSecurityThroughFacility($event)">
+              </app-fp-sec-facility-data>
+            </ng-container>
+
+          </app-tab>
+
+        </ng-container>
+      </app-tabs>
+    </ng-container>
+  </ng-container>
+
+  <ng-container *ngIf="creditFacilityList.length > 0 && isPreviewMode">
+    <ng-container *ngFor="let creditFacility of creditFacilityList; let i =index">
+      <div class="width-95">
+        <app-fp-sec-facility-data [facilityData]="creditFacility" [facilityPaper]="facilityPaper"
+          [lastIndex]="creditFacilityList.length - 1" [currentIndex]="i" (setTabIndex)="setTabIndex($event)"
+          (toCommonSecurityContent)="toCommonSecurityContent($event)" [isPreviewMode]="isPreviewMode">
+        </app-fp-sec-facility-data>
+      </div>
+    </ng-container>
+  </ng-container>
+
+  <div class="d-flex flex-row w-100-p common-security-section justify-content-center" *ngIf="isPreviewMode">
+    <ng-container *ngIf="commonFacilitySecurityList.length > 0">
+      <div class="width-95">
+        <app-preview-common-securities [facilityPaper]="facilityPaper"
+          [commonFacilitySecurityList]="commonFacilitySecurityList" (moveUp)="moveUp()">
+        </app-preview-common-securities>
+      </div>
+    </ng-container>
+  </div>
+
+
+  <div class="d-flex flex-row w-100-p justify-content-center">
+    <ng-container *ngIf="creditFacilityList.length > 0">
+      <div [ngClass]="{'width-95' : isPreviewMode, 'width-100' : !isPreviewMode}">
+        <app-fp-security-summery [isPreviewMode]="isPreviewMode" [facilityPaper]="facilityPaper">
+        </app-fp-security-summery>
+        <!--        <app-fp-security-summary [facilityPaper]="facilityPaper">-->
+        <!--        </app-fp-security-summary>-->
+      </div>
+    </ng-container>
+  </div>
+
+  <div class="d-flex flex-row width-100 justify-content-center" [class.width-95]="isPreviewMode">
+    <ng-container *ngIf="creditFacilityList.length == 0">
+      <div class="alert alert-warning section" style="margin-bottom: 0px" role="alert">
+        No Security(ies) Found !
+      </div>
+    </ng-container>
+  </div>
+</div>
+
+<ng-container class="mr-1p" *ngIf="isPreviewMode">
+  <app-scroll-to-top></app-scroll-to-top>
+</ng-container>

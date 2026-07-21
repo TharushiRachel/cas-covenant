@@ -1,0 +1,142 @@
+.covenant-btn{
+    float: right;
+    //margin-top: 80px;
+    background-color: #e0e0e0!important;
+    color: #000;
+}
+
+.covenant-table{
+    padding-top: 10px;
+}
+
+.topic {
+    background-color: #dae3e6 !important;
+    padding-top: 6px !important;
+    padding-bottom: 1px !important;
+    margin-bottom: 5px !important;
+  }
+
+  .creditFacilityName{
+    width: 200px;
+  }
+
+  .customer-description{
+    margin-left: 50px;
+    width: 70%;
+  }
+
+  .facility-description{
+    margin-left: 50px;
+    width: 50%;
+  }
+
+  .covenant-heading{
+    //font-size: 15px;
+    //margin-top: 30px;
+    font-weight: 700 !important;
+  }
+
+  .table th {
+    border-bottom: 0.5px solid #dee2e6a1 !important;
+    background-color:#ced4da1f;
+}
+
+.table tr {
+    border-bottom: 0.5px solid #dee2e6a1;
+}
+
+.active-covenants{
+  
+  
+  color: #007e338a;
+  //padding: 5px;
+  border-radius: 10px;
+  text-align: center;
+  //font-weight: bold;
+}
+
+.inactive-covenants{
+  // color:  #AC9D16;
+  // background-color: #FAFDD4;
+  color: #D18700;
+  //padding: 5px;
+  border-radius: 10px;
+  text-align: center;
+  //font-weight: bold;
+}
+
+.outer
+{
+    width:100%;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+}
+.inner
+{
+    display: inline-block;
+}
+
+.delete-button{
+  background-color: #ff354785 !important;
+}
+
+.modified-covenants{
+  color: #7bccf2;
+  padding: 5px;
+  border-radius: 10px;
+  text-align: center;
+  font-weight: bold;
+}
+
+.highlight {
+  background-color: yellow;
+}
+
+.top-eading-covenant{
+  display: flex;
+}
+
+.facility-sty{
+  padding-bottom: 20px;
+  width: 20%;
+  line-height: 2rem;
+}
+
+.table td{
+    padding: 0%;
+}
+
+.common-covenants {
+    font-size: 1.1rem;
+    font-weight: bold;
+    background-color: #dae3e6 !important;
+    margin-top: 4%;
+    padding: 6px;
+  }
+
+  .covenant-data td {
+    padding-top: 15px !important;
+    padding-bottom: 8px !important;
+  }
+
+  .disbursement-pre {
+    color: rgba(255, 150, 51, 0.65);
+    font-weight: 800;
+  }
+  
+  .disbursement-post {
+    color: #2bbbad;
+    font-weight: 800;
+  }
+  
+  .disbursement-default {
+    color: black;
+  }
+
+  .no-covenants-text{
+    font-size: small;
+    font-weight: bold !important;
+    padding-left: 3px;
+    text-align: center;
+  }

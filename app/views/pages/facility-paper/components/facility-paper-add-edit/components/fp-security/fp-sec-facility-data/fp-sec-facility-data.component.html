@@ -1,0 +1,213 @@
+<ng-container *ngIf="facilityData.facilitySecurityDTOList">
+  <div class="single-row d-flex flex-column justify-content-start">
+    <ng-container *ngIf="!isPreviewMode">
+
+      <div class="d-flex flex-row justify-content-between m-0 w-100-p">
+        <div class="">
+          <ng-container *ngIf="currentIndex != 0">
+            <button mdbBtn color="light-blue" size="sm" type="button" class="margin-left-unset" mdbWavesEffect
+              (click)="showPreviousTab($event)">
+              <mdb-icon fas icon="angle-left" aria-hidden="true"></mdb-icon>
+              Previous
+            </button>
+          </ng-container>
+
+          <ng-container *ngIf="isShow()">
+            <button class="btn" [ngClass]="getUnReadCommentsCount(facilityData) > 0 ? 'btn-primary' : 'btn-info'"
+              (click)="viewChangeModal(facilityData)" mdbTooltip="View Changes" placement="right"
+              style="padding: 8px 14px !important;">
+              <mdb-icon aria-hidden="true" fas icon="comments"></mdb-icon>
+            </button>
+          </ng-container>
+        </div>
+
+        <div class="d-flex flex-column text-center">
+          <h6 class="f-bold">
+            {{facilityData.creditFacilityTemplateDTO?.creditFacilityName}}
+            <span *ngIf="facilityData.facilityRefCode">{{ " - " + facilityData.facilityRefCode}}</span>
+          </h6>
+          <h4><b>({{facilityData.creditFacilityTemplateDTO?.facilityTypeName }}
+              : {{facilityData.facilityCurrency}}
+              {{this.getFormattedThreeDecimalValues(getMillionValue(facilityData.facilityAmount))}} 
+              Mn)</b>
+          </h4>
+        </div>
+
+        <div class="">
+          <ng-container *ngIf="currentIndex != lastIndex">
+            <button mdbBtn color="light-blue" size="sm" type="button" mdbWavesEffect (click)="showNextTab($event)">
+              Next
+              <mdb-icon fas icon="angle-right" aria-hidden="true"></mdb-icon>
+            </button>
+          </ng-container>
+        </div>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="isPreviewMode">
+
+      <div class="d-flex flex-row justify-content-start m-0 w-100-p">
+        <ng-container *ngIf="isShow()">
+          <button class="btn btn-info"
+            (click)="viewChangeModal(facilityData)" mdbTooltip="View Changes" placement="right"
+            style="padding: 8px 14px !important;">
+            <mdb-icon aria-hidden="true" fas icon="comments"></mdb-icon>
+          </button>
+        </ng-container>
+      </div>
+    </ng-container>
+
+    <div class="d-flex flex-row justify-content-between mb-2">
+      <ng-container *ngIf="!isPreviewMode">
+        <h6 class="facility-data-header">Facility {{currentIndex + 1}} Security(ies)</h6>
+      </ng-container>
+
+      <ng-container *ngIf="isPreviewMode">
+        <div class="display-flex flex-column ai-center w-100-p">
+          <h6 class="f-bold text-center">
+            {{currentIndex + 1}}.
+            {{facilityData.creditFacilityTemplateDTO?.creditFacilityName}}
+            <span *ngIf="facilityData.facilityRefCode">{{ " - " + facilityData.facilityRefCode}}</span>
+          </h6>
+          <p class="text-center" style="font-size: 0.8rem;">
+            ({{ facilityData.creditFacilityTemplateDTO?.facilityTypeName }}
+            : {{facilityData.facilityCurrency}}
+            {{this.getFormattedThreeDecimalValues(getMillionValue(facilityData.facilityAmount))}} 
+            Mn)</p>
+        </div>
+
+      </ng-container>
+
+      <div>
+        <ng-container *ngIf="!isPreviewMode">
+          <ng-container *appHasAnyPrivilege="masterDataPrivilege.ICAS_SETTINGS_FACILITY_PAPER_EDIT">
+            <ng-container *ngIf="isEqualLoginAndAssignUser() && !isApproveStatus() && !isRejected()">
+              <button (click)="addSecurity(facilityData,{},{})" mdbTooltip="Add Security(ies)"
+                class="medium-button add-security-detail-button" type="button" mdbBtn color="light" mdbWavesEffect>
+                Add
+
+              </button>
+
+            </ng-container>
+          </ng-container>
+        </ng-container>
+      </div>
+    </div>
+
+    <ng-container *ngIf="organizedSecurityList.length>0">
+      <div class="table-responsive">
+        <table class="table" [class.preview-mode]="isPreviewMode">
+          <thead>
+            <tr>
+              <th scope="col"></th>
+              <th scope="col"></th>
+              <th scope="col" class="text-right" style="width: 1%"></th>
+              <th scope="col" class="text-right">Amount</th>
+              <ng-container *ngIf="!isPreviewMode">
+                <th scope="col" class="text-align-center action-header">Actions</th>
+              </ng-container>
+            </tr>
+          </thead>
+          <tbody>
+            <ng-container *ngFor="let item of organizedSecurityList;let i = index">
+              <tr class="m-top-10px" style="padding: 20px; border-bottom: unset !important;">
+                <td style="width: 1%">
+                  <span>
+                    <!--                  <i class="fas fa-lock"></i>-->
+                    {{i + 1}}.
+                  </span>
+                </td>
+                <td class="security-detail" *ngIf="item.isCommonSecurity === yesNoConst.N || !isPreviewMode">
+                  <pre class="custom-pre-tag-with-spaces">{{item.securityDetail}}</pre>
+                </td>
+                <td class="security-detail" *ngIf="item.isCommonSecurity === yesNoConst.Y && isPreviewMode">
+                  <p class="ml-2pc">Refer to the common security
+                    <span (click)="toContent(item.facilitySecurityID+item.securityCode)" class="refer-to-the">
+                      {{item.securityCode}}
+                    </span>
+                  </p>
+                </td>
+                <td class="security-common-flag text-right d-flex d-flex-row">
+                  <div class="mr-2" *ngIf="item.isCommonSecurity === yesNoConst.Y">
+                    <mdb-badge default="true" [title]="'Common Security'">C</mdb-badge>
+
+                  </div>
+                  <div class="mr-2" *ngIf="item.isCashSecurity == 'Y'">
+                    <mdb-badge default="true" [title]="'Cash'">Cash</mdb-badge>
+                  </div>
+                </td>
+                <td class="security-amount text-right">
+                  {{item.securityCurrency}}
+                  <span *ngIf="!isCommittee">{{getFormattedValue(item.securityAmount)}}</span>
+                  <span *ngIf="isCommittee">{{getFormattedThreeDecimalValues(getMillionValue(item.securityAmount))}}{{" "}}Mn</span>
+                </td>
+                <ng-container *ngIf="!isPreviewMode">
+                  <td class="security-action">
+                    <div class="display-flex flex-row jc-end ai-center">
+                      <ng-container *ngIf="!isPreviewMode">
+                        <ng-container *appHasAnyPrivilege="masterDataPrivilege.ICAS_SETTINGS_FACILITY_PAPER_EDIT">
+                          <ng-container *ngIf="isEqualLoginAndAssignUser() && !isApproveStatus() && !isRejected()">
+                            <button class="btn btn-sm btn-secondary cta-btn" type="button" mdbWavesEffect
+                              (click)="addSecurity(facilityData, item,{})" mdbTooltip="Edit" placement="left">
+                              <mdb-icon fas icon="pencil-alt" aria-hidden="true"></mdb-icon>
+                            </button>
+
+                            <button class="btn btn-sm btn-danger cta-btn delete-button" type="button" mdbWavesEffect
+                              (click)="onRemoveFacilitySecurity(facilityData, item)" mdbTooltip="Delete"
+                              placement="left">
+                              <mdb-icon fas icon="trash-alt" aria-hidden="true"></mdb-icon>
+                            </button>
+                          </ng-container>
+                        </ng-container>
+                      </ng-container>
+                    </div>
+                  </td>
+                </ng-container>
+              </tr>
+              <tr>
+                <td class="padding-unset"></td>
+                <td class=" padding-unset security-detail">
+                  <ng-container *ngIf="item.isCashSecurity=='Y' && !isPreviewMode">
+                    <p class="custom-pre-tag-with-spaces"><b>Cash Amount <b *ngIf="isCommittee">(Mn)</b>
+                        - {{item.securityCurrency}}
+                        <span *ngIf="!isCommittee">{{getFormattedValue(item.cashAmount)}}</span>
+                        <span *ngIf="isCommittee">{{getFormattedThreeDecimalValues(getMillionValue(item.cashAmount))}}{{" "}}Mn</span>
+
+                      </b></p>
+                  </ng-container>
+                </td>
+                <td class="padding-unset"></td>
+                <td class="padding-unset"></td>
+                <td class="padding-unset"></td>
+              </tr>
+            </ng-container>
+            <ng-container *ngIf="isPreviewMode">
+              <tr *ngIf="individualCashAmounts.length>0">
+                <td></td>
+                <td class="font-weight-bold">
+                  <p class="ml-2pc">
+                    Cash Amount
+                  </p>
+                </td>
+                <td colspan="2" class="text-align-end">
+                  <ng-container class="border-bottom-0" *ngFor="let item of individualCashAmounts">
+                    <span class="text-align-end padding-unset">{{item.currency}}
+                      <span *ngIf="!isCommittee">{{getFormattedValue(item.amount)}}</span>
+                      <span *ngIf="isCommittee">{{getFormattedThreeDecimalValues(getMillionValue(item.amount))}}{{" "}}Mn</span>
+                    </span><br>
+                  </ng-container>
+                </td>
+              </tr>
+            </ng-container>
+          </tbody>
+        </table>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="activeSecurityList.length == 0">
+      <div class="not-data-color" [class.text-align-center]="isPreviewMode">
+        No Facility Security(ies)
+      </div>
+    </ng-container>
+  </div>
+</ng-container>

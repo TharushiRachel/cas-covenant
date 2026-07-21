@@ -1,0 +1,35 @@
+.page-section {
+  margin: 0.5rem 0;
+
+  &:first-child {
+    margin-top: 1rem;
+  }
+
+  .info-section {
+    margin: 3px 15px 3px 0;
+    min-width: 220px;
+
+    .info-caption {
+      margin-right: 5px;
+    }
+  }
+}
+
+.read-view-btn {
+  min-width: 135px;
+  padding: 0.4rem 1rem !important;
+}
+
+.cft-btn {
+  padding: 0px;
+  height: 30px;
+  float: right;
+  background-color: #e0e0e0!important;
+}
+
+.relative-icon {
+  position: relative;
+  top: -6px;
+}
+
+

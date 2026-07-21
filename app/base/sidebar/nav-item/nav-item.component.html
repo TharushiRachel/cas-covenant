@@ -1,0 +1,25 @@
+<ng-container *ngIf="hasPrivileges(item)">
+  <mdb-accordion-item class="no-collase">
+    <mdb-accordion-item-head [routerLink]="item.url" routerLinkActive="active"
+                             mdbWavesEffect>
+      <div class="display-flex flex-row jc-space-between ai-center">
+        <span>
+          <i [ngClass]="item.icon"></i> {{item.title}}
+        </span>
+        <span
+          *ngIf="item && item.badge"
+          [id]="item.badge.id"
+          [ngStyle]="{'background-color' : item.badge.bg, 'color' : item.badge.fg}"
+          class="badge-section display-flex flex-row jc-center ai-center">
+
+          <span>
+            {{item.badge.title}}
+          </span>
+        </span>
+      </div>
+    </mdb-accordion-item-head>
+    <mdb-accordion-item-body></mdb-accordion-item-body>
+  </mdb-accordion-item>
+</ng-container>
+
+

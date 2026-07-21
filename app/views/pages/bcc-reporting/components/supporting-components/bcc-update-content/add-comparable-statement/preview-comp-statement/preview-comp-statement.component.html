@@ -1,0 +1,63 @@
+<div class="m-0 p-0" style="max-height: 68vh;overflow-y: auto;">
+    <div class="row d-flex mx-0 p-0 w-100" *ngIf="reportingDataList.length > 0">
+        <ng-container *ngFor="let item of reportingDataList">
+            <h6 class="mt-2" style="font-size: 14px;font-weight: 600;">{{item.acctName}}</h6>
+            <div class="table-responsive">
+                <table class="table" *ngIf="item.loans.length > 0">
+                    <thead>
+                        <tr>
+                            <th style="width: 10%; vertical-align: middle;">Account</th>
+                            <th style="width: 17%; vertical-align: middle;">Product</th>
+                            <th style="width: 12%; vertical-align: middle;">Amount (Mn)</th>
+                            <th style="width: 10%; vertical-align: middle;">Interest Rate / Commission</th>
+                            <th style="width: 16%; vertical-align: middle;">Sector</th>
+                            <th style="width: 10%; vertical-align: middle;">Risk Rating</th>
+                            <th style="width: 15%; vertical-align: middle;">
+                                Facility Type
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <ng-container *ngFor="let loan of item.loans">
+                            <tr>
+                                <td style="vertical-align: middle;">
+                                    {{loan.foracid}}
+                                </td>
+                                <td style="vertical-align: middle;">
+                                    <ng-container *ngIf="loan.schmDesc">{{loan.schmDesc}}</ng-container>
+                                    <ng-container *ngIf="loan.productGroup">({{loan.productGroup}})</ng-container>
+                                    <ng-container *ngIf="!loan.schmDesc || !loan.productGroup">-</ng-container>
+                                </td>
+                                <td style="vertical-align: middle;">
+                                    {{loan.acctCrncyCode}} {{loan.sanctLim ? loan.sanctLim : "-"}}
+                                </td>
+                                <td style="vertical-align: middle;">
+                                    <ng-container *ngIf="loan.recordType == 'L'">
+                                        {{loan.intTbleCode ? loan.intTbleCode + " + " +
+                                        loan.prefRate +"%" : ""}}
+                                        <br />
+                                        {{loan.interestRate ? "("+ loan.interestRate +"%)" : ""}}
+                                    </ng-container>
+                                    <ng-container *ngIf="loan.recordType == 'C'">
+                                        {{loan.commission}}%
+                                    </ng-container>
+                                </td>
+                                <td style="vertical-align: middle;">
+                                    {{loan.sectorCode}}-{{loan.sectorDesc}}</td>
+                                <td style="vertical-align: middle;">{{loan.riskRating ? loan.riskRating : "-"}}</td>
+                                <td style="vertical-align: middle;">
+                                    {{getFacilityType(loan.facilityType)}}
+                                </td>
+                            </tr>
+                        </ng-container>
+                    </tbody>
+                </table>
+            </div>
+        </ng-container>
+    </div>
+    <div class="row d-flex mx-0 p-0 w-100 mt-3" *ngIf="reportingDataList.length <= 0">
+        <span style="width: 100%;text-align: center;font-size: 15px;font-weight: 600;">
+            There are no data.
+        </span>
+    </div>
+</div>

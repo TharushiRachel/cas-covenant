@@ -1,0 +1,48 @@
+<div class="d-flex flex-column justify-content-start align-items-start w-100-p mt-20p">
+    <div class="d-flex flex-row w-100-p mb-3 flex-wrap justify-content-between">
+      <div class="padding-4px">
+        <label class="font-weight-bold mr-auto">Director/Shareholder Detail(s)</label>
+      </div>
+    </div>
+  
+    <div class="table-responsive">
+      <table class="table">
+        <thead>
+        <tr>
+          <ng-container *ngFor="let col of tableColumns">
+            <th scope="col" style="text-align: center;">{{col}}</th>
+          </ng-container>
+        </tr>
+        </thead>
+        <tbody>
+        <ng-container *ngFor="let item of facilityPaper.fpDirectorDetailDTOList">
+          <tr class="table-row">
+            <td>{{item.directorName}} {{item.fullName}} </td>
+            <td style="text-align: center;">Director</td>
+            <td *ngIf="item.dateOfBirthStr" style="text-align: center;">{{getCalculatedAge(item.dateOfBirthStr)}} Years</td>
+            <td *ngIf="!item.dateOfBirthStr" style="text-align: center;">-</td>
+            <td style="text-align: center;">{{item.nic || '-'}}</td>
+            <td style="text-align: center;">{{getFormattedValue(item.shareHolding) || '-'}}</td>
+          </tr>
+        </ng-container>
+        <ng-container *ngFor="let item of facilityPaper.fpShareHolderDetailDTOList">
+          <tr class="table-row">
+              <td>{{item.shareHolderName}}</td>
+              <td style="text-align: center;">Shareholder</td>
+              <td style="text-align: center;">-</td>
+              <td style="text-align: center;">-</td>
+              <td style="text-align: center;">{{getFormattedValue(item.shareHolding)}}</td>              
+          </tr>
+      </ng-container>
+      <tr class="total">
+          <td>Total</td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td style="text-align: center;">{{getFormattedValue(calculateTotalShareHolding())}}</td>          
+      </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  

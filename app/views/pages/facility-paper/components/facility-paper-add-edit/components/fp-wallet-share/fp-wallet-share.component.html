@@ -1,0 +1,107 @@
+<ng-container *appHasAnyPrivilege="masterDataPrivilege.ICAS_SETTINGS_FACILITY_PAPER_EDIT">
+    <div class="row d-flex flex-row px-1 py-0 mt-3 mx-0" *ngIf="isActionEnabled()">
+
+        <div class="col-md-12 text-align-end p-0">
+            <button class="medium-button btn btn-info btn-sm calculate-btn" mdbBtn mdbTooltip="Add Wallet Share"
+                mdbWavesEffect type="button" mdbBtn (click)="addEditWalletShare()">
+                Add Wallet Share
+            </button>
+        </div>
+    </div>
+</ng-container>
+
+<div class="w-100 mt-3 px-1 py-0">
+    <table class="table">
+        <thead>
+            <tr>
+                <th style="width: 14%;">Bank</th>
+                <th style="width: 16%;">Facility</th>
+                <th style="width: 10%;">Limit Present / Available (Rs. Mn)</th>
+                <th style="width: 10%;">O/S as at (Rs. Mn)</th>
+                <th style="width: 35%;">Security</th>
+                <th style="width: 10%;">Wallet Share %</th>
+                <th *ngIf="filterRemoveData(dataList).length > 0">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <ng-container *ngFor="let parentItem of filterRemoveData(dataList); let i = index;">
+                <tr>
+                    <td [attr.rowspan]="parentItem.rows">{{parentItem.bank}}</td>
+                    <ng-container *ngIf="parentItem.facilities.length > 0">
+                        <td style="text-align: start;">1. {{parentItem.facilities[0].facility}}</td>
+                        <td style="text-align: end;">
+                            {{getCurrency(parentItem.facilities[0].facilityCurrency)}}
+                            {{getFormattedAmount(parentItem.facilities[0].limitAmount)}}
+                        </td>
+                        <td style="text-align: end;">
+                            {{getCurrency(parentItem.facilities[0].facilityCurrency)}}
+                            {{getFormattedAmount(parentItem.facilities[0].osAmount)}}
+                        </td>
+                    </ng-container>
+                    <ng-container *ngIf="parentItem.facilities.length == 0">
+                        <td>-</td>
+                        <td style="text-align: end;">-</td>
+                        <td style="text-align: end;">-</td>
+                    </ng-container>
+
+                    <td [attr.rowspan]="parentItem.rows">
+                        <pre class="custom-pre-tag-with-spaces">{{getWalletShareSecurity(parentItem)}}</pre>
+                    </td>
+                    <td style="text-align: end;" [attr.rowspan]="parentItem.rows">
+                        {{parentItem.share ? getFormattedShare(parentItem.share) : "-"}}
+                    </td>
+                    <td [attr.rowspan]="parentItem.rows">
+                        <ng-container *appHasAnyPrivilege="masterDataPrivilege.ICAS_SETTINGS_FACILITY_PAPER_EDIT">
+                            <div class="row d-flex justify-content-center align-items-center mx-0"
+                                *ngIf="parentItem.isSystem == 0 && isActionEnabled()">
+                                <mdb-icon [mdbTooltip]="'Edit'" fas icon="pencil-alt" class="gray-text fa-1x mr-2"
+                                    aria-hidden="true" (click)="addEditWalletShare(parentItem)"
+                                    style="cursor: pointer;"></mdb-icon>
+                                <mdb-icon [mdbTooltip]="'Remove'" fas icon="trash-alt" class="red-text fa-1x"
+                                    aria-hidden="true" (click)="removeData(parentItem)"
+                                    style="cursor: pointer;"></mdb-icon>
+                            </div>
+                        </ng-container>
+                        <div *ngIf="parentItem.isSystem == 1 && !isActionEnabled()">-</div>
+                    </td>
+                </tr>
+                <ng-container *ngFor="let childItem of parentItem.sortData;let i = index;">
+                    <tr>
+                        <td style="text-align: start;">{{i + 2 }}. {{childItem.facility}}</td>
+                        <td style="text-align: end;">
+                            {{getCurrency(childItem.facilityCurrency)}}
+                            {{getFormattedAmount(childItem.limitAmount)}}
+                        </td>
+                        <td style="text-align: end;">
+                            {{getCurrency(childItem.facilityCurrency)}}
+                            {{getFormattedAmount(childItem.osAmount)}}
+                        </td>
+                    </tr>
+                </ng-container>
+                <tr *ngIf="filterRemoveData(parentItem.facilities).length > 0" style="border-width: 4px;">
+                    <td><b>Total</b></td>
+                    <td style="text-align: end;"><b>{{getFormattedAmount(parentItem.limitTotal)}}</b></td>
+                    <td style="text-align: end;"><b>{{getFormattedAmount(parentItem.osTotal)}}</b></td>
+                </tr>
+            </ng-container>
+            <tr>
+                <td><b>Total</b></td>
+                <td></td>
+                <td style="text-align: end;"><b>{{limitTotal ? getFormattedAmount(limitTotal) : ""}}</b></td>
+                <td style="text-align: end;"><b>{{osTotal ? getFormattedAmount(osTotal) : ""}}</b></td>
+                <td></td>
+                <td style="text-align: end;"><b>100.000</b></td>
+                <td *ngIf="filterRemoveData(dataList).length > 0"></td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<ng-container *appHasAnyPrivilege="masterDataPrivilege.ICAS_SETTINGS_FACILITY_PAPER_EDIT">
+    <div class="row d-flex flex-row justify-content-end px-1 py-0 mt-5 mx-0" *ngIf="isActionEnabled()">
+        <button class="relative waves-light" color="secondary" mdbBtn mdbWavesEffect type="button" (click)="submit()"
+            [disabled]="isSaveDisabled()">
+            Save
+        </button>
+    </div>
+</ng-container>

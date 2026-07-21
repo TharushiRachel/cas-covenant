@@ -1,0 +1,56 @@
+<div class="row d-flex mx-0 justify-content-end my-2">
+    <button type="button" (click)="handleApproveStatus(0)" class="medium-button btn-sm btn-outline-info relative-icon"
+        mdbBtn *ngIf="isShowEditButton()">
+        Edit ESG Risk Score
+    </button>
+    <button type="button" (click)="handleApproveStatus(1)"
+        class="medium-button btn-sm btn-outline-success relative-icon" mdbBtn *ngIf="isShowApproveButton()">
+        Finalized ESG Risk Score
+    </button>
+
+    <button type="button" mdbTooltip="Add Opinion" placement="right" (click)="addEditOpinion()"
+        class="medium-button btn-sm btn-outline-info relative-icon" mdbBtn *ngIf="showOpinionButton()">
+        Add ESG Opinion
+    </button>
+    <button type="button" mdbTooltip="View Instructions" placement="right" (click)="openViewInstructions()"
+        class="medium-button btn-sm btn-outline-success instruction-btn" mdbBtn>
+        ESG Risk Ratings Instructions
+    </button>
+</div>
+
+<ng-container *ngIf="!isOpinionLoading">
+    <app-af-esg-comment-wrapper (addEditOpinion)="addEditOpinion($event)" (addEditReply)="addEditReply($event)"
+        (handleDeleteOpinion)="handleDeleteOpinion($event)"></app-af-esg-comment-wrapper>
+</ng-container>
+
+<app-apf-add-edit-risk-score></app-apf-add-edit-risk-score>
+
+<div class="d-flex flex-column justify-content-start w-100-p">
+    <div class="w-100-p">
+        <div class="d-flex flex-row justify-content-end">
+            <button *ngIf="canAddAnnexure()" type="button" mdbTooltip="Add annexure" placement="right"
+                (click)="openAddAnnexureModal($event)" class="medium-button btn-sm btn-outline-info relative-icon"
+                mdbBtn>
+                Add Annexure
+            </button>
+            <button type="button" mdbTooltip="Add Attachment" placement="right" (click)="openAddAttachmentModal($event)"
+                class="medium-button btn-sm btn-outline-info relative-icon" mdbBtn *ngIf="isAttachmentEnabled()">
+                Add Attachment
+            </button>
+        </div>
+    </div>
+
+    <ng-container *ngIf="!isLoadingAnnexure">
+        <app-esg-annexures-view [mandatoryAnnexures]="mandatoryAnnexures" [existingAnnexures]="existingAnnexures"
+            [applicationForm]="applicationForm" [isFacilityPaper]="false" (loadAnnexureData)="loadAnnexureData($event)">
+        </app-esg-annexures-view>
+    </ng-container>
+
+    <div id="annexureEnd"></div>
+
+    <div class="position-relative border p-3 mb-3 rounded shadow-sm">
+        <app-esg-view-attachment [attachments]="attachments" [facilityPaperID]="null"
+            [applicationForm]="applicationForm" [isFacilityPaper]="false"></app-esg-view-attachment>
+    </div>
+
+</div>

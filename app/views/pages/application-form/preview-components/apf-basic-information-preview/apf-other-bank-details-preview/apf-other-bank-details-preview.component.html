@@ -1,0 +1,38 @@
+<mdb-card>
+  <mdb-card-body class="custom-card-body mb-10p">
+    <ng-container>
+      <div class="d-flex flex-column justify-content-between w-100-p">
+        <table class="table custom-apf-table width-100">
+          <tr>
+            <th colspan="10" style="border: unset !important;">
+              <p class="mb-5p text-align-start"><b>OTHER BANK ACCOUNT DETAILS</b></p>
+            </th>
+          </tr>
+          <tr>
+            <th>Bank Name</th>
+            <th>Name of Branch</th>
+            <th>Account No.</th>
+            <th>Type of Account</th>
+          </tr>
+          <ng-container *ngIf="basicInformation.afOtherBankDetailsDTOList.length>0; else noData;">
+            <tr *ngFor="let otherBankDetail of basicInformation.afOtherBankDetailsDTOList; let i = index;">
+              <td>{{otherBankDetail.nameOfBank}}</td>
+              <td>{{otherBankDetail.nameOfBranch}}</td>
+              <td>{{otherBankDetail.accountNo}}</td>
+              <td>{{otherBankDetail.typeOfAccount}}</td>
+            </tr>
+          </ng-container>
+          <ng-template #noData>
+            <tr>
+              <th colspan="5" class="text-align-center">
+                <p class="no-data-message">
+                  No Record(s)
+                </p>
+              </th>
+            </tr>
+          </ng-template>
+        </table>
+      </div>
+    </ng-container>
+  </mdb-card-body>
+</mdb-card>

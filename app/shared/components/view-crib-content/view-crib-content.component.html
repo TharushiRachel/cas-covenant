@@ -1,0 +1,13 @@
+<div>
+    <div class="modal-header modal-topic flex-center">
+        <button type="button" class="close pull-right" aria-label="Close" (click)="onNoClick()">
+            <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-title w-100 heading-align" id="myModalLabel" style="font-size: 1rem ; font-weight: bold">
+            Crib Content
+        </h4>
+    </div>
+    <div class="modal-body modal-detail form-margin" style="max-height: 80vh;overflow-y: auto;">
+        <div [innerHTML]="content"></div>
+    </div>
+</div>

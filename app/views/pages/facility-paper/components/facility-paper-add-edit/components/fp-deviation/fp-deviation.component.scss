@@ -1,0 +1,29 @@
+.cell-textarea {
+  width: 100%;
+  box-sizing: border-box;
+  resize: vertical;
+}
+
+
+.custom-textarea {
+  min-height: 50px !important;
+  border: 1px solid;
+}
+
+.topic {
+  background-color: #dae3e6 !important;
+  padding-top: 6px !important;
+  padding-bottom: 1px !important;
+  margin-bottom: 5px !important;
+}
+
+.font-weight-400 {
+  font-weight: 400;
+}
+
+.heading-topics {
+  font-size: small;
+  font-weight: bold !important;
+  padding-left: 3px;
+  text-align: center;
+}

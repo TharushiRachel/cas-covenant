@@ -1,0 +1,285 @@
+<div class="d-flex flex-column justify-content-start">
+  <div class="d-flex flex-wrap">
+    <ng-container *ngIf="customer.customerFinancialID">
+      <div class="d-flex flex-row justify-content-between width-50" *ngIf="customer.customerName">
+        <label class="info-caption">Customer Name</label>
+        <span class="w-5">:</span>
+        <span class="info-details"> {{customer.title}} {{customer.title ? '.' : ''}} {{customer.customerName ||
+          '-'}}</span>
+      </div>
+    </ng-container>
+
+    <div class="d-flex flex-row justify-content-between width-50">
+      <label class="info-caption">Finacle ID
+        <ng-container *ngIf="customer.isPrimary ; else joinParty">
+          <mdb-badge color="green darken-2" [mdbTooltip]="'Main party'">M</mdb-badge>
+        </ng-container>
+        <ng-template #joinParty>
+          <mdb-badge color="green darken-2" [mdbTooltip]="'Join party'">J</mdb-badge>
+        </ng-template>
+      </label>
+      <span class="w-5">:</span>
+      <span class="info-details">{{customer.customerFinancialID || '-'}}</span>
+    </div>
+
+    <ng-container *ngIf="isPersonalCustomer()">
+      <div class="d-flex flex-row justify-content-between width-50">
+        <label class="info-caption">Name With Initial</label>
+        <span class="w-5">:</span>
+        <span class="info-details">
+          {{customer.title}} {{customer.title ? '.' : ''}} {{customer.nameWithInitials}}
+        </span>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="isPersonalCustomer()">
+      <div class="d-flex flex-row justify-content-between width-50">
+        <label class="info-caption">Name Represented by Initials</label>
+        <span class="w-5">:</span>
+        <span class="info-details">{{customer.initialRepresentation || '-'}}</span>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="isBusinessCustomer() || isCorporateCustomer() ">
+      <div class="d-flex flex-row justify-content-between width-50">
+        <label class="info-caption">Name Of Business</label>
+        <span class="w-5">:</span>
+        <span class="info-details">{{customer.nameOfBusiness || '-'}}</span>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="isBusinessCustomer() || isCorporateCustomer()">
+      <div class="d-flex flex-row justify-content-between width-50">
+        <label class="info-caption">Registration No</label>
+        <span class="w-5">:</span>
+        <span class="info-details">{{customer.registrationNo || '-'}}</span>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="customerIdentificationDTOList.length > 0">
+      <ng-container *ngFor="let identificationDetail of customerIdentificationDTOList">
+        <div class="d-flex flex-row justify-content-between width-50" *ngIf="identificationDetail.identificationNumber">
+          <label class="info-caption">{{customerIdentificationType[identificationDetail.identificationType]}}</label>
+          <span class=" w-5">:</span>
+          <span class="info-details">{{identificationDetail.identificationNumber || '-'}}
+            <ng-container *ngIf="updateButtonIsEnabled">
+              <mdb-icon fas icon="sync" aria-hidden="true" [mdbTooltip]="getTooltipForSyncButton()"
+                class="ml-5p header-blue-color" (click)="updateWithFinacleData(identificationDetail)">
+              </mdb-icon>
+            </ng-container>
+          </span>
+        </div>
+      </ng-container>
+    </ng-container>
+
+    <div class="d-flex flex-row justify-content-between width-50" *ngIf="customer.type">
+      <label class="info-caption">Customer Type</label>
+      <span class="w-5">:</span>
+      <span class="info-details">{{basicInformationType[customer.type] || '-'}}</span>
+    </div>
+
+    <ng-container *ngIf="isBusinessCustomer() || isCorporateCustomer()">
+      <div class="d-flex flex-row justify-content-between width-50" *ngIf="customer.dateOfRegistrationStr">
+        <label class="info-caption">Date Of Registration</label>
+        <span class="w-5">:</span>
+        <span class="info-details">{{customer.dateOfRegistrationStr || '-'}}</span>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="isCorporateCustomer()">
+      <div class="d-flex flex-row justify-content-between width-50">
+        <label class="info-caption">Date Of Incorporate</label>
+        <span class="w-5">:</span>
+        <span class="info-details">{{customer.dateOfIncorporateStr || '-'}}</span>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="isCorporateCustomer()">
+      <div class="d-flex flex-row justify-content-between width-50">
+        <label class="info-caption">Citizenship</label>
+        <span class="w-5">:</span>
+        <span class="info-details">{{customer.citizenship || '-'}}</span>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="isBusinessCustomer() || isCorporateCustomer()">
+      <div class="d-flex flex-row justify-content-between width-50">
+        <label class="info-caption">Constitution</label>
+        <span class="w-5">:</span>
+        <span class="info-details">{{constitution[customer.constitution] || '-'}}</span>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="isBusinessCustomer() || isCorporateCustomer()">
+      <div class="d-flex flex-row justify-content-between width-50">
+        <label class="info-caption">Nature Of The Business</label>
+        <span class="w-5">:</span>
+        <span class="info-details">{{customer.natureOfBusiness || '-'}}</span>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="isBusinessCustomer() || isCorporateCustomer()">
+      <div class="d-flex flex-row justify-content-between width-50">
+        <label class="info-caption">Date Of Commencement</label>
+        <span class="w-5">:</span>
+        <span class="info-details">{{customer.dateOfCommencementStr || '-'}}</span>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="isBusinessCustomer() && isPrivateLTD()">
+      <div class="d-flex flex-row justify-content-between width-50">
+        <label class="info-caption">Capital Paid Up</label>
+        <span class="w-5">:</span>
+        <span class="info-details">{{setCurrencyFormatValue(customer.capitalPaidUp) || '-'}}</span>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="isBusinessCustomer() && isPrivateLTD()">
+      <div class="d-flex flex-row justify-content-between width-50">
+        <label class="info-caption">Capital Issued</label>
+        <span class="w-5">:</span>
+        <span class="info-details">{{setCurrencyFormatValue(customer.capitalIssued) || '-'}}</span>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="isBusinessCustomer() && isPrivateLTD()">
+      <div class="d-flex flex-row justify-content-between width-50">
+        <label class="info-caption">Capital Authorized</label>
+        <span class="w-5">:</span>
+        <span class="info-details">{{setCurrencyFormatValue(customer.capitalAuthorized) || '-'}}</span>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="isPersonalCustomer()">
+      <div class="d-flex flex-row justify-content-between width-50">
+        <label class="info-caption">Date of birth</label>
+        <span class="w-5">:</span>
+        <span class="info-details">{{customer.dateOfBirthStr || '-'}}</span>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="isPersonalCustomer()">
+      <div class="d-flex flex-row justify-content-between width-50">
+        <label class="info-caption">Civil Status</label>
+        <span class="w-5">:</span>
+        <span class="info-details">{{civilStatus[customer.civilStatus] || '-'}}</span>
+      </div>
+    </ng-container>
+
+    <div class="d-flex flex-row justify-content-between width-50">
+      <label class="info-caption">Email (Primary)</label>
+      <span class="info-caption w-5">:</span>
+      <span class="info-details">{{customer.emailAddress || '-'}}</span>
+    </div>
+
+    <div class="d-flex flex-row justify-content-between width-50">
+      <label class="info-caption">Email (Secondary)</label>
+      <span class="w-5">:</span>
+      <span class="info-details">{{customer.secondaryEmailAddress || '-'}}</span>
+    </div>
+
+
+    <ng-container *ngIf="customerTelephoneDTOList.length > 0">
+      <ng-container *ngFor="let  telephone of customerTelephoneDTOList; let i = index;">
+        <div class="d-flex flex-row justify-content-between width-50">
+          <label class="info-caption">Contact Number {{i + 1}} </label>
+          <span class="w-5">:</span>
+          <span class="info-details">{{telephone.contactNumber ? telephone.contactNumber : '-'}}
+            <span *ngIf="telephone.contactNumber && telephone.description">({{telephone.description}})</span></span>
+        </div>
+      </ng-container>
+    </ng-container>
+
+    <ng-container *ngIf="customerAddressDTOList.length > 0">
+      <ng-container *ngFor="let address of customerAddressDTOList">
+        <ng-container *ngIf="address.address1">
+          <div class="d-flex flex-row justify-content-between width-50">
+            <label class="info-caption">{{addressType[address.addressType]}} Address</label>
+            <span class="w-5">:</span>
+            <span class="info-details">{{address.address1}} {{address.address2}} {{address.city}}</span>
+          </div>
+        </ng-container>
+      </ng-container>
+    </ng-container>
+
+    <div class="d-flex flex-row justify-content-between width-50">
+      <label class="info-caption">{{getLabelNameForOfficialAddress()}}</label>
+      <span class="w-5">:</span>
+      <span class="info-details">{{customer.officialAddress || '-'}}</span>
+    </div>
+
+    <div class="d-flex flex-row justify-content-between width-50" *ngIf="isPersonalCustomer()">
+      <label class="info-caption">Nationality</label>
+      <span class="w-5">:</span>
+      <span class="info-details">{{customer.nationality || '-'}}</span>
+    </div>
+
+    <div class="d-flex flex-row justify-content-between width-50" *ngIf="isPersonalCustomer()">
+      <label class="info-caption">Highest Education Achievement</label>
+      <span class="w-5">:</span>
+      <span class="info-details">{{customer.highestEduAchievement || '-'}}</span>
+    </div>
+
+    <div class="d-flex flex-row justify-content-between width-50" *ngIf="isPersonalCustomer()">
+      <label class="info-caption">Employment</label>
+      <span class="w-5">:</span>
+      <span class="info-details">{{employStatus[customer.employment]}}</span>
+    </div>
+
+    <ng-container *ngIf="!isSelfEmployed() && isPersonalCustomer()">
+      <div class="d-flex flex-row justify-content-between width-50">
+        <label class="info-caption">Employer</label>
+        <span class="w-5">:</span>
+        <span class="info-details">{{customer.employer}}</span>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="isSelfEmployed() && isPersonalCustomer()">
+      <div class="d-flex flex-row justify-content-between width-50">
+        <label class="info-caption">No of Business Years</label>
+        <span class="w-5">:</span>
+        <span class="info-details">{{customer.noOfBusinessYears}}</span>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="!isSelfEmployed() && isPersonalCustomer()">
+      <div class="d-flex flex-row justify-content-between width-50">
+        <label class="info-caption">Your Position</label>
+        <span class="w-5">:</span>
+        <span class="info-details">{{customer.position}}</span>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="!isSelfEmployed() && isPersonalCustomer()">
+      <div class="d-flex flex-row justify-content-between width-50">
+        <label class="info-caption">No of Years with Employer</label>
+        <span class="w-5">:</span>
+        <span class="info-details">{{customer.noOfYearsEmployment}}</span>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="isSelfEmployed() && isPersonalCustomer()">
+      <div class="d-flex flex-row justify-content-between width-50">
+        <label class="info-caption">Nature Of Business</label>
+        <span class="w-5">:</span>
+        <span class="info-details">{{customer.natureOfBusiness}}</span>
+      </div>
+    </ng-container>
+
+    <ng-container>
+      <div class="d-flex flex-row justify-content-between width-50">
+        <label class="info-caption">Customer Turnover</label>
+        <span class=" w-5">:</span>
+        <span class="info-details">
+          {{turnover?.currencyCode}} {{turnover?.turnover ? turnover?.turnover : '-'}}
+          <ng-container *ngIf="updateButtonIsEnabled">
+            <mdb-icon fas icon="sync" aria-hidden="true" mdbTooltip="Sync Turnover" class="ml-5p header-blue-color"
+              (click)="getTurnover()" style="cursor: pointer;">
+            </mdb-icon>
+          </ng-container>
+        </span>
+      </div>
+    </ng-container>
+
+  </div>
+</div>

@@ -1,0 +1,11 @@
+<div class="text-align-center m-top-10px m-bottom-10px w-100-p" *ngIf="selectedTopic.topicData">
+  <div class="d-flex flex-row justify-content-center w-100-p">
+    <div class="topic"><b>{{selectedTopic.topic}}</b></div>
+  </div>
+</div>
+
+<div class=" m-top-10px m-bottom-10px w-100-p" *ngIf="selectedTopic.topicData">
+  <div class=" m-top-10px m-bottom-10px w-100-p border p-2"
+       [innerHTML]="selectedTopic.topicData | safeHtml">
+  </div>
+</div>

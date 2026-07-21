@@ -1,0 +1,37 @@
+<!-- SideNav slide-out button -->
+<navlinks class="navbar-container">
+  <div class="float-left sidenav-show-btn">
+    <a (click)="sidenav.show()" class="p-3 button-collapse">
+      <mdb-icon fas icon="bars"></mdb-icon>
+    </a>
+  </div>
+</navlinks>
+<!--/. SideNav slide-out button -->
+
+<!-- Sidebar navigation -->
+<mdb-side-nav #sidenav class="fixed main-sidebar" [fixed]="true" [sidenavBreakpoint]="1360" id="sidenav">
+  <!-- Logo -->
+  <li>
+    <div class="logo-wrapper waves-light image-div-boader">
+      <a href="#"><img src="assets/media/images/logo.jpg" class="img-fluid flex-center"></a>
+    </div>
+  </li>
+  <!--/. Logo -->
+  <!-- Side navigation links -->
+
+  <li>
+    <ul class="collapsible">
+      <mdb-accordion [multiple]="false" aria-multiselectable="false">
+
+        <ng-container *ngFor="let item of navItems">
+          <app-nav-group [item]="item" *ngIf="isGroup(item)"></app-nav-group>
+          <app-nav-item [item]="item" *ngIf="isItem(item)"></app-nav-item>
+        </ng-container>
+
+      </mdb-accordion>
+    </ul>
+  </li>
+  <!--/. Side navigation links -->
+  <div class="sidenav-bg mask-strong"></div>
+</mdb-side-nav>
+<!--/. Sidebar navigation -->

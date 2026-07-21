@@ -1,0 +1,82 @@
+<div class="d-flex flex-row justify-content-start align-items-center w-100-p flex-wrap" id="app-personal-customer-stat-wrapper">
+  <div class="d-flex flex-row justify-content-between w-100-p flex-wrap">
+    <label class="font-weight-bold float-left badge-margin">Customer Statistics</label>
+  </div>
+  <div class="width-100">
+    <app-tabs
+      [selectedTabIndex]="selectedTabIndex"
+      class="w-100-p customer-stat-tab" (onTabSelect)="onTabSelect($event)">
+
+      <app-tab [tabTitle]="'Current Account Statistics'">
+        <ng-container *ngIf="isTabSelected(0)">
+          <app-customer-current-account-details [customerDetails]="customerDetails">
+          </app-customer-current-account-details>
+        </ng-container>
+      </app-tab>
+
+      <app-tab [tabTitle]="'Comprehensive Statistics'">
+        <ng-container *ngIf="isTabSelected(1)">
+          <app-customer-comprehensive-statistics [customerDetails]="customerDetails">
+          </app-customer-comprehensive-statistics>
+        </ng-container>
+      </app-tab>
+
+      <app-tab [tabTitle]="'Outstanding'">
+        <ng-container *ngIf="isTabSelected(2)">
+          <app-customer-stat-outstanding [customerDetails]="customerDetails">
+          </app-customer-stat-outstanding>
+        </ng-container>
+      </app-tab>
+
+      <app-tab [tabTitle]="'Advance Details'">
+        <ng-container *ngIf="isTabSelected(3)">
+          <app-customer-advance-details [customerDetails]="customerDetails">
+          </app-customer-advance-details>
+        </ng-container>
+      </app-tab>
+
+      <app-tab [tabTitle]="'Deposit Details'">
+        <ng-container *ngIf="isTabSelected(4)">
+          <app-customer-deposits-details [customerDetails]="customerDetails">
+          </app-customer-deposits-details>
+        </ng-container>
+      </app-tab>
+
+
+      <ng-container *ngIf="formType=='FACILITY_PAPER'">
+
+      <app-tab [tabTitle]="'Guarantee Volumes'">
+        <ng-container *ngIf="isTabSelected(5)">
+          <app-customer-guarantee-volumes [customerData] = "getCustomerDetails()">
+          </app-customer-guarantee-volumes>
+        </ng-container>
+      </app-tab>
+
+      <app-tab [tabTitle]="'Insurance/Valuation Expiry Details'">
+        <ng-container *ngIf="isTabSelected(6)">
+          <app-customer-insurance-valuation  [insuranceParams] = "getCustomerDetails()">
+          </app-customer-insurance-valuation>
+        </ng-container>
+      </app-tab>
+    
+      <app-tab [tabTitle]="'Export Turnover'" >
+        <ng-container *ngIf="isTabSelected(7)" >
+          <app-customer-export-turnover [customerData] = "getCustomerDetails()" >
+          </app-customer-export-turnover>
+        </ng-container>
+      </app-tab>
+
+      <app-tab [tabTitle]="'Import Turnover'" >
+        <ng-container *ngIf="isTabSelected(8)" >
+          <app-customer-import-turnover [customerData] = "getCustomerDetails()" >
+          </app-customer-import-turnover>
+        </ng-container>
+      </app-tab>
+
+    </ng-container>
+    </app-tabs>
+  </div>
+
+</div>
+
+

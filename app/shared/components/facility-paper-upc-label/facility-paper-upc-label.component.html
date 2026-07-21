@@ -1,0 +1,10 @@
+<ng-container *ngIf="this.label != null">
+  <span
+    class="badge ml-3p"
+    [style.background-color]="backgroundColor"
+    [style.color]="fontColor"
+    data-toggle="tooltip" data-placement="left" [title]='title'
+  >
+    {{label}}
+  </span>
+</ng-container>

@@ -1,0 +1,14 @@
+<div class="w-100-p h-100-p d-flex flex-column justify-content-start">
+  <iframe #iframe
+          name="rich_editor_iframe_"
+          width="100%" height="100%" frameBorder="0" [srcdoc]="htmlSrc"></iframe>
+
+  <div class="w-100-p d-flex flex-row justify-content-end align-content-center">
+    <button
+      (click)="onSave()"
+      mdbBtn
+      color="info"
+      class="my-4 editor-save-btn">Save
+    </button>
+  </div>
+</div>

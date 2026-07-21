@@ -1,0 +1,63 @@
+<ng-container
+  *ngIf="basicInformation.afCribAttachmentDTOList.length > 0 && basicInformation.afCribReportDTOList.length>0">
+  <table class="table custom-apf-table">
+    <tbody>
+    <tr>
+      <th class="width-25">Crib Status</th>
+      <th class="width-25 text-align-start">Crib Date</th>
+      <th>Remark</th>
+      <th>Actions</th>
+    </tr>
+    <ng-container *ngIf="basicInformation.afCribReportDTOList.length>0;">
+      <tr *ngFor="let cribData of basicInformation.afCribReportDTOList">
+        <td>{{cribStatus[cribData.cribStatus]}}</td>
+        <td class="text-align-start">{{cribData.cribDateStr}}</td>
+        <td>{{cribData.remark}}</td>
+        <td class="text-align-center">
+          <div>
+            <ng-container>
+              <button class="btn btn-sm btn-secondary cta-btn" type="button" mdbWavesEffect
+                      mdbTooltip="View Crib Report"
+                      (click)="viewInitiateCribReport(cribData.reportContent)"
+                      placement="left">
+                <mdb-icon fas icon="file-alt" aria-hidden="true"></mdb-icon>
+              </button>
+            </ng-container>
+          </div>
+        </td>
+      </tr>
+    </ng-container>
+
+    <ng-container *ngIf="basicInformation.afCribAttachmentDTOList.length>0;">
+      <tr *ngFor="let attachment of basicInformation.afCribAttachmentDTOList; let i = index;">
+        <td>{{cribStatus[attachment.cribStatus]}}</td>
+        <td class="text-align-start">{{attachment.cribDateStr}}</td>
+        <td>{{attachment.remark}}</td>
+        <td>
+          <div class="text-align-center">
+            <ng-container *ngIf="isCheckedPdf(attachment)">
+              <button class="btn btn-sm btn-success cta-btn"
+                      type="button"
+                      mdbWavesEffect
+                      (click)="onDownloadDoc($event,attachment)"
+                      mdbTooltip="View Crib Doc" placement="left">
+                <mdb-icon fas icon="fas fa-eye" aria-hidden="true"></mdb-icon>
+              </button>
+            </ng-container>
+            
+            <button class="btn btn-sm btn-success cta-btn"
+                    type="button"
+                    mdbWavesEffect
+                    (click)="downloadDocument($event,attachment)"
+                    mdbTooltip="Download Crib Doc" placement="left">
+              <mdb-icon fas icon="fa fa-download" aria-hidden="true"></mdb-icon>
+            </button>
+          </div>
+        </td>
+      </tr>
+    </ng-container>
+    </tbody>
+  </table>
+</ng-container>
+
+<a class="download-link" #downloadLink></a>

@@ -1,0 +1,145 @@
+<div class="modal-header modal-topic">
+  <h4 class="modal-title w-100 font-weight-bold">Add Facilities</h4>
+  <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="onCloseModel()">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
+<div class="modal-body mx-3 modal-detail form-margin">
+  <ng-container *ngIf="isFormLoaded">
+    <div class="row d-flex border border-1 border-danger rounded mb-2 mx-0 p-2">
+      <strong>Vehicle : Minimum period - 01 year (12 months). Maximum period - 07 years ( 84 months)</strong>
+      <strong>Machinery : Minimum period - 01 year (12 months). Maximum period - 05 years (60 months)</strong>
+    </div>
+
+    <form class="d-flex py-2 flex-column justify-content-start align-items-start w-100-p"
+      [formGroup]="addFacilitiesForm">
+
+
+      <div class="d-flex w-100-p justify-content-between p-2">
+        <div class="md-form w-48-p">
+
+          <mdb-select [allowClear]="true" [options]="creditFacilityGroups" class="form-control"
+            formControlName="facilityGroupId" id="facilityGroupId" label="Credit Facility Group *" mdbValidate required>
+          </mdb-select>
+          <mdb-error *ngIf="formErrors.facilityGroupId.required">Facility Group required</mdb-error>
+        </div>
+
+
+        <div class="md-form w-48-p">
+          <ng-container *ngIf="facilityTemplateDropDown.length > 0">
+
+            <mdb-select [allowClear]="true" [options]="facilityTemplateDropDown" class="form-control"
+              formControlName="facilityTemplateId" id="facilityTemplateId" label="Credit Facility Template *"
+              mdbValidate required>
+            </mdb-select>
+            <mdb-error *ngIf="formErrors.facilityTemplateId.required" class="m-top-15px">
+              Credit Facility Template is required
+            </mdb-error>
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="d-flex w-100-p justify-content-between p-2">
+        <div class="md-form w-100-p">
+          <mdb-select [allowClear]="true" [options]="facilityDescriptionDD" class="form-control"
+            formControlName="facilityDescription" id="facilityDescription" label="Purpose *" mdbValidate required>
+          </mdb-select>
+          <mdb-error *ngIf="formErrors.facilityDescription.required">Purpose required</mdb-error>
+        </div>
+      </div>
+
+      <div class="d-flex w-100-p justify-content-between p-2">
+        <div class="md-form w-48-p">
+          <input mdbValidate type="text" id="model" maxlength="200" formControlName="model" class="form-control"
+            mdbInput>
+          <label for="model">Model *</label>
+          <mdb-error *ngIf="formErrors.model.required">Model Required</mdb-error>
+        </div>
+
+        <div class="md-form w-48-p">
+          <input mdbValidate type="text" id="make" maxlength="200" formControlName="make" class="form-control" mdbInput>
+          <label for="make">Make *</label>
+          <mdb-error *ngIf="formErrors.make.required">Make Required</mdb-error>
+        </div>
+      </div>
+
+      <div class="d-flex w-100-p justify-content-between p-2">
+
+        <div class="md-form w-30-p">
+          <input mdbValidate type="text" id="leaseAmount" formControlName="leaseAmount" class="form-control" mdbInput
+            (input)="calculate()" (focusout)="setCurrencyFormatValue('leaseAmount')">
+          <label for="leaseAmount"> Lease Amount (LKR) *</label>
+          <mdb-error *ngIf="formErrors.leaseAmount.required">Lease Amount Required</mdb-error>
+        </div>
+
+        <div class="md-form w-30-p">
+          <input mdbValidate type="number" id="requestedTenure" formControlName="requestedTenure" class="form-control"
+            mdbInput (input)="formatTenure($event)">
+          <label for="requestedTenure">Requested Tenure(Months) *</label>
+          <mdb-error *ngIf="formErrors.requestedTenure.required">Requested Tenure Required</mdb-error>
+        </div>
+
+        <div class="md-form w-30-p">
+          <input mdbValidate type="number" id="effectiveRate" maxlength="200" formControlName="effectiveRate"
+            (focusout)="getTwoDecimal('effectiveRate')" class="form-control" mdbInput>
+          <label for="effectiveRate">Effective Rate *</label>
+          <mdb-error *ngIf="formErrors.effectiveRate.required">Effective Rate Required</mdb-error>
+        </div>
+      </div>
+
+      <div class="d-flex w-100-p justify-content-between p-2">
+
+
+        <div class="md-form w-48-p">
+          <input mdbValidate type="text" id="repaymentMode" maxlength="200" formControlName="repaymentMode"
+            class="form-control" placeholder="Choose Repayment Mode" [mdbAutoCompleter]="auto1" mdbInput>
+          <mdb-auto-completer #auto1="mdbAutoCompleter" textNoResults="I have found no results :(">
+            <mdb-option *ngFor="let option of repaymentDropDown" [value]="option.label">
+              {{ option.label }}
+            </mdb-option>
+          </mdb-auto-completer>
+          <label for="repaymentMode">Repayment Mode *</label>
+          <mdb-error *ngIf="formErrors.repaymentMode.required">Repayment Mode Required</mdb-error>
+        </div>
+
+        <div class="md-form w-48-p">
+          <input mdbValidate type="number" id="upfront" maxlength="200" formControlName="upfront" class="form-control"
+            mdbInput (input)="calculate()" (input)="ensureValueAbsolute('upfront')">
+          <label for="upfront">Upfront *</label>
+          <mdb-error *ngIf="formErrors.upfront.required">Upfront Required</mdb-error>
+        </div>
+      </div>
+
+
+      <div class="row d-flex mx-0 justify-content-between p-2 w-100">
+        <div class="row d-flex flex-column mx-0 w-48-p mb-2">
+          <label style="color: #757575;">Processing Fee</label>
+          <span>{{processingFee}}</span>
+        </div>
+        <div class="row d-flex flex-column mx-0 w-48-p mb-2">
+          <label style="color: #757575;">Insurance</label>
+          <span>{{insurance}}</span>
+        </div>
+        <div class="row d-flex flex-column mx-0 w-48-p">
+          <label style="color: #757575;">Validity Of Letter</label>
+          <span>{{validityOffer}}</span>
+        </div>
+        <div class="row d-flex flex-column mx-0 w-48-p" *ngIf="isCalculate && !isStructured">
+          <label style="color: #757575;">Lease Rental</label>
+          <span>{{installmentValue}}</span>
+        </div>
+        <div class="row d-flex flex-column mx-0 w-48-p" *ngIf="isStructured">
+          <label style="color: #757575;">Note</label>
+          <span class="text-danger">In-Principle Letter will not be generated.</span>
+        </div>
+      </div>
+    </form>
+  </ng-container>
+</div>
+
+<div class="modal-footer modal-end" *ngIf="isFormLoaded">
+  <button type="button" mdbBtn color="secondary" class="relative waves-light" mdbWavesEffect size="sm"
+    [disabled]="!isValid() ||isSaveLoading" (click)="save()">Save
+  </button>
+</div>

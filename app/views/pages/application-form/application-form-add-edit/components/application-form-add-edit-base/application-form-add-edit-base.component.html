@@ -1,0 +1,376 @@
+<div class="tab-view">
+
+  <div mdbSticky id="facility-paper" class="d-flex flex-row justify-content-between page-header">
+    <div class="d-flex flex-row align-items-center">
+      <a appGoBack class="d-flex flex-row align-items-center">
+        <i class="fas fa-angle-left header-icon-back"></i>
+      </a>
+      <h5><i class="fas fa-edit header-icon"></i>
+        <ng-container *ngIf="applicationForm.afRefNumber ; else topic">
+        <span>Application Form - Ref No : {{this.applicationForm.afRefNumber}} <br *ngIf="this.scrWidth < 1450">
+          (<span
+            [ngStyle]="getColour(this.applicationForm.currentApplicationFormStatus)"> {{applicationFormStatus[this.applicationForm.currentApplicationFormStatus]}}</span> )</span>
+        </ng-container>
+
+        <ng-template #topic>
+          Application Form
+        </ng-template>
+
+        <ng-container  *ngIf="this.applicationForm.externalAppDescription || this.applicationForm.externalAppRefNumber ">
+          <span data-placement="right" style="font-size: 90%;">
+            ({{this.applicationForm.externalAppDescription}} - Ref :{{this.applicationForm.externalAppRefNumber}})
+          </span>
+        </ng-container>
+      </h5>
+    </div>
+
+    <div class="float-right">
+      <div class="d-flex flex-row align-items-center">
+
+        <ng-container *ngIf="showCopyApplicationButton()">
+          <ng-container *appBlockedByUPMs>
+            <button data-placement="bottom" mdbBtn
+                    mdbTooltip="Copy"
+                    type="button"
+                    class="action-button-padding btn-outline-info btn-sm"
+                    outline="true"
+                    mdbWavesEffect
+                    (click)="copy($event)">
+              <span>Copy</span>
+            </button>
+          </ng-container>
+        </ng-container>
+
+        <ng-container>
+          <ng-container *ngIf="showAttendButton(applicationForm.currentApplicationFormStatus)">
+            <button data-placement="bottom" mdbBtn
+                    type="button"
+                    mdbTooltip="Attend"
+                    class="action-button-padding btn-outline-success btn-sm"
+                    outline="true"
+                    mdbWavesEffect
+                    (click)="attendApplicationForm($event,applicationFormStatusConst.IN_PROGRESS)">
+              <span>Attend</span>
+            </button>
+          </ng-container>
+
+          <ng-container *appHasAnyPrivilege="masterDataPrivilege.ICAS_SETTINGS_APPLICATION_FORM_SCRUTINIZER">
+            <ng-container
+              *ngIf="!isDirectlyAssigned() && isAssignedForLoggedInUserUPMGroup() && isApplicationAssignedForLoggedInUserBranch()">
+              <ng-container *ngIf="showForwardButton(applicationForm.currentApplicationFormStatus)">
+                <button data-placement="bottom" mdbBtn
+                        type="button"
+                        mdbTooltip="Forward Application Form"
+                        class="action-button-padding btn-outline-success btn-sm"
+                        outline="true"
+                        mdbWavesEffect
+                        (click)="changeStatusApplicationForm($event,applicationFormStatusConst.IN_PROGRESS)">
+                  <span>Forward</span>
+                </button>
+              </ng-container>
+            </ng-container>
+          </ng-container>
+        </ng-container>
+
+        <ng-container *ngIf="showReleaseButton(applicationForm.currentApplicationFormStatus)">
+          <ng-container *ngIf="isDirectlyAssigned()">
+            <button data-placement="bottom" mdbBtn
+                    type="button"
+                    mdbTooltip="Release Application From"
+                    class="action-button-padding btn-outline-info btn-sm"
+                    mdbWavesEffect
+                    (click)="releaseApplicationForm($event,applicationFormStatusConst.IN_PROGRESS)">
+              <span>Release</span>
+            </button>
+          </ng-container>
+        </ng-container>
+
+        <ng-container *ngIf="isDirectlyAssigned()">
+
+          <ng-container *ngIf="showReturnButton(applicationForm.currentApplicationFormStatus)">
+            <button data-placement="bottom" mdbBtn
+                    type="button"
+                    mdbTooltip="Return Application From"
+                    class="action-button-padding btn-outline-info btn-sm"
+                    mdbWavesEffect
+                    (click)="changeStatusApplicationForm($event,applicationFormStatusConst.RETURNED)">
+              <span>Return</span>
+            </button>
+          </ng-container>
+
+          <ng-container *ngIf="showDeclineButton(applicationForm.currentApplicationFormStatus)">
+            <button data-placement="bottom" mdbBtn
+                    type="button"
+                    mdbTooltip="Decline Application Form"
+                    class="action-button-padding btn-outline-danger btn-sm"
+                    outline="true"
+                    mdbWavesEffect
+                    (click)="declinePaper($event,applicationFormStatusConst.DECLINED)">
+              <span>Decline</span>
+            </button>
+          </ng-container>
+
+          <ng-container *ngIf="showForwardButton(applicationForm.currentApplicationFormStatus)">
+            <button data-placement="bottom" mdbBtn
+                    type="button"
+                    mdbTooltip="Forward Application Form"
+                    class="action-button-padding btn-outline-success btn-sm"
+                    outline="true"
+                    mdbWavesEffect
+                    (click)="changeStatusApplicationForm($event,applicationFormStatusConst.IN_PROGRESS)">
+              <span>Forward</span>
+            </button>
+          </ng-container>
+
+          <ng-container *ngIf="showESGForwardButton(applicationForm.currentApplicationFormStatus)">
+            <button data-placement="bottom" mdbBtn
+                    type="button"
+                    mdbTooltip="Forward Application Form"
+                    class="action-button-padding btn-outline-success btn-sm"
+                    outline="true"
+                    mdbWavesEffect
+                    (click)="forwardToESG($event,applicationFormStatusConst.IN_PROGRESS)">
+              <span>Forward to ESG</span>
+            </button>
+          </ng-container>
+
+          <ng-container *appHasAnyPrivilege="masterDataPrivilege.ICAS_SETTINGS_FACILITY_PAPER_ADD">
+            <ng-container *ngIf="showCreateFacilityPaperButton(applicationForm.currentApplicationFormStatus)">
+              <ng-container *appBlockedByUPMs>
+                <button (click)="createFacilityPaper($event,applicationFormStatusConst.PAPER_CREATED)"
+                        type="button"
+                        class="action-button-padding btn-outline-success btn-sm"
+                        data-toggle="tooltip" data-placement="bottom" [title]='"Create Facility Paper"'
+                        mdbBtn>
+                  <i class="fas fa-file-signature"></i>
+                </button>
+              </ng-container>
+            </ng-container>
+          </ng-container>
+
+        </ng-container>
+      </div>
+    </div>
+  </div>
+
+  <app-tabs
+    [selectedTabIndex]="selectedTabIndex"
+    class="w-100-p" (onTabSelect)="onTabSelect($event)">
+
+    <app-tab [tabTitle]="'Crib'">
+      <ng-container *ngIf="isTabSelected(cribTabIndex)">
+        <div class="padding-4px">
+          <app-apf-crib-screen>
+          </app-apf-crib-screen>
+        </div>
+        <div class="padding-4px">
+          <app-apf-next-prev-button
+            [currentIndex]="0"
+            (setTabIndex)="onTabSelect($event)"
+          >
+          </app-apf-next-prev-button>
+        </div>
+      </ng-container>
+    </app-tab>
+
+
+
+    <ng-container *ngIf="applicationForm.applicationFormID">
+      <app-tab [tabTitle]="'Basic'">
+        <ng-container *ngIf="isTabSelected(basicIndex)">
+          <div class="padding-4px">
+            <app-apf-basic-screen>
+            </app-apf-basic-screen>
+          </div>
+          <div class="padding-4px">
+            <app-apf-next-prev-button
+              [currentIndex]="1"
+              (setTabIndex)="onTabSelect($event)">
+            </app-apf-next-prev-button>
+          </div>
+        </ng-container>
+      </app-tab>
+
+
+
+      <app-tab [tabTitle]="'Liabilities'">
+        <ng-container *ngIf="isTabSelected(liabilitiesIndex)">
+          <div class="padding-4px">
+            <app-apf-liability-screen>
+            </app-apf-liability-screen>
+          </div>
+          <div class="padding-4px">
+            <app-apf-next-prev-button
+              [currentIndex]="2"
+              (setTabIndex)="onTabSelect($event)">
+            </app-apf-next-prev-button>
+          </div>
+        </ng-container>
+      </app-tab>
+
+
+      <app-tab [tabTitle]="'Document'">
+        <ng-container *ngIf="isTabSelected(documentIndex)">
+          <div class="padding-4px">
+            <app-apf-documents-screen>
+            </app-apf-documents-screen>
+          </div>
+          <div class="padding-4px">
+            <app-apf-next-prev-button
+              [currentIndex]="3"
+              (setTabIndex)="onTabSelect($event)">
+            </app-apf-next-prev-button>
+          </div>
+        </ng-container>
+      </app-tab>
+
+      <app-tab [tabTitle]="'Comments'">
+        <ng-container *ngIf="isTabSelected(commentIndex)">
+          <div class="padding-4px">
+            <app-apf-comments-screen>
+            </app-apf-comments-screen>
+          </div>
+          <div class="padding-4px">
+            <app-apf-next-prev-button
+              [currentIndex]="4"
+              (setTabIndex)="onTabSelect($event)"
+              [lastIndex]="10"
+            >
+            </app-apf-next-prev-button>
+          </div>
+        </ng-container>
+      </app-tab>
+
+      <app-tab [tabTitle]="'ESG'">
+        <ng-container *ngIf="isTabSelected(esgIndex)">
+          <div class="padding-4px">
+            <app-apf-esg-screen [applicationForm]="applicationForm">
+            </app-apf-esg-screen>
+          </div>
+          <div class="padding-4px">
+            <app-apf-next-prev-button
+              [currentIndex]="5"
+              (setTabIndex)="onTabSelect($event)"
+              
+            >
+            </app-apf-next-prev-button>
+          </div>
+        </ng-container>
+      </app-tab>
+
+      <app-tab [tabTitle]="'Summary'">
+        <ng-container *ngIf="isTabSelected(lpsIndex)">
+          <div class="padding-4px">
+            <app-apf-lps-screen>
+            </app-apf-lps-screen>
+          </div>
+          <div class="padding-4px">
+            <app-apf-next-prev-button
+              [currentIndex]="6"
+              (setTabIndex)="onTabSelect($event)"
+              [lastIndex]="12"
+            >
+            </app-apf-next-prev-button>
+          </div>
+        </ng-container>
+      </app-tab>
+
+      <app-tab [tabTitle]="'Risk Rating'" *ngIf="visibility">
+        <ng-container *ngIf="isTabSelected(riskRateIndex)">
+          <div class="padding-4px">
+            <app-apf-risk-rate-screen>
+            </app-apf-risk-rate-screen>
+          </div>
+          <div class="padding-4px">
+            <app-apf-next-prev-button
+              [currentIndex]="7"
+              (setTabIndex)="onTabSelect($event)">
+            </app-apf-next-prev-button>
+          </div>
+        </ng-container>
+      </app-tab>
+
+      <app-tab tabTitle="Facilities" *ngIf="visibility">
+        <ng-container *ngIf="isTabSelected(facilitiesIndex)">
+          <div class="padding-4px">
+            <app-apf-facilities-screen>
+            </app-apf-facilities-screen>
+          </div>
+          <div>
+            <app-apf-next-prev-button
+              [currentIndex]="8"
+              (setTabIndex)="onTabSelect($event)">
+            </app-apf-next-prev-button>
+          </div>
+        </ng-container>
+      </app-tab>
+
+      <app-tab tabTitle="Security" *ngIf="visibility">
+        <ng-container *ngIf="isTabSelected(securitiesIndex)">
+          <div class="padding-4px">
+            <app-apf-securities-screen>
+            </app-apf-securities-screen>
+          </div>
+          <div class="padding-4px">
+            <app-apf-next-prev-button
+              [currentIndex]="9"
+              (setTabIndex)="onTabSelect($event)">
+            </app-apf-next-prev-button>
+          </div>
+        </ng-container>
+      </app-tab>
+
+
+      <app-tab [tabTitle]="'Repayment'" *ngIf="visibility">
+        <ng-container *ngIf="isTabSelected(repaymentIndex)">
+          <div class="padding-4px">
+            <app-apf-repayment-screen>
+            </app-apf-repayment-screen>
+          </div>
+          <div class="padding-4px">
+            <app-apf-next-prev-button
+              [currentIndex]="10"
+              (setTabIndex)="onTabSelect($event)">
+            </app-apf-next-prev-button>
+          </div>
+        </ng-container>
+      </app-tab>
+
+
+      <app-tab [tabTitle]="'Assets'" *ngIf="visibility">
+        <ng-container *ngIf="isTabSelected(assetsIndex)">
+          <div class="padding-4px">
+            <app-apf-assets-screen>
+            </app-apf-assets-screen>
+          </div>
+          <div class="padding-4px">
+            <app-apf-next-prev-button
+              [currentIndex]="11"
+              (setTabIndex)="onTabSelect($event)">
+            </app-apf-next-prev-button>
+          </div>
+        </ng-container>
+      </app-tab>
+
+      <app-tab [tabTitle]="'Executive Summary'" *ngIf="visibility">
+        <ng-container *ngIf="isTabSelected(executiveSummaryIndex)">
+          <div class="padding-4px">
+            <app-apf-executive-summary-screen>
+            </app-apf-executive-summary-screen>
+          </div>
+          <div class="padding-4px">
+            <app-apf-next-prev-button
+              [currentIndex]="12"
+              (setTabIndex)="onTabSelect($event)"
+            >
+            </app-apf-next-prev-button>
+          </div>
+        </ng-container>
+      </app-tab>
+
+
+    </ng-container>
+
+  </app-tabs>
+</div>
+

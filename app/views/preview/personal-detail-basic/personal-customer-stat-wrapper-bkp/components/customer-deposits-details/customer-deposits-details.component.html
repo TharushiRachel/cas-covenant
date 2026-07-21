@@ -1,0 +1,43 @@
+<div class="d-flex p-2 flex-column justify-content-start align-items-start w-100-p">
+  <div class="width-100">
+    <ng-container *ngIf="isDataAvailable  ; else : noData">
+      <div class="width-100 text-align-center">
+        <p class="font-weight-bold">Deposit Details as at {{date}}</p>
+      </div>
+      <table class="custom-bordered-table width-100">
+        <thead>
+        <tr style="height: 30px" class="table-heading-color">
+          <th>Account No</th>
+          <th>Currency Type</th>
+          <th>Sanction Limit</th>
+          <th>Outstandings</th>
+          <th>Account Type</th>
+        </tr>
+        <tr>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let data of customerDepositDetails">
+          <td>{{data.foracid}}</td>
+          <td class="text-align-center">{{data.accountCurrencyCode}}</td>
+          <td class="text-align-end">{{getCurrencyFormat(data.sanclim)}}</td>
+          <td class="text-align-end">{{getCurrencyFormat(data.clrBalAmt)}}</td>
+          <td class="text-align-center">{{startCaseFormat(data.accountType)}}</td>
+        </tr>
+        <tr>
+          <th class="text-align-end">Total</th>
+          <th></th>
+          <th class="text-align-end">{{getCurrencyFormat(sanclimTotal)}}</th>
+          <th class="text-align-end">{{getCurrencyFormat(clrBalAmtTotal)}}</th>
+          <th></th>
+        </tr>
+        </tbody>
+      </table>
+    </ng-container>
+    <ng-template #noData>
+      <p class="not-auth-message">
+        No Records Available
+      </p>
+    </ng-template>
+  </div>
+</div>

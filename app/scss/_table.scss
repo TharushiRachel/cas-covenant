@@ -1,0 +1,120 @@
+.custom-bordered-table {
+  td, th {
+    border: 1px solid #9d9ea0 !important;
+    padding: 0px 2px 0px 2px !important;
+    vertical-align: middle !important;
+  }
+
+  thead tr, thead th {
+    padding: 0px 2px 0px 2px !important;
+    background-color: unset;
+    vertical-align: middle !important;
+    text-align: center;
+  }
+
+  tbody tr, tbody th {
+    padding: 0px 2px 0px 2px !important;
+    background-color: unset;
+    vertical-align: middle !important;
+    text-align: center;
+  }
+
+
+  padding: unset !important;
+  border-spacing: 0px;
+  -webkit-border-horizontal-spacing: 0px;
+  -webkit-border-vertical-spacing: 0px;
+  border-collapse: collapse;
+  background-color: unset;
+}
+
+
+.custom-apf-table {
+  tr {
+    border: unset !important;
+  }
+
+  th {
+    text-align: center !important;
+  }
+
+  td, th {
+    border: 1px solid #c9c5c5 !important;
+    padding: 0px 2px 0px 2px !important;
+    vertical-align: middle !important;
+  }
+
+  thead tr, thead th {
+    padding: 0px 2px 0px 2px !important;
+    background-color: unset;
+    vertical-align: middle !important;
+  }
+
+  tbody tr, tbody th {
+    padding: 0px 2px 0px 2px !important;
+    background-color: unset;
+    vertical-align: middle !important;
+  }
+
+  padding: unset !important;
+  border-spacing: 0px;
+  -webkit-border-horizontal-spacing: 0px;
+  -webkit-border-vertical-spacing: 0px;
+  border-collapse: collapse;
+  background-color: unset;
+}
+
+.vertical-align-middle {
+  vertical-align: middle !important;
+}
+
+.vertical-align-super {
+  vertical-align: super !important;
+}
+
+.vertical-align-baseline {
+  vertical-align: baseline;
+}
+
+
+.custom-table {
+  tr {
+    border: unset !important;
+  }
+
+  th {
+    text-align: center !important;
+  }
+
+  td, th {
+    border: 1px solid #c9c5c5 !important;
+    padding: 0px 2px 0px 2px !important;
+    vertical-align: middle !important;
+  }
+
+  thead tr, thead th {
+    padding: 0px 2px 0px 2px !important;
+    background-color: unset;
+    vertical-align: middle !important;
+    line-height: 35px !important;
+  }
+
+  tbody tr, tbody th {
+    padding: 0px 2px 0px 2px !important;
+    background-color: unset;
+    vertical-align: middle !important;
+  }
+
+  padding: unset !important;
+  border-spacing: 0px;
+  -webkit-border-horizontal-spacing: 0px;
+  -webkit-border-vertical-spacing: 0px;
+  border-collapse: collapse;
+  background-color: unset;
+}
+
+.table-no-records {
+  margin: 6px !important;
+  font-weight: 500;
+  color: #ff7d00;
+}

@@ -1,0 +1,214 @@
+<div class="d-flex p-2 pt-0 flex-column justify-content-start align-items-start w-100-p jumbotron">
+
+  <!-- <div class="mb-10p w-100-p display-flex flex-row jc-end">
+    <button type="button"
+            (click)="loadKalyptoData()"
+            mdbBtn color="light"
+            mdbWavesEffect>Load Kalypto
+    </button>
+  </div> -->
+
+  <div class="d-flex flex-row justify-content-start w-100-p">
+    <div class="col-sm-12 col-md-8">
+      <div class="row">
+        <div class="col-sm-12 col-md-5">
+          <div class="d-flex flex-row justify-content-between mb-10p">
+            <label class="w-35-p">Reference No.</label>
+            <span class="w-5">:</span>
+            <span class="font-weight-bold width-60">{{facilityPaper.fpRefNumber || '-'}}</span>
+          </div>
+          <div class="d-flex flex-row justify-content-between align-items-center mb-10p" style="padding-right:2px ;">
+            <label class="w-35-p">Bank Account</label>
+            <span class="w-5">:</span>
+            <ng-container *ngIf="!showBankAccountDropdown; else showDropdown">
+              <span class="font-weight-bold width-60">{{facilityPaper.bankAccountID || '-'}} </span>
+              <ng-container *ngIf="enableBankAccNoEdit()">
+                <mdb-icon style="margin-left: -14px !important;cursor: pointer;" (click)="editBankAccount()" fas
+                  icon="pencil-alt" aria-hidden="true" [mdbTooltip]="'Edit Bank Account'">
+                </mdb-icon>
+              </ng-container>
+
+            </ng-container>
+            <ng-template #showDropdown>
+              <div class="d-flex flex-row align-items-center width-60">
+                <select class="font-weight-bold form-control mb-0 mr-2 p-0" [(ngModel)]="selectedBankAccountID"
+                  name="bankAccountID">
+                  <option *ngFor="let acc of accountNo" [value]="acc.bankAccountNumber">
+                    {{ acc.bankAccountNumber }}
+                  </option>
+                </select>
+                <ng-container *ngIf="enableBankAccNoEdit()">
+                  <mdb-icon fas icon="sync" aria-hidden="true" [mdbTooltip]="'Modify Bank Account'"
+                    class="ml-5p header-blue-color" (click)="saveBankAccountID()" style="cursor: pointer;">
+                  </mdb-icon>
+                </ng-container>
+              </div>
+            </ng-template>
+          </div>
+
+          <div class="d-flex flex-row justify-content-between mb-10p">
+            <label class="w-35-p">Initiated User</label>
+            <span class="w-5">:</span>
+            <span class="width-60 font-weight-bold">{{facilityPaper.createdUserDisplayName ?
+              facilityPaper.createdUserDisplayName + ' (' + facilityPaper.createdBy + ')' : facilityPaper.createdBy ||
+              '-' }}</span>
+          </div>
+        </div>
+
+        <div class="col-sm-12 col-md-7">
+          <div class="d-flex flex-row justify-content-between mb-10p">
+            <label class="w-35-p">Customer Name</label>
+            <span class="w-5">:</span>
+            <span class="width-60 font-weight-bold">{{primaryCustomer ? primaryCustomer.customerName || '-' :
+              '-'}}</span>
+          </div>
+          <div class="d-flex flex-row justify-content-between mb-10p">
+            <label class="w-35-p">Branch</label>
+            <span class="w-5">:</span>
+            <span class="width-60 font-weight-bold">{{branch?.branchName}} {{facilityPaper.branchCode}}</span>
+          </div>
+          <div class="d-flex flex-row justify-content-between mb-10p">
+            <label class="w-35-p">Assigned User</label>
+            <span class="w-5">:</span>
+            <span class="width-60 font-weight-bold">{{facilityPaper.assignUserDisplayName ||
+              getBranchName(facilityPaper.assignDepartmentCode) || '-'}}</span>
+          </div>
+        </div>
+
+        <div class="col-6" *ngIf="isBccDecisionShow()">
+          <div class="d-flex flex-row justify-content-between mb-10p">
+            <label class="w-29-p">Committee Decision</label>
+            <span class="w-5">:</span>
+
+            <span class="width-66 text-success font-weight-bold" *ngIf="meetingData.status == 'APPROVED'">
+              Approved by {{meetingData.committeeName}} on {{meetingData.date}}
+            </span>
+            <span class="text-danger font-weight-bold" *ngIf="meetingData.status == 'REJECTED'">
+              Rejected by {{meetingData.committeeName}} on {{meetingData.date}}
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--<div class="col-sm-12 col-md-4">
+      <div class="row">
+        <form class="w-100-p pl-8p pr-12p"
+              [formGroup]="componentForm" style="border: 1px solid">
+          <div class="d-flex flex-row justify-content-between w-100-p" style="margin-top: 1.5%;"
+               *ngIf="this.facilityPaper.leadRefNumber">
+            <label class="w-70-p margin-10" for="leadRefNumber">Lead Ref No.</label>
+            <span class="info-caption w-5">:</span>
+            <input mdbValidate
+                   type="text"
+                   id="leadRefNumber"
+                   maxlength="200"
+                   formControlName="leadRefNumber"
+                   class="form-control"
+                   mdbInput>
+          </div>
+
+          <div class="d-flex flex-row justify-content-between w-100-p"
+               *ngIf="this.facilityPaper.applicationFormRefNumber">
+            <label class="w-70-p margin-10" for="applicationFormRefNumber">Application Ref No.</label>
+            <span class="info-caption w-5">:</span>
+            <input mdbValidate
+                   type="text"
+                   id="applicationFormRefNumber"
+                   maxlength="200"
+                   formControlName="applicationFormRefNumber"
+                   class="form-control"
+                   mdbInput>
+          </div>
+
+          <div class="d-flex flex-row justify-content-between w-100-p">
+            <label class="w-70-p margin-10" for="existingFacilitiesROA">Existing ROA (%)</label>
+            <span class="info-caption w-5">:</span>
+            <input mdbValidate type="text"
+                   id="existingFacilitiesROA"
+                   maxlength="10"
+                   formControlName="existingFacilitiesROA"
+                   class="form-control"
+                   (focusout)="currencyService.patchFormControllerValue(componentForm, 'existingFacilitiesROA')"
+                   mdbInput>
+          </div>
+
+          <div class="d-flex flex-row justify-content-between w-100-p">
+            <label class="w-70-p margin-10" for="proposedFacilitiesROA">Proposed ROA (%)</label>
+            <span class="info-caption w-5">:</span>
+            <input mdbValidate type="text"
+                   id="proposedFacilitiesROA"
+                   maxlength="10"
+                   formControlName="proposedFacilitiesROA"
+                   class="form-control"
+                   (focusout)="currencyService.patchFormControllerValue(componentForm, 'proposedFacilitiesROA')"
+                   mdbInput>
+          </div> -->
+
+    <!-- <div class="d-flex flex-row justify-content-between w-100-p"> -->
+    <!--            <mdb-checkbox formControlName="cooperate"-->
+    <!--                          class="form-control">Co-operate-->
+    <!--            </mdb-checkbox>-->
+    <!--   </div> -->
+
+    <!--<div class="d-flex flex-row justify-content-end">
+          <ng-container *ngIf="isEqualLoginAndAssignUser() && !isApproveStatus() && !isRejected()">
+            <button *ngIf="isDisableEdit" type="button" class="btn btn-outline-info btn-sm btn-width"
+                    [disabled]="componentForm.invalid" (click)="onClickEdit()">Edit
+            </button>
+
+            <button *ngIf="!isDisableEdit" type="button" mdbBtn color="info" class="btn-width" size="sm"
+                    mdbWavesEffect
+                    [disabled]="componentForm.invalid" (click)="onClickUpdateBaseInfo()">Update
+            </button>
+
+            <button *ngIf="!isDisableEdit" type="button" class="btn btn-outline-info btn-sm btn-width"
+                    (click)="onClickCancelEdit()">Cancel
+            </button>
+          </ng-container>
+       </div>
+     </form>
+    </div>
+   </div> -->
+  </div>
+
+  <div class="d-flex flex-row justify-content-start w-100-p">
+    <app-view-analytics-decision [analyticsDecision]="analyticsDecision"></app-view-analytics-decision>
+  </div>
+
+  <div class="d-flex flex-row justify-content-start w-100-p mt-10p">
+    <div class="col-sm-12 table-responsive">
+      <div class="row">
+        <ng-container *ngIf="showFacilityPaperHistory()">
+          <table class="table width-100">
+            <thead>
+              <tr>
+                <th class="text-align-start width-20">User</th>
+                <th class="text-align-center">Action</th>
+                <th class="text-align-center width-20">Date</th>
+                <th class="text-align-center width-20">Status</th>
+              </tr>
+            </thead>
+            <tr *ngFor="let data of facilityPaperHistoryList">
+              <ng-container *ngIf="viewLog(data)">
+                <td class="text-align-start">{{data.updateBy}}</td>
+                <td class="text-align-start">{{data.actionMessage}}</td>
+                <td class="text-align-center">{{data.updateDate}}</td>
+
+                <ng-container *ngIf="alterBCCRejectStatus(data); else showFacilityPaperStatus">
+                  <td class="text-align-center">Rejected</td>
+                </ng-container>
+
+                <ng-template #showFacilityPaperStatus>
+                  <td class="text-align-center">{{facilityStatus[data.facilityPaperStatus]}}</td>
+                </ng-template>
+
+              </ng-container>
+            </tr>
+
+          </table>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+
+</div>

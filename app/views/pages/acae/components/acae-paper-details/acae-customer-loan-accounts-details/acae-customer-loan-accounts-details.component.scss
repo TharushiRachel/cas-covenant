@@ -1,0 +1,36 @@
+.custom-table {
+  td, th {
+    border: 1px solid #9d9ea0 !important;
+    vertical-align: middle !important;
+  }
+
+  thead tr, thead th {
+    padding: unset !important;
+    background-color: unset;
+    vertical-align: middle !important;
+    text-align: center;
+  }
+
+  tbody tr, tbody th {
+    padding: 5px !important;
+    background-color: unset;
+    vertical-align: middle !important;
+    text-align: start;
+    padding-bottom: 1% !important;
+  }
+
+  //padding: unset !important;
+  border-spacing: 0px;
+  -webkit-border-horizontal-spacing: 0px;
+  -webkit-border-vertical-spacing: 0px;
+  border-collapse: collapse;
+  background-color: unset;
+  width: 100%;
+
+}
+
+
+.value-cel {
+  width: 200px;
+  text-align: right;
+}

@@ -1,0 +1,75 @@
+<div class="modal-header modal-topic">
+  <button type="button" class="close pull-right" aria-label="Close" (click)="onNoClick()">
+    <span aria-hidden="true">×</span>
+  </button>
+  <h4 class="modal-title w-100 heading-align font-weight-bold" id="myModalLabel">{{heading}}</h4>
+</div>
+<div class="modal-body">
+
+  <app-sme-questions
+  *ngIf="smeQuestionShow()"
+  [questionsAndAnswers]="questionsAndAnswers"
+  (formSubmitted)="onQuestionsSubmitted($event)">
+  </app-sme-questions>
+
+
+  <div class="w-100-p my-3" *ngIf="isMeetingDateEnable">
+    <mdb-date-picker class="form-control" id="meetingDate" label="BCC Meeting Held On *" [(ngModel)]="meetingDate"
+      [options]="myDatePickerOptions" [inline]="true"></mdb-date-picker>
+  </div>
+
+  <div *ngIf="isQuestionsSubmitted || !smeQuestionShow()">
+  <form class="d-flex p-2 flex-column justify-content-start align-items-start w-100-p" [formGroup]="componentForm">
+    <div class="m-top-10px m-bottom-10px w-100-p">
+      <label for="comment" style="color: black"></label>
+      <textarea type="text" id="comment" class="form-control rounded-0 comment-area" maxlength="4000"
+        placeholder="Comment here..." formControlName="comment" appTextAreaAutoHeight customHeight="120px" rows="7"
+        mdbInput></textarea>
+
+      <mdb-error *ngIf="formErrors.comment.maxlength">Maximum length for Comment
+        is {{formErrors.comment.maxlength.requiredLength}}</mdb-error>
+    </div>
+
+    <ng-container *ngIf="fpUsersInvolvedList != null && fpUsersInvolvedList.length > 0 && actionName != 'Reject'">
+      <div class="m-top-10px m-bottom-10px w-100-p">
+        <label>Please select the members to be sent cover page and meeting minute</label>
+        <ng-container *ngFor="let fpUser of fpUsersInvolvedList">
+          <mdb-checkbox [value]="fpUser.assignUser" [checked]="fpUser.isSelected"
+            (change)="handleUserSelect($event,fpUser.assignUserID)">{{ fpUser.assignUserDisplayName }}</mdb-checkbox>
+        </ng-container>
+      </div>
+    </ng-container>
+
+
+    <div class="d-flex flex-row flex-wrap w-100-p justify-content-end">
+      <ng-container *ngIf="showUsersOnlyOption">
+        <div class="mr-30p">
+          <mdb-checkbox formControlName="isUsersOnly">View comment only for the user</mdb-checkbox>
+        </div>
+      </ng-container>
+      <ng-container *ngIf="showDivisionOnlyOption">
+        <div>
+          <mdb-checkbox formControlName="isDivisionOnly">View comment only for the division</mdb-checkbox>
+        </div>
+      </ng-container>
+    </div>
+
+  </form>
+</div>
+</div>
+<div class="modal-footer modal-end">
+  <button type="button" mdbBtn color="light" class="btn-sm relative waves-light" mdbWavesEffect
+    (click)="onNoClick()">Close
+  </button>
+  <button type="button" mdbBtn color="info" class="btn-sm relative waves-light" mdbWavesEffect
+    [disabled]="!isValid() || !checkUserSelected() || !isValidMeetingDate()" (click)="submitComment()">{{actionName ? actionName : 'Save'}}
+  </button>
+
+  <!-- <ng-container *ngIf="fpUsersInvolvedList != null && fpUsersInvolvedList.length > 0">
+    <button type="button" mdbBtn color="info" class="btn-sm relative waves-light" mdbWavesEffect [disabled]="!isValid() || !checkUserSelected()"
+    (click)="submitComment()">{{actionName ? actionName : 'Save'}}
+  </button>
+  </ng-container> -->
+
+</div>
+

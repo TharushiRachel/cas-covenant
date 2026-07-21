@@ -1,0 +1,99 @@
+<div mdbSticky class="d-flex flex-row justify-content-between page-header">
+  <div class="d-flex flex-row align-items-center">
+    <h5><i class="fas fa-pound-sign header-icon"></i> Facility Search</h5>
+  </div>
+</div>
+
+<div class="page-search-section d-flex p-2 flex-row align-items-center">
+  <form class="d-flex p-2 flex-row flex-fill align-items-center" [formGroup]="searchForm">
+
+    <div class="md-form w-15-p mr-3">
+      <input type="text" id="disbursementAccNumber" formControlName="disbursementAccNumber" class="form-control"
+             mdbInput>
+      <label for="disbursementAccNumber">Account Number</label>
+    </div>
+
+    <div class="md-form w-15-p mr-3">
+      <input type="text" id="facilityAmount" formControlName="facilityAmount" class="form-control" mdbInput>
+      <label for="facilityAmount">Facility Amount</label>
+    </div>
+
+    <div class="md-form w-15-p mr-3">
+      <input type="text" id="outstandingAmount" formControlName="outstandingAmount" class="form-control" mdbInput>
+      <label for="outstandingAmount">Outstanding Amount</label>
+    </div>
+
+    <div class="md-form w-15-p mr-3">
+      <input type="text" id="purposeOfAdvance" formControlName="purposeOfAdvance" class="form-control" mdbInput>
+      <label for="purposeOfAdvance">Purpose of Advance</label>
+    </div>
+
+    <div class="md-form w-15-p mr-3">
+      <input type="text" id="facilityType" formControlName="facilityType" class="form-control" mdbInput>
+      <label for="facilityType">Facility Type</label>
+    </div>
+
+    <div class="md-form w-15-p mr-3">
+      <input type="text" id="condition" formControlName="condition" class="form-control" mdbInput>
+      <label for="condition">Condition</label>
+    </div>
+
+    <div class="md-form w-15-p mr-3">
+      <mdb-select
+        [options]="optionsSelect"
+        formControlName="status"
+        id="status"
+        placeholder="Status"></mdb-select>
+      <label for="status">Status</label>
+    </div>
+
+    <div class="mr-3 d-flex p-2 flex-row">
+      <button (click)="doSearch()" class="medium-button" type="button" mdbBtn color="light" mdbWavesEffect>Search
+      </button>
+      <button (click)="clearSearch()" class="medium-button" type="button" mdbBtn color="light" mdbWavesEffect>Clear
+      </button>
+    </div>
+  </form>
+</div>
+
+<div *ngIf="selectedFacilities.length == 0" class="alert alert-warning" role="alert">
+  No Facilities(s) Found !
+</div>
+
+<ng-container *ngIf="selectedFacilities.length > 0">
+  <div class="table-responsive">
+    <table class="table">
+      <thead>
+      <tr>
+        <ng-container *ngFor="let col of tableColumns">
+          <th scope="col">{{col}}</th>
+        </ng-container>
+      </tr>
+      </thead>
+      <tbody>
+      <ng-container *ngFor="let facility of selectedFacilities">
+        <tr (click)="loadFacility(facility.facilityID)" class="table-clickable-row">
+          <td>{{facility.disbursementAccNumber}}</td>
+          <td>{{facility.facilityAmount}}</td>
+          <td>{{facility.outstandingAmount}}</td>
+          <td>{{facility.purposeOfAdvance}}</td>
+          <td>{{facility.facilityType}}</td>
+          <td>{{facility.condition}}</td>
+          <td>
+            <mdb-badge *ngIf="facility.status === statusConst.ACT" color="green">{{status[facility.status]}}</mdb-badge>
+            <mdb-badge *ngIf="facility.status === statusConst.INA" color="red">{{status[facility.status]}}</mdb-badge>
+          </td>
+        </tr>
+      </ng-container>
+      </tbody>
+    </table>
+  </div>
+
+  <app-paginator
+    [pageIndex]="pageSize.pageIndex"
+    [length]="pageSize.length"
+    [pageSize]="pageSize.pageSize"
+    [pageSizeOptions]="pageSize.pageSizeOptions"
+    (page)="onPageEvent($event)"
+  ></app-paginator>
+</ng-container>

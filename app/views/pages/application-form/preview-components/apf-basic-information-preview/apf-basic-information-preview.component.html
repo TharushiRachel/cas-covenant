@@ -1,0 +1,14 @@
+<ng-container *ngIf="isPersonal()">
+  <app-apf-basic-personal-info-preview [basicInformation]="basicInformation">
+  </app-apf-basic-personal-info-preview>
+</ng-container>
+
+<ng-container *ngIf="isBusiness()">
+  <app-apf-basic-business-info-preview [basicInformation]="basicInformation">
+  </app-apf-basic-business-info-preview>
+</ng-container>
+
+<ng-container *ngIf="isCorporate()">
+  <app-apf-basic-corporate-info-preview [basicInformation]="basicInformation">
+  </app-apf-basic-corporate-info-preview>
+</ng-container>

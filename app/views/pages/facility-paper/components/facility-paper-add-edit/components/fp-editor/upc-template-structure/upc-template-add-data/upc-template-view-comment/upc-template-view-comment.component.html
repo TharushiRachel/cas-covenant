@@ -1,0 +1,31 @@
+<div class="comments-changes p-0 mx-0 my-2" *ngIf="commentHistory && commentHistory.length > 0">
+  <mat-accordion class="custom-accordion">
+    <mat-expansion-panel class="custom-expansion-panel">
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          <h6 class="w-100 font-weight-bold">Related Comments</h6>
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+      <div style="max-height: 250px; overflow-y: auto;" class="p-0 m-0">
+        <div class="m-0 p-0 w-100" *ngFor="let item of commentHistory">
+          <div class="row d-flex chat-item">
+            <span class="text-1">{{item.comment}} <br />
+              <span class="text-1" style="color: #33b5e5;">
+                by {{item.addedBy}} on {{item.date}}
+              </span>
+            </span>
+          </div>
+          <div class="m-0 pl-4 pr-0" *ngFor="let child of item.childCmnt">
+            <div class="row d-flex chat-item">
+              <span class="text-1">{{child.comment}} <br />
+                <span class="text-1" style="color: #33b5e5;">
+                  by {{child.addedBy}} on {{child.date}}
+                </span>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </mat-expansion-panel>
+  </mat-accordion>
+</div>

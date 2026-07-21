@@ -1,0 +1,18 @@
+
+thead tr, thead th {
+  padding: unset !important;
+  background-color: unset;
+  vertical-align: middle !important;
+  text-align: start;
+}
+
+.data-lbl {
+  padding-left: 4.5%;
+  padding-right: 3px;
+  min-width: 255px;
+  //font-weight: bold;
+}
+
+.comment-area {
+  border: 1px solid #9d9ea0;
+}

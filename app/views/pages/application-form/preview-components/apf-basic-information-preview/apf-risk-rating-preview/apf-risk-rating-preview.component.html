@@ -1,0 +1,48 @@
+<mdb-card>
+  <mdb-card-body class="custom-card-body mb-10p">
+    <table class="table custom-apf-table width-100">
+      <thead>
+      <tr>
+        <th colspan="10" style="border: unset !important;">
+          <p class="mb-5p text-align-start"><b>RISK RATING</b></p>
+        </th>
+      </tr>
+      <tr>
+        <th>Scoring</th>
+        <th>Grading</th>
+        <th>Model</th>
+        <th>Last Rated</th>
+        <th>Asset Classification</th>
+        <th>Initiated Branch</th>
+        <th>Risk Confirmed</th>
+      </tr>
+      </thead>
+      <tbody>
+      <ng-container
+        *ngIf="basicInformation.afRiskRateDTOList && basicInformation.afRiskRateDTOList.length>0 ; else noData">
+        <ng-container *ngFor="let item of basicInformation.afRiskRateDTOList">
+          <tr>
+            <td class="text-align-center">{{item.scoring}}</td>
+            <td class="text-align-center">{{item.riskGrading}}</td>
+            <td class="text-align-center">{{ratingModel[item.model]}}</td>
+            <td class="text-align-center width-10">{{item.lastRatedStr}}</td>
+            <td class="text-align-center">{{item.assetClassification}}</td>
+            <td class="text-align-center">{{item.initiatedBranch}}</td>
+            <td class="text-align-center width-10">{{yesNoConst[item.riskConfirmed]}}</td>
+          </tr>
+        </ng-container>
+      </ng-container>
+      <ng-template #noData>
+        <tr>
+          <th colspan="10" class="text-align-center">
+            <p class="not-auth-message margin-unset">
+              No Record(s)
+            </p>
+          </th>
+        </tr>
+      </ng-template>
+      </tbody>
+    </table>
+
+  </mdb-card-body>
+</mdb-card>

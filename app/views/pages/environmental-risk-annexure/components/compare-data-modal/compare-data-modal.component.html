@@ -1,0 +1,78 @@
+<div class="modal-header modal-topic flex-center">
+    <button type="button" class="close pull-right" aria-label="Close" (click)="onClose()">
+        <span aria-hidden="true">×</span>
+    </button>
+    <h4 class="modal-title w-100 heading-align" id="myModalLabel" style="font-size: 1rem ; font-weight: bold">
+        Compare Pending Authorization
+    </h4>
+</div>
+<div class="modal-body modal-detail form-margin mt-0 px-3 mb-2"
+    style="min-height: 20vh; max-height: 80vh; overflow-y: auto;">
+
+    <app-tabs (onTabSelect)="onTabSelect($event)" [selectedTabIndex]="selectedTabIndex" class="w-100-p">
+        <app-tab [tabTitle]="'Approved Data'">
+            <div class="row d-flex mx-0 my-2 p-0">
+                <div class="col-md-3 row d-flex flex-row mx-0 my-2 px-0 align-items-center">
+                    <strong>Name :- </strong>
+                    <span>{{selectedAnnex.name}}</span>
+                    <div class="m-0" *ngIf="selectedAnnex.isMandatory === 'Y'">
+                        <mdb-badge class="mx-2" [default]="false"
+                            style="color: #ffc107 !important;border-color: #ffc107 !important;">
+                            Mandatory
+                        </mdb-badge>
+                    </div>
+                    <div class="m-0" *ngIf="selectedAnnex.allowRiskEdit === 'Y'">
+                        <mdb-badge class="mx-2" [default]="false"
+                            style="color: #17a2b8 !important;border-color: #17a2b8 !important;">
+                            Allow Risk to Edit
+                        </mdb-badge>
+                    </div>
+                </div>
+                <div class="col-md-12 my-2 px-0">
+                    <strong>Description :- </strong>
+                    <pre class="custom-pre-tag-with-spaces m-0">{{selectedAnnex.description}}</pre>
+                </div>
+            </div>
+            <app-view-question-wrapper [questions]="questions" [isEditEnabled]="false"
+                [isBadgeShow]="false"></app-view-question-wrapper>
+        </app-tab>
+        <app-tab [tabTitle]="'Pending Data'">
+            <div class="row d-flex mx-0 my-2 p-0">
+                <div class="col-md-3 row d-flex flex-row mx-0 my-2 px-0 align-items-center">
+                    <strong>Name :- </strong>
+                    <span>{{pendingAnnex.name}}</span>
+                    <div class="m-0" *ngIf="pendingAnnex.isMandatory === 'Y'">
+                        <mdb-badge class="mx-2" [default]="false"
+                            style="color: #ffc107 !important;border-color: #ffc107 !important;">
+                            Mandatory
+                        </mdb-badge>
+                    </div>
+                    <div class="m-0" *ngIf="pendingAnnex.allowRiskEdit === 'Y'">
+                        <mdb-badge class="mx-2" [default]="false"
+                            style="color: #17a2b8 !important;border-color: #17a2b8 !important;">
+                            Allow Risk to Edit
+                        </mdb-badge>
+                    </div>
+                </div>
+                <div class="col-md-12 my-2 px-0">
+                    <strong>Description :- </strong>
+                    <pre class="custom-pre-tag-with-spaces m-0">{{pendingAnnex.description}}</pre>
+                </div>
+            </div>
+            <app-view-question-wrapper [questions]="pendingQuestions" [isEditEnabled]="false"
+                [isBadgeShow]="true"></app-view-question-wrapper>
+        </app-tab>
+    </app-tabs>
+</div>
+<div class="modal-footer modal-end pt-0 border border-top-1">
+    <ng-container *ngIf="isValidUser(selectedAnnex)">
+        <button type="button" mdbBtn color="primary" size="sm" class="waves-light" aria-label="Close" (click)="reject()"
+            mdbWavesEffect>
+            Reject
+        </button>
+        <button type="button" mdbBtn color="success" size="sm" class="relative waves-light" (click)="approve()"
+            mdbWavesEffect>
+            Approve
+        </button>
+    </ng-container>
+</div>

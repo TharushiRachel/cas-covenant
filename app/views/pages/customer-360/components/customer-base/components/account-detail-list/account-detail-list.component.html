@@ -1,0 +1,65 @@
+<div class="item-wrapper d-flex flex-column justify-content-start">
+  <div>
+    <h6 class="hcaption">Bank Information</h6>
+  </div>
+  <div *ngIf="customer360Details.customerBankDetailsDTOList">
+    <table>
+      <thead>
+      <tr>
+        <th>
+          Account Number
+        </th>
+        <th>
+          Account Type
+        </th>
+        <th>
+          Branch Code
+        </th>
+        <th>
+          Account Status
+        </th>
+        <th>
+
+        </th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let bankAcc of resizedCustomerBankDetailsDTOList">
+
+        <td>{{bankAcc.bankAccountNumber}}</td>
+        <td>{{bankAcc.schmType || '-'}}</td>
+        <td>{{bankAcc.branchCode}}</td>
+        <td>
+          {{status[bankAcc.status]}}
+        <td>
+          <ng-container *appHasAnyPrivilege="masterDataPrivilege.ICAS_SETTINGS_FACILITY_PAPER_ADD">
+            <ng-container *appBlockedByUPMs>
+              <button mdbBtn
+                      type="button"
+                      mdbTooltip="Create Paper"
+                      class="action-button-padding btn-outline-success btn-sm"
+                      outline="true"
+                      mdbWavesEffect
+                      (click)="createNewFacility(bankAcc)">
+                <span>Create Paper</span>
+              </button>
+            </ng-container>
+          </ng-container>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+
+    <div class="d-flex flex-row float-right">
+      <app-list-to-paginator
+        [inputArray]="customer360Details.customerBankDetailsDTOList"
+        [listType]="''"
+        [pageSize]="bankDetailsPageSize"
+        [currentEndIndex]="bankDetailsPageSize"
+        (resizedArray)="onLoadResizedList($event)">
+      </app-list-to-paginator>
+    </div>
+
+  </div>
+</div>
+

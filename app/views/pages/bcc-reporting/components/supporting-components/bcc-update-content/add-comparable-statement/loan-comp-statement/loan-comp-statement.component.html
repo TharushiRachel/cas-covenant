@@ -1,0 +1,295 @@
+<div #modalBody class="m-0 p-0" style="max-height: 72vh;">
+    <div class="row d-flex mx-0 justify-content-center" *ngIf="reportingDataList.length > 0">
+        <mdb-icon class="btn-sm" fas icon="chevron-down" aria-hidden="true" *ngIf="!isLoanCollapsed"
+            (click)="handleCollapsed()" style="cursor: pointer;">
+        </mdb-icon>
+        <mdb-icon class="btn-sm" fas icon="chevron-up" aria-hidden="true" *ngIf="isLoanCollapsed"
+            (click)="handleCollapsed()" style="cursor: pointer;">
+        </mdb-icon>
+    </div>
+
+
+    <div class="m-0 p-0" *ngIf="isLoanCollapsed">
+        <div class="row d-flex flex-row mx-0">
+            <div class="col-2 md-form mx-0">
+                <mdb-date-picker class="form-control" id="fromDate" label="From Date *" [(ngModel)]="fromDate"
+                    [options]="myDatePickerOptions" [inline]="true"
+                    (ngModelChange)="handleFormData()"></mdb-date-picker>
+            </div>
+
+            <div class="col-2 md-form mx-0">
+                <mdb-date-picker class="form-control" id="toDate" label="To Date *" [(ngModel)]="toDate"
+                    [options]="myDatePickerOptions" [inline]="true"
+                    (ngModelChange)="handleFormData()"></mdb-date-picker>
+            </div>
+
+            <div class="col-2 md-form mx-0">
+                <mdb-select class="mt-2" id="riskRating" [options]="riskRatingOptions" [(ngModel)]="riskRating"
+                    label="Risk Rating *" (ngModelChange)="handleFormData()"></mdb-select>
+            </div>
+
+            <div class="col-3 md-form mx-0">
+                <mdb-select class="mt-2" id="sector" [options]="sectorOptions" [filterEnabled]="true"
+                    [(ngModel)]="sector" label="Sector *" (ngModelChange)="handleFormData()"></mdb-select>
+            </div>
+
+            <div class="col-3 md-form mx-0">
+                <mdb-select class="mt-2" id="productGroup" [options]="productGroups" [filterEnabled]="true"
+                    [(ngModel)]="productGroup" label="Loan Products *"></mdb-select>
+            </div>
+        </div>
+
+        <div class="row d-flex flex-row mx-0 my-2 pb-2 width-100">
+            <div class="col-1">
+                <input type="radio" class="form-check-input" [(ngModel)]="parentCodeType"
+                    id="{{interestRateCodeType.FIXED}}" [value]="interestRateCodeType.FIXED" name="parentCodeType"
+                    (change)="handleCodeType()">
+                <label class="form-check-label" for="{{interestRateCodeType.FIXED}}">
+                    {{interestRateCodeType.FIXED}}
+                </label>
+            </div>
+            <div class="col-2">
+                <input type="radio" class="form-check-input" [(ngModel)]="parentCodeType"
+                    id="{{interestRateCodeType.VARIABLE}}" [value]="interestRateCodeType.VARIABLE" name="parentCodeType"
+                    (change)="handleCodeType()">
+                <label class="form-check-label" for="{{interestRateCodeType.VARIABLE}}">
+                    {{interestRateCodeType.VARIABLE}}
+                </label>
+
+                <div class="d-flex flex-row mx-0 mt-2 width-100"
+                    *ngIf="parentCodeType == interestRateCodeType.VARIABLE">
+                    <input type="radio" class="form-check-input" [(ngModel)]="childCodeType"
+                        id="{{interestRateCodeType.AWPLR}}" [value]="interestRateCodeType.AWPLR" name="childCodeType"
+                        (change)="handleCodeType()">
+                    <label class="form-check-label" for="{{interestRateCodeType.AWPLR}}">
+                        {{interestRateCodeType.AWPLR}}
+                    </label>
+
+                    <input type="radio" class="form-check-input" [(ngModel)]="childCodeType"
+                        id="{{interestRateCodeType.SOFR}}" [value]="interestRateCodeType.SOFR" name="childCodeType"
+                        (change)="handleCodeType()">
+                    <label class="form-check-label m-left-5p" for="{{interestRateCodeType.SOFR}}">
+                        {{interestRateCodeType.SOFR}}
+                    </label>
+                </div>
+            </div>
+
+            <div class="col-3 m-0"
+                style="display: flex;flex-direction: column;justify-content: center;align-items: center;">
+                <div class="row d-flex flex-row mx-0">
+                    <div class="row d-flex justify-content-center mx-0"
+                        *ngIf="parentCodeType == interestRateCodeType.VARIABLE && getCodesByType().length > 0">
+                        <ng-container *ngFor="let item of getCodesByType()">
+                            <div class="ml-0 mr-3" style="width: fit-content;">
+                                <mdb-checkbox (change)="handleSelectCodeType(item.value)">
+                                    {{item.label}}
+                                </mdb-checkbox>
+                            </div>
+                        </ng-container>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-3">
+                <div class="md-form mx-0">
+                    <input class="form-control" [(ngModel)]="rateFrom" id="rateFrom" mdbInput type="text">
+                    <label for="rateFrom">
+                        {{parentCodeType == interestRateCodeType.FIXED ? "Interest" :
+                        "Preferential"}} Rate From (%)
+                        *
+                    </label>
+                </div>
+            </div>
+
+            <div class="col-3">
+                <div class="md-form mx-0">
+                    <input class="form-control" [(ngModel)]="rateTo" id="rateTo" mdbInput type="text">
+                    <label for="rateTo">
+                        {{parentCodeType == interestRateCodeType.FIXED ? "Interest" :
+                        "Preferential"}} Rate To (%) *
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <div class="row d-flex flex-row justify-content-end mx-0 width-100">
+            <button type="button" mdbBtn color="secondary" size="sm" class="waves-light" aria-label="Close"
+                mdbWavesEffect (click)="handleSearch()">
+                Search
+            </button>
+        </div>
+    </div>
+
+    <div class="p-0 m-0" [ngStyle]="{'max-height' : isLoanCollapsed ? '50vh' : '68vh'}" style="overflow-y: auto;">
+        <div class="row d-flex flex-row mx-0 p-2 my-1"
+            style="border: 1px solid #dee2e6; border-radius: 6px;width: 50% !important;"
+            *ngIf="reportingDataList.length > 0 || isLoanSorted">
+            <div class="col-5">
+                <div class="md-form mt-2">
+                    <input class="form-control" [(ngModel)]="cifId" id="cifId" mdbInput type="text"
+                        [disabled]="isLoanSorted">
+                    <label for="cifId">CIF ID</label>
+                </div>
+            </div>
+            <div class="col-5">
+                <div class="md-form mt-2">
+                    <input class="form-control" [(ngModel)]="account" id="account" mdbInput type="text"
+                        [disabled]="isLoanSorted">
+                    <label for="account">Loan Account No</label>
+                </div>
+            </div>
+            <div class="col-2 m-0"
+                style="display: flex; flex-direction: column; align-items: end; justify-content: center;">
+                <button type="button" mdbBtn color="secondary" size="sm" class="waves-light m-0" aria-label="Close"
+                    mdbWavesEffect (click)="handleSort()" *ngIf="!isLoanSorted">
+                    Filter
+                </button>
+                <button type="button" mdbBtn color="secondary" size="sm" class="waves-light m-0" aria-label="Close"
+                    mdbWavesEffect (click)="clearSort()" *ngIf="isLoanSorted">
+                    Clear
+                </button>
+            </div>
+        </div>
+
+        <div class="row d-flex mx-0 p-0 w-100" *ngIf="reportingDataList.length > 0">
+
+            <cdk-virtual-scroll-viewport itemSize="100" [ngStyle]="{'height' : isLoanCollapsed ? '40vh' : '58vh'}"
+                style="width: 100%;">
+                <ng-container *cdkVirtualFor="let item of getSliceParentData()">
+                    <h6 class="mt-2" style="font-size: 14px;font-weight: 600;">{{item.acctName}}</h6>
+                    <div class="table-responsive">
+                        <table class="table" *ngIf="item.loans.length > 0">
+                            <thead>
+                                <tr>
+                                    <th style="width: 10%; vertical-align: middle;"></th>
+                                    <th style="width: 10%; vertical-align: middle;">Loan Account No</th>
+                                    <th style="width: 17%; vertical-align: middle;">Product</th>
+                                    <th style="width: 12%; vertical-align: middle;">Amount (Mn)</th>
+                                    <th style="width: 10%; vertical-align: middle;">Interest Rate</th>
+                                    <th style="width: 16%; vertical-align: middle;">Sector</th>
+                                    <th style="width: 10%; vertical-align: middle;">Risk Rating</th>
+                                    <th style="width: 15%; vertical-align: middle;background-color: #dee2e6;">
+                                        Facility Type
+                                        <br />
+                                        <small>Select the facility type</small>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <ng-container *ngFor="let loan of item.loans">
+                                    <tr>
+                                        <td>
+                                            <button type="button" mdbBtn color="secondary" size="sm" class="waves-light"
+                                                aria-label="Close" mdbWavesEffect
+                                                style="margin: 0px;width: fit-content;padding: 8px !important;"
+                                                [disabled]="!loan.iimitB2kId"
+                                                (click)="getLimitNodeDetails(loan.iimitB2kId,item.custId,loan.foracid)">
+                                                Check Limit Node
+                                            </button>
+                                        </td>
+                                        <td style="vertical-align: middle;">
+                                            <mdb-checkbox [(ngModel)]="loan.isAccSelected"
+                                                (change)="handleSelectChange($event,item.custId,loan.foracid)">
+                                                {{loan.foracid}}
+                                            </mdb-checkbox>
+                                        </td>
+                                        <td style="vertical-align: middle;">
+                                            {{loan.schmDesc}}
+                                            ({{loan.productGroup}})
+                                        </td>
+                                        <td style="vertical-align: middle;">
+                                            {{loan.acctCrncyCode}} {{loan.sanctLim}}
+                                        </td>
+                                        <td style="vertical-align: middle;">
+                                            {{loan.intTbleCode ? loan.intTbleCode + " + " +
+                                            loan.prefRate +"%" : ""}}
+                                            <br />
+                                            {{loan.interestRate ? "("+ loan.interestRate +"%)" : "-"}}
+                                        </td>
+                                        <td style="vertical-align: middle;">
+                                            {{loan.sectorCode}}-{{loan.sectorDesc}}</td>
+                                        <td style="vertical-align: middle;">{{loan.riskRating}}</td>
+                                        <td style="vertical-align: middle;">
+                                            <div class="m-0 p-0" *ngIf="loan.isAccSelected">
+                                                <mdb-select id="facilityType" [options]="facilityTypeOptions"
+                                                    [(ngModel)]="loan.facilityType" placeholder="Choose..."
+                                                    (ngModelChange)="handleFacilityTypeChange(item.custId,loan.foracid,loan.facilityType)"></mdb-select>
+                                            </div>
+                                            <div class="m-0 p-0" *ngIf="!loan.isAccSelected">-
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <!-- Extra Rows After Each Loan -->
+                                    <tr *ngIf="loan.limitNode">
+                                        <td colspan="6">
+                                            <div class="row d-flex mx-0 w-100">
+                                                <div class="w-25-p p-1">
+                                                    <strong>Limit Name:</strong>
+                                                    {{loan.limitNode.limitPrefix}}
+                                                    {{loan.limitNode.limitSuffix}}
+                                                </div>
+                                                <div class="w-25-p p-1">
+                                                    <strong>Limit Description:</strong>
+                                                    {{loan.limitNode.limitDesc}}
+                                                </div>
+                                                <div class="w-25-p p-1">
+                                                    <strong>Node Sanction:</strong>
+                                                    {{loan.limitNode.nodeCcy}}
+                                                    {{loan.limitNode.nodeSanction}} Mn
+                                                </div>
+                                                <div class="w-25-p p-1">
+                                                    <strong>Drawing Power:</strong>
+                                                    {{loan.limitNode.nodeCcy}}
+                                                    {{loan.limitNode.drawingPower}} Mn
+                                                </div>
+                                                <div class="w-25-p p-1">
+                                                    <strong>Liab:</strong>
+                                                    {{loan.limitNode.nodeCcy}}
+                                                    {{loan.limitNode.liab}} Mn
+                                                </div>
+                                                <div class="w-25-p p-1">
+                                                    <strong>Contingent Liab:</strong>
+                                                    {{loan.limitNode.contingentLiab}}
+                                                </div>
+                                                <div class="w-25-p p-1">
+                                                    <strong>Limit Sanction Date: </strong>
+                                                    {{loan.limitNode.limSanctDate}}
+                                                </div>
+                                                <div class="w-25-p p-1">
+                                                    <strong>Limit Exp Date:</strong>
+                                                    {{loan.limitNode.limExpDate}}
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </ng-container>
+                            </tbody>
+                        </table>
+                    </div>
+                </ng-container>
+            </cdk-virtual-scroll-viewport>
+
+        </div>
+        <div class="row d-flex mx-0 p-0 w-100 mt-3" *ngIf="isLoanSearched && reportingDataList.length <= 0">
+            <span style="width: 100%;text-align: center;font-size: 15px;font-weight: 600;">
+                There are no data.
+            </span>
+        </div>
+    </div>
+
+</div>
+<div class="row d-flex flex-row mx-0 my-2 justify-content-end align-items-center">
+    <div class="ml-0 mr-auto p-0" *ngIf="reportingDataList.length > 0">
+        <app-paginator [pageIndex]="parentPageSize.pageIndex" [length]="parentPageSize.length"
+            [pageSize]="parentPageSize.pageSize" [pageSizeOptions]="parentPageSize.pageSizeOptions"
+            (page)="onParentPageEvent($event)"></app-paginator>
+    </div>
+    <button type="button" mdbBtn color="secondary" size="sm" class="waves-light" aria-label="Close" mdbWavesEffect
+        (click)="clearSearchData()" *ngIf="(isLoanSearched && reportingDataList.length > 0) || isLoanSorted">
+        Clear Search Data
+    </button>
+    <button type="button" mdbBtn color="success" size="sm" class="waves-light" aria-label="Close" mdbWavesEffect
+        (click)="submitLoans()" *ngIf="isGenerateBtnEnabled()">
+        Submit
+    </button>
+</div>

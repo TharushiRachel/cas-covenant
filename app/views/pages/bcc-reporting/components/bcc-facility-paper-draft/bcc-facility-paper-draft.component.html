@@ -1,0 +1,96 @@
+<div class="page-search-section section display-flex flex-column jc-start p-2 pt-3 pb-3 default-box-styles align-start">
+    <form class="display-flex w-100-p flex-row jc-start ai-center flex-wrap flex-2-gap" [formGroup]="searchForm">
+  
+      <div class="md-form w-18-p  min-width-120">
+        <input type="text" id="fpRefNumber" formControlName="fpRefNumber" class="form-control" mdbInput>
+        <label for="fpRefNumber">Ref Number</label>
+      </div>
+  
+      <div class="md-form w-18-p  min-width-120">
+        <input type="text" id="bankAccountID" formControlName="bankAccountID" class="form-control"  (keypress)="keyPressNumbers($event)" maxlength="12" mdbInput>
+        <label for="bankAccountID">Account Number</label>
+      </div>
+  
+      <div class="md-form w-18-p min-width-120 ">
+        <mdb-date-picker class="form-control"
+                         id="createdFromDateStr"
+                         formControlName="createdFromDateStr"
+                         [options]="myDatePickerOptions"
+                         [placeholder]="'From date'"
+                         [inline]="true"
+                         required></mdb-date-picker>
+      </div>
+  
+      <div class="md-form w-18-p  min-width-120 ">
+        <mdb-date-picker class="form-control"
+                         id="createdToDateStr"
+                         formControlName="createdToDateStr"
+                         [options]="myDatePickerOptions"
+                         [placeholder]="'To date'"
+                         [inline]="true"
+                         required></mdb-date-picker>
+      </div>
+  
+      <div class="display-flex flex-1 flex-row jc-end ai-center">
+        <button (click)="doSearch()" type="button" class=" medium-button btn btn-info" mdbBtn [disabled]="isSearchDataEntered()" >Search</button>
+        <button (click)="clearSearch()" class=" medium-button btn btn-outline-info clear-btn" mdbBtn type="button">
+          Clear
+        </button>
+      </div>
+    </form>
+  </div>
+    
+  <div *ngIf="selectedFacilityPapers.length == 0" class="alert alert-warning" role="alert">
+    No Facility Paper(s) Found !
+  </div>
+
+  <ng-container *ngIf="selectedFacilityPapers.length > 0">
+    <div class="section table-responsive mb-15p">
+      <table class="table">
+        <thead>
+        <tr>
+          <ng-container *ngFor="let col of tableColumns">
+            <th scope="col">{{col}}</th>
+          </ng-container>
+        </tr>
+        </thead>
+        <tbody>
+        <ng-container *ngFor="let paper of selectedFacilityPapers">
+          <tr
+            (click)="isAbleToNavigateBCC(paper) && loadFacilityPaper(paper.facilityPaperID)"
+            [ngClass]="{'table-clickable-row': isAbleToNavigateBCC(paper)}">
+            <td class="customer-name-col">{{paper.customerName || '-'}}</td>
+            <td>{{paper.fpRefNumber || '-'}}</td>
+            <td>{{paper.bankAccountID || '-'}}</td>
+            <td>{{getBranchName(paper.branchCode) || '-'}}</td>
+            <td>{{paper.approvedDateStr || '-'}}</td>
+            <td class="assign-user-col">{{paper.assignUserDisplayName || '-'}}</td>
+            <td class="status-icon status-col">
+  
+              <a *ngIf="paper.isBccCreated=='N'"
+                 data-toggle="tooltip" data-placement="left" title="Pending" class="icon-padding">
+                <img class="status-img-width" src="assets/media/images/fpstatusicon/draft.png" alt="Pending">
+              </a>
+  
+              <a *ngIf="paper.isBccCreated=='Y'"
+                 data-toggle="tooltip" data-placement="left" title="Created" class="icon-padding">
+                <img class="status-img-width" src="assets/media/images/fpstatusicon/approved.png" alt="BCC">
+              </a>
+  
+            </td>
+          </tr>
+        </ng-container>
+        </tbody>
+      </table>
+
+        <div class="page-container">
+                  <app-paginator
+        [pageIndex]="pageSize.pageIndex"
+        [length]="pageSize.length"
+        [pageSize]="pageSize.pageSize"
+        [pageSizeOptions]="pageSize.pageSizeOptions"
+        (page)="onPageEvent($event)"
+      ></app-paginator>
+        </div>
+    </div>
+  </ng-container>

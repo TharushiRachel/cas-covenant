@@ -1,0 +1,196 @@
+<form [formGroup]="officerApprovalGroup">
+  <div class="d-flex flex-column item-box">
+    <div class="d-flex flex-column">
+      <div>
+        <p>Exceptions to the Bank’s Tariff & Policies</p>
+      </div>
+      <div>
+        <textarea type="text"
+                  id="exceptions"
+                  class="form-control comment-area"
+                  maxlength="4000"
+                  placeholder="Exceptions..."
+                  formControlName="exceptions"
+                  style="height: 100%"
+                  mdbInput>
+          </textarea>
+      </div>
+    </div>
+    <div class="d-flex flex-column">
+      <div>
+        <p>Names of Officers who recommended the proposed facility/ies</p>
+      </div>
+      <div class="d-flex flex-row justify-content-between width-100 m-right-auto">
+        <table class="custom-officer-approval-table">
+          <tr>
+            <td>
+              <input mdbValidate
+                     type="text"
+                     id="officerOne"
+                     class="custom-text-input"
+                     formControlName="officerOne"
+                     placeholder="name"
+              >
+            </td>
+            <td>
+              <input mdbValidate
+                     type="text"
+                     id="officerTwo"
+                     class="custom-text-input"
+                     formControlName="officerTwo"
+                     placeholder="name"
+              >
+            </td>
+            <td>
+              <input mdbValidate
+                     type="text"
+                     id="officerThree"
+                     class="custom-text-input"
+                     formControlName="officerThree"
+                     placeholder="name"
+              >
+            </td>
+            <td>
+              <input mdbValidate
+                     type="text"
+                     id="officerFour"
+                     class="custom-text-input"
+                     formControlName="officerFour"
+                     placeholder="name"
+              >
+            </td>
+          </tr>
+          <tr>
+            <td>
+            <input mdbValidate
+                   type="text"
+                   id="officerOneDesignation"
+                   class="custom-text-input"
+                   formControlName="officerOneDesignation"
+                   placeholder="designation"
+            >
+            </td>
+
+            <td>
+              <input mdbValidate
+                     type="text"
+                     id="officerTwoDesignation"
+                     class="custom-text-input"
+                     formControlName="officerTwoDesignation"
+                     placeholder="designation"
+              >
+            </td>
+
+            <td>
+              <input mdbValidate
+                     type="text"
+                     id="officerThreeDesignation"
+                     class="custom-text-input"
+                     formControlName="officerThreeDesignation"
+                     placeholder="designation"
+              >
+            </td>
+
+            <td>
+              <input mdbValidate
+                     type="text"
+                     id="officerFourDesignation"
+                     class="custom-text-input"
+                     formControlName="officerFourDesignation"
+                     placeholder="designation"
+              >
+            </td>
+          </tr>
+        </table>
+      </div>
+
+
+      <div class="d-flex flex-row justify-content-between width-100 m-right-auto m-top-15px">
+        <table class="custom-officer-approval-table">
+          <tr>
+            <td>
+              <input mdbValidate
+                     type="text"
+                     id="eacMemberOne"
+                     class="custom-text-input"
+                     formControlName="eacMemberOne"
+                     placeholder="name"
+              >
+            </td>
+            <td>
+              <input mdbValidate
+                     type="text"
+                     id="eacMemberTwo"
+                     class="custom-text-input"
+                     formControlName="eacMemberTwo"
+                     placeholder="name"
+              >
+            </td>
+            <td>
+              <input mdbValidate
+                     type="text"
+                     id="eacMemberThree"
+                     class="custom-text-input"
+                     formControlName="eacMemberThree"
+                     placeholder="name"
+              >
+            </td>
+            <td>
+              <input mdbValidate
+                     type="text"
+                     id="eacMemberFour"
+                     class="custom-text-input"
+                     formControlName="eacMemberFour"
+                     placeholder="name"
+              >
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <input mdbValidate
+                     type="text"
+                     id="eacMemberOneDesignation"
+                     class="custom-text-input"
+                     formControlName="eacMemberOneDesignation"
+                     placeholder="Designation"
+              >
+            </td>
+            <td>
+              <input mdbValidate
+                     type="text"
+                     id="eacMemberTwoDesignation"
+                     class="custom-text-input"
+                     formControlName="eacMemberTwoDesignation"
+                     placeholder="Designation"
+              >
+            </td>
+            <td>
+              <input mdbValidate
+                     type="text"
+                     id="eacMemberThreeDesignation"
+                     class="custom-text-input"
+                     formControlName="eacMemberThreeDesignation"
+                     placeholder="Designation"
+              >
+            </td>
+            <td>
+              <input mdbValidate
+                     type="text"
+                     id="eacMemberFourDesignation"
+                     class="custom-text-input"
+                     formControlName="eacMemberFourDesignation"
+                     placeholder="Designation"
+              >
+            </td>
+          </tr>
+          <tr>
+            <td>EAC Member</td>
+            <td>EAC Member</td>
+            <td>EAC Member</td>
+            <td>EAC Member</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+  </div>
+</form>

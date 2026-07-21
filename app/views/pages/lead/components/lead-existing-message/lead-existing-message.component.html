@@ -1,0 +1,20 @@
+<div>
+  <div class="modal-header modal-topic flex-center">
+    <button type="button" class="close pull-right" aria-label="Close" (click)="onNoClick()">
+      <span aria-hidden="true">×</span>
+    </button>
+    <h4 class="modal-title w-100 heading-align" id="myModalLabel"
+        style="font-size: 1rem ; font-weight: bold"></h4>
+  </div>
+  <div class="modal-body mx-3 modal-detail form-margin">
+    <h6 style="font-size: 1.0rem">A lead has been created for {{lead.leadData.identificationNumber}} on {{lead.leadData.createdDateStr}}</h6>
+  </div>
+  <div class="modal-footer modal-end">
+    <button type="button" mdbBtn color="secondary" size="sm" class="waves-light" aria-label="Close"
+            (click)="onNoClick()" mdbWavesEffect>Ok
+    </button>
+<!--    <button type="button" mdbBtn color="success" size="sm" class="relative waves-light" (click)="onYesClick()"-->
+<!--            mdbWavesEffect>Yes-->
+<!--    </button>-->
+  </div>
+</div>

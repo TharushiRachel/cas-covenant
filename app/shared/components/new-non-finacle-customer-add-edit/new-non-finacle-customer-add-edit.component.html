@@ -1,0 +1,187 @@
+<div class="modal-header modal-topic">
+  <h4 class="modal-title w-100 font-weight-bold">
+    {{heading}}
+  </h4>
+  <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="mdbModalRef.hide()">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
+<div class="modal-body modal-detail">
+  <form [formGroup]="nonFinacleCustomerForm" class="width-100">
+    <div class="d-flex flex-row flex-wrap justify-content-between w-100-p">
+      <div class="d-flex flex-row justify-content-center width-100 m-bottom-10px">
+        <input type="radio" class="form-check-input"
+               formControlName="type"
+               id="{{basicInformationTypeConst.PERSONAL}}" [value]="basicInformationTypeConst.PERSONAL"
+               name="type">
+        <label class="form-check-label"
+               for="{{basicInformationTypeConst.PERSONAL}}">{{basicInformationType.PERSONAL}}</label>
+
+        <input type="radio" class="form-check-input"
+               formControlName="type"
+               id="{{basicInformationTypeConst.BUSINESS}}" [value]="basicInformationTypeConst.BUSINESS"
+               name="type">
+        <label class="form-check-label m-left-5p"
+               for="{{basicInformationTypeConst.BUSINESS}}">{{basicInformationType.BUSINESS}}</label>
+
+        <input type="radio" class="form-check-input"
+               formControlName="type"
+               id="{{basicInformationTypeConst.CORPORATE}}" [value]="basicInformationTypeConst.CORPORATE"
+               name="type">
+        <label class="form-check-label m-left-5p"
+               for="{{basicInformationTypeConst.CORPORATE}}">{{basicInformationType.CORPORATE}}</label>
+      </div>
+
+      <div class="d-flex flex-row flex-wrap justify-content-between w-100-p"
+           formArrayName="casCustomerIdentificationDTOList">
+        <ng-container *ngFor="let item of nonFinacleCustomerForm.get('casCustomerIdentificationDTOList')['controls'];
+           let i = index;"
+                      [formGroupName]="i">
+          <div class="md-form width-30 m-top-12px">
+            <input mdbValidate
+                   type="text"
+                   id="'{{customerIdentificationType[item.value.identificationType]}}'"
+                   maxlength="200"
+                   formControlName="identificationNumber"
+                   class="form-control"
+                   mdbInput
+            >
+            <label
+              for="'{{customerIdentificationType[item.value.identificationType]}}'"> {{customerIdentificationType[item.value.identificationType]}}
+              <span *ngIf=" isToBeValidatedIdentificationType(informationType,item.value.identificationType)">*</span>
+            </label>
+          </div>
+        </ng-container>
+      </div>
+
+      <ng-container *ngIf="isPersonal()">
+        <app-personal-information-form
+          class="width-100"
+          [personalInformationForm]="nonFinacleCustomerForm.get('personalInformationForm')"
+        >
+        </app-personal-information-form>
+      </ng-container>
+
+      <ng-container *ngIf="isBusiness()">
+        <app-business-information-form
+          class="width-100"
+          [businessInformationForm]="nonFinacleCustomerForm.get('businessInformationForm')"
+        >
+        </app-business-information-form>
+      </ng-container>
+
+      <ng-container *ngIf="isCorporate()">
+        <app-corporate-information-form
+          class="width-100"
+          [corporateInformationForm]="nonFinacleCustomerForm.get('corporateInformationForm')"
+        >
+        </app-corporate-information-form>
+      </ng-container>
+
+      <div class="d-flex flex-row flex-wrap justify-content-between width-100"
+           formArrayName="casCustomerTelephoneDTOList">
+        <ng-container *ngFor="let item of nonFinacleCustomerForm.get('casCustomerTelephoneDTOList')['controls'];
+           let i = index;"
+                      [formGroupName]="i">
+          <div class="md-form width-49 m-top-12px">
+            <input mdbValidate
+                   type="text"
+                   id="'{{contactNumberType[item.value.description]}}'"
+                   maxlength="200"
+                   formControlName="contactNumber"
+                   class="form-control"
+                   mdbInput
+            >
+            <label for="'{{contactNumberType[item.value.description]}}'">Contact Number
+              ({{contactNumberType[item.value.description]}})</label>
+          </div>
+        </ng-container>
+      </div>
+
+      <div class="md-form width-49 m-top-12px">
+        <input mdbValidate
+               type="text"
+               id="emailAddress"
+               maxlength="200"
+               formControlName="emailAddress"
+               class="form-control"
+               mdbInput
+        >
+        <label for="emailAddress">Email Address </label>
+      </div>
+
+      <div class="md-form width-49 m-top-12px">
+        <input mdbValidate
+               type="text"
+               id="secondaryEmailAddress"
+               maxlength="200"
+               formControlName="secondaryEmailAddress"
+               class="form-control"
+               mdbInput
+        >
+        <label for="secondaryEmailAddress">Secondary Email Address</label>
+      </div>
+
+      <div class="d-flex flex-row flex-wrap justify-content-between w-100-p" formArrayName="casCustomerAddressDTOList">
+        <ng-container *ngFor="let item of nonFinacleCustomerForm.get('casCustomerAddressDTOList')['controls'];
+           let i = index;"
+                      [formGroupName]="i">
+
+          <ng-container *ngIf="showAddress(item.value.addressType)">
+            <div class="d-flex flex-row flex-wrap justify-content-between w-100-p">
+              <div class="width-25 m-top-12px">
+                <p class="padding-top-4"><b>{{addressType[item.value.addressType]}} Address</b></p>
+              </div>
+              <div class="md-form width-24 m-top-12px">
+                <input mdbValidate
+                       type="text"
+                       id="'{{addressType[item.value.addressType]}}'+'address1'"
+                       maxlength="200"
+                       formControlName="address1"
+                       class="form-control"
+                       mdbInput
+                >
+                <label for="'{{addressType[item.value.addressType]}}'+'address1'">Line 01</label>
+              </div>
+
+              <div class="md-form width-24 m-top-12px">
+                <input mdbValidate
+                       type="text"
+                       id="'{{addressType[item.value.addressType]}}'+'address2'"
+                       maxlength="200"
+                       formControlName="address2"
+                       class="form-control"
+                       mdbInput
+                >
+                <label for="'{{addressType[item.value.addressType]}}'+'address2'">Line 02 </label>
+              </div>
+
+              <div class="md-form width-24 m-top-12px">
+                <input mdbValidate
+                       type="text"
+                       id="'{{addressType[item.value.addressType]}}'+'city'"
+                       maxlength="200"
+                       formControlName="city"
+                       class="form-control"
+                       mdbInput
+                >
+                <label for="'{{addressType[item.value.addressType]}}'+'city'">City</label>
+              </div>
+            </div>
+          </ng-container>
+        </ng-container>
+      </div>
+
+    </div>
+  </form>
+</div>
+
+<div class="modal-footer modal-end">
+  <button
+    type="button" mdbBtn color="secondary" size="sm" class="relative waves-light" mdbWavesEffect
+    [disabled]="!isValid()"
+    (click)="createPaper()"
+  >{{actionMessage}}
+  </button>
+</div>

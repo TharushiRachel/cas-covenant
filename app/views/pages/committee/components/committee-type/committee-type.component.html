@@ -1,0 +1,41 @@
+<div mdbSticky class="d-flex flex-row justify-content-between page-header">
+    <div class="d-flex flex-row align-items-center">
+        <h5><i class="fas fa-dice-d20 header-icon"></i> Committee Type(s)</h5>
+    </div>
+
+    <div class="d-flex flex-row align-items-center">
+        <ng-container>
+            <button (click)="loadSaveType(null)" class="custom-button" mdbBtn type="button" color="default" outline="true"
+                mdbWavesEffect>Add New Type
+            </button>
+        </ng-container>
+    </div>
+</div>
+
+<ng-container *ngIf="types">
+    <div class="section table-responsive mb-15p pool-table">
+        <table class="table">
+            <thead>
+                <tr>
+                    <ng-container *ngFor="let col of tableColumns">
+                        <th scope="col">{{col}}</th>
+                    </ng-container>
+                </tr>
+            </thead>
+            <tbody>
+                <ng-container *ngFor="let type of types">
+                    <tr class="table-clickable-row" (click)="loadSaveType(type)">
+                        <td>{{type.committeeTypeName}}</td>
+                        <td>{{type.committeeDescription}}</td>
+                        <td>
+                            <span [class.color-green]="type.status === statusConst.ACT"
+                                [class.color-red]="type.status === statusConst.INA">
+                                {{status[type.status]}}
+                            </span>
+                        </td>
+                    </tr>
+                </ng-container>
+            </tbody>
+        </table>
+    </div>
+</ng-container>

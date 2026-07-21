@@ -1,0 +1,44 @@
+<form [formGroup]="commonSecurityText">
+  <div class="d-flex flex-column w-100-p mt-2">
+    <div class="d-flex flex-column">
+      <div>
+        <p style="margin: unset">Notes</p>
+      </div>
+      <div>
+        <textarea type="text"
+                  id="notes"
+                  class="form-control comment-area"
+                  maxlength="4000"
+                  placeholder="notes "
+                  formControlName="note"
+                  appTextAreaAutoHeight
+                  customHeight="30"
+                  style="height: 150px"
+                  mdbInput>
+          </textarea>
+      </div>
+    </div>
+  </div>
+
+  <div class="d-flex flex-column w-100-p mt-2">
+    <div class="d-flex flex-column">
+      <div>
+        <p style="margin: unset">Common Securities</p>
+      </div>
+      <div>
+        <textarea type="text"
+                  id="commonSecurityText"
+                  class="form-control comment-area"
+                  maxlength="4000"
+                  placeholder="Common Securities "
+                  formControlName="commonSecurityText"
+                  appTextAreaAutoHeight
+                  customHeight="50"
+                  style="height: 150px"
+                  mdbInput>
+          </textarea>
+      </div>
+    </div>
+  </div>
+
+</form>

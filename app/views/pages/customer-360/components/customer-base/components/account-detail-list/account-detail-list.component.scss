@@ -1,0 +1,65 @@
+.item-wrapper {
+  padding: 10px;
+}
+
+.item-header {
+  font-weight: bold;
+  display: inline;
+  width: fit-content;
+}
+
+table {
+  width: 100%;
+
+  th {
+    padding: 5px;
+  }
+
+  td {
+    padding: 5px;
+  }
+}
+
+.facility-paper-draft {
+  .single-item {
+    width: 200px;
+  }
+}
+
+.cft-btn {
+  padding: 7px;
+  height: 30px;
+  width: 30px;
+  border-radius: 50%;
+}
+
+.account-detail-section {
+  width: 100%;
+  background-color: white;
+
+  .info-caption {
+    width: 20%;
+  }
+
+  .info-details {
+    width: 75%;
+  }
+}
+
+.w-5 {
+  width: 5% !important;
+}
+
+.form-margin {
+  margin-top: -2%;
+}
+
+.add-bank-detail-button {
+  padding: 0.2rem 1.2rem !important;
+}
+
+.branch-name{
+  padding-bottom: unset !important;
+  height: 10px !important;
+  margin-left: 2px;
+}

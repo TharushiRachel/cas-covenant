@@ -1,0 +1,89 @@
+<mdb-card>
+  <mdb-card-header class="custom-card-header">
+    CRIB ATTACHMENTS
+  </mdb-card-header>
+  <mdb-card-body class="custom-card-body">
+    <ng-container>
+      <div class="d-flex flex-column justify-content-between w-100-p">
+        <table class="table custom-apf-table width-100">
+          <tr>
+            <th class="width-15">Crib Status</th>
+            <th class="width-15">Crib Date</th>
+            <th>Remark</th>
+            <th class="width-12 text-align-center">
+              <ng-container *ngIf="isAbleToEdit() ; else action">
+                <button class="btn btn-sm btn-secondary cta-btn" type="button" mdbWavesEffect
+                        (click)="openModalCribDocument()"
+                        mdbTooltip="Add New" placement="left">
+                  <mdb-icon fas icon="fas fa-plus" aria-hidden="true"></mdb-icon>
+                </button>
+              </ng-container>
+              <ng-template #action>
+                Actions
+              </ng-template>
+            </th>
+          </tr>
+          <ng-container *ngIf="basicInformation.afCribAttachmentDTOList.length>0; else noData;">
+            <tr *ngFor="let attachment of basicInformation.afCribAttachmentDTOList; let i = index;">
+              <td>{{cribStatus[attachment.cribStatus]}}</td>
+              <td class="text-align-center">{{attachment.cribDateStr}}</td>
+              <td>{{attachment.remark}}</td>
+              <td class="width-12 text-align-center">
+                <ng-container *ngIf="isAbleToEdit()">
+                  <ng-container *ngIf="isUploadedDiv(attachment)">
+                    <button class="btn btn-sm btn-secondary cta-btn" type="button" mdbWavesEffect
+                            (click)="update(attachment)"
+                            mdbTooltip="Edit Attachment"
+                            placement="left">
+                      <mdb-icon fas icon="pencil-alt" aria-hidden="true"></mdb-icon>
+                    </button>
+                  </ng-container>
+                </ng-container>
+                <ng-container *ngIf="isCheckedPdf(attachment)">
+                  <button class="btn btn-sm btn-success cta-btn"
+                          type="button"
+                          mdbWavesEffect
+                          (click)="onDownloadDoc($event,attachment)"
+                          mdbTooltip="View Crib Doc" placement="left">
+                    <mdb-icon fas icon="fas fa-eye" aria-hidden="true"></mdb-icon>
+                  </button>
+                </ng-container>
+                <ng-container>
+                  <button class="btn btn-sm btn-success cta-btn"
+                          type="button"
+                          mdbWavesEffect
+                          (click)="downloadDocument($event,attachment)"
+                          mdbTooltip="Download Crib Doc" placement="left">
+                    <mdb-icon fas icon="fa fa-download" aria-hidden="true"></mdb-icon>
+                  </button>
+                </ng-container>
+                <ng-container *ngIf="isAbleToEdit()">
+                  <ng-container *ngIf="isUploadedDiv(attachment)">
+                    <button class="btn btn-sm btn-danger cta-btn delete-button" type="button" mdbWavesEffect
+                            mdbTooltip="Delete Crib Doc"
+                            (click)="deactivateAFCribAttachment(attachment)"
+                            placement="left">
+                      <mdb-icon fas icon="trash-alt" aria-hidden="true"></mdb-icon>
+                    </button>
+                  </ng-container>
+                </ng-container>
+              </td>
+            </tr>
+          </ng-container>
+          <ng-template #noData>
+            <tr>
+              <th colspan="4" class="text-align-center">
+                <p class="no-data-message">
+                  No Crib Attachments
+                </p>
+              </th>
+            </tr>
+          </ng-template>
+        </table>
+      </div>
+    </ng-container>
+  </mdb-card-body>
+</mdb-card>
+
+
+<a class="download-link" #downloadLink></a>

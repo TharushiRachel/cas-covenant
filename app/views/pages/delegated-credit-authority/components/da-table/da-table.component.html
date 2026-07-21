@@ -1,0 +1,28 @@
+<div>
+<div mdbSticky class="d-flex flex-row justify-content-between page-header">
+  <div class="d-flex flex-row align-items-center">
+    <h5><i class="fas fa-newspaper header-icon"></i>Delegated Credit Authority Limits</h5>
+  </div>
+</div>
+<div class="mx-5">
+
+  <div style="margin-bottom: 5px; margin-top: 20px; text-align: left;">
+    <h5 style="font-weight: bolder;">Committee / MD</h5>
+  </div>
+
+<app-da-table-structure [mode]="type" [tableType]="committeeTable" (addNewDesignation)="addNewDesignation($event)"
+  (editRiskValues)="editRiskValues($event)" (moreOptions)="moreOptions($event)">
+</app-da-table-structure>
+
+
+
+<div style="width: 100%; height: 2px; background-color: rgba(0, 0, 0, 0.3); margin: 20px 0;"></div>
+
+<div style="margin-bottom: 10px; text-align: left;">
+  <h5 style="font-weight: bolder;">Individual</h5>
+</div>
+<app-da-table-structure [mode]="type" [tableType]="individualTable" (addNewDesignation)="addNewDesignation($event)"
+  (editRiskValues)="editRiskValues($event)" (moreOptions)="moreOptions($event)">
+</app-da-table-structure>
+</div>
+</div>

@@ -1,0 +1,13 @@
+<div class="d-flex justify-content-between">
+  <span [innerHTML]="getContent(comment) | safeHtml">
+
+</span>
+  <span>
+    <i *ngIf="isTruncated" class="fas fa-eye" [mdbTooltip]=toolTipDescription aria-hidden="true"
+       (click)="openModalViewComment()"></i>
+  </span>
+</div>
+
+<!--<span *ngIf="isTruncated">
+
+</span>-->

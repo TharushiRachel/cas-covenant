@@ -1,0 +1,70 @@
+.clear-btn {
+  //height: 38px;
+}
+
+td {
+  border: 1px solid green;
+}
+
+.status-sub {
+  padding: 10px;
+  font-size: 17px;
+  font-weight: 500;
+  font-family: "Roboto", sans-serif;
+  color: #696767;
+}
+
+nav ul {
+  height: 200px;
+  width: 18%;
+}
+nav ul {
+  overflow: hidden;
+  overflow-y: scroll;
+}
+
+.security-summary-heading {
+  font-size: 1rem;
+  font-weight: bold;
+}
+
+.topic {
+  font-weight: bold !important;
+}
+
+hr.solid {
+  border-top: 3px solid #bbb;
+}
+
+.table-content {
+  // height: auto;
+  max-height: 50vh;
+  // overflow: auto;
+  // position: relative;
+  // flex-direction: column;
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge, and Firefox */
+* {
+  scrollbar-width: none;
+  -ms-overflow-style: none; /* IE and Edge */
+}
+
+
+.header-icon {
+  padding: 5px;
+  cursor: pointer;
+  background-color: #f5f5f5;
+  border-radius: 15px;
+  width: 30px;
+  height: 30px;
+  margin: 0px 25px 0px 0px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

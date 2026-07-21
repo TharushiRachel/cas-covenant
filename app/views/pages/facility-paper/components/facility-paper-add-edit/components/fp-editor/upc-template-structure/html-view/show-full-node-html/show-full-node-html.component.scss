@@ -1,0 +1,41 @@
+@for $i from 1 through 100 {
+  .margin-left-#{$i} {
+    margin-left: $i*15px;
+  }
+}
+
+app-single-node-html {
+  display: block;
+}
+
+.editor-container {
+  padding-left: 30px;
+
+  .preview-node-title {
+    display: block;
+    border: 1px solid #e3e5ef;
+    border-radius: 5px;
+    padding: 10px;
+    //padding-left: 50px;
+    position: relative;
+
+    //&:before {
+    //  content: attr(data-level);
+    //  position: absolute;
+    //  display: flex;
+    //  align-items: center;
+    //  justify-content: center;
+    //  height: 65px;
+    //  width: 65px;
+    //  top: -10px;
+    //  left: -20px;
+    //  border-radius: 50%;
+    //  border: 7.5px solid #eef6d5;
+    //  background-color: #bada55;
+    //  color: #000;
+    //  font-size: 14px;
+    //  font-weight: 600;
+    //}
+  }
+}
+

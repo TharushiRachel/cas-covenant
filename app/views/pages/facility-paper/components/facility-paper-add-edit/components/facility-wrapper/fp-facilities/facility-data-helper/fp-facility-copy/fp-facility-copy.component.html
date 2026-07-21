@@ -1,0 +1,30 @@
+<div class="modal-header flex-center modal-topic">
+    <h4 class="modal-title w-100 font-weight-bold">{{heading}}</h4>
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="mdbModalRef.hide()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+
+<div class="modal-body mx-3 modal-detail form-margin">
+    <form class="d-flex flex-column justify-content-start align-items-start w-100-p" [formGroup]="componentForm">
+      <div class="d-flex flex-row justify-content-center  w-100-p">
+        <div class="md-form m-top-10px m-bottom-10px side-margin w-100-p">
+          <input mdbValidate required
+                 type="text" id="noOfCopies"
+                 maxlength="1" formControlName="noOfCopies"
+                 class="form-control"
+                 (keypress)="keyPressNumbers($event)"
+                 mdbInput>
+          <label for="noOfCopies">No of Copies *</label>
+          <mdb-error *ngIf="formErrors.noOfCopies.required"> noOfCopies are required</mdb-error>
+        </div>
+      </div>
+    </form>
+</div>
+
+<div class="modal-footer modal-end">
+    <button type="button" mdbBtn color="secondary" size="sm" class="relative waves-light"
+        mdbWavesEffect
+        [disabled]="componentForm.invalid" (click)="onAdd()">Copy
+    </button>
+</div>

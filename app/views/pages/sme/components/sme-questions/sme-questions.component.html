@@ -1,0 +1,60 @@
+<!-- <div class="form-container">
+  <form [formGroup]="questionsForm" (ngSubmit)="onSubmit()">
+    <div *ngFor="let question of questions" class="form-group question-block">
+      <label class="form-label question-title">{{ question.question }}</label>
+      <div class="form-check-group">
+        <div *ngFor="let answer of question.smeQuestionAnswerDTOList" class="form-check">
+          <input
+            type="radio"
+            [formControlName]="'question_' + question.smeQuestionId"
+            [value]="answer.smeAnswerId"
+            id="answer_{{ question.smeQuestionId }}_{{ answer.smeAnswerId }}"
+            class="form-check-input"
+          />
+          <label for="answer_{{ question.smeQuestionId }}_{{ answer.smeAnswerId }}" class="form-check-label">
+            {{ answer.answer }}
+          </label>
+        </div>
+      </div>
+    </div>
+    <button type="submit" class="btn btn-primary">Next</button>
+  </form>
+</div> -->
+
+
+
+<form [formGroup]="questionsForm" (ngSubmit)="onSubmit()">
+  <div *ngFor="let question of questionsAndAnswers" class="question-block">
+    <label class="question-title">{{ question.question }}</label>
+
+    <div class="answers">
+      <div *ngFor="let answer of question.smeQuestionAnswerDTOList" class="form-check">
+        <input
+          type="radio"
+          [formControlName]="'question_' + question.smeQuestionId"
+          [value]="answer.smeAnswerId"
+          id="answer_{{ question.smeQuestionId }}_{{ answer.smeAnswerId }}"
+          class="form-check-input"
+        />
+        <label for="answer_{{ question.smeQuestionId }}_{{ answer.smeAnswerId }}">
+          {{ answer.answer }}
+        </label>
+      </div>
+    </div>
+
+    <!-- Display descriptions if available -->
+    <div *ngIf="selectedDescriptions[question.smeQuestionId]?.length > 0" class="descriptions">
+      <h5>Descriptions:</h5>
+      <ul>
+        <li *ngFor="let desc of selectedDescriptions[question.smeQuestionId]">
+          {{ desc.description }}
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- <button type="submit" class="btn btn-primary">Submit</button> -->
+   <div class="sticky-submit">
+    <button type="submit" class="btn btn-primary" [disabled]="!questionsForm.valid">Submit</button>
+  </div>
+</form>

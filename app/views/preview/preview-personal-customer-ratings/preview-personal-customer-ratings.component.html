@@ -1,0 +1,60 @@
+<div class="col-sm-10  col-md-12">
+  <div class="row">
+    <form class="w-100-p pr-12p" [formGroup]="componentForm">
+          <table>
+            <tr>
+              <label class ="font-weight-bold float-left"> Customer Risk Ratings </label>
+            </tr>
+            <tr>
+              <td>
+                <div class="d-flex flex-row justify-content-start w-76-p margin-10">
+                  <label class="w-100-p margin-10" for="existingFacilitiesROA">Existing ROA (%)</label>
+                         <input style="border: 1px solid #c9c5c5" mdbValidate type="text"
+                         id="existingFacilitiesROA"
+                         maxlength="10"
+                         formControlName="existingFacilitiesROA"
+                         class="form-control"
+                         mdbInput>
+                </div>
+              </td>
+              <td>
+                <div class="d-flex flex-row justify-content-start w-76-p margin-10">
+                <label class="w-100-p margin-10" for="proposedFacilitiesROA">Proposed ROA (%)</label>
+                <input style="border: 1px solid #c9c5c5" mdbValidate type="text"
+                       id="proposedFacilitiesROA"
+                       maxlength="10"
+                       formControlName="proposedFacilitiesROA"
+                       class="form-control"
+                       mdbInput>
+                </div>
+              </td>
+              <td>
+                <div class="d-flex flex-row justify-content-start w-76-p margin-10">
+                <label class="w-100-p margin-10" for="riskGrading">Risk Grading</label>
+                <input style="border: 1px solid #c9c5c5" mdbValidate type="text"
+                       id="riskGrading"
+                       maxlength="10"
+                       formControlName="riskGrading"
+                       class="form-control"
+                       mdbInput>
+                </div>
+              </td>
+              <td>
+                <div class="d-flex flex-row justify-content-start w-76-p margin-10">
+                <label class="w-100-p margin-10" for="riskScore">Risk Score</label>
+                <input style="border: 1px solid #c9c5c5" mdbValidate type="text"
+                       id="riskScore"
+                       maxlength="10"
+                       formControlName="riskScore"
+                       class="form-control"
+                       mdbInput>
+                </div>
+              </td>
+            </tr>
+          </table>
+
+
+
+     </form>
+  </div>
+  </div>

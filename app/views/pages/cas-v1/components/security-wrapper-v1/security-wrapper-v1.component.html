@@ -1,0 +1,20 @@
+<div class="mx-0 w-100">
+  <ng-container *ngFor="let facility of facilities;let i=index;">
+    <div class="facility-card">
+
+      <div class="facility-title p-2">
+        <h4 class="topic m-0">Facility {{i+1}} : {{facility.facilityName}} {{facility.currency}} {{facility.value}}</h4>
+      </div>
+
+      <div class="row d-flex flex-column mx-0 mt-1">
+        <span class="w-100 my-1" *ngFor="let text of facility.securityTexts">
+          {{ text }}
+        </span>
+      </div>
+    </div>
+  </ng-container>
+  
+  <div class="text-center mt-4 mx-0" *ngIf="facilities.length <= 0">
+    <h5 class="text-muted">No Records Found</h5>
+</div>
+</div>

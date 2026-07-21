@@ -1,0 +1,88 @@
+<div class="modal-header modal-topic">
+  <h4 class="modal-title w-100 font-weight-bold">{{heading}}</h4>
+  <button type="button" class="close pull-right" data-dismiss="modal" aria-label="Close" (click)="mdbModalRef.hide()">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
+<div class="modal-body mx-3 modal-detail form-margin">
+  <div class="d-flex p-2 flex-column justify-content-start align-items-start w-100-p">
+
+    <form class="d-flex p-2 flex-column justify-content-start align-items-start w-100-p" [formGroup]="componentForm">
+      <div class="d-flex w-100-p p-2 justify-content-between">
+        <div class="input-group-text w-25">
+          <div class="input-group-prepend">
+            <span class="input-group-text md-addon">Loan Term</span>
+          </div>
+          <input mdbValidate type="text" id="year" formControlName="year" placeholder="Year" maxlength="5"
+                 class="form-control"
+                 mdbInput>
+          <input mdbValidate type="text" id="month" formControlName="month" placeholder="Month" maxlength="3"
+                 class="form-control"
+                 mdbInput>
+        </div>
+        <div class="d-flex flex-row w-75">
+          <div class="md-form m-top-10px m-bottom-10px flex-fill input-gap w-50">
+            <mdb-select
+              [options]="repaymentTypeOptions"
+              formControlName="repaymentType"
+              id="repaymentType"
+              label="Repayment Type"></mdb-select>
+          </div>
+          <div class="md-form m-top-10px m-bottom-10px flex-fill input-gap w-50">
+            <mdb-select
+              [options]="paymentFrequencyOptions"
+              formControlName="paymentFrequency"
+              id="paymentFrequency"
+              label="Payment Frequency"></mdb-select>
+          </div>
+        </div>
+      </div>
+
+      <div class="d-flex w-100-p p-2">
+        <div class="md-form m-top-10px m-bottom-10px flex-fill input-gap">
+          <input mdbValidate type="text" id="paymentDetail" formControlName="paymentDetail" maxlength="200"
+                 class="form-control"
+                 mdbInput>
+          <label for="paymentDetail">Payment Installment</label>
+        </div>
+        <div class="md-form m-top-10px m-bottom-10px flex-fill input-gap">
+          <input mdbValidate type="text" id="downPayment" formControlName="downPayment" maxlength="200"
+                 class="form-control"
+                 mdbInput>
+          <label for="downPayment">Down Payment</label>
+        </div>
+        <div class="md-form m-top-10px m-bottom-10px flex-fill input-gap">
+          <input mdbValidate type="text" id="repaymentComment" formControlName="repaymentComment" maxlength="200"
+                 class="form-control"
+                 mdbInput>
+          <label for="repaymentComment">Comment</label>
+        </div>
+      </div>
+    </form>
+
+  </div>
+</div>
+
+<div class="modal-footer modal-end">
+  <ng-container *ngIf="!content.isPreviewMode">
+    <ng-container *appHasAnyPrivilege="masterDataPrivilege.ICAS_SETTINGS_FACILITY_PAPER_EDIT">
+      <div class="repayment-Submit">
+        <ng-container *ngIf="isNewForm">
+          <button type="button" mdbBtn color="info" size="sm" mdbWavesEffect
+                  [disabled]="!isValid() || !isDirty()"
+                  (click)="submit()">Save
+          </button>
+        </ng-container>
+
+        <ng-container *ngIf="!isNewForm">
+          <button type="button" mdbBtn color="info" size="sm" mdbWavesEffect
+                  [disabled]="!isValid() || !isDirty()"
+                  [hidden]="isNewForm"
+                  (click)="submit()">Update
+          </button>
+        </ng-container>
+      </div>
+    </ng-container>
+  </ng-container>
+</div>

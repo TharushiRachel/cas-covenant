@@ -1,0 +1,17 @@
+<div
+  (click)="loadPageData()"
+  class="box-item-wrapper status-draft col-sm-2 display-flex flex-column jc-center ai-center"
+  [ngClass]="'status-' + status"
+  [class.selected]="this.status == this.selectedStatus"
+>
+  <span class="word">
+    {{ acaeDashboardStatus[status] }}
+  </span>
+  <span class="count">
+    <app-animated-counter [digit]="count" [duration]="500">
+    </app-animated-counter>
+  </span>
+</div>
+<ng-container *ngIf="this.status == this.selectedStatus">
+  <div class="selected-indicator" [ngClass]="'status-' + status"></div>
+</ng-container>

@@ -1,0 +1,68 @@
+<mdb-tabset #staticTabs [buttonClass]="'nav md-pills pills-secondary mb-3'" [contentClass]="'card'">
+  <!--Panel 1-->
+  <ng-container>
+    <mdb-tab heading="General">
+      <table>
+        <thead>
+        <tr>
+          <th>
+
+          </th>
+          <th>
+
+          </th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let recipient of kalyptoData['kalyptoRatingEvalDTO'] | keyvalue">
+          <td>
+            {{recipient.key}}
+          </td>
+          <td>
+            : {{recipient.value}}
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </mdb-tab>
+    <!--Panel 2-->
+    <mdb-tab *ngFor="let tab of kalyptoData['kalyptoRatingFormatDTOS']" heading="{{ tab.format.name }}">
+      <div class="table-responsive">
+        <table class="table">
+          <thead>
+          <tr>
+            <th class="table-header" scope="col">
+              Ratio
+            </th>
+            <th class="table-header" scope="col" *ngFor="let period of kalyptoData['kalyptoRatingPeriodDTOS']"
+                [innerHTML]="period.headerText | safeHtml">
+            </th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let row of tab.format.rows">
+            <td>
+              {{row.name}}
+            </td>
+            <ng-container *ngFor="let periodData of kalyptoData['kalyptoRatingPeriodDataDTOS']">
+
+              <!--  <ng-container *ngFor="let time of kalyptoData['Kalypto.Rating.Period']">
+                  <ng-container *ngIf="periodData['period ']">
+                  <ng-container *ngIf="time.periodId == periodData['period '].period_id">-->
+
+              <ng-container *ngFor="let param of periodData['period'].params">
+                <td *ngIf="param.parameter_id== row.parameter_id">
+                  {{getParamValue(param)}}
+                </td>
+              </ng-container>
+              <!--  </ng-container>
+              </ng-container>
+            </ng-container>-->
+            </ng-container>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </mdb-tab>
+  </ng-container>
+</mdb-tabset>

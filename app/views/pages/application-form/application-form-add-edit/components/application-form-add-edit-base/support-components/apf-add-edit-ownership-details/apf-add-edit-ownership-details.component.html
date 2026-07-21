@@ -1,0 +1,150 @@
+<div class="modal-header modal-topic">
+  <h4 class="modal-title w-100 font-weight-bold">
+    Ownership Details
+  </h4>
+  <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="mdbModalRef.hide()">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
+<div class="modal-body mx-3 modal-detail form-margin">
+  <form [formGroup]="ownershipDetailsForm" class="width-100">
+
+    <div class="d-flex flex-row justify-content-between width-100 m-bottom-10px">
+      <div class="md-form width-50 m-top-12px">
+        <input mdbValidate
+               type="text"
+               id="name"
+               maxlength="200"
+               formControlName="name"
+               class="form-control"
+               mdbInput
+        >
+        <label for="name">Name *</label>
+      </div>
+
+      <div class="md-form width-50 m-top-12px">
+        <input mdbValidate
+               type="text"
+               id="address"
+               maxlength="200"
+               formControlName="address"
+               class="form-control"
+               mdbInput
+        >
+        <label for="address">Address</label>
+      </div>
+    </div>
+
+    <div class="d-flex flex-row justify-content-between width-100 m-bottom-10px">
+      <div class="md-form width-50">
+        <mdb-select
+          [options]="identityOptionSelect"
+          formControlName="identificationType"
+          class="m-top-7px"
+          id="identificationType"
+          label="Identification Type">
+        </mdb-select>
+      </div>
+
+      <div class="md-form width-50 m-top-12px">
+        <input mdbValidate
+               type="text"
+               id="identificationNumber"
+               maxlength="200"
+               formControlName="identificationNumber"
+               class="form-control"
+               mdbInput
+        >
+        <label for="identificationNumber">Identification Number</label>
+      </div>
+    </div>
+
+    <div class="d-flex flex-row justify-content-between width-100 m-bottom-10px">
+      <div class="md-form width-50">
+        <mdb-date-picker class="form-control"
+                         id="dateOfBirthStr"
+                         formControlName="dateOfBirthStr"
+                         [options]="myDatePickerOptionsForBirthDay"
+                         [inline]="true"
+                         label="Date of Birth *"
+        ></mdb-date-picker>
+      </div>
+
+      <div class="md-form width-50">
+        <mdb-select
+          [options]="optionsCivilStatusSelect"
+          formControlName="civilStatus"
+          id="civilStatus"
+          class="m-top-7px"
+          label="Civil Status *"
+        ></mdb-select>
+      </div>
+    </div>
+
+    <div class="d-flex flex-row justify-content-between width-100 m-bottom-10px">
+      <div class="md-form width-100 m-top-12px">
+        <input mdbValidate
+               type="text"
+               id="contactNo"
+               maxlength="200"
+               formControlName="contactNo"
+               class="form-control"
+               mdbInput
+        >
+        <label for="contactNo">Contact No</label>
+      </div>
+
+      <div class="md-form width-100">
+        <mdb-select
+          class="m-top-7px"
+          id="constitutionType"
+          [options]="optionsConstitutionTypeSelect"
+          formControlName="constitutionType"
+          label="Constitution"
+        >
+        </mdb-select>
+      </div>
+    </div>
+
+    <div class="d-flex flex-row justify-content-between width-100 m-bottom-10px">
+      <div class="md-form width-50 m-top-12px">
+        <input mdbValidate
+               type="text"
+               id="shareHolding"
+               maxlength="200"
+               formControlName="shareHolding"
+               class="form-control"
+               mdbInput
+        >
+        <label for="shareHolding">Share Holding</label>
+      </div>
+      <div class="md-form width-50">
+        <mdb-select
+          id="creditCard"
+          class="m-top-7px"
+          [options]="creditCardOptionsYesNoSelect"
+          formControlName="creditCard"
+          label="Credit Card"
+        >
+        </mdb-select>
+      </div>
+    </div>
+
+  </form>
+</div>
+
+<div class="modal-footer modal-end">
+  <button
+    type="button" mdbBtn color="secondary" size="sm" class="relative waves-light" mdbWavesEffect
+    [hidden]="ownershipDetails.ownershipDetailsID"
+    (click)="saveOwnerShipDetails()"
+  >ADD
+  </button>
+  <button
+    type="button" mdbBtn color="secondary" size="sm" class="relative waves-light" mdbWavesEffect
+    [hidden]="!ownershipDetails.ownershipDetailsID"
+    (click)="saveOwnerShipDetails()"
+  >Update
+  </button>
+</div>

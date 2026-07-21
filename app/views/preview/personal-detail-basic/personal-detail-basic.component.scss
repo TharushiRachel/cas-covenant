@@ -1,0 +1,55 @@
+.personal-detail-section {
+  width: 100%;
+  background-color: white;
+}
+
+.info-caption {
+  width: 35% !important;
+}
+
+.info-caption-basic-details {
+  margin: 10px;
+  width: 22%;
+}
+
+@media screen and (min-width: 480px) {
+  .info-caption-basic-details {
+    width: 150px;
+  }
+}
+
+.border {
+  border-width: thin;
+  border-color: #ced4da;
+}
+
+.jumbo-pad {
+  padding: 0.25rem;
+}
+
+mdb-card-title {
+  font-weight: bold;
+  font-size: 2ch;
+  margin-left: 100px;
+}
+
+.tile-background {
+  background-color: #dcdfe2f2;
+}
+
+.info-details {
+  width: 60% !important;
+  font-weight: bold !important;
+}
+
+.info-pad {
+  padding: 0.5rem;
+}
+
+.w-5 {
+  width: 5% !important;
+}
+
+
+
+

@@ -1,0 +1,151 @@
+<div class="container">
+	<div class="da-edit-modal">
+		<div class="modal-header modal-topic">
+			<h4 class="modal-title w-100 font-weight-bold">{{heading}}</h4>
+			<button type="button" class="close pull-right" data-dismiss="modal" aria-label="Close"
+				(click)="mdbModalRef.hide()">
+				<span aria-hidden="true">&times;</span>
+			</button>
+		</div>
+
+		<div class="d-flex justify-content-between align-items-center" style="margin-top: 25px;">
+			<div *ngIf="!isNewDesignation" [ngClass]="{'current-designation-style': !isNewDesignation}" >
+				Designation : {{currentDesignation}}
+			</div>
+			<div class="text-right" *ngIf="!isNewDesignation">
+				(In Rs’Mn)
+			</div>
+
+		</div>
+		<div class="designation-add-dropdown" *ngIf="isNewDesignation">
+			<div class="d-flex w-100-p flex-row">
+				<div class="md-form m-top-10px m-bottom-10px w-45-p">
+					<div class="modalbody">
+						<select (change)="onDesignationChange($event)">
+							<option value="" disabled selected>Select Designation</option>
+							<option *ngFor="let designation of designations">
+								{{ designation.DESIGNATION_DESCRIPTION }}
+							</option>
+						</select>
+					</div>
+				</div>
+			</div>
+			<span *ngIf="designationError" class="error">Please Select a Designation</span>
+		</div>
+
+		<div class="modal-body mx-3 modal-detail form-margin">
+			<div class="d-flex p-2 flex-column justify-content-start align-items-start w-100-p">
+
+				<div class="table-responsive">
+					<table class="da-table">
+
+						<tr *ngFor="let headingRow of tableHeadings.tableHeadings">
+
+							<ng-container *ngIf="!headingRow.subHeadings">
+								<th [attr.colspan]="headingRow.colSpan" [attr.rowspan]="headingRow.rowSpan">{{
+									headingRow.label }}</th>
+							</ng-container>
+							<ng-container *ngIf="headingRow.subHeadings">
+								<th [attr.colspan]="headingRow.colSpan" [attr.rowspan]="headingRow.rowSpan">{{
+									headingRow.label }}</th>
+								<th *ngFor="let subHeading of headingRow.subHeadings"
+									[attr.colspan]="subHeading.colSpan" [attr.rowspan]="subHeading.rowSpan">{{
+									subHeading.label }} </th>
+							</ng-container>
+						</tr>
+
+						<tbody>
+							<tr>
+
+								<td style=" border: none ; "> </td>
+								<ng-container *ngFor="let headingRow of tableHeadings.tableHeadings">
+									<ng-container *ngFor="let subHeading of headingRow.subHeadings">
+										<ng-container *ngIf="subHeading.subId">
+
+											<td [attr.colspan]="subHeading.colSpan" [attr.rowspan]="subHeading.rowSpan"
+												*ngIf="type !='more'">
+												<input style="width: 100%;" [min]="minValue" [step]="0.01"
+													(keydown)="preventNegative($event)" type="number"
+													[ngModel]="getCellValue(subHeading.subId , subHeading.label) "
+													(ngModelChange)="onColumnValueChange($event ,subHeading.subId, subHeading.label)"
+													pattern="^\d+(\.\d{0,2})?$"
+													(input)="limitDecimalPlaces($event)" />
+											</td>
+
+											<td [attr.colspan]="subHeading.colSpan" [attr.rowspan]="subHeading.rowSpan"
+												*ngIf="type =='more'" style="width: 100px;"> <span>
+													{{getCellValue(subHeading.subId , subHeading.label, 'master') |
+													number:'1.0-2'}}
+												</span> </td>
+
+										</ng-container>
+									</ng-container>
+								</ng-container>
+							</tr>
+							<tr *ngIf="type =='more'">
+
+								<td style=" border: none ; "> </td>
+								<ng-container *ngFor="let headingRow of tableHeadings.tableHeadings">
+									<ng-container *ngFor="let subHeading of headingRow.subHeadings">
+										<ng-container *ngIf="subHeading.subId">
+
+											<td [attr.colspan]="subHeading.colSpan" [attr.rowspan]="subHeading.rowSpan"
+												[ngClass]="{ 'highlighted': getCellValue(subHeading.subId, subHeading.label, 'master') != getCellValue(subHeading.subId, subHeading.label, 'temp') }">
+												<span>
+													{{getCellValue(subHeading.subId , subHeading.label, 'temp') |
+													number:'1.0-2'}}
+												</span>
+											</td>
+										</ng-container>
+									</ng-container>
+								</ng-container>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<br>
+				<span *ngIf="riskValueZeroError" class="error">Please Insert at least one risk value</span>
+				<span *ngIf="maxRiskValueError" class="error">One or more column has exceed the max risk value</span>
+			</div>
+		</div>
+		<div class="modifiyDetails" *ngIf="type =='more'">
+			by {{modifiyDetails.modifiedBy === 'unknown' ? 'Unknown' : modifiyDetails.modifiedBy}}
+			on {{modifiyDetails.modifiedDate === 'unknown' ? 'Not mentioned' : (modifiyDetails.modifiedDate |
+			date:'MM/dd/yyyy')}}
+			at {{modifiyDetails.modifiedDate === 'unknown' ? 'Not mentioned' :(modifiyDetails.modifiedDate |
+			date:'hh:mm:ss
+			a')}}
+		</div>
+		<div class="modal-footer modal-end" style="margin-bottom: 10px;">
+			<div class="action-buttons d-flex flex-row" *ngIf="type =='more'">
+
+				<button (click)="approveRejectButton('approve')" class="btn btn-success" mdbTooltip="APPROVE"
+					placement="left" style="margin: 5px;">
+					APPROVE
+				</button>
+				<button (click)="approveRejectButton('reject')" class="btn btn-danger" mdbTooltip="REJECT"
+					placement="left" style="margin: 5px;">
+					REJECT
+				</button>
+
+			</div>
+			<div class="repayment-Submit" *ngIf="type !='more' && isNewDesignation !=true" style="margin-bottom: 10px;">
+				<button type="button" mdbBtn color="yellow" size="sm" mdbWavesEffect (click)="clear()">
+					Clear
+				</button>
+			</div>
+			<div class="repayment-Submit" *ngIf="type !='more' && isNewDesignation !=true" style="margin-bottom: 10px;">
+				<button type="button" mdbBtn color="info" size="sm" mdbWavesEffect (click)="update()"
+					[disabled]="maxRiskValueError">Save
+				</button>
+			</div>
+
+			<div class="repayment-Submit" *ngIf="type !='more' && isNewDesignation==true " style="margin-bottom: 10px;">
+				<button type="button" mdbBtn color="info" size="sm" mdbWavesEffect (click)="addDesignation()"
+					[disabled]="maxRiskValueError">Add
+				</button>
+			</div>
+		</div>
+
+	</div>
+</div>

@@ -1,0 +1,14 @@
+<div class="container-fluid modal-scrollable">
+    <div class="modal-header">
+        <h5 class="modal-title">Deposit Details</h5>
+        <button type="button" class="close" aria-label="Close" (click)="modalRef.hide()">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <app-customer-deposits-details [customerDetails]="customerDetails"></app-customer-deposits-details>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="modalRef.hide()">Close</button>
+    </div>
+</div>

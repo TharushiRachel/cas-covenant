@@ -1,0 +1,30 @@
+.comment-area {
+  border: 1px solid #9d9ea0;
+  height: 80px;
+}
+
+.item-box {
+  border-width: 2px;
+  width: 100%;
+}
+
+
+.custom-officer-approval-table {
+
+  width: 100%;
+
+  tr {
+    text-align: center;
+  }
+
+  tr td input {
+    text-align: center !important;
+    border-bottom: 1px solid #9d9ea0 !important;
+    width: 60% !important;
+  }
+
+}
+
+p {
+  margin: auto;
+}

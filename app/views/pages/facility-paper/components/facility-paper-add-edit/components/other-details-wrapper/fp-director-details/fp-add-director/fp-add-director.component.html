@@ -1,0 +1,202 @@
+<div class="modal-header flex-center modal-topic">
+  <h4 *ngIf="isNewDirector() && isDirector" class="modal-title w-100 font-weight-bold">Add Director Details</h4>
+  <h4 *ngIf="!isNewDirector() && isDirector" class="modal-title w-100 font-weight-bold">Edit Director</h4>
+  <h4 *ngIf="isNewShareholder() && isShareholder" class="modal-title w-100 font-weight-bold">Add Shareholder Details</h4>
+  <h4 *ngIf="!isNewShareholder() && isShareholder" class="modal-title w-100 font-weight-bold">Edit Shareholder</h4>
+  <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="mdbModalRef.hide()">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
+<div class="modal-body mx-3 modal-detail form-margin" *ngIf="isNewDirector() && isNewShareholder()">
+  <div class="d-flex flex-row justify-content-left  w-100-p">
+    <div class="md-form m-top-10px m-bottom-10px side-margin w-25-p">
+      <mdb-select mdbValidate
+            class="form-control"
+            required
+            label="Select Director/Shareholder"
+            [options]="directorShareholderList"
+            (selected)="onChangeDirectorShareholder($event)" 
+            [disabled] = "!isNewDirector() || !isNewShareholder()"      
+      >
+      </mdb-select>
+    </div>
+  </div>
+</div>
+
+<div class="modal-body mx-3 modal-detail form-margin" *ngIf="isDirector">
+  <form class="d-flex flex-column justify-content-start align-items-start w-100-p" [formGroup]="componentForm">
+
+    <div class="d-flex flex-row justify-content-center  w-100-p">
+      <div class="md-form m-top-10px m-bottom-10px side-margin w-75-p">
+        <input mdbValidate required
+               type="text" id="directorName"
+               maxlength="200" formControlName="directorName"
+               class="form-control"
+               mdbInput>
+        <label for="directorName">First Name *</label>
+        <mdb-error *ngIf="formErrors.directorName.required"> Director Name is required</mdb-error>
+      </div>
+
+      <div class="md-form m-top-10px m-bottom-10px side-margin w-75-p">
+        <input mdbValidate
+               type="text"
+               id="fullName"
+               maxlength="200"
+               formControlName="fullName"
+               class="form-control"
+               mdbInput>
+        <label for="fullName">Last Name</label>
+      </div>
+    </div>
+
+    <div class="d-flex flex-row justify-content-start  w-100-p">
+      <div class="md-form m-top-10px m-bottom-10px side-margin w-75-p">
+        <mdb-date-picker class="form-control"
+                         id="dateOfBirthStr"
+                         label="Date of Birth"
+                         formControlName="dateOfBirthStr"
+                         [options]="myDatePickerOptionsForBirthDay"
+                         [inline]="true"
+        ></mdb-date-picker>
+        <mdb-error class="m-top-8px" *ngIf="formErrors.dateOfBirthStr.required">required</mdb-error>
+      </div>
+      <div class="md-form m-top-10px m-bottom-10px side-margin w-75-p">
+        <blockquote class="blockquote" *ngIf="calculatedAge > 0">
+          <div class="d-flex flex-row justify-content-start">
+            <span class="ml-5 mr-2">Age</span>
+            <span class="mr-2">:</span>
+            <span>{{calculatedAge}}</span>
+          </div>
+        </blockquote>
+      </div>
+    </div>
+
+    <div class="d-flex flex-row justify-content-center  w-100-p">
+      <div class="md-form m-top-10px m-bottom-10px side-margin w-75-p">
+        <input mdbValidate
+                type="text"
+                id="nic"
+                maxlength="50"
+                formControlName="nic"
+                class="form-control"
+                mdbInput>
+        <label for="nic">NIC</label>
+        <mdb-error class="m-top-8px" *ngIf=" !formErrors.nic.required && formErrors.nic.isNICError">Invalid</mdb-error>
+        <mdb-error class="m-top-8px" *ngIf="formErrors.nic.required">Required</mdb-error>
+      </div>
+      <div class="md-form m-top-10px m-bottom-10px side-margin w-75-p">
+        <input mdbValidate
+             type="text"
+             id="shareHolding"
+             maxlength="50"
+             formControlName="shareHolding"
+             class="form-control"
+             mdbInput>
+        <label for="shareHolding">Share Holding (%)</label>
+      </div>
+    </div>
+
+    <!-- <div class="d-flex flex-row justify-content-start  w-100-p">
+      <div class="md-form m-top-10px m-bottom-10px side-margin w-49-5-p">
+        <mdb-select [options]="optionsCivilStatusSelect"
+                    formControlName="civilStatus"
+                    id="civilStatus"
+                    placeholder="Civil Status"
+                    [allowClear]="true">
+        </mdb-select>
+        <label for="civilStatus">Civil Status</label>
+      </div>
+
+      
+
+
+      <div class="md-form m-top-14px m-bottom-10px side-margin width-15">
+        <input mdbValidate
+               type="text"
+               id="shareHolding"
+               maxlength="50"
+               formControlName="shareHolding"
+               class="form-control"
+               mdbInput>
+        <label for="shareHolding">Share Holding (%)</label>
+      </div>
+    </div> -->
+
+    <!-- <div class="d-flex flex-row justify-content-start  w-100-p">
+      <div class="md-form m-top-10px m-bottom-10px side-margin w-100-p">
+        <textarea mdbValidate
+                  type="text"
+                  id="address"
+                  maxlength="200"
+                  formControlName="address"
+                  class="form-control border-bottom"
+                  mdbInput>
+        </textarea>
+        <label for="address">Address</label>
+      </div>
+    </div> -->
+
+
+  </form>
+</div>
+
+<div class="modal-body mx-3 modal-detail form-margin" *ngIf="isShareholder">
+  <form class="d-flex flex-column justify-content-start align-items-start w-100-p" [formGroup]="shareholderComponentForm">
+
+  <div class="d-flex flex-row justify-content-center  w-100-p">
+      <div class="md-form m-top-10px m-bottom-10px side-margin w-75-p">
+          <input mdbValidate required
+                  type="text" id="shareHolderName"
+                  maxlength="200" formControlName="shareHolderName"
+                  class="form-control"
+                  mdbInput>
+          <label for="shareHolderName">Shareholder Name *</label>
+          <mdb-error *ngIf="formErrors.shareHolderName.required"> Shareholder Name is required</mdb-error>
+      </div>
+
+      <div class="md-form m-top-10px m-bottom-10px side-margin w-75-p">
+          <input mdbValidate
+                  type="text"
+                  id="shareHolding"
+                  maxlength="50"
+                  formControlName="shareHolding"
+                  class="form-control"
+                  mdbInput>
+          <label for="shareHolding">Share Holding (%) *</label>
+          <mdb-error *ngIf="formErrors.shareHolding.required"> ShareHolding is required</mdb-error>
+      </div>
+  </div>
+
+  </form>
+</div>
+
+<div class="modal-footer modal-end" *ngIf="isDirector">
+  <button *ngIf="!isNewDirector()" type="button" mdbBtn color="secondary" size="sm" class="relative waves-light"
+          mdbWavesEffect
+          (click)="onRemoveDirector()">Remove
+  </button>
+  <button *ngIf="!isNewDirector()" type="button" mdbBtn color="secondary" size="sm" class="relative waves-light"
+          mdbWavesEffect
+          [disabled]="componentForm.invalid || !componentForm.dirty" (click)="onAdd()">Update
+  </button>
+  <button *ngIf="isNewDirector()" type="button" mdbBtn color="secondary" size="sm" class="relative waves-light"
+          mdbWavesEffect
+          [disabled]="componentForm.invalid" (click)="onAdd()">Save
+  </button>
+</div>
+
+<div class="modal-footer modal-end" *ngIf="isShareholder">
+  <button *ngIf="!isNewShareholder()" type="button" mdbBtn color="secondary" size="sm" class="relative waves-light"
+          mdbWavesEffect
+          (click)="onRemoveShareholder()">Remove
+  </button>
+  <button *ngIf="!isNewShareholder()" type="button" mdbBtn color="secondary" size="sm" class="relative waves-light"
+          mdbWavesEffect
+          [disabled]="shareholderComponentForm.invalid || !shareholderComponentForm.dirty" (click)="onAddShareholder()">Update
+  </button>
+  <button *ngIf="isNewShareholder()" type="button" mdbBtn color="secondary" size="sm" class="relative waves-light"
+          mdbWavesEffect
+          [disabled]="shareholderComponentForm.invalid" (click)="onAddShareholder()">Save
+  </button>
+</div>

@@ -1,0 +1,210 @@
+<div class="d-flex p-2 flex-column justify-content-start align-items-start w-100-p jumbotron" >
+  
+  <ng-container>
+    <app-fp-credit-risk-comment-documents
+      [facilityPaper]="facilityPaper"
+      [isLoading] = "isLoading"
+      [isAbleToEditRiskComment] = "!isAbleToEditRiskComment(activeRiskComment)"
+      class="w-100-p">
+    </app-fp-credit-risk-comment-documents>
+  </ng-container>
+  
+  <div class="d-flex flex-row mb-3 w-100-p flex-wrap">
+    <label class="mr-auto p-2 font-weight-bold">Previous Risk Opinion and Reply</label>
+
+    <div *ngIf="isLoading || isLoad">
+      <ng-container *appHasAnyPrivilege="masterDataPrivilege.ICAS_SETTINGS_FACILITY_PAPER_CREDIT_RISK_COMMENT_ADD">
+        <ng-container *ngIf="isEqualLoginAndAssignUser() && !isApproveStatus() && !isRejected()">
+          <ng-container *ngIf="!isAbleToEditRiskComment(activeRiskComment)">
+            <button mdbBtn
+                    type="button"
+                    mdbTooltip="Add Risk Comment"
+                    class="action-button-padding btn-outline-info btn-sm"
+                    outline="true"
+                    mdbWavesEffect
+                    (click)="openAddCommentModal($event,{})">
+              <span>Add Risk Opinion</span>
+            </button>
+          </ng-container>
+        </ng-container>
+      </ng-container>
+
+
+    </div>
+
+
+    <div class="history-sec" *ngIf="isLoading">
+      <button _ngcontent-moi-c12="" class=" btn btn-light cft-btn px-sm-1  history-button" data-placement="bottom" data-toggle="tooltip" mdbbtn="" mdbwaveseffect=""  type="button" ng-reflect-size="sm" mdbTooltip="Previous Risk Opinions"
+              (click) = "openDialog()" >
+          <span _ngcontent-moi-c12="">
+            <i class="fa fa-history fa-2x" aria-hidden="true"></i>
+          </span>
+      </button>
+    </div>
+
+  </div>
+
+
+
+  <div class="w-100-p" >
+    <div class="table-responsive" *ngIf="previousLockedComments.length>0">
+      <table class="table">
+        <thead>
+        <tr>
+          <th scope="col">Opinion Created by</th>
+          <th scope="col" class="">Created On</th>
+          <th scope="col">Opinion Modified by</th>
+          <th scope="col" class="">Modified On</th>
+          <th scope="col" class="text-align-center">View</th>
+        </tr>
+        </thead>
+        <tbody>
+        <ng-container *ngFor="let item of previousLockedComments">
+          <tr>
+            <td class="vertical-align-middle">{{item.createdUserName || '-'}}</td>
+            <td class="vertical-align-middle">{{item.createdDateStr || '-'}}</td>
+            <td class="vertical-align-middle">{{item.modifiedUserName || '-'}}</td>
+            <td class="vertical-align-middle">{{item.modifiedDateStr || '-'}}</td>
+            <td class="text-align-center">
+              <button class="btn btn-sm btn-secondary cta-btn margin-unset" type="button" mdbWavesEffect
+                      mdbTooltip="View Risk Opinion"
+                      (click)="view(item)"
+                      placement="left">
+                <mdb-icon fas icon="file-alt" aria-hidden="true"></mdb-icon>
+              </button>
+            </td>
+          </tr>
+        </ng-container>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="w-100-p" *ngIf="activeRiskComment">
+    <ng-container>
+      <div class="active-risk-Comment-body">
+        <div class="d-flex flex-row mb-3 w-100-p flex-wrap">
+          <span class="risk-opinion-topic">Risk Opinion</span>
+          <ng-container *appHasAnyPrivilege="masterDataPrivilege.ICAS_SETTINGS_FACILITY_PAPER_CREDIT_RISK_COMMENT_ADD">
+            <ng-container
+              *ngIf="isEqualLoginAndAssignUser() && !isApproveStatus() && !isRejected() && isAbleToEditRiskComment(activeRiskComment)">
+              <button class="button-for-icon">
+                <mdb-icon
+                  class="risk-edit"
+                  [mdbTooltip]="'Edit'"
+                  fas icon="pencil-alt"
+                  aria-hidden="true"
+                  (click)="openAddCommentModal($event,activeRiskComment,activeRiskComment.creditRiskComment)">
+                </mdb-icon>
+              </button>
+            </ng-container>
+          </ng-container>
+
+          <ng-container
+            *ngIf="isEqualLoginAndAssignUser() && isAbleToAddReplyOnRiskComment(activeRiskComment) && !isApproveStatus() && !isRejected()">
+            <button class="button-for-icon">
+              <mdb-icon
+                class="risk-edit"
+                [mdbTooltip]="'Add your reply to the opinion'"
+                fas icon="reply"
+                aria-hidden="true"
+                (click)="openAddReplyModal($event,activeRiskComment.fpCreditRiskReplyDTO ? activeRiskComment.fpCreditRiskReplyDTO : {} ,activeRiskComment.fpCreditRiskReplyDTO ? activeRiskComment.fpCreditRiskReplyDTO.replyComment ? activeRiskComment.fpCreditRiskReplyDTO.replyComment : '':'')">
+              </mdb-icon>
+            </button>
+          </ng-container>
+        </div>
+
+    
+        <div id="printContentDiv"
+          [innerHTML]="getCommentWithPreTag(activeRiskComment.creditRiskComment) | safeHtml">
+        </div>
+        <div>
+          <table class="width-100">
+            <thead>
+            <tr>
+              <th>Created by</th>
+              <th>
+                <span *ngIf="activeRiskComment.modifiedUserName">
+                  Updated by
+                </span>
+              </th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+              <td class="width-16">{{activeRiskComment.createdUserName || '-'}}
+                : {{activeRiskComment.createdDateStr || '-'}}</td>
+              <td class="width-16">
+                  <span *ngIf="activeRiskComment.modifiedUserName">
+                {{activeRiskComment.modifiedUserName || '-'}}
+                    : {{activeRiskComment.modifiedDateStr || '-'}}
+                </span>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+        
+
+      </div>
+    </ng-container>
+  </div>
+  <br>
+
+  <div class="w-100-p risk-reply-div" *ngIf="creditRiskReply">
+    <ng-container>
+      <div class="risk-reply-body">
+        <div class="d-flex flex-row mb-3 w-100-p flex-wrap">
+          <span class="risk-opinion-topic">Risk Reply</span>
+          <ng-container *ngIf="isEqualLoginAndAssignUser() && isAbleToEditRiskReply(creditRiskReply) && !isApproveStatus() && !isRejected()">
+            <button class="button-for-icon">
+              <mdb-icon
+                class="risk-edit"
+                fas icon="pencil-alt"
+                [mdbTooltip]="'Edit Reply'"
+                aria-hidden="true"
+                (click)="openAddReplyModal($event,creditRiskReply,creditRiskReply.replyComment)">
+              </mdb-icon>
+            </button>
+          </ng-container>
+        </div>
+
+        <div
+          [innerHTML]="getCommentWithPreTag(creditRiskReply ? creditRiskReply.replyComment : '') | safeHtml">
+        </div>
+
+        <div>
+          <table class="width-100">
+            <thead>
+            <tr>
+              <th>Created by</th>
+              <th>
+                <span *ngIf="creditRiskReply.modifiedUserName">
+                  Updated by
+                </span>
+              </th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+              <td class="width-16">{{creditRiskReply.createdUserName || '-'}}
+                : {{creditRiskReply.createdDateStr || '-'}}</td>
+              <td class="width-16">
+                 <span *ngIf="creditRiskReply.modifiedUserName">
+                {{creditRiskReply.modifiedUserName || '-'}}
+                   : {{creditRiskReply.modifiedDateStr || '-'}}
+                </span>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </ng-container>
+  </div>
+
+</div>
+<app-scroll-to-top></app-scroll-to-top>
+
+
+

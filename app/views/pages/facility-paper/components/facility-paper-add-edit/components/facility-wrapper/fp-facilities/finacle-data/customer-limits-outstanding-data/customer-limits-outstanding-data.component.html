@@ -1,0 +1,102 @@
+<div class="modal-header modal-topic">
+    <h4 class="modal-title w-100 font-weight-bold">Existing Limits And Outstanding Amounts</h4>
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="mdbModalRef.hide()">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<div class="scrollable-content">
+    <div class="modal-body mx-3 modal-detail form-margin">    
+        <div class="container">
+            <ng-container *ngIf="showTableLimitsAndOutstandingTable()">
+                <div>Select the account</div>
+
+                <app-tabs (onTabSelect)="setTabIndex($event)" [selectedTabIndex]="selectedIndex" class="w-100-p">
+                    <ng-container *ngFor="let tableType of tableTypes; let i =index">
+            
+                      <app-tab [active]="i == selectedIndex"                
+                               [tabTitle]="tableType">       
+                      </app-tab>
+            
+                    </ng-container>
+                  </app-tabs>
+
+                <div class="row">
+                    <div class="col table-container">
+                        <table class="table table-bordered">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th class="text-align-center font-weight-bold" *ngIf="selectedType === tableTypes[0] ">Account Number</th>
+                                    <th class="text-align-center font-weight-bold" *ngIf="selectedType === tableTypes[1] ">Limit ID</th>
+                                    <th class="text-align-center font-weight-bold" *ngIf="selectedType === tableTypes[0] ">Granted/Limit Amount</th>
+                                    <th class="text-align-center font-weight-bold" *ngIf="selectedType === tableTypes[1] ">Limit Amount</th>
+                                    <th class="text-align-center font-weight-bold">Outstanding Amount</th>
+                                    <th class="text-align-center font-weight-bold">Selected Facility</th>
+                                    <th class="text-align-center font-weight-bold">Selected Account</th>
+                                </tr>
+                            </thead>
+                            <tbody>  
+                            <ng-container *ngIf="selectedType === tableTypes[0] ">  
+                                <ng-container *ngFor="let loan of loans; let i =index">         
+                                                  
+                                <tr   >
+                                    <td>{{loan.id}}</td>
+                                    <td>
+                                        <div  class="align-top-right">
+                                            {{setCurrencyFormatValue(loan.grantedAmount)}}
+                                        </div>
+                                    </td> 
+                                    <td>
+                                        <div class="align-top-right">
+                                            {{setCurrencyFormatValue(loan.outstandingAmount)}}
+                                        </div>
+                                    </td>  
+                                    <td>{{ loan.facilityDescription }}</td>
+                                    <td class="text-align-center">
+                                        <mdb-checkbox [checked]="loan.id === selectedLoanId"
+                                            (change)="onCheckboxChange(loan.id)" [disabled]="isCheckboxDisabled(loan)">
+                                        </mdb-checkbox>
+                                    </td>
+                                </tr>
+                            </ng-container>
+                            </ng-container>
+                            <ng-container *ngIf="selectedType ===  tableTypes[1] ">                               
+                                <tr *ngFor="let limit of limits" >
+                                    <td>{{limit.id}}</td>
+                                    <td>
+                                        <div  class="align-top-right">
+                                            {{setCurrencyFormatValue(limit.grantedAmount)}}
+                                        </div>
+                                    </td> 
+                                    <td>
+                                        <div class="align-top-right">
+                                            {{setCurrencyFormatValue(limit.outstandingAmount)}}
+                                        </div>
+                                    </td>  
+                                    <td>{{ limit.facilityDescription }}</td>
+                                    <td class="text-align-center">
+                                        <mdb-checkbox [checked]="limit.id === selectedLoanId"
+                                            (change)="onCheckboxChange(limit.id)" [disabled]="isCheckboxDisabled(limit)" >
+                                        </mdb-checkbox>
+                                    </td>
+                                </tr>                              
+                            </ng-container>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <p style="color: red;" *ngIf="showAccNotSelected && !selectedLoanId">Please select an account</p>
+                <button id="accountSelectBtn" (click)="accountSelect()" class="btn btn-secondary" *ngIf="isSelectButtonShow() && (initialSelectedId !=selectedLoanId)" mdbBtn
+                    mdbWavesEffect>{{initialSelectedId && !selectedLoanId? 'Remove' : 'Select'}}</button>
+
+            </ng-container>
+
+            <ng-container *ngIf="!showTableLimitsAndOutstandingTable() || (selectedType === 'Limits' &&  !(limits.length>0))">
+                <div class="text-align-center font-weight-bold">No Data</div>
+
+            </ng-container>
+
+        </div>
+
+    </div>
+</div>
+

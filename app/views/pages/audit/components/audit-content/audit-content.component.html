@@ -1,0 +1,72 @@
+<div class="modal-header mx-5">
+  <label class="dark-grey-text font-weight-bold  flex-center">Content by {{content.dto.userName}} at {{content.dto.auditedDateTimeStr}}</label>
+  <button type="button"
+          class="close" data-dismiss="modal"
+          aria-label="Close"
+          (click)="mdbModalRef.hide()"
+  ><i class="fas fa-times" aria-hidden="true"></i>
+  </button>
+
+</div>
+<div class="modal-body mx-5">
+  <div class="single-row d-flex flex-column flex-md-row justify-content-start  justify-content-md-between">
+
+    <div class="single-row d-flex flex-column justify-content-start border ">
+      <mdb-badge class="badge-margin" size="sm" info="true">Previous</mdb-badge>
+      <div class="personal-detail-section">
+        <table class="table-responsive" mdbTable mdbTableScroll scrollY="true" maxHeight="400" bordered="true">
+          <thead>
+          <tr>
+          </tr>
+          </thead>
+          <tbody>
+          <ng-container *ngFor="let data of previousDataList| keyvalue">
+            <tr>
+              <td><label class="font-size">{{data.key}} : </label>
+                <i class="fas  mr-4 pr-3">{{data.value}}</i></td>
+            </tr>
+          </ng-container>
+          </tbody>
+        </table>
+        <!--        <ul class="list-group shadow-lg">-->
+        <!--          <li class="list-group-item " *ngFor="let data of previousDataList| keyvalue">-->
+        <!--            <label class="font-size">{{data.key}} :   </label>-->
+        <!--            <i class="fas  mr-4 pr-3">{{data.value}}</i>-->
+        <!--          </li>-->
+        <!--        </ul>-->
+      </div>
+    </div>
+
+    <div class="single-row d-flex flex-column justify-content-start border ">
+      <mdb-badge class="badge-margin" size="sm" info="true">Update</mdb-badge>
+      <div class="personal-detail-section">
+        <table class="table-responsive" mdbTable mdbTableScroll scrollY="true" maxHeight="400" bordered="true">
+          <thead>
+          <tr>
+          </tr>
+          </thead>
+          <tbody>
+          <ng-container *ngFor="let data of datatList| keyvalue">
+            <tr>
+              <td><label class="font-size">{{data.key}} : </label>
+                <i class="fas  mr-4 pr-3">{{data.value}}</i></td>
+            </tr>
+          </ng-container>
+          </tbody>
+        </table>
+        <!--        <ul class="list-group shadow-lg">-->
+        <!--          <li class="list-group-item " *ngFor="let data of previousDataList| keyvalue">-->
+        <!--            <label class="font-size">{{data.key}} :   </label>-->
+        <!--            <i class="fas  mr-4 pr-3">{{data.value}}</i>-->
+        <!--          </li>-->
+        <!--        </ul>-->
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal-footer mx-5">
+
+</div>
+
+
+

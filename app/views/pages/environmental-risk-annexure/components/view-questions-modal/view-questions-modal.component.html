@@ -1,0 +1,13 @@
+<div class="modal-header modal-topic flex-center">
+    <button type="button" class="close pull-right" aria-label="Close" (click)="onClose()">
+        <span aria-hidden="true">×</span>
+    </button>
+    <h4 class="modal-title w-100 heading-align" id="myModalLabel" style="font-size: 1rem ; font-weight: bold">
+        {{annexureName}} - Questions
+    </h4>
+</div>
+<div class="modal-body modal-detail form-margin mt-0 px-3 mb-2"
+    style="min-height: 20vh; max-height: 80vh; overflow-y: auto;">
+    <app-view-question-wrapper [questions]="questions" [isEditEnabled]="false"
+        [isBadgeShow]="false"></app-view-question-wrapper>
+</div>

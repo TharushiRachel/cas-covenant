@@ -1,0 +1,47 @@
+<div class="p-2 jumbotron">
+
+  <ng-container *ngIf="isWalletUpdateEnabled && isEqualLoginAndAssignUserFiftyOrLower()">
+    <div class="row d-flex justify-content-center align-items-center mx-0 mx-0 p-1 border border-1 rounded mb-2"
+      style="border-color: #ff4a67;">
+      <strong>Facilities / Securities have been changed. Review the "Wallet Share" for changes.</strong>
+      <button class="medium-button btn btn-primary" mdbBtn mdbWavesEffect type="button" mdbBtn
+        (click)="walletShareUpdate()">
+        Update Wallet Share
+      </button>
+    </div>
+  </ng-container>
+
+  <ng-container>
+    <app-fp-facilities [facilityPaper]="facilityPaper" [itemHasRemoved]="itemHasRemoved" [itemHasAdded]="itemHasAdded"
+      class="w-100-p"></app-fp-facilities>
+  </ng-container>
+
+  <ng-container *ngIf="facilityPaper.facilityDTOList ? (facilityPaper.facilityDTOList.length == 0 ): true">
+    <div class="alert alert-warning section" style="margin-bottom: 0px" role="alert">
+      No Facility(ies) Found !
+    </div>
+  </ng-container>
+
+  <ng-container *ngIf="isEqualLoginAndAssignUserFiftyOrLower()">
+    <button class="medium-button btn btn-info btn-sm calculate-btn" mdbBtn mdbTooltip="Calculate Group Exposure"
+      mdbWavesEffect type="button" mdbBtn (click)="openCalculateGroupExposure()"
+      *ngIf="facilityPaper.facilityDTOList.length > 0">
+      Calculate Group Exposure
+    </button>
+  </ng-container>
+
+  <ng-container *ngIf="facilityPaper.facilityDTOList ? (facilityPaper.facilityDTOList.length > 0 ): false">
+    <mdb-card class="w-100-p">
+      <mdb-card-body class="px-0">
+        <ng-container *ngIf="facilityPaper.isCommittee=='Y' ; else nonCorporateFacilityDataPreview">
+          <app-fp-three-col-total-exposure-data>
+          </app-fp-three-col-total-exposure-data>
+        </ng-container>
+        <ng-template #nonCorporateFacilityDataPreview>
+          <app-fp-total-exposure-data class="w-100-p">
+          </app-fp-total-exposure-data>
+        </ng-template>
+      </mdb-card-body>
+    </mdb-card>
+  </ng-container>
+</div>

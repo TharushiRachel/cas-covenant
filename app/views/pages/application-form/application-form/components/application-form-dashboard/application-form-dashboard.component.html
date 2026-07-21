@@ -1,0 +1,172 @@
+<div mdbSticky class="d-flex flex-row justify-content-between page-header">
+  <div class="d-flex flex-row align-items-center">
+    <h5><i class="fas fa-newspaper header-icon"></i> Application Dashboard</h5>
+  </div>
+</div>
+
+<div class="card mt-1r default-box-styles">
+  <div class="card-body">
+
+    <div class="w-100-p mt-10p mb-10p display-flex flex-row jc-space-around ai-center">
+
+      <application-form-count-box class="box-width" [selectedStatus]="this.status"
+        [count]="applicationFormCounts.inboxApplicationForm" [status]="applicationFormDashboardStatusConst.INBOX"
+        (onClick)="loadPageData($event)"></application-form-count-box>
+
+      <application-form-count-box class="box-width" [selectedStatus]="this.status"
+        [count]="applicationFormCounts.inProgressApplicationForm"
+        [status]="applicationFormDashboardStatusConst.IN_PROGRESS"
+        (onClick)="loadPageData($event)"></application-form-count-box>
+
+      <application-form-count-box class="box-width" [selectedStatus]="this.status"
+        [count]="applicationFormCounts.acceptedApplicationForm" [status]="applicationFormDashboardStatusConst.ACCEPTED"
+        (onClick)="loadPageData($event)"></application-form-count-box>
+
+      <application-form-count-box class="box-width" [selectedStatus]="this.status"
+        [count]="applicationFormCounts.returnedApplicationForm" [status]="applicationFormDashboardStatusConst.RETURNED"
+        (onClick)="loadPageData($event)"></application-form-count-box>
+
+      <application-form-count-box class="box-width" [selectedStatus]="this.status"
+        [count]="applicationFormCounts.declinedApplicationForm" [status]="applicationFormDashboardStatusConst.DECLINED"
+        (onClick)="loadPageData($event)"></application-form-count-box>
+
+      <application-form-count-box class="box-width" [selectedStatus]="this.status"
+        [count]="applicationFormCounts.paperApprovedApplicationForm"
+        [status]="applicationFormDashboardStatusConst.PAPER_APPROVED"
+        (onClick)="loadPageData($event)"></application-form-count-box>
+
+    </div>
+
+  </div>
+</div>
+
+
+
+<ng-container *ngFor="let applicationFormItem of this.applicationForms | keyvalue">
+  <label class="font-weight-bold status-sub">
+    {{applicationFormItem.key.replaceAll("_"," ")}}
+    <label class="status-sub-header">
+      <ng-container *ngIf="(applicationFormItem.value.length != 0) && (applicationFormItem.value[0].fromDate != null)">
+        ( FROM {{applicationFormItem.value[0].fromDate}} )
+      </ng-container>
+    </label>
+  </label>
+
+  <ng-container *ngIf="applicationFormItem.value.length == 0">
+    <div class="alert alert-warning" role="alert">
+      No Application Form(s) Found !
+    </div>
+  </ng-container>
+
+  <ng-container *ngIf="applicationFormItem.value.length > 0">
+    <div class="section  mb-15p">
+      <table class="table">
+        <thead>
+          <tr>
+            <ng-container *ngFor="let col of tableColumns">
+              <th scope="col">{{col}}</th>
+            </ng-container>
+          </tr>
+        </thead>
+        <tbody>
+          <ng-container *ngFor="let applicationForm of applicationFormItem.value">
+            <tr (click)="this.loadApplicationForm(applicationForm.id)" class="table-clickable-row">
+              <td style="width: 15%;">{{applicationForm.afReferenceNumber ? applicationForm.afReferenceNumber : '-'}}
+                <span class="badge text-color-w ml-3p" style="background-color: rgb(235, 138, 118);color: #fff;"
+                  data-toggle="tooltip" data-placement="left" [title]='applicationForm.fsType'
+                  *ngIf="applicationForm.afReferenceNumber && getFsTypeCode(applicationForm.fsType)">
+                  {{getFsTypeCode(applicationForm.fsType)}}
+                </span>
+
+                <ng-container *ngIf="isESGPaper(applicationForm)">
+                  <span class="badge text-color-w ml-3p" style="background-color:#007e338a" data-toggle="tooltip"
+                    data-placement="left" [title]="'Environmental and Social Governance Paper'">
+                    ESG Paper
+                  </span>
+                </ng-container>
+              </td>
+              <td>{{applicationForm.fpReferenceNumber ? applicationForm.fpReferenceNumber : '-'}}</td>
+              <td>{{applicationForm.leadReferenceNumber ? applicationForm.leadReferenceNumber : '-'}}</td>
+              <td>{{applicationForm.customerName ? applicationForm.customerName : '-'}}</td>
+              <td>{{applicationForm.branchCode}}</td>
+              <td>{{applicationForm.createdBy ? applicationForm.createdBy : '-'}}</td>
+              <td>{{applicationForm.createdDate}}</td>
+              <td>{{applicationForm.assignedUser ? applicationForm.assignedUser :
+                getBranchName(applicationForm.assignedDivCode)}}</td>
+
+              <!-- <ng-container *ngFor="let applicationForm of applicationFormItem.value">
+            <tr (click)="this.loadApplicationForm(applicationForm.id)" class="table-clickable-row">
+              <td>{{applicationForm.afReferenceNumber ? applicationForm.afReferenceNumber : '-'}}</td>
+              <td>{{applicationForm.fpReferenceNumber ? applicationForm.fpReferenceNumber : '-'}}</td>
+              <td>{{applicationForm.leadReferenceNumber ? applicationForm.leadReferenceNumber : '-'}}</td>
+              <td>{{applicationForm.customerName ? applicationForm.customerName : '-'}}</td>
+              <td>{{getBranchName(applicationForm.branchCode) || '-'}}</td>
+              <td>{{applicationForm.createdBy ? applicationForm.createdBy : '-'}}</td>
+              <td>{{applicationForm.createdDate}}</td>
+              <td>{{applicationForm.assignedUser ? applicationForm.assignedUser :
+                getBranchName(applicationForm.assignedDivCode)}}</td> -->
+
+              <td class="status-icon status-col">
+                <!-- SHOW DRAFT STATUS ICON -->
+                <a *ngIf="applicationFormItem.key == this.applicationFormInboxStatusConst.DRAFT" data-toggle="tooltip"
+                  data-placement="left" title="Draft" class="icon-padding">
+                  <img class="status-img-width" src="assets/media/images/fpstatusicon/draft.png" alt="Draft">
+                </a>
+
+                <!-- SHOW RECEIVED TO ME STATUS ICON -->
+                <a *ngIf="applicationFormItem.key == this.applicationFormInboxStatusConst.RECEIVED_TO_ME"
+                  data-toggle="tooltip" data-placement="left" title="Received to me" class="icon-padding">
+                  <img class="status-img-width" src="assets/media/images/fpstatusicon/assigned.png"
+                    alt="Received to me">
+                </a>
+
+                <!-- SHOW IN PROGRESS STATUS ICON -->
+                <a *ngIf="applicationFormItem.key == this.applicationFormInProgressStatusConst.IN_PROGRESS"
+                  data-toggle="tooltip" data-placement="left" title="In Progress" class="icon-padding">
+                  <img class="status-img-width" src="assets/media/images/fpstatusicon/inprogress.png" alt="In Progress">
+                </a>
+
+                <!-- SHOW RETURN STATUS ICON -->
+                <a *ngIf="  (applicationFormItem.key == this.applicationFormAcceptedStatusConst.PAPER_RETURNED) ||
+                          (applicationFormItem.key == this.applicationFormReturnedStatusConst.RETURNED_BY_ME) ||
+                          (applicationFormItem.key == this.applicationFormReturnedStatusConst.RETURNED_BY_OTHERS) ||
+                          (applicationFormItem.key == this.applicationFormInboxStatusConst.RETURNED_TO_ME)"
+                  data-toggle="tooltip" data-placement="left" title="Returned" class="icon-padding">
+                  <img class="status-img-width" src="assets/media/images/fpstatusicon/return.png" alt="Returned">
+                </a>
+
+                <!-- SHOW PAPER CREATED STATUS ICON -->
+                <a *ngIf="applicationFormItem.key == this.applicationFormAcceptedStatusConst.PAPER_CREATED"
+                  data-toggle="tooltip" data-placement="left" title="Paper Created" class="icon-padding">
+                  <img class="status-img-width" src="assets/media/images/fpstatusicon/papercreated.png"
+                    alt="Paper Created">
+                </a>
+
+                <!-- SHOW PAPER DECLINED STATUS ICON -->
+                <a *ngIf="  (applicationFormItem.key == this.applicationFormAcceptedStatusConst.PAPER_DECLINED) ||
+                          (applicationFormItem.key == this.applicationFormDeclinedStatusConst.DECLINED_BY_ME) ||
+                          (applicationFormItem.key == this.applicationFormDeclinedStatusConst.DECLINED_BY_OTHERS)"
+                  data-toggle="tooltip" data-placement="left" title="Declined" class="icon-padding">
+                  <img class="status-img-width" src="assets/media/images/fpstatusicon/decline.png" alt="Declined">
+                </a>
+
+                <!-- SHOW PAPER APPROVED STATUS ICON -->
+                <a *ngIf="applicationFormItem.key == this.applicationFormDashboardStatusConst.PAPER_APPROVED"
+                  data-toggle="tooltip" data-placement="left" title="Paper Approved" class="icon-padding">
+                  <img class="status-img-width" src="assets/media/images/fpstatusicon/approved.png"
+                    alt="Paper Approved">
+                </a>
+              </td>
+            </tr>
+          </ng-container>
+
+        </tbody>
+      </table>
+
+      <app-paginator [pageIndex]="this.applicationFormPage[applicationFormItem.key].currentPageNo - 1"
+        [length]="this.applicationFormPage[applicationFormItem.key].totalNoOfRecords" [pageSize]="pageSize.pageSize"
+        [pageSizeOptions]="pageSize.pageSizeOptions"
+        (page)="onPageEvent($event, applicationFormItem.key)"></app-paginator>
+    </div>
+  </ng-container>
+</ng-container>

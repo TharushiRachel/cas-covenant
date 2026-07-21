@@ -1,0 +1,517 @@
+<div mdbSticky class="d-flex flex-row justify-content-between page-header">
+  <div class="d-flex flex-row align-items-center">
+    <a class="d-flex flex-row align-items-center">
+      <i class="fas fa-angle-left header-icon-back" (click)="goBack()"></i>
+    </a>
+    <h5><i class="fas fa-cog header-icon"></i>
+      <span *ngIf="!isLeadEditEnabled()">Create Comprehensive Lead</span>
+      <ng-container *ngIf="isLeadEditEnabled()">
+        <span>Edit Comprehensive Lead - Ref No : {{leadStatus.leadRefNumber}}
+          (<span [ngStyle]="getColour(leadStatus.status)">
+            {{leadStatusConst[leadStatus.status]}}
+          </span>)
+        </span>
+      </ng-container>
+    </h5>
+  </div>
+</div>
+
+<div class="d-flex justify-content-end">
+  <ng-container *ngIf="isEnableSubmit()">
+    <button (click)="submitLead() " mdbBtn type="button" class=" medium-button btn btn-info" mdbWavesEffect
+      data-toggle="tooltip" data-placement="bottom">
+      <span>SUBMIT</span>
+    </button>
+  </ng-container>
+  <ng-container *ngIf="isEnableAccept()">
+    <button mdbBtn type="button" (click)="returnLead()" class="action-button-padding btn-outline-info btn-sm"
+      outline="true" data-toggle="tooltip" data-placement="bottom" [title]='"Back to a Initial Level"' mdbWavesEffect>
+      <span>RETURN</span>
+    </button>
+
+    <button (click)="acceptLead()" mdbBtn type="button" class="medium-button btn btn-secondary btn-sm" mdbWavesEffect
+      data-toggle="tooltip" data-placement="bottom">
+      <span>ACCEPT</span>
+    </button>
+
+    <button class="medium-button btn btn-primary btn-sm" mdbBtn type="button" (click)="declineLead()" mdbWavesEffect>
+      <span>DECLINE</span>
+    </button>
+  </ng-container>
+</div>
+
+<div class="page-search-section section d-flex p-4 flex-column justify-content-start">
+  <form class="d-flex flex-column justify-content-start align-items-start w-100-p" [formGroup]="leadParentForm">
+    <div class="d-flex w-100-p py-2">
+      <div class="md-form w-50-p mx-2">
+        <input mdbValidate type="text" id="leadName" maxlength="25" formControlName="leadName" class="form-control"
+          mdbInput>
+        <label for="leadName">Lead Name *</label>
+        <mdb-error *ngIf="formErrors.leadName.required">Lead Name required</mdb-error>
+      </div>
+      <div class="md-form w-50-p mx-2">
+        <ng-container *ngIf="isBranchCanEdit();else hidenBranchEle">
+          <ng-container>
+            <input mdbValidate formControlName="preferredBranch" type="text" class="form-control"
+              [mdbAutoCompleter]="auto" placeholder="Preferred Branch *" />
+            <mdb-auto-completer #auto="mdbAutoCompleter" [clearButton]="false">
+              <ng-container *ngFor="let option of branchesDropdown | async">
+                <mdb-option [value]="option.branchName">
+                  {{ option.branchName }}
+                </mdb-option>
+              </ng-container>
+            </mdb-auto-completer>
+          </ng-container>
+          <mdb-error *ngIf="formErrors.preferredBranch.required">Preffered Branch required</mdb-error>
+        </ng-container>
+        <ng-template #hidenBranchEle>
+          <input mdbValidate type="text" id="preferredBranch" maxlength="100" formControlName="preferredBranch"
+            class="form-control" mdbInput [disabled]="true">
+          <label for="preferredBranch">Preferred Branch *</label>
+        </ng-template>
+      </div>
+    </div>
+
+    <div class="d-flex w-100-p justify-content-between py-2 mx-0">
+      <div class="md-form w-50-p mx-2">
+        <mdb-select formControlName="leadPurpose" [options]="leadPurposeOptions" class="form-control py-0"
+          label="Lead Purpose *" textNoResults="Purpose of Lead">
+        </mdb-select>
+        <mdb-error *ngIf="formErrors.leadPurpose.required">Business Type Required</mdb-error>
+      </div>
+    </div>
+  </form>
+
+  <div class="d-flex justify-content-end">
+    <button class="btn btn-sm btn-info cta-btn" type="button" mdbTooltip="Add Borrwer" (click)="addBorrowerByPurpose()"
+      *ngIf="isAddBorrowerEnabled()">
+      <i class="fas fa-plus" aria-hidden="true"></i>
+    </button>
+  </div>
+
+  <ng-container *ngIf="borrowerList.length > 0 && leadPurpose">
+    <app-tabs (onTabSelect)="setTabIndex($event)" [selectedTabIndex]="selectedTabIndex" class="w-100-p">
+      <ng-container *ngFor="let borrower of borrowerList; let i=index">
+        <app-tab [active]="i == selectedTabIndex" [tabTitle]="'Party ' + (i + 1)">
+          <ng-container *ngIf="selectedTabIndex == i">
+            <app-lead-comprehensive-borrower (saveBorrowerObj)="saveBorrowerObj($event)"
+              (deleteBorrowerObj)="deleteBorrowerObj($event)" [borrwerData]="borrower" [currentIndex]="i"
+              [relatedPartiesList]="relatedPartiesList" [isFormDisabled]="isFormDisabled"
+              [isSaveLoading]="isSaveLoading" [leadData]="leadData" [isEdit]="isEdit" [borrowerList]="borrowerList"
+              [selectedTabIndex]="selectedTabIndex" [leadStatus]="leadStatus">
+            </app-lead-comprehensive-borrower>
+          </ng-container>
+        </app-tab>
+
+      </ng-container>
+    </app-tabs>
+  </ng-container>
+  <div class="d-flex w-100-p py-2 my-3 mx-0">
+    <div class="cardContent">
+      <mat-accordion class="custom-accordion">
+        <mat-expansion-panel class="custom-expansion-panel" [expanded]="true" (opened)="true">
+          <mat-expansion-panel-header>
+            <span class="text-1" style="color: black;">
+              <b> Related Parties * </b> </span>
+          </mat-expansion-panel-header>
+          <div class="d-flex justify-content-end mx-0" *ngIf="isFormEditEnabled()">
+            <button class="btn btn-sm btn-info cta-btn" type="button" mdbTooltip="Add Related Parties"
+              (click)="addRelatedParties()">
+              <i class="fas fa-plus" aria-hidden="true"></i>
+            </button>
+          </div>
+
+          <ng-container *ngIf="relatedPartiesList.length ==0">
+            <p class="pl-2">No Related Parties</p>
+          </ng-container>
+
+          <ng-container *ngIf="relatedPartiesList.length !=0">
+            <div class="table-responsive">
+              <table class="table">
+                <thead>
+                  <tr style="height: 30px" class="table-heading-color">
+                    <th style="width: 200px;">Name</th>
+                    <th style="width: 200px;">Description</th>
+                    <th style="width: 100px;">Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <ng-container *ngFor="let data of relatedPartiesList ; let i = index">
+                    <tr>
+                      <!-- Main party column -->
+                      <td style="width: 200px;">
+                        {{ getMainPartyName(data.mainParty) }}
+                      </td>
+
+                      <!-- Relationship column -->
+                      <td style="width: 200px;">
+                        <ng-container *ngIf="!isDirectorBlock(data.relationshipDescription); else directorBlock">
+                          <!-- Non-Director case -->
+                          <ng-container *ngIf="data.relatedParty; else noRelatedParty">
+                            {{ getRelationShipLabel(data.relationshipDescription) }} of {{
+                            getRelatedPartyName(data.relatedParty) }}
+                          </ng-container>
+                          <ng-template #noRelatedParty>
+                            {{ getRelationShipLabel(data.relationshipDescription) }}
+                          </ng-template>
+                        </ng-container>
+                        <!-- Director case -->
+                        <ng-template #directorBlock>
+                          {{ getRelationShipLabel(data.relationshipDescription) }} of {{
+                          getRelatedPartyName(data.relatedParty) }} (Share
+                          holding {{ data.share }}%)
+                        </ng-template>
+                      </td>
+
+                      <!-- Delete action column -->
+                      <td style="width: 100px;">
+                        <ng-container *ngIf="isFormEditEnabled(); else emptyTemplate">
+                          <!-- <button (click)="editRelatedParty(data,i)" mdbBtn type="button"
+                            class="medium-button btn btn-info" mdbWavesEffect data-toggle="tooltip"
+                            data-placement="bottom">
+                            <i class="far fa-edit"></i>
+                          </button> -->
+                          <button (click)="deleteRelatedParty(data)" mdbBtn type="button"
+                            class=" medium-button btn btn-danger" mdbWavesEffect data-toggle="tooltip"
+                            data-placement="bottom">
+                            <i class="fas fa-trash-alt"></i>
+                          </button>
+                        </ng-container>
+
+                        <ng-template #emptyTemplate>
+                          -
+                        </ng-template>
+                      </td>
+                    </tr>
+
+                  </ng-container>
+                </tbody>
+              </table>
+            </div>
+          </ng-container>
+        </mat-expansion-panel>
+      </mat-accordion>
+    </div>
+  </div>
+
+  <div class="d-flex w-100-p py-2 my-3 mx-0">
+    <div class="cardContent">
+      <mat-accordion class="custom-accordion">
+        <mat-expansion-panel class="custom-expansion-panel" [expanded]="true" (opened)="true">
+          <mat-expansion-panel-header>
+            <span class="text-1" style="color: black;">
+              <b>Income Type *</b>
+            </span>
+          </mat-expansion-panel-header>
+          <div class="d-flex justify-content-end mx-0" *ngIf="isFormEditEnabled()">
+            <button class="btn btn-sm btn-info cta-btn" type="button" mdbTooltip="Add Income Type"
+              (click)="addIncomeType()" [disabled]="!isEnableAddRPITLF || isFormDisabled">
+              <i class="fas fa-plus" aria-hidden="true"></i>
+            </button>
+          </div>
+          <ng-container *ngIf="incomeSourceList.length ==0">
+            <p class="pl-2">No Income Type</p>
+          </ng-container>
+
+          <ng-container *ngIf="incomeSourceList.length !=0">
+            <div class="table-responsive">
+              <table class="table">
+                <thead>
+                  <tr style="height: 30px" class="table-heading-color">
+
+                    <th style="width: 200px;">Name</th>
+                    <th style="width: 400px;">Income Source</th>
+                    <th style="width: 200px;">Consider for Repayment</th>
+                    <th style="width: 100px;"> Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <ng-container *ngFor="let data of incomeSourceList">
+                    <tr>
+                      <td style="width: 200px;">{{getPartyNameById(data.party)}}</td>
+                      <td style="width: 400px;">{{data.incomeType}}</td>
+                      <td style="width: 200px;">
+                        <mdb-checkbox [checked]="data.considerForRepayment" [disabled]="true">
+                        </mdb-checkbox>
+                      </td>
+                      <td style="width: 200px;">
+                        <button (click)="deleteIncomeType(data)" mdbBtn type="button"
+                          class=" medium-button btn btn-danger" mdbWavesEffect data-toggle="tooltip"
+                          data-placement="bottom" [disabled]="isFormDisabled"
+                          *ngIf="isFormEditEnabled(); else emptyTemplate">
+                          <i class="fas fa-trash-alt"></i>
+                        </button>
+                        <ng-template #emptyTemplate>
+                          -
+                        </ng-template>
+                      </td>
+                    </tr>
+                  </ng-container>
+                </tbody>
+              </table>
+            </div>
+          </ng-container>
+        </mat-expansion-panel>
+      </mat-accordion>
+    </div>
+  </div>
+
+  <div class="d-flex w-100-p py-2 my-3 mx-0">
+    <div class="cardContent">
+      <mat-accordion class="custom-accordion">
+        <mat-expansion-panel class="custom-expansion-panel" [expanded]="true" (opened)="true">
+          <mat-expansion-panel-header>
+            <span class="text-1" style="color: black;">
+              <b> Lead Facilities * </b> </span>
+          </mat-expansion-panel-header>
+
+          <div class="d-flex  justify-content-end">
+            <button class="btn btn-sm btn-info cta-btn" type="button" mdbTooltip="Add Facilities"
+              (click)="addFacilities()" [disabled]="!isEnableAddRPITLF || isFormDisabled"
+              *ngIf="isFormEditEnabled() && !isDecisionExist()">
+              <i class="fas fa-plus" aria-hidden="true"></i>
+            </button>
+          </div>
+          <ng-container *ngIf="facilitiesList.length ==0">
+            <p class="pl-2">No Lead Facilities</p>
+          </ng-container>
+
+          <ng-container *ngIf="facilitiesList.length !==0">
+            <div class="table-responsive">
+              <table class="table">
+                <thead>
+                  <tr style="height: 30px" class="table-heading-color">
+                    <th style="width: 400px;">Facility Name</th>
+                    <th style="width: 200px;">Lease Amount (Rs)</th>
+                    <th style="width: 130px;">Requested Tenure</th>
+                    <th style="width: 120px;">Repayment Mode</th>
+                    <th style="width: 100px;">Upfront</th>
+                    <th style="width: 250px;">Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <ng-container *ngFor="let data of facilitiesList">
+                    <tr>
+                      <td>{{data.facilityDescription|| "-" }}</td>
+                      <td>{{getCurrencyFormat(data.leaseAmount)|| "-" }}</td>
+                      <td>{{data.requestedTenure|| "-" }}</td>
+                      <td>{{data.repaymentMode|| "-" }} </td>
+                      <td>{{data.upfront|| "-" }} </td>
+                      <td>
+                        <button (click)="deleteFacility(data)" mdbBtn type="button"
+                          class=" medium-button btn btn-danger" mdbWavesEffect data-toggle="tooltip"
+                          data-placement="bottom" [disabled]="isFormDisabled"
+                          *ngIf="isFormEditEnabled() && !isDecisionExist()">
+                          <i class="fas fa-trash-alt"></i>
+                        </button>
+                        <button type="button" mdbBtn color="success" size="sm" class="waves-light"
+                          (click)="generateInPrincipleLetter(data)"
+                          *ngIf="isPrincipleLetterEnabled() && !isStructured(data)">
+                          Generate In-Principle Letter
+                        </button>
+                        <span *ngIf="!isFormEditEnabled() && !isPrincipleLetterEnabled && isStructured(data)">-</span>
+                      </td>
+                    </tr>
+                  </ng-container>
+                </tbody>
+              </table>
+            </div>
+          </ng-container>
+
+        </mat-expansion-panel>
+      </mat-accordion>
+    </div>
+  </div>
+
+  <div class="d-flex w-100-p py-2 my-3 mx-0" *ngIf="isAADecisionEnabled()">
+    <div class="cardContent">
+      <mat-accordion class="custom-accordion">
+        <mat-expansion-panel class="custom-expansion-panel" [expanded]="true" (opened)="true">
+          <mat-expansion-panel-header>
+            <span class="text-1" style="color: black; font-weight: 600;">Advance Analytics</span>
+          </mat-expansion-panel-header>
+          <app-advance-analytics-view [leadData]="leadData" [leadStatus]="leadStatus"
+            (handleDecision)="handleDecision($event)"></app-advance-analytics-view>
+        </mat-expansion-panel>
+      </mat-accordion>
+    </div>
+  </div>
+
+  <div class="d-flex w-100-p py-2 my-3 mx-0" *ngIf="leadData">
+    <div class="cardContent">
+      <mat-accordion class="custom-accordion">
+        <mat-expansion-panel class="custom-expansion-panel" [expanded]="true" (opened)="true">
+          <mat-expansion-panel-header>
+            <span class="text-1" style="color: black; font-weight: 600;">
+              Lead Document(s)
+            </span>
+          </mat-expansion-panel-header>
+
+          <div class="d-flex justify-content-end">
+            <button class="btn btn-sm btn-info cta-btn" type="button" mdbTooltip="Add Document"
+              (click)="openAddDocumentModal()" *ngIf="isLeadCommonActionEnabled()">
+              <i class="fas fa-plus" aria-hidden="true"></i>
+            </button>
+          </div>
+          <ng-container *ngIf="documentList.length ==0">
+            <p class="pl-2">No Lead Document</p>
+          </ng-container>
+
+          <ng-container *ngIf="documentList.length !==0">
+            <div class="table-responsive">
+              <table class="table">
+                <thead>
+                  <tr style="height: 30px" class="table-heading-color">
+                    <th style="width: 200px;">Document Name</th>
+                    <th style="width: 200px;">Remark</th>
+                    <th style="width: 200px;">Status</th>
+                    <th style="width: 200px;">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <ng-container *ngFor="let data of documentList">
+                    <tr>
+                      <td style="width: 200px;">{{getSupportingDocLabel(data.supportingDocId)|| "-" }}</td>
+                      <td style="width: 200px;">{{data.remark|| "-" }}</td>
+                      <td style="width: 200px;">{{data.status|| "-" }}</td>
+                      <td style="width: 200px;">
+                        <button (click)="editDocument(data)" mdbBtn type="button" class="medium-button btn btn-info"
+                          mdbWavesEffect data-toggle="tooltip" data-placement="bottom"
+                          *ngIf="isDocEditDeleteEnabled(data)">
+                          <i class="far fa-edit"></i>
+                        </button>
+                        <button (click)="viewDocument(data)" mdbBtn type="button" color="success"
+                          class="medium-button btn" mdbWavesEffect>
+                          <mdb-icon fas icon="fas fa-download" aria-hidden="true"></mdb-icon>
+                        </button>
+                        <button (click)="deleteDocument(data)" mdbBtn type="button" class="medium-button btn btn-danger"
+                          mdbWavesEffect *ngIf="isDocEditDeleteEnabled(data)">
+                          <i class="fas fa-trash-alt"></i>
+                        </button>
+                      </td>
+                    </tr>
+                  </ng-container>
+                </tbody>
+              </table>
+            </div>
+          </ng-container>
+
+        </mat-expansion-panel>
+      </mat-accordion>
+    </div>
+  </div>
+
+  <div class="d-flex w-100-p py-2 my-3 mx-0" *ngIf="leadData">
+    <div class="cardContent">
+      <mat-accordion class="custom-accordion">
+        <mat-expansion-panel class="custom-expansion-panel" [expanded]="true" (opened)="true">
+          <mat-expansion-panel-header>
+            <span class="text-1" style="color: black; font-weight: 600;">
+              Comment(s)
+            </span>
+          </mat-expansion-panel-header>
+
+          <div class="d-flex  justify-content-end">
+            <button class="btn btn-sm btn-info cta-btn" type="button" mdbTooltip="Add Comment"
+              (click)="openAddCommentModal()" *ngIf="isLeadCommonActionEnabled()">
+              <i class="fas fa-plus" aria-hidden="true"></i>
+            </button>
+          </div>
+          <ng-container *ngIf="comments.length !== 0; else emptyTemplate">
+            <app-comp-lead-comment-view [comments]="comments" [allBranches]="allBranches"></app-comp-lead-comment-view>
+          </ng-container>
+          <ng-template #emptyTemplate>
+            <p class="p-2">No Comments Found.</p>
+          </ng-template>
+
+        </mat-expansion-panel>
+      </mat-accordion>
+    </div>
+  </div>
+
+  <div class="d-flex w-100-p py-2 my-3 mx-0" >
+    <div class="cardContent">
+      <mat-accordion class="custom-accordion">
+        <mat-expansion-panel class="custom-expansion-panel" [expanded]="true" (opened)="true">
+          <mat-expansion-panel-header>
+            <span class="text-1" style="color: black; font-weight: 600;">Digitalize Application</span>
+          </mat-expansion-panel-header>
+          <app-digital-application-view *ngIf="compLeadId && leadData" [leadData]="leadData" [leadStatus]="leadStatus"
+            [compLeadId]="compLeadId" [digitalApplications]="digitalApplications"
+            (refreshDigitalApplications)="getDigitalApplications()"
+            (digitalApplicationSaved)="onDigitalApplicationSaved($event)">
+          </app-digital-application-view>
+        </mat-expansion-panel>
+      </mat-accordion>
+    </div>
+  </div>
+
+  <div class="d-flex w-100-p py-2 my-3 mx-0" *ngIf="leadStatusHistory.length > 0">
+    <div class="cardContent">
+      <mat-accordion class="custom-accordion">
+        <mat-expansion-panel class="custom-expansion-panel" [expanded]="true" (opened)="true">
+          <mat-expansion-panel-header>
+            <span class="text-1" style="color: black; font-weight: 600;">
+              User Action Log(s)
+            </span>
+          </mat-expansion-panel-header>
+          <div class="table-responsive">
+            <table class="table">
+              <thead>
+                <tr style="height: 30px" class="table-heading-color">
+                  <ng-container *ngFor="let col of tableColumnSForLeadAction">
+                    <th scope="col">{{col}}</th>
+                  </ng-container>
+                </tr>
+              </thead>
+              <tbody>
+                <ng-container *ngFor="let item of leadStatusHistory">
+                  <tr class="table-clickable-row">
+                    <td>{{item.actionedByDisplayName ? item.actionedByDisplayName : '-'}}</td>
+                    <td>{{item.action}}</td>
+                    <td>{{item.actionedDateTime}}</td>
+                    <td>
+                      <pre class="custom-pre-tag">{{item.remark || '-'}}</pre>
+                    </td>
+                  </tr>
+                </ng-container>
+
+                <!-- AF History -->
+                <tr *ngIf="afStatusHistory.length > 0">
+                  <td colspan="4">
+                    <b>Application Form Action Log(s)</b>
+                  </td>
+                </tr>
+                <ng-container *ngFor="let item of afStatusHistory">
+                  <tr class="table-clickable-row">
+                    <td>{{item.assignUser ? item.assignUser : '-'}}</td>
+                    <td>{{item.actionMessage}}</td>
+                    <td>{{item.updateDate}}</td>
+                    <td>-</td>
+                  </tr>
+                </ng-container>
+
+                <!-- FP History -->
+                <tr *ngIf="fpStatusHistory.length > 0">
+                  <td colspan="4">
+                    <b>Facility Paper Action Log(s)</b>
+                  </td>
+                </tr>
+                <ng-container *ngFor="let item of fpStatusHistory">
+                  <tr class="table-clickable-row">
+                    <td>{{item.assignUser ? item.assignUser : '-'}}</td>
+                    <td>{{item.actionMessage}}</td>
+                    <td>{{item.updateDate}}</td>
+                    <td>-</td>
+                  </tr>
+                </ng-container>
+              </tbody>
+            </table>
+          </div>
+        </mat-expansion-panel>
+      </mat-accordion>
+    </div>
+  </div>
+</div>
+
+<a class="download-link" #downloadLink></a>

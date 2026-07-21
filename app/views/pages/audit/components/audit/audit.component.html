@@ -1,0 +1,129 @@
+<div mdbSticky class="d-flex flex-row justify-content-between page-header ">
+  <div class="d-flex flex-row align-items-center">
+    <h5><i class="fas fa-file-alt header-icon"></i> Audit(s)</h5>
+  </div>
+</div>
+
+<div class="page-search-section section display-flex flex-column jc-start p-2 pt-3 pb-3 default-box-styles">
+
+  <form class="display-flex w-100-p flex-row jc-space-around ai-center flex-1-gap" [formGroup]="searchForm">
+
+    <div class="md-form w-18-p min-width-120">
+      <mdb-select
+        [multiple]="true"
+        [options]="optionSelectForAuditMainCategory"
+        formControlName="auditMainCategoryList"
+        id="auditMainCategoryList"
+        placeholder="Select main category"></mdb-select>
+      <label for="auditMainCategoryList">Main Category</label>
+    </div>
+
+
+    <div class="md-form w-18-p min-width-120">
+      <mdb-select
+        [multiple]="true"
+        [options]="subCategoryList"
+        formControlName="auditSubCategoryList"
+        id="auditSubCategoryList"
+        placeholder="Select sub category"></mdb-select>
+      <label for="auditSubCategoryList">Sub Category</label>
+    </div>
+
+    <div class="md-form w-18-p  min-width-120">
+      <input type="text" id="userName" formControlName="userName" class="form-control" mdbInput>
+      <label for="userName">User Name</label>
+    </div>
+
+    <div class="md-form w-18-p min-width-120">
+      <input type="text" id="userFirstName" formControlName="userFirstName" class="form-control" mdbInput>
+      <label for="userFirstName">First Name</label>
+    </div>
+
+    <div class="md-form w-18-p min-width-120">
+      <input type="text" id="userLastName" formControlName="userLastName" class="form-control" mdbInput>
+      <label for="userLastName">Last Name</label>
+    </div>
+
+    <!--    <div class="md-form w-15-p min-width-120 mr-3">-->
+    <!--      <mdb-date-picker class="form-control"-->
+    <!--                       id="auditFromDateStr"-->
+    <!--                       formControlName="auditFromDateStr"-->
+    <!--                       [placeholder]="'Audit open from date'"-->
+    <!--                       [inline] = "true"-->
+    <!--                       required></mdb-date-picker>-->
+    <!--    </div>-->
+    <div class="md-form w-18-p min-width-120">
+      <mdb-date-picker class="form-control"
+                       id="auditFromDateStr"
+                       formControlName="auditFromDateStr"
+                       [placeholder]="'From date'"
+                       [inline]="true"
+                       required></mdb-date-picker>
+    </div>
+
+    <div class="md-form w-18-p min-width-120">
+      <mdb-date-picker class="form-control"
+                       id="auditToDateStr"
+                       formControlName="auditToDateStr"
+                       [placeholder]="'To date'"
+                       [inline]="true"
+                       required></mdb-date-picker>
+    </div>
+
+    <div class="display-flex flex-1 flex-row jc-end ai-center">
+      <button (click)="doSearch()" type="button" class=" medium-button btn btn-info" mdbBtn>Search</button>
+      <button (click)="clearSearch()" class=" medium-button btn btn-outline-info clear-btn" mdbBtn type="button">
+        Clear
+      </button>
+    </div>
+  </form>
+
+  <!--  <div class="display-flex flex-1 flex-row jc-end ai-center">-->
+  <!--    <button (click)="doSearch()" class="medium-button" type="button" mdbBtn color="light" mdbWavesEffect>Search-->
+  <!--    </button>-->
+  <!--    <button (click)="clearSearch()" class="medium-button" type="button" mdbBtn color="light" mdbWavesEffect>Clear-->
+  <!--    </button>-->
+  <!--  </div>-->
+</div>
+
+<div *ngIf="auditDetails.length == 0" class="alert alert-warning section" role="alert">
+  No Audit(s) Found !
+</div>
+
+<ng-container *ngIf="auditDetails.length > 0">
+  <div class="section table-responsive mb-15p">
+    <table class="table">
+      <thead>
+      <tr>
+        <ng-container *ngFor="let col of tableColumns">
+          <th scope="col">{{col}}</th>
+        </ng-container>
+      </tr>
+      </thead>
+      <tbody>
+      <ng-container *ngFor="let audit of auditDetails">
+        <tr (click)="openAuditContentModal(audit)" class="table-clickable-row">
+          <td>{{audit.userName}}</td>
+          <td>{{audit.userFirstName}}</td>
+          <td>{{audit.userLastName}}</td>
+          <td>
+            {{auditMainCategoryConst[audit.auditMainCategory]}}
+          </td>
+          <td>
+            {{auditSubCategoryConst[audit.auditSubCategory]}}
+          </td>
+          <td>{{audit.auditedDateTimeStr}}</td>
+        </tr>
+      </ng-container>
+      </tbody>
+    </table>
+  </div>
+    <app-paginator
+      [pageIndex]="pageSize.pageIndex"
+      [length]="pageSize.length"
+      [pageSize]="pageSize.pageSize"
+      [pageSizeOptions]="pageSize.pageSizeOptions"
+      (page)="onPageEvent($event)"
+    ></app-paginator>
+  
+</ng-container>

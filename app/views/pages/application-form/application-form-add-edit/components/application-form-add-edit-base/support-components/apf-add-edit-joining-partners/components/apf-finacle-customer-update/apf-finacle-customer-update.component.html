@@ -1,0 +1,23 @@
+<mdb-card-body class="custom-card-body">
+  <app-apf-finacle-customer-address-add-edit
+    [finacleCustomerAddressForm]="finacleCustomerUpdateForm">
+  </app-apf-finacle-customer-address-add-edit>
+
+  <app-apf-finacle-customer-contact-add-edit
+    [finacleCustomerTelephoneForm]="finacleCustomerUpdateForm">
+  </app-apf-finacle-customer-contact-add-edit>
+
+  <form [formGroup]="finacleCustomerUpdateForm">
+    <div class="md-form width-50 m-top-12px">
+      <input mdbValidate
+             type="text"
+             id="emailAddress"
+             maxlength="200"
+             formControlName="emailAddress"
+             class="form-control"
+             mdbInput
+      >
+      <label for="emailAddress">Email Address</label>
+    </div>
+  </form>
+</mdb-card-body>

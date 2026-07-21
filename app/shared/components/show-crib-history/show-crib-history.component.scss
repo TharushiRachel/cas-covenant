@@ -1,0 +1,60 @@
+.custom-heading {
+  text-align: center !important;
+}
+
+.custom-body {
+  padding: 12px;
+}
+
+
+.cta-btn {
+  padding: .4rem .7rem;
+  font-size: .8rem;
+  color: unset;
+  margin: 2px;
+  box-shadow: unset !important;
+}
+
+
+.custom-crib-report-table {
+
+  th {
+    text-align: center !important;
+    font-weight: bold;
+  }
+
+  tr {
+    height: 35px !important;
+  }
+
+  td, th {
+    padding: 0px 2px 0px 2px !important;
+    vertical-align: middle !important;
+    text-align: center !important;
+  }
+
+  thead tr, thead th {
+    padding: 0px 2px 0px 2px !important;
+    background-color: unset;
+    vertical-align: middle !important;
+    text-align: center !important;
+  }
+
+  tbody tr, tbody th {
+    padding: 0px 2px 0px 2px !important;
+    background-color: unset;
+    vertical-align: middle !important;
+    text-align: center !important;
+  }
+
+  padding: unset !important;
+  border-spacing: 0px;
+  -webkit-border-horizontal-spacing: 0px;
+  -webkit-border-vertical-spacing: 0px;
+  border-collapse: collapse;
+  background-color: unset;
+}
+
+.selected-data {
+  color: cornflowerblue;
+}

@@ -1,0 +1,76 @@
+<div class="m-0 p-0">
+
+    <div class="row d-flex justify-content-end" *ngIf="isActionEnabled()">
+
+        <button type="button" mdbBtn color="secondary" size="sm" class="waves-light"
+            (click)="handleOpenApplicationForm()" *ngIf="isActionEnabled() && isAllowedParties()">
+            Generate Digitalize Application
+        </button>
+
+
+        <button type="button" mdbBtn color="secondary" size="sm" class="waves-light" [disabled]="!documentContent"
+            (click)="editApplicationForm()" *ngIf="isEditEnabled">
+            Edit Digitalize Application
+        </button>
+
+        <button type="button" mdbBtn color="info" size="sm" class="waves-light" *ngIf="documentContent"
+            (click)="cancelApplicationForm()">
+            Cancel
+        </button>
+
+        <!-- <button type="button" mdbBtn color="primary" size="sm" class="waves-light">
+            Add Application
+        </button> -->
+    </div>
+    <div class="col-md-12 border border-1 p-4" style="max-height: 65vh; overflow-y: auto;" *ngIf="isActionEnabled()">
+        <ng-container *ngIf="documentContent !== ''; else emptyDocumentContent">
+            <div class="doc-content" [innerHtml]="documentContent | safeHtml"></div>
+        </ng-container>
+        <ng-template #emptyDocumentContent>
+            <div class="m-0 p-0 text-align-center">
+                <strong>There are no template found or select!</strong>
+            </div>
+        </ng-template>
+    </div>
+
+    <ng-container>
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr style="height: 30px" class="table-heading-color">
+                        <th style="width: 200px;">Application Name</th>
+                        <th style="width: 200px;">Remark</th>
+                        <th style="width: 200px;">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let data of digitalApplications; let i=index">
+                        <td>Application #{{ i + 1 }}</td>
+                        <td>
+                            {{ data.createdBy }} on
+                            {{ data.createdDate | date:'dd MMM yyyy, hh:mm a' }}
+                        </td>
+                        <td>
+                            <button class="btn btn-sm" (click)="getDigitalApplicationsById(data.digitalApplicationID)"
+                                *ngIf="isActionEnabled();" mdbBtn type="button" color="secondary">
+                                <i class="fas fa-edit"></i> Edit
+                            </button>
+                            <button (click)="viewDocument(data.digitalApplicationID)" mdbBtn type="button"
+                                color="secondary" class="medium-button btn" mdbWavesEffect *ngIf="isActionEnabled()">
+                                <mdb-icon fas icon="fas fa-eye" aria-hidden="true"></mdb-icon>
+                            </button>
+                            <button (click)="downloadDocument(data.digitalApplicationID)" mdbBtn type="button"
+                                color="success" class="medium-button btn" mdbWavesEffect>
+                                <mdb-icon fas icon="fas fa-download" aria-hidden="true"></mdb-icon>
+                            </button>
+                            <button (click)="deleteDigitalApplication(data.digitalApplicationID)" mdbBtn type="button"
+                                color="danger" class="medium-button btn" mdbWavesEffect *ngIf="isActionEnabled()">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </ng-container>
+</div>

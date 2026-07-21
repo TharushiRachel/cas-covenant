@@ -1,0 +1,156 @@
+<div class="modal-header modal-topic">
+  <button type="button" class="close pull-right" aria-label="Close" (click)="onNoClick()">
+    <span aria-hidden="true">×</span>
+  </button>
+  <h4 class="modal-title w-100 heading-align font-weight-bold" id="myModalLabel">Create Application Form</h4>
+</div>
+<div class="modal-body">
+  <form [formGroup]="applicationCreateForm" class="width-100" id="form-div">
+
+    <div class="d-flex flex-row justify-content-start width-100 m-bottom-10px">
+
+      <div class="md-form width-30">
+        <mdb-select
+          [options]="identityOptionSelect"
+          formControlName="identificationType"
+          id="identificationType"
+          class="mt-8p"
+          label="Identification Type">
+        </mdb-select>
+        <mdb-error *ngIf="formErrors.identificationType.required">Identification Type required</mdb-error>
+      </div>
+
+      <div class="md-form width-30 mt-12p">
+        <input mdbValidate
+               type="text"
+               id="identificationNumber"
+               maxlength="200"
+               formControlName="identificationNumber"
+               class="form-control"
+               mdbInput
+        >
+        <label for="identificationNumber">Identification No *</label>
+      </div>
+
+      <!--<div class="md-form width-30 ml-5"> -->
+      <div class="d-flex w-23-p justify-content-between p-1">
+         <input type="radio" class="form-check-input"
+                formControlName="type"
+                id="{{basicInformationTypeConst.PERSONAL}}" [value]="basicInformationTypeConst.PERSONAL"
+                name="type">
+         <label class="form-check-label"
+                for="{{basicInformationTypeConst.PERSONAL}}">{{basicInformationType.PERSONAL}}</label>
+
+         <input type="radio" class="form-check-input"
+                formControlName="type"
+                id="{{basicInformationTypeConst.BUSINESS}}" [value]="basicInformationTypeConst.BUSINESS"
+                name="type">
+         <label class="form-check-label m-left-5p"
+                for="{{basicInformationTypeConst.BUSINESS}}">{{basicInformationType.BUSINESS}}</label>
+
+
+         <input type="radio" class="form-check-input"
+                formControlName="type"
+                id="{{basicInformationTypeConst.CORPORATE}}" [value]="basicInformationTypeConst.CORPORATE"
+                name="type">
+         <label class="form-check-label m-left-5p"
+                for="{{basicInformationTypeConst.CORPORATE}}">{{basicInformationType.CORPORATE}}</label>
+       </div>
+
+     </div>
+
+    <div class="d-flex w-23-p justify-content-between p-1">
+      <input type="radio" class="form-check-input"
+             formControlName="leadFsType"
+             id="leadFsTypeOther" [value]="leadFsTypeConst.OTHER"
+             name="leadFsType">
+      <label class="form-check-label" for="leadFsTypeOther">Other</label>
+      <input type="radio" class="form-check-input"
+             formControlName="leadFsType"
+             id="leadFsTypeLease" [value]="leadFsTypeConst.LEASE"
+             name="leadFsType">
+      <label class="form-check-label" for="leadFsTypeLease">Lease</label>
+      <input type="radio" class="form-check-input"
+             id="leadFsTypeOneOff" [value]="leadFsTypeConst.ONEOFF"
+             formControlName="leadFsType"
+             name="leadFsType">
+      <label class="form-check-label" for="leadFsTypeOneOff">One-off</label>
+      <input type="radio" class="form-check-input"
+             id="leadFsTypeTod" [value]="leadFsTypeConst.TOD"
+             formControlName="leadFsType"
+             name="leadFsType">
+      <label class="form-check-label" for="leadFsTypeTod">TOD</label>
+    </div>
+
+   <!--  <div class="d-flex flex-row justify-content-start width-100 m-bottom-10px" *ngIf="showCribReportHtmlContent()">
+       <div class="md-form width-30">
+         <mdb-select
+           [options]="optionsCribStatusSelect"
+           formControlName="cribStatus"
+           required="cribStatus"
+           id="cribStatus"
+           class="mt-8p"
+           label="CRIB Status"></mdb-select>
+         <mdb-error *ngIf="formErrors.cribStatus.required">CRIB Status required</mdb-error>
+       </div>
+       <div class="md-form width-30">
+         <mdb-date-picker class="form-control"
+                          style="border: none !important;"
+                          id="CRIBDate"
+                          formControlName="CRIBDate"
+                          [options]="myDatePickerOptions"
+                          [inline]="true"
+         ></mdb-date-picker>
+         <mdb-error *ngIf="formErrors.CRIBDate.required">Required</mdb-error>
+       </div>
+     </div>-->
+
+    <div class="md-form m-top-10px m-bottom-10px w-100-p">
+      <label for="comment" style="color: black"></label>
+      <textarea type="text"
+                id="comment"
+                class="form-control rounded-0 comment-area"
+                maxlength="4000"
+                placeholder="Comment here..."
+                formControlName="comment"
+                appTextAreaAutoHeight
+                mdbInput></textarea>
+
+      <mdb-error *ngIf="formErrors.comment.maxlength">Maximum length for Comment
+        is {{formErrors.comment.maxlength.requiredLength}}</mdb-error>
+    </div>
+
+   <!-- <ng-container *ngIf="showCribReportHtmlContent()">
+      <div class="d-flex flex-column justify-content-center width-100 m-bottom-10px custom-body">
+        <div class="text-align-center">
+          <h6 class="">CRIB Details</h6>
+        </div>
+        <div id="printContentDiv" [innerHTML]="htmlContent | safeHtml"></div>
+      </div>
+
+      <div class="d-flex flex-row justify-content-end width-100 m-bottom-10px">
+        <button
+          type="button" mdbBtn color="light" class="btn-sm relative waves-light" mdbWavesEffect
+          (click)="moveUp()">Move up
+        </button>
+      </div>
+    </ng-container>-->
+  </form>
+</div>
+<div class="modal-footer modal-end">
+  <button
+    type="button" mdbBtn color="light" class="btn-sm relative waves-light" mdbWavesEffect
+    (click)="onNoClick()">Cancel
+  </button>
+ <!-- <button
+    *ngIf="!applicationForm.applicationFormID"
+    type="button" mdbBtn color="danger" class="btn-sm relative waves-light" mdbWavesEffect
+    [disabled]="!isValid()" (click)="createApplicationForm(applicationFormCurrentStatusConst.DECLINED)">Decline
+  </button>-->
+  <button
+    *ngIf="!applicationForm.applicationFormID"
+    type="button" mdbBtn color="info" class="btn-sm relative waves-light" mdbWavesEffect
+    [disabled]="!isValid()" (click)="createApplicationForm(applicationFormCurrentStatusConst.DRAFT)">Draft
+  </button>
+</div>
+

@@ -1,0 +1,138 @@
+<div class="modal-body mx-3 modal-detail form-margin my-4">
+
+  <ng-container *ngIf="showForwardDocsButton()">
+    <div class="d-flex justify-content-end mb-3">
+      <button mdbBtn type="button" color="secondary" (click)="ForwardBCCDocs()" class="btn-width" size="sm"
+        data-toggle="tooltip" data-placement="bottom" [title]="'Forward Docs'" mdbWavesEffect>
+        <span>Forward Docs</span>
+      </button>
+    </div>
+  </ng-container>
+
+  <div class="d-flex justify-content-end">
+    <ng-container *ngIf="showAuthorizeDocsButton()">
+      <div class="d-flex justify-content-end mb-3">
+        <button mdbBtn type="button" color="success" (click)="authorizeDocs()" class="btn-width" size="sm"
+          data-toggle="tooltip" data-placement="bottom" [title]="'Authorize Docs'" mdbWavesEffect>
+          <span>Authorize Docs</span>
+        </button>
+      </div>
+
+      <div class="d-flex justify-content-end mb-3">
+        <button mdbBtn type="button" color="danger" (click)="rejectDocs()" class="btn-width" size="sm"
+          data-toggle="tooltip" data-placement="bottom" [title]="'Authorize Docs'" mdbWavesEffect>
+          <span>Reject Docs</span>
+        </button>
+      </div>
+
+    </ng-container>
+
+    <!-- <ng-container *ngIf="showAuthorizeDocsButton()">
+      <div class="d-flex justify-content-end mb-3">
+        <button mdbBtn type="button" color="secondary" (click)="authorizeDocs()" class="btn-width" size="sm" data-toggle="tooltip"
+          data-placement="bottom"  [title]="'Authorize Docs'"
+          mdbWavesEffect >
+          <span>Reject Docs</span>
+        </button>
+      </div>
+    </ng-container> -->
+  </div>
+
+  <ng-container *ngIf="showUploadForm">
+    <div class="row">
+      <div class="col-md-4">
+        <div class="card border-dark mb-3">
+          <div class="card-body">
+            <div class="d-flex flex-row w-100-p flex-wrap justify-content-between align-items-center">
+              <label class="mr-3 font-weight-bold">Meeting Minute</label>
+              <button type="button" class="btn btn-light cft-btn px-sm-2" mdbTooltip="Add Doc" placement="left"
+                (click)="openModalSupportDocumentUpload('Meeting Minute')" [disabled]="isExistsMeetingMinute()">
+                <i class="fas fa-plus" aria-hidden="true"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="card border-dark mb-3">
+          <div class="card-body">
+            <div class="d-flex flex-row w-100-p flex-wrap justify-content-between align-items-center">
+              <label class="mr-3 font-weight-bold">Cover Page</label>
+              <button type="button" class="btn btn-light cft-btn px-sm-2" mdbTooltip="Add Doc" placement="left"
+                (click)="openModalSupportDocumentUpload('Cover Page')" [disabled]="isExistsCoverPage()">
+                <i class="fas fa-plus" aria-hidden="true"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="card border-dark mb-3">
+          <div class="card-body">
+            <div class="d-flex flex-row w-100-p flex-wrap justify-content-between align-items-center">
+              <label class="mr-3 font-weight-bold">Other</label>
+              <button type="button" class="btn btn-light cft-btn px-sm-2" mdbTooltip="Add Doc" placement="left"
+                (click)="openModalSupportDocumentUpload('Other')">
+                <i class="fas fa-plus" aria-hidden="true"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+
+  <div class="table-responsive my-4">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Document Name</th>
+          <th>Uploaded By</th>
+          <th>Date & Time</th>
+          <th>Remark</th>
+          <th class="text-align-center">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-container *ngIf="facilityPaper.fpBccList[0]">
+          <ng-container *ngFor="let document of facilityPaper.fpBccList[0].fpBccDocumentList">
+            <tr class="">
+              <td>{{ document.documentName }}
+                <span *ngIf="document.approveStatus == 'PENDING'" class="badge badge-warning ml-2">Pending</span>
+                <span *ngIf="document.approveStatus == 'APPROVED'" class="badge badge-success ml-2">Approved</span>
+                <span *ngIf="document.approveStatus == 'REJECTED'" class="badge badge-danger ml-2">Rejected</span>
+              </td>
+              <td>{{ document.uploadedUserDisplayName }}</td>
+              <td>{{ document.docStorageDTO.lastUpdatedDateStr }}</td>
+              <td>{{ document.remark }}</td>
+              <td class="text-align-center width-15">
+                <div>
+                  <ng-container *ngIf="isCheckedPdf(document)">
+                    <button class="btn btn-sm btn-success cta-btn" type="button" mdbWavesEffect
+                      (click)="onDownloadDoc(document)" mdbTooltip="View Doc" placement="left">
+                      <mdb-icon fas icon="fas fa-eye" aria-hidden="true"></mdb-icon>
+                    </button>
+                  </ng-container>
+
+                  <!-- <button class="btn btn-sm btn-success cta-btn" type="button" mdbWavesEffect
+                            (click)="downloadDocument(document)"
+                            mdbTooltip="Download Doc" placement="left">
+                      <mdb-icon fas icon="fa fa-download" aria-hidden="true"></mdb-icon>
+                    </button> -->
+
+                  <ng-container *ngIf="document.approveStatus != 'APPROVED'">
+                    <button class="btn btn-sm btn-danger cta-btn delete-button" type="button" mdbWavesEffect
+                      [hidden]="!showUploadForm" (click)="remove(document)" mdbTooltip="Delete Doc" placement="left">
+                      <mdb-icon fas icon="trash-alt" aria-hidden="true"></mdb-icon>
+                    </button>
+                  </ng-container>
+                </div>
+              </td>
+            </tr>
+          </ng-container>
+        </ng-container>
+    </table>
+  </div>
+</div>

@@ -1,0 +1,47 @@
+<div class="row d-flex mx-0 my-3 border border-1 rounded py-2"
+    style="    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075) !important;">
+    <ng-container *ngFor="let selector of selectorList;let i=index;">
+        <div class="col-md-4 my-2" *ngIf="selector.options.length > 0">
+            <div class="option-item">
+                <mdb-icon fas icon="trash-alt" class="rmv-icon"
+                    *ngIf="isRemoveShow(i) && isUserAllowAction() && !isRiskApproved" (click)="handleRemove(selector)">
+                </mdb-icon>
+                <div class="md-form">
+                    <mdb-select [options]="selector.options" class="form-control py-0" label="{{selector.label}}"
+                        [(ngModel)]="selector.value" (ngModelChange)="handleSelectCategory($event,selector.id)"
+                        [disabled]="selector.disabled || isRiskApproved">
+                    </mdb-select>
+                </div>
+            </div>
+        </div>
+    </ng-container>
+
+    <div class="col-md-9 my-2 row d-flex flex-row align-items-center mx-0">
+        <ng-container *ngIf="selectedScoreItem">
+            <span class="ml-0 mr-2" style="font-weight: 600;font-size: 16px;">{{selectedScoreItem.description}}</span>
+            <mdb-badge [default]="false" [style.background-color]="getRiskGradingBg(selectedScoreItem.score)"
+                style="color: #fff !important; font-size: 16px;border-radius: 4px;">
+                {{selectedScoreItem.score}}
+            </mdb-badge>
+
+            <div class="border border-2 p-1 rounded mx-2" *ngIf="approvedESGScore"
+                style="border-color: #8c998f !important;">
+                <span class="ml-0 mr-2" style="font-weight: 600;font-size: 16px;">Finalized ESG Risk Score</span>
+                <mdb-badge [default]="false" [style.background-color]="getRiskGradingBg(approvedESGScore)"
+                    style="color: #fff !important; font-size: 16px;border-radius: 4px;">
+                    {{approvedESGScore}}
+                </mdb-badge>
+            </div>
+        </ng-container>
+    </div>
+    <div class="col-md-3 text-align-end my-2" *ngIf="isAddScoreEnabled() && selectorList.length > 0 && !isRiskApproved">
+        <button type="button" (click)="removeRiskScore()" class="medium-button btn-sm btn-outline-primary relative-icon"
+            mdbBtn [disabled]="isSaveEnabled()" *ngIf=isRemoveEnabled()>
+            Remove
+        </button>
+        <button type="button" (click)="handleSave()" class=" medium-button btn-sm btn-outline-info relative-icon "
+            mdbBtn [disabled]="!isSaveEnabled()" *ngIf=isUserAllowAction()>
+            Save
+        </button>
+    </div>
+</div>

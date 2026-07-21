@@ -1,0 +1,117 @@
+<div class="d-flex flex-row justify-content-between page-header">
+  <div class="d-flex flex-row align-items-center">
+    <h5><i class="fas fa-newspaper header-icon"></i>Transfer ACAE Paper(s)</h5>
+  </div>
+</div>
+
+<div class="page-search-section section display-flex flex-column jc-start p-2 pt-3 pb-3 default-box-styles align-start">
+  <form class="display-flex w-100-p flex-row jc-start ai-center flex-wrap flex-2-gap"
+    [formGroup]="acaeTransferSearchForm">
+    <div class="md-form w-18-p min-width-120">
+      <input type="text" id="solId" formControlName="solId" class="form-control" mdbInput />
+      <label for="solId">Branch Code/User Id</label>
+    </div>
+    <div class="md-form w-18-p min-width-120">
+      <mdb-date-picker class="form-control" id="fromDate" formControlName="fromDate" [options]="myDatePickerOptions"
+        [placeholder]="'From'" [inline]="true" [(ngModel)]="fromDate" required></mdb-date-picker>
+    </div>
+    <div class="md-form w-18-p min-width-120">
+      <mdb-date-picker class="form-control" id="toDate" formControlName="toDate" [options]="myDatePickerOptions"
+        [placeholder]="'To'" [inline]="true"[(ngModel)]="toDate" required></mdb-date-picker>
+    </div>
+    <div class="display-flex flex-1 flex-row jc-end ai-center">
+      <button (click)="doSearch()" type="button" class=" medium-button btn btn-info" mdbBtn>Search</button>
+      <!-- <button (click)="clearSearch()" class=" medium-button btn btn-outline-info clear-btn" mdbBtn type="button">
+        Clear
+      </button> -->
+      <button (click)="openTransferOptionModel()" class="action-button-padding btn-outline-success btn-sm" mdbBtn
+        type="button" [disabled]="!isTransferBtnEnable" mdbWavesEffect>
+        Transfer
+      </button>
+    </div>
+  </form>
+</div>
+
+<div *ngIf="acaeTransferData.length == 0" class="alert alert-warning" role="alert">
+  No Acae Record(s) Found !
+</div>
+
+<ng-container *ngIf="acaeTransferData?.length > 0">
+
+  <ng-container *ngFor="let userDetails of acaeTransferData">
+    <fieldset class="border p-3">
+      <legend class="w-auto">{{userDetails.firstName}} {{userDetails.lastName}}</legend>
+      <!-- <pre> -->
+      <br />
+      <div class="section table-responsive mb-15p">
+        <table class="table">
+          <tr style="background: #e6e6e3;">
+            <th scope="col" class="width-5"></th>
+            <th scope="col" class="width-20">Reference Number</th>
+            <th scope="col" class="width-30">Created On</th>
+            <th scope="col" class="width-30">Created By</th>
+            <th scope="col" class="width-15">ACAE Count</th>
+          </tr>
+
+          <ng-container *ngFor="let item of userDetails['refRecords']">
+            <tr style="background: #ececea;" class="table-clickable-row"
+              (click)="toggleRow(userDetails.userNo,item.refNo)">
+              <td scope="col" class="width-5"></td>
+              <td scope="col" class="width-20">{{ item.refNumber ||"-" }}</td>
+              <td scope="col" class="width-30">{{ item.createdOn ||"-" }}</td>
+              <td scope="col" class="width-30">{{ item.createdBy ||"-" }}</td>
+              <th scope="col" class="width-15">{{ item.acaeCount || "-"}}</th>
+            </tr>
+
+            <ng-container *ngIf="item['isExpanded']"
+              [@detailExpand]="item['isExpanded'] == true ? 'expanded' : 'collapsed'">
+              <ng-container *ngIf="item['acaeRecords']?.length > 0">
+                <tr>
+                  <!-- <td scope="col" class="width-5" style=" font-weight: bold;">
+                    <ng-container *ngIf="userDetails['isSelectEnable']">
+                      <mdb-checkbox (click)="onSelectAll($event, userDetails.userNo,item.refNo,item)" [value]="item"
+                        [checked]="item['isSelectAll']">
+                      </mdb-checkbox>
+                    </ng-container>
+                  </td> -->
+                  <td scope="col" class="width-5"></td>
+                  <td scope="col" class="width-20" style=" font-weight: bold;">Account Number</td>
+                  <td scope="col" class="width-30" style=" font-weight: bold;">Account Name</td>
+                  <td scope="col" class="width-30" style=" font-weight: bold;">Received Date</td>
+                  <td scope="col" class="width-15" style=" font-weight: bold;">Status</td>
+                </tr>
+                <ng-container *ngFor="let rec of item['acaeRecords']">
+                  <tr class="table-clickable-row">
+                    <td scope="col" class="width-5">
+                      <ng-container *ngIf="rec['isSelectEnable']">
+                        <mdb-checkbox (click)="onSelectACAERecords($event, userDetails.userNo,item.refNo,rec)"
+                          [value]="rec.isSelected" [checked]="rec['isSelected']">
+                        </mdb-checkbox>
+                      </ng-container>
+                    </td>
+                    <td scope="col" class="width-20" (click)='openModalACAEDetails(rec)'>{{ rec.accNo ||"-" }}</td>
+                    <td scope="col" class="width-30" (click)='openModalACAEDetails(rec)'>{{ rec.accName ||"-" }}</td>
+                    <td scope="col" class="width-30" (click)='openModalACAEDetails(rec)'>{{ rec.receivedDate||"-" }}
+                    </td>
+                    <td class="status-icon" class="width-15" (click)='openModalACAEDetails(rec)'>
+                      <a *ngIf="rec.isAttended ==='N'" data-toggle="tooltip" data-placement="left" class="icon-padding">
+                        <img class="status-img-width" src="assets/media/images/fpstatusicon/inprogress.png"
+                          alt="First slide">
+                      </a>
+                      <a *ngIf="rec.isAttended ==='Y'" data-toggle="tooltip" data-placement="left" class="icon-padding">
+                        <img class="status-img-width" src="assets/media/images/fpstatusicon/draft.png"
+                          alt="First slide">
+                      </a>
+                    </td>
+                  </tr>
+                </ng-container>
+              </ng-container>
+            </ng-container>
+          </ng-container>
+        </table>
+      </div>
+    </fieldset>
+    <br />
+  </ng-container>
+
+</ng-container>

@@ -1,0 +1,69 @@
+<div class="item-wrapper d-flex flex-column justify-content-start">
+  <div>
+    <h6 class="hcaption">Customer Lead History</h6>
+  </div>
+  <div *ngIf="tableDataList.length >0">
+    <div class="table-responsive">
+      <table class="table">
+        <thead>
+        <tr>
+          <ng-container *ngFor="let col of tableColumns">
+            <th scope="col">{{col}}</th>
+          </ng-container>
+        </tr>
+        </thead>
+        <tbody>
+        <ng-container *ngFor="let lead of tableDataList">
+          <tr (click)="loadLead(lead.leadID)" class="table-clickable-row">
+            <td>{{lead.leadName}}</td>
+            <td>{{lead.leadRefNumber}}</td>
+            <td>{{lead.identificationNumber ? lead.identificationNumber : '-'}}</td>
+            <td>{{lead.accountNumber ? lead.accountNumber : '-'}}</td>
+            <td>{{lead.mobileNo ? lead.mobileNo : '-'}}</td>
+            <td>{{lead.branchCode ? lead.branchCode : '-'}}</td>
+            <td>{{lead.createdDateStr ? lead.createdDateStr : '-'}}</td>
+            <td class="status-icon status-col">
+              <a *ngIf="lead.leadStatus == this.leadStatusConst.RETURNED"
+                 data-toggle="tooltip" data-placement="left" title="Returned" class="icon-padding">
+                <img class="status-img-width" src="assets/media/images/fpstatusicon/return.png" alt="Returned">
+              </a>
+
+              <a *ngIf="lead.leadStatus == this.leadStatusConst.APPROVED"
+                 data-toggle="tooltip" data-placement="left" title="Approved" class="icon-padding">
+                <img class="status-img-width" src="assets/media/images/fpstatusicon/approved.png" alt="Processed">
+              </a>
+
+              <a *ngIf="lead.leadStatus == this.leadStatusConst.SUBMITTED"
+                 data-toggle="tooltip" data-placement="left" title="Submitted" class="icon-padding">
+                <img class="status-img-width" src="assets/media/images/fpstatusicon/assigned.png" alt="Submitted">
+              </a>
+
+              <!--              Rejected-->
+              <a *ngIf="lead.leadStatus == this.leadStatusConst.DECLINED"
+                 data-toggle="tooltip" data-placement="left" title="Declined" class="icon-padding">
+                <img class="status-img-width" src="assets/media/images/fpstatusicon/decline.png" alt="Declined">
+              </a>
+
+              <!--              Drafted-->
+              <a *ngIf="lead.leadStatus == this.leadStatusConst.PENDING"
+                 data-toggle="tooltip" data-placement="left" title="Pending" class="icon-padding">
+                <img class="status-img-width" src="assets/media/images/fpstatusicon/draft.png" alt="Pending">
+              </a>
+
+
+            </td>
+            <td>{{lead.assignUserID ? lead.assignUserID : '-'}}</td>
+          </tr>
+        </ng-container>
+        </tbody>
+      </table>
+    </div>
+    <app-paginator
+      [pageIndex]="pageSize.pageIndex"
+      [length]="pageSize.length"
+      [pageSize]="pageSize.pageSize"
+      [pageSizeOptions]="pageSize.pageSizeOptions"
+      (page)="onPageEvent($event)"
+    ></app-paginator>
+  </div>
+</div>

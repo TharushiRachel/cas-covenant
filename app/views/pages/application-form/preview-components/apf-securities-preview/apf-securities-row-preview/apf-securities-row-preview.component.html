@@ -1,0 +1,66 @@
+<ng-container *ngIf="organizedSecurityList.length>0 ; else noSecurities">
+  <table class="width-100">
+    <tr>
+      <th scope="col"></th>
+      <th scope="col" class="width-80"></th>
+      <th scope="col" class="text-right width-10"></th>
+      <th scope="col"></th>
+      <th scope="col" class="text-right">Amount</th>
+    </tr>
+    <ng-container *ngFor="let security of organizedSecurityList ;let i = index">
+      <tr>
+        <td class="vertical-align-baseline">
+          <span>{{i + 1}}.</span>
+        </td>
+        <td *ngIf="security.isCommonSecurity === yesNoConst.N" class="vertical-align-baseline">
+          <pre class="security-detail">{{security.securityDetail}}</pre>
+        </td>
+        <td *ngIf="security.isCommonSecurity === yesNoConst.Y" class="vertical-align-baseline">
+          Refer to the common security <span
+          (click)="toContent(security.facilitySecurityID+security.securityCode)" class="refer-to-the">
+                                         {{security.securityCode}}
+                                         </span>
+        </td>
+        <td class="vertical-align-baseline">
+            <span class="mr-1" *ngIf="security.isCommonSecurity === yesNoConst.Y">
+              <mdb-badge default="true" [title]="'Common Security'">C</mdb-badge>
+            </span>
+          <span *ngIf="security.isCashSecurity == 'Y'">
+              <mdb-badge default="true" [title]="'Cash'">Cash</mdb-badge>
+            </span>
+        </td>
+        <td class="text-right vertical-align-baseline">
+          {{security.securityCurrency}}
+        </td>
+        <td class="text-right vertical-align-baseline">
+          {{this.getFormattedValue(security.securityAmount)}}
+        </td>
+      </tr>
+    </ng-container>
+    <tr style="height: 10px">
+    </tr>
+    <ng-container>
+      <tr *ngIf="totalIndividualSecuritiesCashAmount">
+        <td></td>
+        <td class="security-detail">
+          <b><p class="individual-security-cash-total">Total Cash Amount
+            : {{currency}} {{this.getFormattedValue(totalIndividualSecuritiesCashAmount)}}
+          </p></b>
+        </td>
+        <td></td>
+        <td></td>
+      </tr>
+    </ng-container>
+  </table>
+</ng-container>
+<ng-template #noSecurities>
+  <table class="width-100">
+    <tr>
+      <td class="vertical-align-baseline" style="width: 1px">
+        <span>#.</span>
+      </td>
+      <td colspan="4" class="text-align-start">No Securities</td>
+    </tr>
+    <tr style="height: 10px">
+  </table>
+</ng-template>

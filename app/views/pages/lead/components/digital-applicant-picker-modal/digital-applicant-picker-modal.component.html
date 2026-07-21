@@ -1,0 +1,45 @@
+<div class="modal-header" style="justify-content: center;">
+    <h5 class="modal-title" style="font-weight: bold;">Select Applicants</h5>
+    <button type="button" class="close" aria-label="Close" (click)="onCancel()">
+        <span>&times;</span>
+    </button>
+</div>
+
+<div class="modal-body" *ngIf="!loading; else loadingTpl">
+    <div class="table-responsive">
+        <table class="table table-sm">
+            <thead>
+                <tr>
+                    <th style="width:48px;">Select</th>
+                    <th>Name</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let a of parties">
+                    <td>
+                        <div class="form-check m-0">
+                            <input class="form-check-input" type="checkbox" [id]="'ap_' + a.compPartyId"
+                                [checked]="selected.has(a.compPartyId)"
+                                (change)="toggle(a.compPartyId, $event.target.checked)" />
+                            <label class="form-check-label" [for]="'ap_' + a.compPartyId"></label>
+                        </div>
+                    </td>
+                    <td>{{ a.personalName }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<ng-template #loadingTpl>
+    <div class="p-3">Loading applicants…</div>
+</ng-template>
+
+<div class="modal-footer">
+    <button type="button" mdbBtn color="light" class="relative waves-light" mdbWavesEffect size="sm"
+        (click)="onCancel()">Cancel
+    </button>
+    <button type="button" mdbBtn color="secondary" class="relative waves-light" mdbWavesEffect size="sm"
+        (click)="onNext()" [disabled]="selected.size === 0">Next
+    </button>
+</div>

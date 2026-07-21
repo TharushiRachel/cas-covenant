@@ -1,0 +1,177 @@
+<ng-container *ngIf="coveringApproval && isEqualLoginAndAssignUser() ">
+  <fieldset class="fieldset">
+    <legend class="legend">Current Information</legend>
+    <div *ngIf="coveringApproval && coveringApproval.covAppBasicInfoDTOList[0]" class="d-flex flex-wrap">
+  
+      <div class="justify-content-between width-25">
+        <label class="info-caption">Clear Balance</label>
+        <span class="width-5">:</span>
+        <span class="info-details">
+          {{ coveringApproval.covAppBasicInfoDTOList[0].clearBalance !== null && coveringApproval.covAppBasicInfoDTOList[0].clearBalance !== undefined 
+             ? (coveringApproval.covAppBasicInfoDTOList[0].tranCurrency + ' ' + this.getFormattedValue(coveringApproval.covAppBasicInfoDTOList[0].clearBalance))
+             : '-' }}
+        </span>
+      </div>
+    
+      <div class="justify-content-between width-25">
+        <label class="info-caption">Float Balance</label>
+        <span class="width-5">:</span>
+        <span class="info-details">
+          {{ coveringApproval.covAppBasicInfoDTOList[0].floatBalance !== null && coveringApproval.covAppBasicInfoDTOList[0].floatBalance !== undefined 
+             ? (coveringApproval.covAppBasicInfoDTOList[0].tranCurrency + ' ' + this.getFormattedValue(coveringApproval.covAppBasicInfoDTOList[0].floatBalance))
+             : '-' }}
+        </span>
+      </div>
+    
+      <div class="justify-content-between width-25">
+        <label class="info-caption">Funds Clearance</label>
+        <span class="width-5">:</span>
+        <span class="info-details">
+          {{ coveringApproval.covAppBasicInfoDTOList[0].fundsinClearing !== null && coveringApproval.covAppBasicInfoDTOList[0].fundsinClearing !== undefined 
+             ? (coveringApproval.covAppBasicInfoDTOList[0].tranCurrency + ' ' + this.getFormattedValue(coveringApproval.covAppBasicInfoDTOList[0].fundsinClearing))
+             : '-' }}
+        </span>
+      </div>
+    
+      <div class="justify-content-between width-25">
+        <label class="info-caption">Sanction Limit</label>
+        <span class="width-5">:</span>
+        <span class="info-details">
+          {{ coveringApproval.covAppBasicInfoDTOList[0].sanctionLimit !== null && coveringApproval.covAppBasicInfoDTOList[0].sanctionLimit !== undefined 
+             ? (coveringApproval.covAppBasicInfoDTOList[0].tranCurrency + ' ' + this.getFormattedValue(coveringApproval.covAppBasicInfoDTOList[0].sanctionLimit))
+             : '-' }}
+        </span>
+      </div>
+    
+    </div>
+    
+    
+
+  </fieldset>
+</ng-container>
+
+<br>
+<div>
+  <table class="table" *ngIf="coveringApprovalForm && coveringApprovalForm.length">
+    <ng-container *ngIf="(isEqualLoginAndAssignUserCheck(coveringApprovalForm).length > 0 && coveringApproval.currentStatus != 'APPROVED')">
+      <thead>
+        <tr>
+
+          <ng-container *ngFor="let col of tableColumns">
+            <th scope="col">{{ col }}</th>
+          </ng-container>
+          <th><mdb-checkbox class="chkd" [(ngModel)]="selectAll" (change)="selectAllRecords()"
+              style="margin-top: 10px"></mdb-checkbox></th>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-container *ngFor="let coveringApprovalForm of isEqualLoginAndAssignUserCheck(coveringApprovalForm)">
+          <tr class="table-clickable-row" (click)="toggleSelection(coveringApprovalForm)">
+            <td>{{ coveringApprovalForm.createdDate | date:'dd/MM/yyyy' }}</td>
+            <td>{{ coveringApprovalForm.covAppRefNumber }}
+              <ng-container *ngIf="coveringApprovalForm.isAuthorized === true ">
+                <span class="badge text-color-w ml-3p" style="background-color:red" data-toggle="tooltip"
+                  data-placement="left" [title]="'Unauthorized'">
+                  Unauthorized
+                </span>
+              </ng-container>
+            </td>
+            <!-- <td>{{ coveringApprovalForm.covAppBasicInfoDTOList[0].tranDate | date:'dd/MM/yyyy' }}</td> -->
+            <td>
+              {{ (coveringApprovalForm.covAppBasicInfoDTOList && coveringApprovalForm.covAppBasicInfoDTOList.length > 0
+              &&
+              coveringApprovalForm.covAppBasicInfoDTOList[0].tranDate) ?
+              (coveringApprovalForm.covAppBasicInfoDTOList[0].tranDate | date:'dd/MM/yyyy') : ' ' }}
+            </td>
+            <td>{{ coveringApprovalForm.covAppBasicInfoDTOList && coveringApprovalForm.covAppBasicInfoDTOList.length > 0
+              &&
+              coveringApprovalForm.covAppBasicInfoDTOList[0].branchName?
+              coveringApprovalForm.covAppBasicInfoDTOList[0].branchName : ' ' }}</td>
+            <td>{{ coveringApprovalForm.covAppBasicInfoDTOList && coveringApprovalForm.covAppBasicInfoDTOList.length > 0
+              &&
+              coveringApprovalForm.covAppBasicInfoDTOList[0].chequeNumber?
+              coveringApprovalForm.covAppBasicInfoDTOList[0].chequeNumber : ' ' }}</td>
+            <td>
+              {{ coveringApprovalForm.covAppBasicInfoDTOList && coveringApprovalForm.covAppBasicInfoDTOList.length > 0
+              &&
+              coveringApprovalForm.covAppBasicInfoDTOList[0].tranCurrency + " "+
+              this.getFormattedValue(coveringApprovalForm.covAppBasicInfoDTOList[0].tranAmount) ?
+              coveringApprovalForm.covAppBasicInfoDTOList[0].tranCurrency + " "+
+              this.getFormattedValue(coveringApprovalForm.covAppBasicInfoDTOList[0].tranAmount) : ' ' }}
+            </td>
+            <td>{{ coveringApprovalForm.covAppBasicInfoDTOList && coveringApprovalForm.covAppBasicInfoDTOList.length > 0
+              &&
+              coveringApprovalForm.covAppBasicInfoDTOList[0].tranStatus ?
+              coveringApprovalForm.covAppBasicInfoDTOList[0].tranStatus : ' ' }}</td>
+            <td>{{ coveringApprovalForm.covAppBasicInfoDTOList && coveringApprovalForm.covAppBasicInfoDTOList.length > 0
+              &&
+              coveringApprovalForm.covAppBasicInfoDTOList[0].tranCurrency + " "+
+              this.getFormattedValue(coveringApprovalForm.covAppBasicInfoDTOList[0].clearBalance)?
+              coveringApprovalForm.covAppBasicInfoDTOList[0].tranCurrency + " "+
+              this.getFormattedValue(coveringApprovalForm.covAppBasicInfoDTOList[0].clearBalance) :
+              ' ' }}</td>
+            <td>{{ coveringApprovalForm.covAppBasicInfoDTOList && coveringApprovalForm.covAppBasicInfoDTOList.length > 0
+              &&
+              coveringApprovalForm.covAppBasicInfoDTOList[0].tranCurrency + " "+
+              this.getFormattedValue(coveringApprovalForm.covAppBasicInfoDTOList[0].asAtDateAcctBalance)?
+              coveringApprovalForm.covAppBasicInfoDTOList[0].tranCurrency + " "+
+              this.getFormattedValue(coveringApprovalForm.covAppBasicInfoDTOList[0].asAtDateAcctBalance) :
+              ' ' }}</td>
+
+
+            <td (click)="openComment(coveringApprovalForm)">
+              {{ coveringApprovalForm.covAppCommentDTOList &&
+              coveringApprovalForm.covAppCommentDTOList.length > 0 &&
+              coveringApprovalForm.covAppCommentDTOList[coveringApprovalForm.covAppCommentDTOList.length -
+              1].userComment ?
+              coveringApprovalForm.covAppCommentDTOList[coveringApprovalForm.covAppCommentDTOList.length -
+              1].userComment : ' ' }}
+              <span class="clickable-text">...</span>
+            </td>
+            <td style="display: none;">{{ coveringApprovalForm.useridList }}</td>
+            <td><mdb-checkbox [(ngModel)]="coveringApprovalForm.selected" (change)="onSelectionChange()"
+                (click)="$event.stopPropagation()"></mdb-checkbox>
+            </td>
+          </tr>
+        </ng-container>
+      </tbody>
+    </ng-container>
+  </table>
+ <ng-container *ngIf="coveringApprovalForm && isEqualLoginAndAssignUserCheck(coveringApprovalForm).length > 0 && coveringApproval.currentStatus != 'APPROVED'">
+    <div class="d-flex relative flex-row justify-content-end w-100-p">
+      <div class="d-flex justify-content-center flex-row ">
+        <ng-container
+          *ngIf="coveringApprovalForm && isEqualLoginAndAssignUserFiftyAbove() && isEqualLoginAndAssignUsers()">
+          <button class="aaction-button-padding btn-outline-info btn-sm modal-footer modal-end" mdbBtn mdbWavesEffect
+            type="button" (click)="changeStatusCOVSelectedReturn($event,covStatusConst.CANCEL)">
+            Return
+          </button>
+        </ng-container>
+        <ng-container
+          *ngIf="coveringApprovalForm && isEqualLoginAndAssignUserFiftyAbove() && isEqualLoginAndAssignUsers()">
+          <button class="action-button-padding btn-outline-success btn-sm modal-footer modal-end" mdbBtn mdbWavesEffect
+            type="button" (click)="changeStatusCOVSelectedForward($event, covStatusConst.IN_PROGRESS)">
+            Forward
+          </button>
+        </ng-container>
+        <ng-container
+          *ngIf="coveringApprovalForm && showForwardButton(coveringApproval) && isEqualLoginAndAssignUsers() && isEqualLoginAndAssignUser()">
+          <button data-placement="bottom" mdbBtn type="button" mdbTooltip="Unauthorized / Dispute Covering Approval"
+            class="action-button-padding btn-outline-info btn-sm" outline="true" mdbWavesEffect
+            (click)="UnauthCOV($event,covStatusConst.IN_PROGRESS)">
+            <span>Unauthorized / Dispute</span>
+          </button>
+        </ng-container>
+        <ng-container
+          *ngIf="coveringApprovalForm && isEqualLoginAndAssignUserFiftyAbove() && isEqualLoginAndAssignUsers()">
+          <!-- <ng-container *ngIf="isEqualLoginAndAssignUser()"> -->
+          <button class="save-btn relative waves-light modal-footer modal-end" color="success" mdbBtn mdbWavesEffect
+            type="button" [disabled]="disableApproveButton"
+            (click)="changeStatusCOVSelectedApprove($event, covStatusConst.APPROVED)">
+            Approve
+          </button>
+        </ng-container>
+      </div>
+    </div>
+  </ng-container>
+</div>

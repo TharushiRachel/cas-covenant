@@ -1,0 +1,28 @@
+<div class="m-0 p-0">
+    <ng-container *ngIf="comments.length != 0">
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr style="height: 30px" class="table-heading-color">
+                        <th style="width: 200px;">User</th>
+                        <th>Branch/Department</th>
+                        <th style="width: 200px;">Date</th>
+                        <th>Comment</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <ng-container *ngFor="let comment of comments">
+                        <tr>
+                            <td>{{comment.createdUserDisplayName}}</td>
+                            <td>{{getBranchDepartmentName(comment.createdUserDivCode)}}</td>
+                            <td>{{comment.createdDate}}</td>
+                            <td>{{comment.userComment}}</td>
+                            <td>{{comment.actionMessage}}</td>
+                        </tr>
+                    </ng-container>
+                </tbody>
+            </table>
+        </div>
+    </ng-container>
+</div>

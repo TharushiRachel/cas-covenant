@@ -1,0 +1,55 @@
+.th{
+    min-width: 100px
+}
+.tr{
+    font-size: 11px
+}
+.italic-text{
+    font-style: italic;
+}
+
+.d-flex {
+    display: flex;
+    align-items: center; 
+}
+
+.ml-2 {
+    margin-left: 0.5rem; 
+}
+
+.account-add-dropdown {
+    margin: 10px;
+
+  }
+  
+  
+  .account-add-dropdown select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    outline: none;
+    box-sizing: border-box;
+    appearance: none;
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 15px;
+    cursor: pointer;
+  }
+  
+  .account-add-dropdown select option {
+    padding: 10px;
+  }
+  
+  .account-add-dropdown select option:checked {
+    background-color: #f0f0f0;
+  }
+  
+  .modal-height-80-p {
+    height: 60%; 
+  }
+
+  .custom-spinner {
+    color: rgb(53, 136, 231); 
+    border-top-color: rgb(53, 136, 231); 
+  }

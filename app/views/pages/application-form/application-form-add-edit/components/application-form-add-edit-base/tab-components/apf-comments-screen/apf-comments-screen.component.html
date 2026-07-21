@@ -1,0 +1,38 @@
+<mdb-card>
+  <mdb-card-body class="custom-card-body">
+    <div class="d-flex flex-row justify-content-end w-100-p">
+      <div>
+        <ng-container *ngIf="isAbleToAddEdit()">
+          <button class="btn btn-sm btn-secondary cta-btn" type="button" mdbWavesEffect
+                  (click)="saveOrUpdateComment($event)"
+                  mdbTooltip="Add New Comment" placement="left">
+            <mdb-icon fas icon="fas fa-plus" aria-hidden="true"></mdb-icon>
+          </button>
+        </ng-container>
+      </div>
+    </div>
+    <div class="d-flex flex-column justify-content-center w-100-p">
+      <ng-container *ngIf="comments.length>0; else noData">
+        <app-common-user-comment
+          [comments]="comments"
+          [modifiedDateStr]="applicationForm.modifiedDateStr ? applicationForm.modifiedDateStr : applicationForm.createdDateStr"
+          [branchList]="allBanksDetails"
+          [isAbleToAddEdit]="isAbleToAddEdit()"
+          (updateComment)="saveOrUpdateComment($event)">
+        </app-common-user-comment>
+      </ng-container>
+
+      <ng-template #noData>
+        <table class="table">
+          <tr>
+            <th class="text-align-center">
+              <p class="no-data-message">
+                No Comments.
+              </p>
+            </th>
+          </tr>
+        </table>
+      </ng-template>
+    </div>
+  </mdb-card-body>
+</mdb-card>

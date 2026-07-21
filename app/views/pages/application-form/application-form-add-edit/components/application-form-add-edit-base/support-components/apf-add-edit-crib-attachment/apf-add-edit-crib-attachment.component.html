@@ -1,0 +1,60 @@
+<div class="modal-header  modal-topic">
+  <h4 class="modal-title w-100 font-weight-bold">CRIB File Upload</h4>
+  <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="mdbModalRef.hide()">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
+<div class="modal-body mx-3 modal-detail form-margin">
+  <form class="d-flex p-2 flex-column justify-content-start align-items-start w-100-p" [formGroup]="componentForm">
+
+    <div class="d-flex w-100-p  ">
+      <div class="md-form  w-100-p">
+        <mdb-select
+          [options]="optionsCribStatusSelect"
+          formControlName="cribStatus"
+          required="cribStatus"
+          id="cribStatus"
+          placeholder="CRIB Status"></mdb-select>
+        <label for="cribStatus">CRIB Status *</label>
+        <mdb-error *ngIf="formErrors.cribStatus.required">CRIB Status required</mdb-error>
+      </div>
+      <div class="md-form  w-100-p mt-3p">
+        <label for="cribDateStr" style="margin-top: -20px">Issued Date *</label>
+        <mdb-date-picker class="form-control"
+                         id="cribDateStr"
+                         formControlName="cribDateStr"
+                         [options]="myDatePickerOptions"
+                         [inline]="true"
+        ></mdb-date-picker>
+        <mdb-error class="m-top-20px" *ngIf="formErrors.cribDateStr.required">CRIB Issue Date required</mdb-error>
+      </div>
+    </div>
+    <div class="d-flex w-100-p">
+      <div class="md-form w-100-p m-top-10px mb-25p">
+        <textarea type="text"
+                  id="remarks"
+                  class="form-control comment-area"
+                  formControlName="remark"
+                  placeholder="Remark"
+                  appTextAreaAutoHeight
+                  mdbInput></textarea>
+      </div>
+    </div>
+
+    <div class="input-group w-100-p" style="position:relative;">
+      <input type="file" class="custom-file-input" id="inputGroupFile01"
+             (change)="selectFile($event)">
+      <label class="custom-file-label" for="inputGroupFile01">
+        {{fileToUpload ? fileToUpload.name : 'Choose file'}}
+      </label>
+
+      <mdb-error *ngIf="fileUploadError.hasError">{{fileUploadError.errorMessage}}</mdb-error>
+    </div>
+  </form>
+</div>
+<div class="modal-footer modal-end">
+  <button type="button" mdbBtn color="secondary" class="relative waves-light mr-24p" mdbWavesEffect size="sm"
+          [disabled]="componentForm.invalid || !isValidUpload()" (click)="addCribDocument()">Upload
+  </button>
+</div>

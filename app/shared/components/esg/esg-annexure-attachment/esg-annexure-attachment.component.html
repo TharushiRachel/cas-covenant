@@ -1,0 +1,35 @@
+<div class="modal-header modal-topic">
+    <h4 class="modal-title w-100 font-weight-bold">
+        {{ mode === 'add' ? 'Add ESG Attachment' : 'Edit ESG Attachment' }}
+    </h4>
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="mdbModalRef.hide()">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+
+<div class="modal-body mx-3 modal-detail form-margin">
+    <form class="d-flex p-2 flex-column justify-content-start align-items-start w-100-p" [formGroup]="attachmentForm">
+        <div class="md-form m-top-10px m-bottom-10px w-100-p">
+            <input type="text" formControlName="name" class="form-control" mdbInput />
+            <label>Annexure Name <span class="text-danger">*</span></label>
+        </div>
+
+        <div class="md-form m-top-10px m-bottom-10px w-100-p">
+            <textarea formControlName="description" class="form-control md-textarea" mdbInput></textarea>
+            <label>Description <span class="text-danger">*</span></label>
+        </div>
+
+        <div class="input-group w-100-p mt-10p" style="position:relative;">
+            <input type="file" class="custom-file-input" id="fileInput" (change)="onFileSelected($event)" />
+            <label class="custom-file-label" for="fileInput">{{ fileToUpload?.name || attachment?.fileName || 'Choose PDF file' }}</label>
+            <mdb-error *ngIf="fileUploadError.hasError">{{fileUploadError.errorMessage}}</mdb-error>
+        </div>
+    </form>
+</div>
+
+<div class="modal-footer modal-end">
+    <button mdbBtn color="secondary" class="relative waves-light" mdbWavesEffect size="sm" [disabled]="!canUpload()"
+        (click)="saveAttachment()">
+        Upload
+    </button>
+</div>

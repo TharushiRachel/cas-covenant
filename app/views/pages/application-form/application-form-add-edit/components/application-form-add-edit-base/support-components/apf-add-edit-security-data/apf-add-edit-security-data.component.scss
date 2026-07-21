@@ -1,0 +1,57 @@
+.input-size {
+  margin: 5px;
+}
+
+.form-margin {
+  margin-top: -2%;
+}
+
+.comment-area {
+  border: 1px solid;
+  margin-top: 2%;
+}
+
+.privileges-selection-sections {
+  margin-top: 40px;
+  margin-bottom: 25px;
+  border: 1px solid rgba(87, 134, 180, 0.8);
+
+  .privilege-category-box {
+    padding: 0 10px 5px 10px;
+
+    .category-name {
+      display: inline-block;
+      position: relative;
+      top: -10px;
+      background: #FFF;
+      padding: 0 10px;
+    }
+  }
+}
+
+.check-box-size {
+  margin: 5px;
+  min-width: 230px;
+}
+
+.margin-top-15 {
+  margin-top: 15px;
+}
+
+.removed-record {
+  background-color: red;
+}
+
+.border-none {
+  theade td, thead th {
+    border: none !important;
+  }
+
+  tbody td, tbody th {
+    border: none !important;
+  }
+}
+
+.border-bottom-color {
+  border-bottom: 1px solid #ced4da;;
+}

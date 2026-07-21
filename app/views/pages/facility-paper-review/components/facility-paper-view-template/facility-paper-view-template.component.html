@@ -1,0 +1,90 @@
+<div>
+  <div mdbSticky id="facility-paper" class="d-flex flex-row justify-content-between page-header">
+    <div class="d-flex flex-row align-items-center">
+      <a appGoBack class="d-flex flex-row align-items-center">
+        <i class="fas fa-angle-left header-icon-back"></i>
+      </a>
+      <h5><i class="fas fa-poll header-icon"></i>
+        <span>Facility Paper Preview - Ref No : {{this.facilityPaper.fpRefNumber}}
+          (<span
+            [ngStyle]="getColour(this.facilityPaper.currentFacilityPaperStatus)"> {{facilityStatus[this.facilityPaper.currentFacilityPaperStatus]}}</span> )</span>
+      </h5>
+    </div>
+  </div>
+
+  <div class="tab-view width-100">
+    <app-tabs
+      [selectedTabIndex]="selectedTabIndex"
+      class="w-100-p"
+      (onTabSelect)="onTabSelect($event)">
+
+      <app-tab [tabTitle]="'Facilities'">
+        <ng-container *ngIf="isTabSelected(0)">
+          <div class="w-100-p d-flex justify-content-center">
+            <div class="width-90 m-top-20px">
+              <app-preview-facilities [facilityPaper]="this.facilityPaper">
+              </app-preview-facilities>
+            </div>
+          </div>
+        </ng-container>
+      </app-tab>
+
+      <app-tab [tabTitle]="'Security'">
+        <ng-container *ngIf="isTabSelected(1)">
+          <div class="w-100-p d-flex justify-content-center">
+            <div class="width-90 m-top-20px">
+              <app-review-securities-tab [tabView]="true">
+              </app-review-securities-tab>
+            </div>
+          </div>
+        </ng-container>
+      </app-tab>
+
+      <app-tab tabTitle="User Comments">
+        <ng-container *ngIf="isTabSelected(2)">
+          <div class="w-100-p d-flex justify-content-center">
+            <div class="width-90 m-top-20px">
+              <app-preview-comments
+                [tabView]="true"
+                [resizedFPCommentList]="this.facilityPaper.fpCommentDTOList"
+              >
+              </app-preview-comments>
+            </div>
+          </div>
+          <div class="w-100-p d-flex justify-content-center">
+            <div class="width-90 m-top-10px">
+              <app-preview-risk-comments
+                [riskCommentList]="this.facilityPaper.fpCreditRiskCommentList">
+              </app-preview-risk-comments>
+            </div>
+          </div>
+        </ng-container>
+      </app-tab>
+
+      <app-tab tabTitle="View Full Paper">
+        <ng-container *ngIf="isTabSelected(3)">
+          <div class="w-100-p d-flex justify-content-center">
+            <div class="width-90 m-top-20px">
+              <app-review-template-fp-full-view
+                [primaryCustomer]="primaryCustomer"
+                [facilityPaper]="facilityPaper"
+              >
+              </app-review-template-fp-full-view>
+            </div>
+          </div>
+        </ng-container>
+      </app-tab>
+
+      <app-tab tabTitle="Reviewer Comments">
+        <ng-container *ngIf="isTabSelected(4)">
+          <div class="w-100-p d-flex justify-content-center">
+            <div class="width-90 m-top-1px">
+              <app-reviewer-comments-tab></app-reviewer-comments-tab>
+            </div>
+          </div>
+        </ng-container>
+      </app-tab>
+    </app-tabs>
+  </div>
+</div>
+

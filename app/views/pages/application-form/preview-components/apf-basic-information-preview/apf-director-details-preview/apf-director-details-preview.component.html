@@ -1,0 +1,52 @@
+<mdb-card>
+  <mdb-card-body class="custom-card-body mb-10p">
+    <table class="table custom-apf-table width-100">
+      <thead>
+      <tr>
+        <th colspan="10" style="border: unset !important;">
+          <p class="mb-5p text-align-start"><b>DETAILS OF DIRECTORS / PARTNERS / OWNERSHIP</b></p>
+        </th>
+      </tr>
+      <tr>
+        <th>Name</th>
+        <th>Address</th>
+        <th>Contact No</th>
+        <th>Identification No</th>
+        <th>Share Holding</th>
+        <th>Constitution</th>
+        <th>CreditCard</th>
+        <th>Date Of Birth</th>
+        <th>Civil Status</th>
+      </tr>
+      </thead>
+      <tbody>
+      <ng-container
+        *ngIf="basicInformation.ownershipDetailsDTOList && basicInformation.ownershipDetailsDTOList.length>0 ; else noData">
+        <ng-container *ngFor="let item of basicInformation.ownershipDetailsDTOList">
+          <tr>
+            <td>{{item.name}}</td>
+            <td>{{item.address}}</td>
+            <td>{{item.contactNo}}</td>
+            <td>{{customerIdentificationType[item.identificationType]}}:{{item.identificationNumber}}</td>
+            <td class="text-align-end">{{item.shareHolding}}</td>
+            <td>{{ConstitutionType[item.constitutionType]}}</td>
+            <td>{{yesNo[item.creditCard]}}</td>
+            <td>{{item.dateOfBirthStr}}</td>
+            <td>{{civilStatus[item.civilStatus]}}</td>
+          </tr>
+        </ng-container>
+      </ng-container>
+      <ng-template #noData>
+        <tr>
+          <th colspan="10" class="text-align-center">
+            <p class="no-data-message margin-unset">
+              No Record(s)
+            </p>
+          </th>
+        </tr>
+      </ng-template>
+      </tbody>
+    </table>
+
+  </mdb-card-body>
+</mdb-card>

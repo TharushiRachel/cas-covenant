@@ -1,0 +1,42 @@
+<div class="d-flex flex-row justify-content-start align-items-center w-100-p flex-wrap">
+  <div class="d-flex flex-row justify-content-between w-100-p flex-wrap">
+    <label class="font-weight-bold float-left badge-margin">Customer Statistics</label>
+  </div>
+  <div class="width-100">
+    <app-tabs
+      [selectedTabIndex]="selectedTabIndex"
+      class="w-100-p customer-stat-tab" (onTabSelect)="onTabSelect($event)">
+
+      <app-tab [tabTitle]="'Outstanding'">
+        <ng-container *ngIf="isTabSelected(0)">
+          <app-customer-stat-outstanding-bkp [customerDetails]="customerDetails">
+          </app-customer-stat-outstanding-bkp>
+        </ng-container>
+      </app-tab>
+      <app-tab [tabTitle]="'Current Account Details'">
+        <ng-container *ngIf="isTabSelected(1)">
+          <app-customer-current-account-details-bkp [customerDetails]="customerDetails">
+          </app-customer-current-account-details-bkp>
+        </ng-container>
+      </app-tab>
+
+      <app-tab [tabTitle]="'Advance Details'">
+        <ng-container *ngIf="isTabSelected(2)">
+          <app-customer-advance-details-bkp [customerDetails]="customerDetails">
+          </app-customer-advance-details-bkp>
+        </ng-container>
+      </app-tab>
+
+      <app-tab [tabTitle]="'Deposit Details'">
+        <ng-container *ngIf="isTabSelected(3)">
+          <app-customer-deposits-details-bkp [customerDetails]="customerDetails">
+          </app-customer-deposits-details-bkp>
+        </ng-container>
+      </app-tab>
+
+    </app-tabs>
+  </div>
+
+</div>
+
+

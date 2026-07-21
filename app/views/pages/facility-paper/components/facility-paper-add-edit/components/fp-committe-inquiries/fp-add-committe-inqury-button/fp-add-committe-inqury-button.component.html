@@ -1,0 +1,9 @@
+<!-- <button type="button" mdbTooltip="Add new Committee Inquiry" placement="right"
+            (click)="openAddCommitteInquires($event)" class="float-btn btn-sm btn-info" mdbBtn
+            > -->
+<mdb-icon fas icon="question-circle" class="float-btn text-info me-2" placement="right"
+    [mdbTooltip]="'Add new Committee Inquiry'" style="cursor: pointer; font-size: 38px;" 
+    (click)="openAddCommitteInquires($event)"
+    *ngIf="showCommitteeButton()">
+
+</mdb-icon>

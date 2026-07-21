@@ -1,0 +1,112 @@
+.header-container {
+    padding: 0px 0px;
+}
+
+.header-top {
+    padding-bottom: 10px;
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.header-icon {
+    font-size: 1.5rem;
+}
+
+.username {
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+.user-level {
+    font-size: 1rem;
+    font-weight: bold;
+    color: #444;
+}
+
+.header-middle {
+    padding: 10px 0;
+}
+
+.help-link {
+    font-size: 1rem;
+    font-weight: bold;
+    text-decoration: underline;
+    color: inherit;
+
+}
+
+.help-link:hover {
+    text-decoration: underline;
+    color: inherit;
+
+}
+
+.facility-info {
+    font-size: 1rem;
+    font-weight: bold;
+    color: #333;
+}
+
+.header-bottom {
+    padding-top: 10px;
+}
+
+.header-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+.btn {
+    font-size: 0.9rem;
+    font-weight: bold;
+    width: 125px;
+}
+
+.print-preview {
+    margin-left: 15px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    text-decoration: underline;
+    color: inherit;
+
+}
+
+.print-preview:hover {
+    text-decoration: underline;
+    color: inherit;
+
+}
+
+.dropdown-container {
+    width: 45%;
+}
+
+.print {
+    width: 25%
+}
+
+.legend {
+    font-size: 1rem;
+    font-weight: bold;  
+}
+
+.upc-list {
+    margin-top: 10px;
+    border: 1px solid #ddd;
+    padding: 16px;
+    border-radius: 8px; 
+}
+
+.cardx{
+    margin: 0px 0px 35px 0px;
+}
+
+.modified{
+    font-weight: bold;
+}
+

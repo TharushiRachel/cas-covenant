@@ -1,0 +1,26 @@
+<div class="d-flex justify-content-center mx-0 mt-3">
+    <h3 class="legend py-1"><strong>CUSTOMER FACILITIES</strong></h3>
+</div>
+
+<app-facility-wrapper-v1 [facilities]="facilities" [basicData]="basicData"></app-facility-wrapper-v1>
+
+
+<div class="d-flex justify-content-center mx-0 mt-4">
+    <h3 class="legend py-1"><strong>CUSTOMER SECURITIES</strong></h3>
+</div>
+<app-security-wrapper-v1 [facilities]="facilities"></app-security-wrapper-v1>
+
+
+<div class="d-flex justify-content-center mx-0 mt-4">
+    <h3 class="legend py-1"><strong>CUSTOMER UPC COMMENTS</strong></h3>
+</div>
+<app-upc-comments-wrapper-v1 [combinedData]="combinedData" [tabLoadingSetting]="tabLoadingSetting"
+    [tabLoadedData]="tabLoadedData" (handleTabLoadingSetting)="setTabLoadingSetting($event)"
+    (onUPCDataChange)="setUpcData($event)"></app-upc-comments-wrapper-v1>
+
+<div class="d-flex justify-content-center mx-0 mt-4">
+    <h3 class="legend py-1"><strong>COMMENTS</strong></h3>
+</div>
+<app-comments-details [refNo]="basicData.refNo" [paperDate]="basicData.date" [tabLoadingSetting]="tabLoadingSetting"
+    [tabLoadedData]="tabLoadedData" (handleTabLoadingSetting)="setTabLoadingSetting($event)"
+    (onCmntDataChange)="setComments($event)"></app-comments-details>

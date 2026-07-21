@@ -1,0 +1,73 @@
+.draggable-item {
+  display: inline-block;
+  padding: 10px 15px;
+  margin: 5px;
+  background-color: #efefef;
+  border-radius: 5px;
+
+  &:hover {
+    cursor: move;
+  }
+}
+
+.item-remove-btn {
+  color: #858585;
+  display: inline-block;
+  margin-left: 20px;
+  position: relative;
+  top: 2px;
+
+  &:hover {
+    cursor: pointer;
+  }
+}
+
+.is-dragging-over {
+  border: 1px solid red !important;
+}
+
+.card-beh {
+  display: inline !important;
+}
+
+.draggable-item-2 {
+  display: inline-block;
+  margin-top: 175px;
+  margin-left: 5px;
+  margin-right: 5px;
+  padding: 10px 5px;
+  background-color: #dfdfdf;
+  color: black;
+  border-radius: 5px;
+}
+
+.html-preview {
+  width: 100%;
+  padding: 5px;
+  margin: 5px;
+  border-radius: 5px;
+  word-break: break-all;
+}
+
+.cta-btn {
+  padding: .4rem .7rem;
+  font-size: .8rem;
+  color: #15181bb3;
+}
+
+.upc-template-heading {
+  padding-left: 50px;
+  text-align: center;
+  font-weight: 700;
+  font-size: 16px;
+}
+
+.delete-button {
+  background-color: #ff354785 !important;
+}
+
+.html-content-view {
+  word-break: break-word;
+  overflow-y: auto;
+  overflow-x: hidden !important;
+}

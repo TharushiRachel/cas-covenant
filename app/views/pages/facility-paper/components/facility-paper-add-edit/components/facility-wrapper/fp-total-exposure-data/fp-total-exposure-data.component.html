@@ -1,0 +1,281 @@
+<div class="d-flex flex-column justify-content-center align-items-center">
+  <div class="d-flex justify-content-center">
+    <ng-container *appHasAnyPrivilege="masterDataPrivilege.ICAS_SETTINGS_FACILITY_PAPER_EDIT">
+      <ng-container *ngIf="isEqualLoginAndAssignUser() && !isApproveStatus() && !isRejected()">
+        <button
+          class="action-button-padding btn-sm"
+          type="button" mdbBtn color="light" (click)="recalculate()" mdbWavesEffect>Calculate
+        </button>
+      </ng-container>
+    </ng-container>
+  </div>
+  <form [formGroup]="componentForm" class="w-100-p">
+    <div class="d-flex flex-column justify-content-center w-100-p facilityPaper-exposure-tbl">
+      <div class="w-100-p d-flex flex-row justify-content-center fp-tx-data">
+        <div class="te-header">Proposed/Previous Values</div>
+        <div></div>
+        <div class="te-header">Required/Outstanding Values</div>
+      </div>
+      <div class="w-100-p d-flex flex-row justify-content-center fp-tx-data">
+        <div>
+          <div class="md-form mt-0 w-100-p">
+            <input mdbValidate
+                   placeholder=""
+                   type="text"
+                   maxlength="100"
+                   class="form-control text-right"
+                   formControlName="totalDirectExposurePrevious"
+                   (focusout)="setCurrencyFormatValue('totalDirectExposurePrevious')"
+                   mdbInput>
+            <mdb-error class="mt-1" *ngIf="formErrors.totalDirectExposurePrevious.greaterThanOrEqualZeroError">Value
+              should be greater
+              than or equal to zero
+            </mdb-error>
+            <mdb-error class="mt-1" *ngIf="formErrors.totalDirectExposurePrevious.invalidInput">Invalid Input
+            </mdb-error>
+          </div>
+        </div>
+        <div class="topics">Total Direct Exposure</div>
+        <div>
+          <div class="md-form mt-0 w-100-p">
+            <input mdbValidate
+                   placeholder=""
+                   type="text"
+                   maxlength="100"
+                   class="form-control text-right"
+                   formControlName="totalDirectExposureNew"
+                   (focusout)="setCurrencyFormatValue('totalDirectExposureNew')"
+                   mdbInput>
+            <mdb-error *ngIf="formErrors.totalDirectExposureNew.greaterThanOrEqualZeroError">Value should be greater
+              than
+              or equal to zero
+            </mdb-error>
+            <mdb-error class="mt-1" *ngIf="formErrors.totalDirectExposureNew.invalidInput">Invalid Input
+            </mdb-error>
+          </div>
+        </div>
+      </div>
+      <div class="w-100-p d-flex flex-row justify-content-center fp-tx-data">
+        <div>
+          <div class="md-form mt-0 w-100-p">
+            <input mdbValidate
+                   type="text"
+                   placeholder=""
+                   maxlength="100"
+                   class="form-control text-right"
+                   formControlName="totalIndirectExposurePrevious"
+                   (focusout)="setCurrencyFormatValue('totalIndirectExposurePrevious')"
+                   mdbInput>
+            <mdb-error *ngIf="formErrors.totalIndirectExposurePrevious.greaterThanOrEqualZeroError">Value should be
+              greater
+              than
+              or equal to zero
+            </mdb-error>
+            <mdb-error class="mt-1" *ngIf="formErrors.totalIndirectExposurePrevious.invalidInput">Invalid Input
+            </mdb-error>
+          </div>
+        </div>
+        <div class="topics">Total Indirect Exposure</div>
+        <div>
+          <div class="md-form mt-0 w-100-p">
+            <input mdbValidate
+                   type="text"
+                   placeholder=""
+                   maxlength="100"
+                   class="form-control text-right"
+                   formControlName="totalIndirectExposureNew"
+                   (focusout)="setCurrencyFormatValue('totalIndirectExposureNew')"
+                   mdbInput>
+            <mdb-error *ngIf="formErrors.totalIndirectExposureNew.greaterThanOrEqualZeroError">Value should be greater
+              than
+              or equal to zero
+            </mdb-error>
+            <mdb-error class="mt-1" *ngIf="formErrors.totalIndirectExposureNew.invalidInput">Invalid Input
+            </mdb-error>
+          </div>
+        </div>
+      </div>
+      <div class="w-100-p d-flex flex-row justify-content-center fp-tx-data">
+        <div>
+          <div class="md-form mt-0 w-100-p">
+            <input mdbValidate
+                   type="text"
+                   placeholder=""
+                   maxlength="20"
+                   class="form-control text-right"
+                   formControlName="totalExposurePrevious"
+                   (focusout)="setCurrencyFormatValue('totalExposurePrevious')"
+                   mdbInput>
+            <mdb-error *ngIf="formErrors.totalExposurePrevious.greaterThanOrEqualZeroError">Value should be greater
+              than
+              or equal to zero
+            </mdb-error>
+            <mdb-error class="mt-1" *ngIf="formErrors.totalExposurePrevious.invalidInput">Invalid Input
+            </mdb-error>
+          </div>
+        </div>
+        <div class="topics">Total Exposure</div>
+        <div>
+          <div class="md-form mt-0 w-100-p">
+            <input mdbValidate
+                   type="text"
+                   placeholder=""
+                   maxlength="20"
+                   formControlName="totalExposureNew"
+                   (focusout)="setCurrencyFormatValue('totalExposureNew')"
+                   class="form-control text-right"
+                   mdbInput>
+            <mdb-error *ngIf="formErrors.totalExposureNew.greaterThanOrEqualZeroError">Value should be greater than or
+              equal to zero
+            </mdb-error>
+            <mdb-error class="mt-1" *ngIf="formErrors.totalExposureNew.invalidInput">Invalid Input
+            </mdb-error>
+          </div>
+        </div>
+      </div>
+      <div class="w-100-p d-flex flex-row justify-content-center fp-tx-data group-exposure">
+        <div></div>
+        <div class="topics">Add Total Exposure to Group Total Exposure</div>
+        <div>
+          <div class="md-form mt-0 w-100-p form-check">
+            <input type="radio" class="form-check-input"
+                   id="addTotalExposureToGroup1" [value]="'Y'"
+                   formControlName="addTotalExposureToGroup"
+                   name="addTotalExposureToGroup">
+            <label class="form-check-label" for="addTotalExposureToGroup1">YES</label>
+            <input type="radio" class="form-check-input"
+                   formControlName="addTotalExposureToGroup"
+                   id="addTotalExposureToGroup2" [value]="'N'"
+                   name="addTotalExposureToGroup">
+            <label class="form-check-label ml-15p" for="addTotalExposureToGroup2">NO</label>
+          </div>
+        </div>
+      </div>
+      <div class="w-100-p d-flex flex-row justify-content-center fp-tx-data">
+        <div>
+          <div class="md-form mt-0 w-100-p">
+            <input mdbValidate
+                   type="text"
+                   placeholder=""
+                   maxlength="20"
+                   formControlName="groupTotalDirectExposurePrevious"
+                   (focusout)="setCurrencyFormatValue('groupTotalDirectExposurePrevious')"
+                   class="form-control text-right"
+                   mdbInput>
+            <mdb-error *ngIf="formErrors.groupTotalDirectExposurePrevious.greaterThanOrEqualZeroError">Value should be
+              greater than or equal to zero
+            </mdb-error>
+            <mdb-error class="mt-1" *ngIf="formErrors.groupTotalDirectExposurePrevious.invalidInput">Invalid Input
+            </mdb-error>
+          </div>
+        </div>
+        <div class="topics">Group Total Direct Exposure</div>
+        <div>
+          <div class="md-form mt-0 w-100-p">
+            <input mdbValidate
+                   type="text"
+                   placeholder=""
+                   maxlength="20"
+                   formControlName="groupTotalDirectExposureNew"
+                   (focusout)="setCurrencyFormatValue('groupTotalDirectExposureNew')"
+                   class="form-control text-right"
+                   mdbInput>
+            <mdb-error *ngIf="formErrors.groupTotalDirectExposureNew.greaterThanOrEqualZeroError">Value should be
+              greater
+              than or equal to zero
+            </mdb-error>
+            <mdb-error class="mt-1" *ngIf="formErrors.groupTotalDirectExposureNew.invalidInput">Invalid Input
+            </mdb-error>
+          </div>
+        </div>
+      </div>
+      <div class="w-100-p d-flex flex-row justify-content-center fp-tx-data">
+        <div>
+          <div class="md-form mt-0 w-100-p">
+            <input mdbValidate
+                   type="text"
+                   placeholder=""
+                   maxlength="20"
+                   formControlName="groupTotalIndirectExposurePrevious"
+                   (focusout)="setCurrencyFormatValue('groupTotalIndirectExposurePrevious')"
+                   class="form-control text-right"
+                   mdbInput>
+            <mdb-error *ngIf="formErrors.groupTotalIndirectExposurePrevious.greaterThanOrEqualZeroError">Value should
+              be
+              greater than or equal to zero
+            </mdb-error>
+            <mdb-error class="mt-1" *ngIf="formErrors.groupTotalIndirectExposurePrevious.invalidInput">Invalid Input
+            </mdb-error>
+          </div>
+        </div>
+        <div class="topics">Group Total Indirect Exposure</div>
+        <div>
+          <div class="md-form mt-0 w-100-p">
+            <input mdbValidate
+                   type="text"
+                   formControlName="groupTotalIndirectExposureNew"
+                   placeholder=""
+                   maxlength="20"
+                   class="form-control text-right"
+                   (focusout)="setCurrencyFormatValue('groupTotalIndirectExposureNew')"
+                   mdbInput>
+            <mdb-error *ngIf="formErrors.groupTotalIndirectExposureNew.greaterThanOrEqualZeroError">Value should be
+              greater than or equal to zero
+            </mdb-error>
+            <mdb-error class="mt-1" *ngIf="formErrors.groupTotalIndirectExposureNew.invalidInput">Invalid Input
+            </mdb-error>
+          </div>
+        </div>
+      </div>
+      <div class="w-100-p d-flex flex-row justify-content-center fp-tx-data">
+        <div>
+          <div class="md-form mt-0 w-100-p">
+            <input mdbValidate
+                   type="text"
+                   formControlName="groupTotalExposurePrevious"
+                   (focusout)="setCurrencyFormatValue('groupTotalExposurePrevious')"
+                   placeholder=""
+                   maxlength="20"
+                   class="form-control text-right"
+                   mdbInput>
+            <mdb-error *ngIf="formErrors.groupTotalExposurePrevious.greaterThanOrEqualZeroError">Value should be
+              greater
+              than or equal to zero
+            </mdb-error>
+            <mdb-error class="mt-1" *ngIf="formErrors.groupTotalExposurePrevious.invalidInput">Invalid Input
+            </mdb-error>
+          </div>
+        </div>
+        <div class="topics">Group Total Exposure</div>
+        <div>
+          <div class="md-form mt-0 w-100-p">
+            <input mdbValidate
+                   type="text"
+                   placeholder=""
+                   maxlength="20"
+                   class="form-control text-right"
+                   formControlName="groupTotalExposureNew"
+                   (focusout)="setCurrencyFormatValue('groupTotalExposureNew')"
+                   mdbInput>
+            <mdb-error *ngIf="formErrors.groupTotalExposureNew.greaterThanOrEqualZeroError">Value should be grater
+              than
+              or equal to zero
+            </mdb-error>
+            <mdb-error class="mt-1" *ngIf="formErrors.groupTotalExposureNew.invalidInput">Invalid Input
+            </mdb-error>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+  <div class="d-flex justify-content-center">
+    <ng-container *appHasAnyPrivilege="masterDataPrivilege.ICAS_SETTINGS_FACILITY_PAPER_EDIT">
+      <ng-container *ngIf="isEqualLoginAndAssignUser() && !isApproveStatus() && !isRejected()">
+        <button
+          class="action-button-padding btn-sm"
+          type="button" (click)="updateFacilityPaperExposure()" mdbBtn color="light" mdbWavesEffect>Update
+        </button>
+      </ng-container>
+    </ng-container>
+  </div>
+</div>

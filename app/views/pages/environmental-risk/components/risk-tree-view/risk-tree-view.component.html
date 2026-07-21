@@ -1,0 +1,66 @@
+<ul class="no-dots">
+    <li *ngFor="let node of nodes">
+        <div class="row d-flex align-items-center node-item"
+            [style.background]="isParent(node) ? '#f8f9fa' : 'transparent'"
+            [style.fontWeight]="isParent(node) ? '600' : '400'">
+            <span>{{ node.description }}</span>
+            <div class="ml-3 mr-0" *ngIf="!isParent(node)">
+                <mdb-badge default="true"
+                    style="color: #b7b7b7 !important;border-color: #b7b7b7 !important;">{{node.score}}</mdb-badge>
+            </div>
+            <div class="ml-3 mr-0" *ngIf="isPendingNode(node) && isInactiveNode(node)">
+                <mdb-badge default="true"
+                    style="color: #dc3545 !important;border-color: #dc3545 !important;">Removed</mdb-badge>
+            </div>
+            <div class="ml-3 mr-0" *ngIf="isPendingNode(node)">
+                <mdb-badge default="true"
+                    style="color: #ffc107 !important;border-color: #ffc107 !important;">Pending</mdb-badge>
+            </div>
+            <div class="row d-flex ml-auto mr-0">
+                <button class="btn" (click)="toggle(node)" *ngIf="isChildExist(node)">
+                    <mdb-icon fas icon="angle-down" *ngIf="!node.expanded"></mdb-icon>
+                    <mdb-icon fas icon="angle-up" *ngIf="node.expanded"></mdb-icon>
+                </button>
+
+                <!-- Add New -->
+                <button class="btn" mdbTooltip="Add New" (click)="handleAdd(node)"
+                    *ngIf="isParent(node) && !isInactiveNode(node)">
+                    <mdb-icon fas icon="plus"></mdb-icon>
+                </button>
+
+                <!-- Edit -->
+                <button class="btn" mdbTooltip="Edit" (click)="handleEdit(node)"
+                    *ngIf="!isPendingNode(node) && !isInactiveNode(node)">
+                    <mdb-icon fas icon="pencil-alt"></mdb-icon>
+                </button>
+
+                <!-- View -->
+                <button class="btn" mdbTooltip="View" (click)="handlePendingInfo(node)"
+                    *ngIf="node.pendingRec && isPendingNode(node) && !isInactiveNode(node)">
+                    <mdb-icon fas icon="eye"></mdb-icon>
+                </button>
+
+                <!-- Remove -->
+                <button class="btn" mdbTooltip="Remove" *ngIf="!isPendingNode(node) && !isInactiveNode(node)"
+                    [disabled]="!isDeleteEnabled(node)" (click)="handleRemove(node)">
+                    <mdb-icon fas icon="trash-alt" style="color: #dc3545;"></mdb-icon>
+                </button>
+
+                <!-- Authorize -->
+                <ng-container *ngIf="isAuthorizeEnabled(node)">
+                    <button class="btn" mdbTooltip="Approve" (click)="handleApprove(node)">
+                        <mdb-icon fas icon="check-circle" style="color: #28a745;"></mdb-icon>
+                    </button>
+                    <button class="btn" mdbTooltip="Reject" (click)="handleReject(node)">
+                        <mdb-icon fas icon="times-circle" style="color: #dc3545;"></mdb-icon>
+                    </button>
+                </ng-container>
+            </div>
+        </div>
+        <app-risk-tree-view *ngIf="isChildExist(node) && node.expanded" [nodes]="node.children"
+            (addChildRisk)="handleAdd($event)" (editChildRisk)="handleEdit($event)"
+            (approveRisk)="handleApprove($event)" (rejectRisk)="handleReject($event)"
+            (viewPendingInfo)="handlePendingInfo($event)" (removeRisk)="handleRemove($event)">
+        </app-risk-tree-view>
+    </li>
+</ul>

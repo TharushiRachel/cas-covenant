@@ -1,0 +1,82 @@
+<div class="d-flex p-2 flex-column w-100-p">
+    <div class="width-100">
+      <ng-container *ngIf=" insuranceValuationDetails != null" >
+        <div class="width-100 text-align-center" >
+          <p class="font-weight-bold">Insurance/Valuation Details as at {{insuranceValuationDetails[0]?.createdDate}}</p>
+        </div>
+        <table class="custom-bordered-table width-100">
+          <thead>
+          <tr style="height: 30px" class="table-heading-color">
+            <th>Collateral Type</th>
+            <th>Insurance Type</th>
+            <th>Insurer Details</th>
+            <th>Policy No</th>
+            <th>Policy Amount</th>           
+            <th>Premium Amount</th>
+            <th>Items Insured</th>
+            <th>Risk cover Start Date</th>
+            <th>Risk Cover End Date</th>
+            <th>Insurance/Valuation Expire Dates</th>
+          </tr>
+          <tr>
+          </tr>
+          </thead>
+          <tbody>
+           
+              <ng-container *ngFor="let insuranceDetail of insuranceValuationDetails; let j = index">
+               <tr>              
+                <td [attr.rowspan]="insuranceDetail.insuranceDetails.length">
+                  {{ insuranceDetail.collateralType }}
+                </td>
+                <td><div class="align-top-right">{{ insuranceDetail.insuranceDetails[0].insuranceType || "-" }}</div></td>
+                <td><div class="align-top-right">{{ insuranceDetail.insuranceDetails[0].insurerDetails || "-"}}</div></td>
+                <td><div class="align-top-right">{{ insuranceDetail.insuranceDetails[0].policyNo || "-" }}</div></td>
+                <td><div class="align-top-right">{{ setCurrencyFormatValue(insuranceDetail.insuranceDetails[0].policyAmount) || "0"}}</div></td>             
+                <td><div class="align-top-right">{{ setCurrencyFormatValue(insuranceDetail.insuranceDetails[0].premiumAmount) || "0" }}</div></td>
+                <td><div class="align-top-right">{{ insuranceDetail.insuranceDetails[0].itemsInsured || "-" }} </div>             </td>
+                <td><div class="align-top-right">{{ insuranceDetail.insuranceDetails[0].riskCoverStartDate || "-"}}</div></td>
+                <td><div class="align-top-right">{{ insuranceDetail.insuranceDetails[0].riskCoverEndDate || "-"}}</div></td>
+                <td [attr.rowspan]="insuranceDetail.insuranceDetails.length"><div class="align-top-right">
+                  {{ insuranceDetail.insuranceValuationExpireDates }}
+              </div></td>
+               </tr>
+
+               <ng-container *ngFor="let ins of insuranceDetail.insuranceDetails ; let i = index">
+               <tr  *ngIf="i > 0" >
+                <td> <div class="align-top-right">{{ins.insuranceType || "-"}}</div></td>
+                <td> <div class="align-top-right">{{ ins.insurerDetails || "-"}}</div></td>
+                <td><div class="align-top-right">{{ ins.policyNo || "-"}}</div></td>
+                <td><div class="align-top-right">{{setCurrencyFormatValue(ins.policyAmount )|| "0"}}</div></td>               
+                <td><div class="align-top-right">{{ setCurrencyFormatValue(ins.premiumAmount )|| "0"}}</div></td>
+                <td><div class="align-top-right">{{ ins.itemsInsured || "-"}}</div>  </td>
+                <td><div class="align-top-right">{{ ins.riskCoverStartDate || "-"}}</div></td>
+                <td><div class="align-top-right">{{ ins.riskCoverEndDate || "-"}}</div></td>
+               </tr> 
+              </ng-container>
+            </ng-container>
+            
+          </tbody>
+        </table>
+      </ng-container>
+      <div *ngIf="showNoRecordsMsg" >
+        <p class="not-auth-message">
+          No Records Available
+        </p>
+      </div>
+    </div>
+  </div>
+  <div class="row d-flex justify-content-end mx-0" *ngIf="mode =='edit' &&  updateButtonIsEnabled">
+    <button
+      
+      style="margin-right: 10px"
+      (click)="refresh()"
+      type="button"
+      mdbTooltip="refresh"
+      placement="right"
+      class="medium-button btn-sm btn-info relative-icon bottom-right-button"
+      mdbBtn
+    >
+      Refresh
+    </button>
+  </div>
+  

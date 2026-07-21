@@ -1,0 +1,81 @@
+<div mdbSticky class="d-flex flex-row justify-content-between page-header">
+  <div class="d-flex flex-row align-items-center">
+    <h5>
+      <i class="fas fa-search header-icon"></i>Credit Approval System Search
+    </h5>
+  </div>
+</div>
+<div class="page-search-section section display-flex flex-column jc-start p-2 pt-3 pb-3 default-box-styles align-start">
+  <div class="card p-3 bg-white">
+    <form class="display-flex w-100-p flex-row jc-start ai-center flex-wrap flex-2-gap" [formGroup]="acaeSearchForm">
+      <div class="md-form w-18-p min-width-120">
+        <mdb-select [options]="acaeStatusLOV" formControlName="acaeStatus" id="acaeStatus" placeholder="Select status"
+          class="m-top-8px"></mdb-select>
+        <label for="acaseStatus1">Status</label>
+      </div>
+      <div class="md-form w-18-p min-width-120">
+        <input type="text" id="accountNumber" formControlName="accountNumber" class="form-control" mdbInput />
+        <label for="accountNumber">Account Number</label>
+      </div>
+
+      <div class="md-form w-18-p min-width-120">
+        <input type="text" id="customerName" formControlName="customerName" class="form-control" mdbInput />
+        <label for="customerName">Customer's Name</label>
+      </div>
+
+      <div class="md-form w-18-p min-width-120">
+        <mdb-date-picker class="form-control" id="recievedDateStr" formControlName="recievedDateStr"
+          [options]="myDatePickerOptions" [placeholder]="'Recieved Date'" [inline]="true" required></mdb-date-picker>
+      </div>
+
+      <div class="display-flex flex-1 flex-row jc-end ai-center">
+        <button (click)="doSearch()" type="button" class="medium-button btn btn-info" mdbBtn
+          [disabled]="isSearchDataEntered()">
+          Search
+        </button>
+        <button (click)="clearSearch()" class="medium-button btn btn-outline-info clear-btn" mdbBtn type="button">
+          Clear
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+<ng-container *ngIf="isAcaeSearch">
+  <div *ngIf="acaeSearchData.length == 0" class="alert alert-warning" role="alert">
+    No matching records found !
+  </div>
+</ng-container>
+<ng-container *ngIf="acaeSearchData.length > 0">
+  <div class="section table-responsive mb-15p">
+    <table class="table">
+      <thead>
+        <tr>
+          <th scope="col">Account Number</th>
+          <th scope="col">Customer 's Name</th>
+          <th scope="col">Recieved Date</th>
+          <th scope="col">Attended</th>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-container *ngFor="let item of acaeSearchData">
+          <tr>
+            <td>{{ item.ACCT_NO }}</td>
+            <td>{{ item.ACCT_NAME }}</td>
+            <td>{{ item.RECEIVED_DATE }}</td>
+            <ng-container>
+              <td>
+                <button class="btn btn-sm btn-secondary cta-btn" type="button" mdbWavesEffect
+                  (click)="openModalACAEDetails(item)" mdbTooltip="Edit ACAE" placement="left">
+                  <mdb-icon fas icon="pencil-alt" aria-hidden="true"></mdb-icon>
+                </button>
+              </td>
+            </ng-container>
+          </tr>
+        </ng-container>
+      </tbody>
+    </table>
+
+    <app-paginator [pageIndex]="pageSize.pageIndex" [length]="pageSize.length" [pageSize]="pageSize.pageSize"
+      [pageSizeOptions]="pageSize.pageSizeOptions" (page)="onPageEvent($event)"></app-paginator>
+  </div>
+</ng-container>

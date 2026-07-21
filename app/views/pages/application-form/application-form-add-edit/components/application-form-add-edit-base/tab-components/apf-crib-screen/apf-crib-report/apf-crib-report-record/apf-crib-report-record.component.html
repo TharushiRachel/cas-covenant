@@ -1,0 +1,88 @@
+<div>
+  <table class="table custom-crib-report-table">
+    <tbody>
+    <tr>
+      <th class="width-25">Crib Status</th>
+      <th class="width-12">Crib Date</th>
+      <th class="width-12">Identification No</th>
+      <th class="text-align-start">Remark</th>
+      <th class="width-8">Actions</th>
+    </tr>
+    <ng-container *ngIf="basicInformation.afCribReportDTOList.length>0 ; else noData;">
+      <tr *ngFor="let cribData of basicInformation.afCribReportDTOList">
+        <td>{{cribStatus[cribData.cribStatus]}}</td>
+        <td class="">{{cribData.cribDateStr}}</td>
+        <td class="">{{cribData.identificationType}} : {{cribData.identificationNo}}</td>
+        <td>{{cribData.remark}}</td>
+        <td>
+          <div>
+            <ng-container *ngIf="viewCribReportContent(cribData.cribStatus)">
+              <button class="btn btn-sm btn-secondary cta-btn" type="button" mdbWavesEffect
+                      mdbTooltip="View Crib Report"
+                      (click)="viewInitiateCribReport(cribData.reportContent)"
+                      placement="left">
+                <mdb-icon fas icon="file-alt" aria-hidden="true"></mdb-icon>
+              </button>
+            </ng-container>
+          </div>
+        </td>
+      </tr>
+    </ng-container>
+    <tr style="height: 100px !important;" *ngIf="isAbleToEdit()">
+      <th colspan="3" style="text-align: start !important;">
+        More Crib Reports
+      </th>
+      <td>
+        <form [formGroup]="optionalCribSearchForm">
+          <div class="d-flex flex-row justify-content-between w-100-p">
+            <div class="md-form width-50">
+              <mdb-select
+                [options]="identityOptionSelect"
+                formControlName="identificationType"
+                id="optionalIdentificationType"
+                class="mt-8p"
+                placeholder="Identification Type">
+              </mdb-select>
+              <mdb-error *ngIf="formErrors.identificationType.required">Identification Type required</mdb-error>
+            </div>
+
+            <div class="md-form width-50 m-top-12px">
+              <input mdbValidate
+                     type="text"
+                     id="optionalIdentificationNo"
+                     maxlength="200"
+                     formControlName="identificationNumber"
+                     class="form-control"
+                     mdbInput
+              >
+              <label for="optionalIdentificationNo">Identification No *</label>
+            </div>
+          </div>
+        </form>
+      </td>
+      <td class="text-align-center">
+        <button class="btn btn-sm btn-secondary cta-btn"
+                type="button"
+                mdbWavesEffect
+                (click)="searchCribDetails()"
+                mdbTooltip="Add Crib Details"
+                placement="left"
+                [disabled]="!optionalCribSearchForm.valid"
+        >
+          <mdb-icon fas icon="fas fa-plus" aria-hidden="true"></mdb-icon>
+        </button>
+      </td>
+    </tr>
+
+    <ng-template #noData>
+      <tr>
+        <th colspan="5" class="text-align-center">
+          <p class="not-auth-message">
+            No Reports
+          </p>
+        </th>
+      </tr>
+    </ng-template>
+    </tbody>
+  </table>
+</div>

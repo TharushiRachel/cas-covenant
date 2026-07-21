@@ -1,0 +1,54 @@
+<div class="d-flex flex-column justify-content-start align-items-start w-100-p">
+
+  <div class="d-flex flex-row w-100-p flex-wrap">
+    <label class="font-weight-bold">Bank Detail(s)</label>
+  </div>
+
+  <div class="table-responsive">
+    <table class="table custom-table">
+      <thead>
+      <tr>
+        <ng-container *ngFor="let col of tableColumnsBankDetails">
+          <th scope="col">{{col}}</th>
+        </ng-container>
+      </tr>
+      </thead>
+      <tbody>
+      <ng-container *ngIf="resizedCustomerAccountList.length>0; else noData">
+        <ng-container *ngFor="let item of resizedCustomerAccountList">
+          <tr>
+            <td class="text-align-center">{{item.bankAccountNumber}}</td>
+            <td class="text-align-center">
+            <span
+              [class.color-green]="item.status === statusConst.ACT"
+              [class.color-red]="item.status === statusConst.INA"
+            >
+                  {{status[item.status]}}
+                </span>
+            </td>
+            <td class="text-align-center">
+              <mdb-icon fas icon="sync" aria-hidden="true" mdbTooltip="Load Facility"
+                        (click)="loadFacilities(item.bankAccountNumber,customer.customerFinancialID)"></mdb-icon>
+            </td>
+          </tr>
+        </ng-container>
+      </ng-container>
+      <ng-template #noData>
+        <tr>
+          <th colspan="5" class="text-align-center">
+            <p class="no-data-message">
+              No Bank Account(s)
+            </p>
+          </th>
+        </tr>
+      </ng-template>
+      </tbody>
+    </table>
+    <app-list-to-paginator
+      [inputArray]="customer.casCustomerBankDetailsDTOList"
+      [listType]="fpCustomerAccountList"
+      (resizedArray)="onLoadResizedList($event)">
+    </app-list-to-paginator>
+  </div>
+</div>
+

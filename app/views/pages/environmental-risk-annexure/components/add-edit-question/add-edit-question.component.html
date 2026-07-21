@@ -1,0 +1,42 @@
+<div class="modal-header modal-topic flex-center">
+    <button type="button" class="close pull-right" aria-label="Close" (click)="onClose()">
+        <span aria-hidden="true">×</span>
+    </button>
+    <h4 class="modal-title w-100 heading-align" id="myModalLabel" style="font-size: 1rem ; font-weight: bold">
+        Add / Edit Question
+    </h4>
+</div>
+<div class="modal-body modal-detail form-margin mt-0 px-3"
+    style="min-height: 20vh; max-height: 80vh; overflow-y: auto;">
+    <div class="row d-flex mx-0">
+        <div class="col-md-6">
+            <div class="md-form">
+                <mdb-select [options]="qTypeOptions" class="form-control py-0" label="Answer Type *"
+                    [(ngModel)]="newQuestion.answerType">
+                </mdb-select>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="md-form">
+                <mdb-select [options]="yesNoOptions" [(ngModel)]="newQuestion.isMandatory" class="form-control py-0"
+                    label="Is Mandatory *">
+                </mdb-select>
+            </div>
+        </div>
+        <div class="col-md-12 mt-2">
+            <label class="m-0" for="question">Question *</label>
+            <div class="md-form">
+                <textarea class="form-control comment-area" id="question" type="text" mdbInput style="margin-top: 2px;"
+                    [(ngModel)]="newQuestion.question"></textarea>
+                <mdb-error *ngIf="errors.question">{{errors.question}}</mdb-error>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal-footer modal-end pt-0 border border-top-1">
+    <button type="button" mdbBtn color="info" size="sm" class="waves-light" aria-label="Close" mdbWavesEffect
+        [disabled]="!isSavedEnabled()" (click)="addQuestion()">
+        Save
+    </button>
+</div>

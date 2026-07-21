@@ -1,0 +1,44 @@
+<!--<div class="editor-container">-->
+<!--  <ng-container *ngFor="let node of nodeRowData; let i=index">-->
+<!--    <div class="d-flex flex-row">-->
+<!--      <div class="chip m-0 lighten-4">-->
+<!--        &lt;!&ndash;             [class.blue]="(node.sectionLevel == 0)"&ndash;&gt;-->
+<!--        &lt;!&ndash;             [class.purple]="node.sectionLevel == 1"&ndash;&gt;-->
+<!--        &lt;!&ndash;             [class.amber]="node.sectionLevel == 2"&ndash;&gt;-->
+<!--        &lt;!&ndash;             [class.orange]="node.sectionLevel == 3"> &ndash;&gt;-->
+<!--        <span class="font-weight-bold">{{node.upcSectionName}}</span>-->
+<!--      </div>-->
+<!--    </div>-->
+<!--    <app-single-node-html-->
+<!--      [htmlStr]="node.data">-->
+<!--    </app-single-node-html>-->
+<!--  </ng-container>-->
+<!--</div>-->
+
+<!--<div class="editor-container" *ngIf="isPreviewMode">-->
+<!--  <ng-container *ngFor="let node of previewData; let i=index">-->
+<!--    <div class="d-flex flex-row mb-2">-->
+<!--      <div class="preview-node-title" [attr.data-level]="node.dataLabel">-->
+<!--        <span class="font-weight-bold">{{node.dataLabel}} - {{node.title}}</span>-->
+<!--      </div>-->
+<!--    </div>-->
+<!--    <app-single-node-html-->
+<!--      [htmlStr]="node.content">-->
+<!--    </app-single-node-html>-->
+<!--  </ng-container>-->
+<!--</div>-->
+
+
+<ng-container>
+  <app-tree-view-nodes
+    [facilityPaperId]="facilityPaperId"
+    [isCommentEnable]="isCommentEnable"
+    [nodes]="treeData"
+    [isPreviewMode]="isPreviewMode"
+    [currentAssignUser]="currentAssignUser"
+    [currentFPStatus]="currentFPStatus"
+    [currentFPWC]="currentFPWC"
+    [assignDepartmentCode]="assignDepartmentCode"
+    (onEdit)="openModalTemplateData($event.event, $event.node)">
+  </app-tree-view-nodes>
+</ng-container>

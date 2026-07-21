@@ -1,0 +1,129 @@
+<div class="modal-header modal-topic flex-center">
+  <h4 class="modal-title w-100 font-weight-bold">
+    {{heading}}
+  </h4>
+  <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="mdbModalRef.hide()">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
+<ng-container *ngIf="isQuestionsVisible && isForward && smeQuestionShow()">
+  <app-sme-questions [questionsAndAnswers]="questionsAndAnswers" (formSubmitted)="onQuestionsSubmitted($event)">
+  </app-sme-questions>
+</ng-container>
+
+<ng-container *ngIf="!isQuestionsLoading">
+
+  <div *ngIf="!isQuestionsVisible || isQuestionsSubmitted || !(isForward && smeQuestionShow())"
+    class="modal-body modal-detail form-margin">
+    <form class="d-flex p-2 flex-column justify-content-center align-items-start w-100-p" [formGroup]="componentForm">
+      <div class="d-flex flex-row flex-wrap w-100-p justify-content-around">
+        <input type="radio" class="form-check-input" [id]="forwardTypeConst.DIRECT_USER"
+          [value]="forwardTypeConst.DIRECT_USER" formControlName="forwardType" name="forwardType">
+        <label class="form-check-label" [for]="forwardTypeConst.DIRECT_USER">{{forwardType.DIRECT_USER}}</label>
+
+        <ng-container *ngIf="loggedInUserBranchDepartment">
+          <input type="radio" class="form-check-input" [id]="forwardTypeConst.SAME_SOL_USER_GROUP"
+            [value]="forwardTypeConst.SAME_SOL_USER_GROUP" formControlName="forwardType" name="forwardType">
+          <label class="form-check-label"
+            [for]="forwardTypeConst.SAME_SOL_USER_GROUP">{{forwardType.SAME_SOL_USER_GROUP}}</label>
+        </ng-container>
+
+        <ng-container
+          *appHasAnyPrivilege="masterDataPrivilege.ICAS_SETTINGS_OTHER_BRANCH_DEPARTMENT_CLUSTER_FORWARDING">
+          <input type="radio" class="form-check-input" [id]="forwardTypeConst.OTHER_SOL_USER_GROUP"
+            [value]="forwardTypeConst.OTHER_SOL_USER_GROUP" formControlName="forwardType" name="forwardType">
+          <label class="form-check-label"
+            [for]="forwardTypeConst.OTHER_SOL_USER_GROUP">{{forwardType.OTHER_SOL_USER_GROUP}}</label>
+        </ng-container>
+      </div>
+
+      <div class="d-flex m-top-10px flex-row flex-wrap w-100-p justify-content-between">
+        <ng-container *ngIf="selectedForwardType==forwardTypeConst.DIRECT_USER">
+          <div class="md-form m-top-10px m-bottom-10px w-48-p">
+            <mdb-select [options]="userGroupOptions" [filterEnabled]="true" formControlName="userGroup" id="group"
+              label="Group">
+            </mdb-select>
+            <mdb-error *ngIf="formError.userGroup.required">Required</mdb-error>
+          </div>
+          <div class="md-form m-top-10px m-bottom-10px w-48-p">
+            <mdb-select [options]="userOption" [filterEnabled]="true" formControlName="user" id="user"
+              label="User"></mdb-select>
+            <mdb-error *ngIf="formError.user.required">Required</mdb-error>
+          </div>
+        </ng-container>
+
+        <ng-container
+          *ngIf="selectedForwardType==forwardTypeConst.SAME_SOL_USER_GROUP || selectedForwardType==forwardTypeConst.OTHER_SOL_USER_GROUP ">
+          <div class="md-form m-top-10px m-bottom-10px w-48-p">
+            <mdb-select [multiple]="true" [options]="userGroupOptions" formControlName="upmUserGroups"
+              id="upmUserGroups" label="Group"></mdb-select>
+            <mdb-error *ngIf="formError.upmUserGroups.required">Required</mdb-error>
+          </div>
+
+          <div class="md-form m-top-10px m-bottom-10px w-48-p">
+            <mdb-select [options]="departmentGroupOptions" [filterEnabled]="true" formControlName="departmentGroup"
+              id="departmentGroup" label="Branch/Department"></mdb-select>
+            <mdb-error *ngIf="formError.departmentGroup.required">Required</mdb-error>
+          </div>
+        </ng-container>
+      </div>
+
+      <div class="d-flex flex-row w-100-p">
+        <div class="m-top-10px m-bottom-10px w-100-p ">
+          <label for="comment" style="color: black"></label>
+          <p class="defaultMessage-style" *ngIf="insuranceMessage">The following phase will be added to your comment :
+            {{insuranceMessage}} </p>
+          <textarea type="text" class="form-control rounded-0 comment-area" id="comment" placeholder="Comment here..."
+            formControlName="comment" maxlength="4000" rows="5" mdbInput>
+        </textarea>
+        </div>
+      </div>
+
+      <div class="d-flex flex-row flex-wrap w-100-p justify-content-start">
+        <div class="mr-30p">
+          <ng-container *ngIf="showUsersOnlyOption">
+            <mdb-checkbox formControlName="isUsersOnly">View comment only for the user</mdb-checkbox>
+          </ng-container>
+        </div>
+        <div>
+          <ng-container *ngIf="showDivisionOnlyOption">
+            <mdb-checkbox formControlName="isDivisionOnly">View comment only for the division</mdb-checkbox>
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="d-flex flex-row flex-wrap w-100-p justify-content-start" *ngIf="!isReturn">
+        <div class="mr-30p">
+          <ng-container *ngIf="showSecurityDocumentConfirmation()">
+            <ng-container *ngIf="isLoggedInUserManager()">
+              <mdb-checkbox formControlName="userConfirmation">I confirm that all details pertaining to security
+                documents
+                have been duly updated in the core banking system
+              </mdb-checkbox>
+            </ng-container>
+
+            <ng-container *ngIf="isLoggedInUserLegalOfficer()">
+              <mdb-checkbox formControlName="userConfirmation">I confirm that the security documents stated above has
+                been
+                obtained, were checked by me and found to be in order
+              </mdb-checkbox>
+            </ng-container>
+          </ng-container>
+        </div>
+      </div>
+
+    </form>
+  </div>
+</ng-container>
+
+<div *ngIf="isForward || isReturn || isTransfer" class="modal-footer modal-end">
+  <button type="button" mdbBtn color="light" class="btn-sm relative waves-light" mdbWavesEffect
+    (click)="mdbModalRef.hide()">Close
+  </button>
+
+  <button type="button" mdbBtn color="info" class="btn-sm relative waves-light" mdbWavesEffect
+    [disabled]="!isValid() || !isUserConfirmed()" (click)="forward()">{{actionMessage ? actionMessage : 'Forward'}}
+  </button>
+
+</div>

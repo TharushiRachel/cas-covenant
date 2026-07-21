@@ -1,0 +1,56 @@
+<div class="d-flex flex-column justify-content-start align-items-start w-100-p">
+
+  <div class="d-flex flex-row mb-3 w-100-p flex-wrap justify-content-between">
+    <div class="padding-4px">
+      <label class="font-weight-bold" *ngIf="isCooperate">Company ROA Details</label>
+      <label class="font-weight-bold" *ngIf="!isCooperate">Individual ROA Details</label>
+    </div>
+    <div>
+      <ng-container *appHasAnyPrivilege="masterDataPrivilege.ICAS_SETTINGS_FACILITY_PAPER_EDIT">
+        <ng-container *ngIf="isEqualLoginAndAssignUser() && !isApproveStatus() && !isRejected()">
+          <button
+            type="button"
+            class="btn btn-light cta-btn "
+            mdbTooltip="Add Company Rao" placement="left"
+            (click)="openModalAddEditCompanyROA(facilityPaper,{})">
+            <i class="fas fa-plus" aria-hidden="true"></i>
+          </button>
+        </ng-container>
+      </ng-container>
+    </div>
+  </div>
+
+  <div class="table-responsive">
+    <table class="table">
+      <thead>
+      <tr>
+        <th scope="col" *ngIf="isCooperate">Company ROA</th>
+        <th scope="col" *ngIf="!isCooperate">Individual ROA</th>
+        <th scope="col">Comment</th>
+        <ng-container *appHasAnyPrivilege="masterDataPrivilege.ICAS_SETTINGS_FACILITY_PAPER_EDIT">
+          <th scope="col">Action</th>
+        </ng-container>
+      </tr>
+      </thead>
+      <tbody>
+      <ng-container *ngFor="let item of updatedFacilityPaper.fpCompanyRoaDTOList">
+        <tr class="table-clickable-row">
+          <td>{{item.description}}</td>
+          <td>{{item.comment}}</td>
+          <ng-container *appHasAnyPrivilege="masterDataPrivilege.ICAS_SETTINGS_FACILITY_PAPER_EDIT">
+            <td>
+              <button class="btn btn-sm btn-secondary cta-btn" type="button" mdbWavesEffect
+                      (click)="openModalAddEditCompanyROA(facilityPaper, item)"
+                      mdbTooltip="Edit"
+                      [disabled]="!isEqualLoginAndAssignUser() || isApproveStatus() || isRejected()"
+                      placement="left">
+                <mdb-icon fas icon="pencil-alt" aria-hidden="true"></mdb-icon>
+              </button>
+            </td>
+          </ng-container>
+        </tr>
+      </ng-container>
+      </tbody>
+    </table>
+  </div>
+</div>

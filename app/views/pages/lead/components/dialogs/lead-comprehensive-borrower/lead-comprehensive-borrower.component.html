@@ -1,0 +1,214 @@
+<mdb-card class="w-99-p bordered-card">
+
+  <div class="d-flex justify-content-end">
+    <button (click)="deleteBorrower() " mdbBtn type="button" class=" medium-button " mdbWavesEffect
+      data-toggle="tooltip" data-placement="bottom" *ngIf="isFormEditEnabled()">
+      <i class="color-red fas fa-trash-alt"></i>
+    </button>
+  </div>
+
+  <form class="d-flex p-2 flex-column justify-content-center align-items-start w-100-p" [formGroup]="addBorrwerForm">
+    <div class="row d-flex mx-0 w-100 mb-3">
+      <div class="col-md-6">
+        <h6 style="font-size: 14px; font-weight: 500;">Creation Type *</h6>
+        <div class="row d-flex mx-0">
+          <div class="md-form">
+            <input type="radio" class="form-check-input" formControlName="creationType"
+              id="leadCompCreationTypePersonal" [value]="leadComprehensiveTypeConst.PERSONAL"
+              (click)="onCreationTypeChange($event)" name="creationType">
+            <label class="form-check-label" for="leadCompCreationTypePersonal">Personal</label>
+          </div>
+
+          <div class="md-form ml-2 mr-0">
+            <input type="radio" class="form-check-input" formControlName="creationType"
+              id="leadCompCreationTypeBusiness" [value]="leadComprehensiveTypeConst.BUSINESS"
+              (click)="onCreationTypeChange($event)" name="creationType">
+            <label class="form-check-label" for="leadCompCreationTypeBusiness">Business</label>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <h6 style="font-size: 14px; font-weight: 500;">Borrower Type *</h6>
+        <div class="row d-flex mx-0">
+          <div class="md-form">
+            <input type="radio" class="form-check-input" formControlName="partyType" id="leadCompBorrowerTypeBorrower"
+              [value]="leadCompBorrowerTypeConst.BORROWER" (click)="onBorrowerTypeChange($event)" name="partyType">
+            <label class="form-check-label" for="leadCompBorrowerTypeBorrower">Borrower</label>
+          </div>
+          <div class="md-form ml-2 mr-0">
+            <input style="margin-left: 500px;" type="radio" class="form-check-input" formControlName="partyType"
+              id="leadCompBorrowerTypeNonBorrower" [value]="leadCompBorrowerTypeConst.NON_BORROWER"
+              (click)="onBorrowerTypeChange($event)" name="partyType">
+            <label class="form-check-label" for="leadCompBorrowerTypeNonBorrower">Non Borrower</label>
+          </div>
+        </div>
+      </div>
+    </div>
+    <br /> <br />
+
+    <div class="d-flex w-100-p justify-content-between p-2">
+      <div class="md-form w-10-p mx-2" *ngIf="!isBusiness">
+        <mdb-select [options]="titleConstList" formControlName="title" id="title"
+          placeholder="Title"></mdb-select>
+        <label for="title">Title *</label>
+      </div>
+
+      <div [class]="isBusiness ? 'md-form w-50-p mx-2' : 'md-form w-40-p mx-2'">
+        <input mdbValidate type="text" id="personalName" maxlength="200" formControlName="personalName"
+          class="form-control" mdbInput>
+        <label for="personalName" style="font-weight: 400;">{{nameLabel}} *</label>
+        <mdb-error *ngIf="formErrors.personalName.required">Name required</mdb-error>
+      </div>
+
+      <div class="md-form w-50-p mx-2">
+        <input mdbValidate type="text" id="address" maxlength="200" formControlName="address1" class="form-control"
+          mdbInput>
+        <label for="address" style="font-weight: 400;">Address 1 *</label>
+        <mdb-error *ngIf="formErrors.address1.required">Address required</mdb-error>
+      </div>
+    </div>
+
+    <div class="d-flex w-100-p justify-content-between p-2">
+      <div class="md-form w-50-p mx-2">
+        <input mdbValidate type="text" id="address2" maxlength="200" formControlName="address2" class="form-control"
+          mdbInput>
+        <label for="address2" style="font-weight: 400;">Address 2</label>
+      </div>
+      <div class="md-form w-50-p mx-2">
+        <input mdbValidate type="text" id="city" maxlength="200" formControlName="city" class="form-control" mdbInput>
+        <label for="city" style="font-weight: 400;">City *</label>
+        <mdb-error *ngIf="formErrors.city.required">City required</mdb-error>
+      </div>
+    </div>
+
+    <div class="d-flex w-100-p justify-content-between p-2">
+      <div class="md-form w-50-p mx-2 height-ajest-10">
+        <input mdbValidate type="text" id="accountNumber" maxlength="200" formControlName="accountNumber"
+          class="form-control" mdbInput>
+        <label for="accountNumber" style="font-weight: 400;">Account Number</label>
+        <!-- <mdb-error *ngIf="formErrors.accountNumber.required">Account Number required</mdb-error> -->
+      </div>
+      <div *ngIf="!isBusiness" class="md-form w-50-p mx-2">
+        <mdb-date-picker class="form-control" id="dateOfBirth" formControlName="dateOfBirth"
+          [options]="myDatePickerOptionsForBirthDay" [inline]="true" style="font-weight: 400;"
+          label="Date of Birth *"></mdb-date-picker>
+        <mdb-error *ngIf="formErrors.dateOfBirth.required">Date of Birth Required</mdb-error>
+      </div>
+      <div *ngIf="isBusiness" class="md-form w-50-p mx-2">
+        <input mdbValidate type="text" id="designation" maxlength="200" formControlName="designation"
+          class="form-control" mdbInput>
+        <label for="designation" style="font-weight: 400;">Designation</label>
+        <mdb-error *ngIf="formErrors.designation.required">Designation Required</mdb-error>
+      </div>
+    </div>
+
+    <div class="d-flex w-100-p justify-content-between p-2">
+      <div class="md-form w-50-p mx-2">
+        <input mdbValidate type="email" id="email" maxlength="200" formControlName="email" class="form-control"
+          mdbInput>
+        <label for="email" style="font-weight: 400;">Email</label>
+        <mdb-error *ngIf="formErrors.email.required">Email Required</mdb-error>
+      </div>
+      <div class="md-form w-50-p mx-2">
+        <input mdbValidate type="text" id="mobileNumber" maxlength="200" formControlName="mobileNumber"
+          class="form-control" mdbInput>
+        <label for="mobileNumber" style="font-weight: 400;">Mobile Number *</label>
+        <mdb-error *ngIf="formErrors.mobileNumber.required">Mobile Number Required</mdb-error>
+      </div>
+    </div>
+
+    <div class="d-flex w-100-p p-2 justify-content-between">
+      <ng-container *ngIf="!isFormDisabled">
+        <div class="md-form w-50-p mx-2">
+          <mdb-select [options]="identityOptionSelect" formControlName="identificationType" id="identificationType"
+            placeholder="Identification Type"></mdb-select>
+          <label for="identificationType">Identification Type *</label>
+        </div>
+        <div class="md-form w-49-p mx-2">
+          <input mdbValidate type="text" id="identificationNumber" maxlength="200"
+            formControlName="identificationNumber" class="form-control" mdbInput>
+          <label for="identificationNumber">{{getIdentificationLabelByForm()}} *</label>
+        </div>
+        <div class="md-form w-1-p">
+          <button class="btn-sm btn-info-outline p-2 border-0" (click)="addIdentificationNumber()"
+            [disabled]="isFormDisabled" *ngIf="isFormEditEnabled() && !isDecisionExist()">
+            <i mdbTooltip="Add Identification number" placement="top" class="fas fa-plus icon-button"
+              aria-hidden="true">
+            </i>
+          </button>
+        </div>
+      </ng-container>
+    </div>
+
+    <div class="d-flex w-100-p p-2 justify-content-between">
+      <ng-container *ngIf="identifications.length > 0">
+        <table class="table table-bordered">
+          <thead class="thead-light">
+            <tr>
+              <th style="width: 400px;">Identification Type</th>
+              <th>Identification Number</th>
+              <th style="width: 200px;">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let data of identifications">
+              <td style="width: 400px;">{{ getIdentificationLabel(data.identificationType) }}</td>
+              <td>{{ data.identificationNumber }}</td>
+              <td style="width: 200px;">
+                <button (click)="deleteIdentification(data.identificationType)" mdbBtn type="button"
+                  class=" medium-button btn btn-danger" mdbWavesEffect data-toggle="tooltip" data-placement="bottom"
+                  [disabled]="isFormDisabled" *ngIf="isFormEditEnabled() && !isDecisionExist(); else emptyTemplate">
+                  <i class="fas fa-trash-alt"></i>
+                </button>
+                <ng-template #emptyTemplate>
+                  -
+                </ng-template>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </ng-container>
+
+    </div>
+
+    <div *ngIf="!isBusiness" class="d-flex w-100-p justify-content-between p-2">
+      <div class="md-form w-50-p mx-2">
+        <mdb-select #opt [options]="optionsCivilStatusSelect" formControlName="civilStatus" id="civilStatus"
+          placeholder="Select One"></mdb-select>
+        <label for="civilStatus">Civil Status *</label>
+        <mdb-error *ngIf="formErrors.civilStatus.required">Civil Status Required</mdb-error>
+      </div>
+
+      <div class="md-form w-50-p mx-2">
+        <mdb-select #relatedPartyAuto [options]="genderSelect" formControlName="gender" id="gender"
+          placeholder="Select One"></mdb-select>
+        <label for="gender">Gender *</label>
+        <mdb-error *ngIf="formErrors.gender.required">Gender Required</mdb-error>
+      </div>
+    </div>
+
+    <div *ngIf="isBusiness" class="d-flex w-100-p justify-content-between p-2">
+      <div class="md-form w-50-p mx-2">
+        <input mdbValidate type="text" id="typeOfBusiness" maxlength="200" formControlName="typeOfBusiness"
+          class="form-control" mdbInput>
+        <label for="typeOfBusiness" style="font-weight: 400;">Type Of Business *</label>
+        <mdb-error *ngIf="formErrors.typeOfBusiness.required">Type Of Business Required</mdb-error>
+      </div>
+      <div class="md-form w-50-p mx-2">
+        <input mdbValidate type="text" id="contactPerson" maxlength="200" formControlName="contactPerson"
+          class="form-control" mdbInput>
+        <label for="contactPerson" style="font-weight: 400;">Contact Person *</label>
+        <mdb-error *ngIf="formErrors.contactPerson.required">Contact Person Required</mdb-error>
+      </div>
+    </div>
+  </form>
+
+  <div class="d-flex justify-content-end">
+    <button (click)="save() " mdbBtn type="button" class=" medium-button btn btn-info" mdbWavesEffect
+      data-toggle="tooltip" data-placement="bottom" [disabled]="!isValid()  || isFormDisabled || isSaveLoading"
+      *ngIf="isFormEditEnabled()">
+      <i class="fas fa-file-signature"></i> SAVE
+    </button>
+  </div>
+
+</mdb-card>

@@ -1,0 +1,51 @@
+<div>
+  <div class="modal-header modal-topic flex-center">
+    <button type="button" class="close pull-right" aria-label="Close" (click)="onClose()">
+      <span aria-hidden="true">×</span>
+    </button>
+    <h4 class="modal-title w-100 heading-align" id="myModalLabel">{{heading}}</h4>
+  </div>
+  <div class="modal-body modal-detail form-margin">
+    <div>
+      <form
+        class="d-flex flex-row flex-fill flex-wrap align-items-center"
+        [formGroup]="componentForm">
+        <div class="d-flex w-100-p  p-2 m-bottom-20px">
+        </div>
+        <div class="d-flex w-100-p  p-2">
+          <div class="md-form min-width-120 mr-3 flex-fill">
+            <mdb-select
+              id="paperType"
+              [options]="optionsPaperTypeSelect"
+              formControlName="paperType"
+              label="Paper Type"></mdb-select>
+
+            <mdb-error *ngIf="formErrors.paperType.required">Required</mdb-error>
+
+          </div>
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer modal-end">
+      <button type="button"
+              mdbBtn
+              class="medium-button"
+              aria-label="Close"
+              (click)="onClose()"
+              mdbWavesEffect>Close
+      </button>
+      <button
+        type="button"
+        mdbBtn
+        color="secondary"
+        class="relative medium-button"
+        [disabled]="!isValid()"
+        (click)="generateBCCPaper()"
+        mdbWavesEffect>Create
+      </button>
+    </div>
+  </div>
+</div>
+
+
+

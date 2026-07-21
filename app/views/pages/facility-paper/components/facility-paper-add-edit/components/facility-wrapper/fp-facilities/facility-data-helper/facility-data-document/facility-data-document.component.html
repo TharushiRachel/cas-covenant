@@ -1,0 +1,87 @@
+<div class="modal-header modal-topic">
+  <h4 class="modal-title w-100 font-weight-bold">{{heading}}</h4>
+  <button type="button" class="close pull-right" data-dismiss="modal" aria-label="Close" (click)="mdbModalRef.hide()">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
+<div class="modal-body mx-3 modal-detail form-margin">
+  <ng-container>
+    <div class="d-flex flex-column justify-content-start w-100-p">
+
+      <ng-container *ngIf="facilityData.facilityDocumentList">
+        <div class="mb-3">
+          <div class="float-right">
+            <ng-container *ngIf="!content.isPreviewMode">
+              <ng-container *appHasAnyPrivilege="masterDataPrivilege.ICAS_SETTINGS_UPLOAD_SUPPORTING_DOCUMENTS">
+                <i class="fas fa-plus text-black-50 pr-sm-3 " aria-hidden="true"
+                   mdbTooltip="Add" placement="top"
+                   (click)="openModalFacilityDocumentUpload(facilityData,{})">
+
+                </i>
+              </ng-container>
+            </ng-container>
+          </div>
+        </div>
+
+        <div class="table-responsive">
+          <table class="table">
+            <thead>
+            <tr>
+              <ng-container *ngFor="let col of tableColumnsForFacilityDocument">
+                <th scope="col">{{col}}</th>
+              </ng-container>
+            </tr>
+            </thead>
+            <tbody>
+            <ng-container *ngFor="let item of resizedfpDocList; let i=index">
+              <tr *ngIf="item.status == 'ACT'">
+                <td>{{item.supportingDocumentName}}</td>
+                <td>{{yesNo[item.mandatory]}}</td>
+                <td>{{item.remark}}</td>
+
+                <ng-container *ngIf="!content.isPreviewMode">
+                  <td>
+                    <div>
+                      <button class="btn btn-sm btn-success cta-btn" type="button" mdbWavesEffect
+                              (click)="onDownLoadDoc(item)"
+                              mdbTooltip="Download" placement="left">
+                        <mdb-icon fas icon="arrow-alt-circle-down" aria-hidden="true"></mdb-icon>
+                      </button>
+
+                      <ng-container *appHasAnyPrivilege="masterDataPrivilege.ICAS_SETTINGS_UPLOAD_SUPPORTING_DOCUMENTS">
+                        <ng-container *ngIf="isUploadedDiv(item)">
+                          <button class="btn btn-sm btn-danger cta-btn delete-button" type="button" mdbWavesEffect
+                                  (click)="onRemoveFacilityDocument(item)"
+                                  mdbTooltip="Delete" placement="left">
+                            <mdb-icon fas icon="trash-alt" aria-hidden="true"></mdb-icon>
+                          </button>
+                        </ng-container>
+                      </ng-container>
+                    </div>
+                  </td>
+                </ng-container>
+              </tr>
+            </ng-container>
+            </tbody>
+          </table>
+          <div class="d-flex flex-row float-right">
+            <app-list-to-paginator
+              [inputArray]="facilityData.facilityDocumentList"
+              [listType]="fpDocument"
+              (resizedArray)="onLoadResizedList($event)">
+            </app-list-to-paginator>
+          </div>
+        </div>
+      </ng-container>
+
+    </div>
+  </ng-container>
+</div>
+
+<div class="modal-footer modal-end">
+
+</div>
+
+<a class="download-link" #downloadLink></a>
+

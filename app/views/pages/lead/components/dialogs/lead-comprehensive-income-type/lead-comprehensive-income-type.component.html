@@ -1,0 +1,35 @@
+<div class="modal-header modal-topic">
+  <h4 class="modal-title w-100 font-weight-bold">Add Income Source</h4>
+  <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="onCloseModel()">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
+<div class="modal-body height-300 mx-3 modal-detail form-margin">
+
+  <form class="d-flex p-2 flex-column justify-content-start align-items-start w-100-p" [formGroup]="addIncomeTypeForm">
+    <div class="d-flex w-100-p justify-content-between p-2">
+      <div class="md-form w-50-p mx-2">
+        <mdb-select formControlName="party" [options]="partyOptions" class="form-control py-0" label="Party *">
+        </mdb-select>
+      </div>
+      <div class="md-form w-50-p mx-2">
+        <mdb-select formControlName="incomeType" [options]="incomeTypeOptions" class="form-control py-0"
+          label="Income Type *">
+        </mdb-select>
+      </div>
+    </div>
+
+    <div class="d-flex w-100-p justify-content-between p-2">
+      <div class="md-form mx-2">
+        <mdb-checkbox formControlName="considerForRepayment">Consider for Repayment</mdb-checkbox>
+      </div>
+    </div>
+  </form>
+</div>
+
+<div class="modal-footer modal-end">
+  <button type="button" mdbBtn color="secondary" class="relative waves-light" mdbWavesEffect size="sm"
+    (click)="save()" [disabled]="!isValid() ||isSaveLoading">Save
+  </button>
+</div>

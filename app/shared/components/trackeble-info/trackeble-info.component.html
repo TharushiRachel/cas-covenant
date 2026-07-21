@@ -1,0 +1,39 @@
+<div class="d-flex w-100-p border p-2">
+  <div class="md-form m-top-10px p-2 m-bottom-10px flex-column w-25-p">
+    <span class="p-2 detail-title">Approval Status:</span>
+    <span *ngIf="updateDTO.approveStatus" class="p-2 detail-result">{{approveStatus[updateDTO.approveStatus]}}</span>
+    <span *ngIf="!updateDTO.approveStatus" class="p-2 detail-result">-</span>
+  </div>
+  <div class="md-form m-top-10px p-2 m-bottom-10px flex-column w-25-p">
+    <span class="p-2 detail-title">Approved Date:</span>
+    <span *ngIf="updateDTO.approvedDateStr" class="p-2 detail-result">{{updateDTO.approvedDateStr}}</span>
+    <span *ngIf="!updateDTO.approvedDateStr" class="p-2 detail-result">-</span>
+  </div>
+  <div class="md-form m-top-10px p-2 m-bottom-10px flex-column w-25-p">
+    <span class="p-2 detail-title">Approved By:</span>
+    <span *ngIf="updateDTO.approvedBy" class="p-2 detail-result">{{updateDTO.approvedBy}}</span>
+    <span *ngIf="!updateDTO.approvedBy" class="p-2 detail-result">-</span>
+  </div>
+</div>
+<div class="d-flex w-100-p border p-2 m-top-5px">
+  <div class="md-form m-top-10px p-2 m-bottom-10px flex-column w-25-p">
+    <span class="p-2 detail-title">Created Date:</span>
+    <span *ngIf="updateDTO.createdDateStr" class="p-2 detail-result">{{updateDTO.createdDateStr}}</span>
+    <span *ngIf="!updateDTO.createdDateStr" class="p-2 detail-result">-</span>
+  </div>
+  <div class="md-form m-top-10px p-2 m-bottom-10px flex-column w-25-p">
+    <span class="p-2 detail-title">Created By:</span>
+    <span *ngIf="updateDTO.createdBy" class="p-2 detail-result">{{updateDTO.createdBy}}</span>
+    <span *ngIf="!updateDTO.createdBy" class="p-2 detail-result">-</span>
+  </div>
+  <div class="md-form m-top-10px p-2 m-bottom-10px flex-column w-25-p">
+    <span class="p-2 detail-title">Modified Date:</span>
+    <span *ngIf="updateDTO.modifiedDateStr" class="p-2 detail-result">{{updateDTO.modifiedDateStr}}</span>
+    <span *ngIf="!updateDTO.modifiedDateStr" class="p-2 detail-result">-</span>
+  </div>
+  <div class="md-form m-top-10px p-2 m-bottom-10px flex-column w-25-p">
+    <span class="p-2 detail-title">Modified By:</span>
+    <span *ngIf="updateDTO.modifiedBy" class="p-2 detail-result">{{updateDTO.modifiedBy}}</span>
+    <span *ngIf="!updateDTO.modifiedBy" class="p-2 detail-result">-</span>
+  </div>
+</div>

@@ -1,0 +1,145 @@
+<div class="modal-header modal-topic">
+  <h4 class="modal-title w-100 font-weight-bold">
+    Manage Facility Security
+  </h4>
+  <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="mdbModalRef.hide()">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
+<div class="modal-body mx-3 modal-detail form-margin">
+  <form class="d-flex p-2 flex-column justify-content-start align-items-start w-100-p" [formGroup]="componentForm">
+
+    <ng-container *ngIf="facilitySecurities.length>0">
+      <div class="md-form margin-top-15 width-100 m-right-left-2px">
+        <mdb-select mdbValidate
+                    label="Load Security"
+                    id="securityID"
+                    [options]="facilitySecurities"
+                    [allowClear]="true"
+                    formControlName="securityID"
+                    class="form-control">
+        </mdb-select>
+      </div>
+    </ng-container>
+
+    <div class="d-flex flex-row justify-content-center  w-100-p">
+      <div class="md-form m-top-10px m-bottom-10px side-margin w-75-p">
+        <input mdbValidate type="text"
+               id="securityCode"
+               maxlength="200"
+               formControlName="securityCode"
+               class="form-control"
+               mdbInput>
+        <label for="securityCode">Security Nickname *</label>
+        <mdb-error *ngIf="formErrors.securityAmount.securityCode">Security Nic Name required</mdb-error>
+      </div>
+
+      <div class="d-flex flex-row justify-content-center w-75-p">
+        <mdb-select mdbValidate
+                    required
+                    label="Currency *"
+                    id="securityCurrency"
+                    [options]="currencyTypesOpt"
+                    formControlName="securityCurrency"
+                    class="form-control">
+        </mdb-select>
+        <mdb-error *ngIf="formErrors.securityCurrency.required"> Required</mdb-error>
+      </div>
+    </div>
+
+    <div class="md-form margin-top-15 m-bottom-10px w-100-p">
+      <label class="security-detail-lable">Security Details *</label>
+      <textarea type="text"
+                id="securityDetail"
+                class="form-control border-bottom"
+                maxlength="4000"
+                appTextAreaAutoHeight
+                formControlName="securityDetail"
+                [wrap]="'hard'"
+                mdbInput>
+      </textarea>
+    </div>
+
+    <div class="d-flex flex-row justify-content-between width-100">
+      <div class="md-form margin-top-15 m-bottom-10px w-100-p ">
+        <input mdbValidate type="text"
+               id="securityAmount"
+               maxlength="200"
+               formControlName="securityAmount"
+               class="form-control"
+               (keydown)="validateNumber($event)"
+               (focusout)="setCurrencyFormatValue('securityAmount')"
+               mdbInput>
+        <label for="securityAmount">Security Amount *</label>
+        <mdb-error *ngIf="formErrors.securityAmount.required">Security Amount required</mdb-error>
+        <mdb-error *ngIf="formErrors.securityAmount.isCommaSeparatedValueError">Invalid</mdb-error>
+        <mdb-error *ngIf="formErrors.securityAmount.min">Invalid Amount</mdb-error>
+      </div>
+
+      <div class="d-flex flex-row justify-content-center  w-100-p">
+        <div class="md-form margin-top-15 m-bottom-10px w-40-p flex-row m-right-10-p">
+          <mdb-checkbox formControlName="isCashSecurity">
+            <span>Cash Amount</span>
+          </mdb-checkbox>
+        </div>
+
+        <div class="md-form margin-top-15 m-bottom-10px w-100-p ">
+          <ng-container *ngIf="isCashSecurity()">
+            <input mdbValidate type="text"
+                   id="cashAmount"
+                   maxlength="200"
+                   formControlName="cashAmount"
+                   class="form-control"
+                   (keydown)="validateNumber($event)"
+                   (focusout)="setCurrencyFormatValue('cashAmount')"
+                   mdbInput>
+            <label for="cashAmount">Value *</label>
+            <mdb-error *ngIf="formErrors.cashAmount.min">Invalid Amount</mdb-error>
+          </ng-container>
+        </div>
+      </div>
+    </div>
+
+    <div class="margin-top-15 m-bottom-10px w-100-p ">
+      <table class="width-100 custom-bordered-table border-none">
+        <thead>
+        <th class="width-5"></th>
+        <th></th>
+        </thead>
+        <tbody formArrayName="afFacilitySecurityDTOS">
+        <tr *ngFor="let item of this.componentForm.get('afFacilitySecurityDTOS')['controls'];
+                     let i = index;"
+            [formGroupName]="i"
+        >
+          <td>
+            <mdb-checkbox formControlName="isAddedFacility"></mdb-checkbox>
+          </td>
+          <td>
+            <input mdbValidate type="text"
+                   id="facilityCode"
+                   maxlength="200"
+                   formControlName="facilityRefCode"
+                   class="form-control border-bottom-none"
+                   style="background-color: unset"
+                   mdbInput>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </form>
+</div>
+
+<div class="modal-footer modal-end">
+  <button
+    type="button" mdbBtn color="secondary" size="sm" class="relative waves-light" mdbWavesEffect
+    [hidden]="!isEmpty"
+    [disabled]="componentForm.invalid" (click)="saveUpdateFacilitySecurity()">ADD
+  </button>
+  <button
+    type="button" mdbBtn color="secondary" size="sm" class="relative waves-light" mdbWavesEffect
+    [hidden]="isEmpty"
+    [disabled]="componentForm.invalid" (click)="saveUpdateFacilitySecurity()">Update
+  </button>
+</div>

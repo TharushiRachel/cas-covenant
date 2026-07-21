@@ -1,0 +1,36 @@
+<form [formGroup]="customFacilityForm">
+  <div>
+    <div class="modal-header modal-topic flex-center">
+      <button type="button" class="close pull-right" aria-label="Close" (click)="onNoClick()">
+        <span aria-hidden="true">×</span>
+      </button>
+      <h4 class="modal-title w-100 heading-align" id="myModalLabel" style="font-size: 1.3rem; font-weight: bold">Add
+        Fields
+
+
+      </h4>
+    </div>
+
+    <div class="modal-body modal-detail form-margin">
+      <h6 style="font-size: 1rem; font-weight: 500;">Select options:</h6>
+      <div style="max-height: 70vh; overflow-y: auto;">
+        <div *ngFor="let option of content" class="flex-container">
+          <div class="view-options form-check">
+            <mdb-checkbox class="form-check-input" (click)="onCheckboxChange($event, option)" [default]="true"
+              [value]="option.cftCustomFacilityInfoID"
+              [checked]="isCustomInfoChecked(option.cftCustomFacilityInfoID)"></mdb-checkbox>
+            <label class="form-check-label lable-sty" for="{{ option.cftCustomFacilityInfoID }}">
+              {{ option.customFacilityInfoName }}
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer modal-end">
+        <button type="button" mdbBtn size="sm" class="relative waves-light checked-btn"
+          (click)="addCheckedItemsToTable()" mdbWavesEffect>Add Checked Items
+        </button>
+      </div>
+    </div>
+  </div>
+</form>

@@ -1,0 +1,36 @@
+<div class="table-responsive">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Comment</th>
+                <th style="width: 200px;">Date</th>
+                <th style="width: 250px;">Commented By</th>
+                <th style="width: 100px;">Action</th>
+            </tr>
+        </thead>
+        <ng-container *ngFor="let comment of comments">
+            <tr [ngStyle]="{ 'background-color': comment.isActionEnabled === true ? '#dee2e6a1' : '#fff'}">
+                <td style="vertical-align: middle;">
+                    <pre class="custom-pre-tag-with-spaces mx-0">{{comment.comment}}</pre>
+                </td>
+                <td style="vertical-align: middle;">{{comment.date}}</td>
+                <td style="vertical-align: middle;">{{comment.commentedBy}}</td>
+                <td>
+                    <button mdbBtn type="button" mdbTooltip="View Comment" class="btn-outline-info btn-sm"
+                        outline="true" mdbWavesEffect (click)="viewComment(comment)"
+                        *ngIf="comment.isActionEnabled;else hiddenView" style="padding: 4px 8px !important;">
+                        <mdb-icon fas icon="fas fa-check" aria-hidden="true"></mdb-icon>
+                    </button>
+                    <ng-template #hiddenView>-</ng-template>
+                </td>
+            </tr>
+        </ng-container>
+        <tr *ngIf="comments.length == 0">
+            <th colspan="5" class="text-align-center">
+                <p class="no-data-message">
+                    No Comments.
+                </p>
+            </th>
+        </tr>
+    </table>
+</div>

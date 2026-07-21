@@ -1,0 +1,117 @@
+.ca-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.form-control:disabled {
+  background-color: unset;
+}
+
+#createdBy,
+#createdDate {
+  background-color: unset;
+}
+
+.form-control {
+  margin-top: -5px;
+}
+
+.read-view-btn {
+  min-width: 135px;
+  padding: 0.4rem 1rem !important;
+}
+
+.modal-title {
+  font-weight: bold !important;
+}
+
+.modal-body {
+  max-height: calc(100vh - 150px);
+  overflow-y: auto;
+}
+
+#cov-span {
+  color: #4d96e5;
+  font-weight: bold;
+}
+
+
+.custom-mdb-select,
+.mdb-select>div {
+  width: 100%;
+}
+
+.d-flex {
+  flex-wrap: wrap;
+}
+
+.info-caption {
+  width: 35% !important;
+}
+
+.width-5 {
+  width: 5% !important;
+}
+
+.w-100-p {
+  width: 100% !important;
+}
+
+.info-details {
+  width: 60% !important;
+  font-weight: bold !important;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+.card {
+  margin-bottom: 20px;
+}
+
+.margin-10 {
+  margin: 10px;
+}
+
+.btn-width {
+  width: 97px;
+}
+
+.detail-section {
+  width: 100%;
+  background-color: white;
+}
+
+.padding-unset {
+  padding-right: unset;
+  padding-left: unset;
+}
+
+.custom-mdb-select {
+  position: relative;
+  cursor: pointer;
+  border: none;
+  outline: 0;
+  width: 50%;
+  font-size: 1rem;
+  margin: 0;
+  box-sizing: content-box;
+  display: block;
+  user-select: none;
+  text-align: start;
+}
+
+.mdb-select>div {
+  border: transparent;
+  box-sizing: border-box;
+  cursor: pointer;
+  user-select: none;
+  width: 50%;
+}
+
+.address-textarea {
+  resize: vertical;
+  min-height: 80px;
+  max-height: 200px;
+}

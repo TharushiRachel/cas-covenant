@@ -1,0 +1,9 @@
+<div class="row d-flex mx-0 flex-column border border-1 rounded p-2" style="border-color: #ff4a67 !important;"
+    *ngIf="showDesicion()">
+    <h6 class="mb-2" style="color: black; font-weight: 600;">Advance Analytics Decision</h6>
+    <span [innerHTML]="analyticsDecisionPreview"></span>
+
+    <div class="row d-flex mx-0 w-100 flex-column mt-2" *ngIf="facilityData">
+        <h6 class="mb-2" style="color: black; font-weight: 600;">Facility Details</h6>
+        <span class="my-1" [innerHTML]="facilityData"></span>
+    </div>

@@ -1,0 +1,37 @@
+<div class="modal-header modal-topic flex-center">
+  <h4 class="modal-title w-100 font-weight-bold">
+    Return to Agent
+  </h4>
+  <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="mdbModalRef.hide()">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
+<div class="modal-body mx-3 modal-detail form-margin">
+  <form class="d-flex p-2 flex-column justify-content-start align-items-start w-100-p" [formGroup]="componentForm">
+    <div class="d-flex flex-row w-100-p">
+      <div class="md-form m-top-10px m-bottom-10px w-100-p ">
+        <label for="comment" style="color: black"></label>
+        <textarea type="text"
+                  class="form-control comment-area"
+                  id="comment"
+                  placeholder="Comment here..."
+                  formControlName="comment"
+                  maxlength="4000"
+                  rows="5" mdbInput>
+        </textarea>
+      </div>
+    </div>
+  </form>
+</div>
+<div class="modal-footer modal-end">
+  <button
+    type="button" mdbBtn color="light" class="btn-sm relative waves-light" mdbWavesEffect
+    (click)="mdbModalRef.hide()">Cancel
+  </button>
+  <button
+    type="button" mdbBtn color="info" class="btn-sm relative waves-light" mdbWavesEffect
+    [disabled]="!isValid(content.facilityPaperStatus)" (click)="returnToAgent()">Return
+  </button>
+
+</div>

@@ -1,0 +1,40 @@
+.no-dots {
+    list-style-type: none;
+}
+
+.node-item {
+    width: 50%;
+    height: fit-content;
+    padding: 6px;
+    border-radius: 8px;
+    margin: 12px 0px 12px 0px;
+    border: 0.5px solid #e7e7e7;
+}
+
+.node-item .btn {
+    padding: 5px 10px !important;
+    margin: 0px 4px 0px 4px !important;
+    background-color: #fff;
+    border-radius: 8px;
+}
+
+.node-item .badge {
+    background-color: transparent !important;
+    padding: 6px !important;
+    height: fit-content !important;
+    border: 0.5px solid;
+    border-radius: 6px;
+    font-weight: 500;
+}
+
+@media screen and (max-width: 990px) {
+    .node-item {
+        width: 80%;
+    }
+}
+
+@media (min-width: 990px) and (max-width: 1200px) {
+    .node-item {
+        width: 60%;
+    }
+}

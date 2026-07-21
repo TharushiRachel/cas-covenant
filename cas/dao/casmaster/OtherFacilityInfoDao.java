@@ -1,0 +1,9 @@
+package com.itechro.cas.dao.casmaster;
+
+import com.itechro.cas.model.domain.casmaster.CftOtherFacilityInformation;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+@Repository
+public interface OtherFacilityInfoDao extends JpaRepository<CftOtherFacilityInformation, Integer> {
+}

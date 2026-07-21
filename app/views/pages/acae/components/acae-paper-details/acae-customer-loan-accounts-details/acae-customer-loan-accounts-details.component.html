@@ -1,0 +1,55 @@
+<div class="d-flex p-2 flex-column justify-content-start align-items-start w-100-p">
+  <div class="width-100">
+    <ng-container *ngIf="loanAccountLoading">
+      <div class="d-flex justify-content-center">
+        <div class="spinner-border" role="status">
+          <span class="sr-only">Loading...</span>
+        </div>
+      </div>
+    </ng-container>
+    <ng-container *ngIf="isDataAvailable  ; else : noData">
+      <p class="font-weight-bold">Advance Details as at {{date}}</p>
+      <table class="custom-bordered-table width-100">
+        <thead>
+          <tr style="height: 30px" class="table-heading-color">
+            <th>Nature</th>
+            <th>Currency</th>
+            <th>Sanction Limit</th>
+            <th>Operative Account</th>
+            <th>Facility Account</th>
+            <th>Interest Rate (%p.a.)</th>
+            <th>OS Amount</th>
+            <th>Asset Classification</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let data of facilities">
+            <td style="width: 150px; text-align: left;">{{startCaseFormat(data.nature)}}</td>
+            <td class="value-cel">{{data.currency}}</td>
+            <td class="value-cel">{{this.getCurrencyFormat(data.sanctionLimit)}}</td>
+            <td class="value-cel">{{data.operativeAccount}}</td>
+            <td class="value-cel">{{data.facilityAccount}}</td>
+            <td class="value-cel">{{this.getCurrencyFormat(data.intRate)}}</td>
+            <td class="value-cel">{{this.getCurrencyFormat(data.outstandingAomunt)}}</td>
+            <td class="value-cel">{{data.assetClassification}}</td>
+          </tr>
+          <tr>
+            <th class="text-align-start">Total</th>
+            <th></th>
+            <th class="text-align-end">{{this.getCurrencyFormat(totalSanctionLimit)}}</th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th class="text-align-end">{{this.getCurrencyFormat(totalOutstandingAmount)}}</th>
+            <th></th>
+          </tr>
+        </tbody>
+      </table>
+    </ng-container>
+    <ng-template #noData>
+      <p class="not-auth-message">
+        No Records Available
+      </p>
+    </ng-template>
+  </div>
+</div>

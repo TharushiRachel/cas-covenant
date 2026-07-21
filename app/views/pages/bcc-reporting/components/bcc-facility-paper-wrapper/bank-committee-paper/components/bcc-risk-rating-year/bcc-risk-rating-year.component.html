@@ -1,0 +1,84 @@
+<form [formGroup]="riskRatingYearGroup">
+  <div class="d-flex flex-column justify-content-start">
+    <table class="table custom-bordered-table">
+      <thead>
+      <tr>
+        <th class="text-align-center w-40 vertical-align-middle">Risk Grading</th>
+        <th class="text-align-center w-20 vertical-align-middle">Risk Score</th>
+        <th class="text-align-center w-35 vertical-align-middle">Risk Year</th>
+        <th class="text-align-center w-5 ">
+          <button class="btn btn-sm btn-secondary cta-btn" type="button" mdbWavesEffect
+                  (click)="addRiskRatingYearRow()"
+                  mdbTooltip="Add New Record" placement="left">
+            <mdb-icon fas icon="fas fa-plus" aria-hidden="true"></mdb-icon>
+          </button>
+        </th>
+      </tr>
+      </thead>
+      <tbody
+        formArrayName="bccRiskRatingYearDTOS"
+      >
+      <tr *ngFor="let item of riskRatingYearGroup.get('bccRiskRatingYearDTOS')['controls'];
+           let i = index;"
+          [formGroupName]="i"
+
+          [ngClass]="{
+          'add-record': !item.value.bccRiskRatingYearID
+          }"
+      >
+        <td class="text-align-center">
+
+          <select id="riskGrading" formControlName="riskGrading" class="custom-select-input">
+            <option *ngFor="let item of bccRiskRatingScoreOptionSelect " [value]="item.value">{{item.label}}</option>
+          </select>
+
+          <!--          <input mdbValidate-->
+          <!--                 class="form-control"-->
+          <!--                 type="text"-->
+          <!--                 id="riskScore"-->
+          <!--                 formControlName="riskScore"-->
+          <!--                 mdbInput>-->
+        </td>
+        <td class="text-align-center">
+          <input mdbValidate
+                 type="text"
+                 style="width: 75%"
+                 class="custom-text-input"
+                 id="riskScore"
+                 (keydown)="validateNumber($event)"
+                 maxlength="3"
+                 formControlName="riskScore"
+                 [class.custom-text-input-error]="item.get('riskScore') && item.get('riskScore').dirty && !item.get('riskScore').valid ?  item.get('riskScore').errors.percentageValueError : false "
+                 mdbInput>
+        </td>
+
+        <td class="text-align-center">
+          <select id="riskYear" formControlName="riskYear" class="custom-select-input">
+            <option *ngFor="let item of riskRatingYearsOptionSelect" [value]="item.value">{{item.label}}</option>
+          </select>
+        </td>
+        <ng-container *appHasAnyPrivilege="masterDataPrivilege.ICAS_SETTINGS_FACILITY_PAPER_EDIT">
+          <td class="w-5">
+            <div class="d-flex flex-row justify-content-end">
+              <ng-container *ngIf="item.value.bccRiskRatingYearID">
+                <button class="btn btn-sm cta-btn delete-button" type="button" mdbWavesEffect
+                        (click)="removeRiskRatingYear(item)"
+                        mdbTooltip="Remove" placement="left">
+                  <mdb-icon fas icon="trash-alt" aria-hidden="true"></mdb-icon>
+                </button>
+              </ng-container>
+              <ng-container *ngIf="!item.value.bccRiskRatingYearID">
+                <button class="btn btn-sm cta-btn delete-button" type="button" mdbWavesEffect
+                        (click)="removeRiskRatingYearRow(i)"
+                        mdbTooltip="Remove" placement="left">
+                  <mdb-icon fas icon="trash-alt" aria-hidden="true"></mdb-icon>
+                </button>
+              </ng-container>
+            </div>
+          </td>
+        </ng-container>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</form>

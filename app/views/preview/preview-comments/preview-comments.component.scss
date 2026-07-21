@@ -1,0 +1,67 @@
+$roboto-font-family: 'Roboto', sans-serif !default;
+
+.custom-pre-tag {
+  white-space: pre-line;
+  overflow-x: auto;
+  font-family: $roboto-font-family;
+  margin-bottom: 2px;
+}
+
+.heading-topics {
+  font-size: small;
+  font-weight: bold !important;
+  padding-left: 3px;
+}
+
+.custom-table {
+  th {
+    padding: 3px;
+  }
+
+  td {
+    padding: 3px;
+    vertical-align: top !important;
+    border-bottom: 1px solid #e3e5ef;
+  }
+}
+
+h5 {
+  font-size: 1.1rem;
+  font-weight: 400;
+}
+
+.topic {
+  background-color: #dae3e6 !important;
+  padding-top: 6px !important;
+  padding-bottom: 1px !important;
+  margin-bottom: 5px !important;
+}
+
+
+.active-risk-Comment-body {
+  background-color: #E0E7EB;
+  padding: 2% !important;
+}
+
+.risk-opinion-topic {
+  font-size: 1.1rem;
+  font-weight: bold
+}
+
+.risk-edit {
+
+  padding-top: .5% !important;
+  padding-left: 1% !important;
+
+}
+
+.risk-reply-body {
+  background-color: #F0F3F5;
+  padding: 2% !important;
+}
+
+.risk-reply-div {
+  padding-top: 1% !important;
+  padding-left: 2% !important;
+}
+

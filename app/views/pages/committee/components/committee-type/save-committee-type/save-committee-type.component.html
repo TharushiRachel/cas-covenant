@@ -1,0 +1,58 @@
+<div mdbSticky class="d-flex flex-row justify-content-between page-header">
+  <div class="d-flex flex-row align-items-center">
+    <a appGoBack class="d-flex flex-row align-items-center">
+      <i class="fas fa-angle-left header-icon-back"></i>
+    </a>
+    <h5><i class="fa fa-group header-icon"></i>
+      <span *ngIf="pageType=='new'">Add Committee Type</span>
+      <span *ngIf="pageType=='edit'">Update Committee Type</span>
+    </h5>
+  </div>
+</div>
+
+<div class="modal-body m-0 p-1 modal-detail form-margin">
+  <ng-container>
+
+    <form class="d-flex flex-column justify-content-start align-items-start w-100-p" [formGroup]="componentForm">
+      <div class="d-flex m-top-10px flex-row flex-wrap w-100-p justify-content-between">
+        <ng-container>
+          <div class="md-form m-top-10px m-bottom-10px w-48-p">
+            <input mdbValidate type="text" id="committeeTypeName" maxlength="200" formControlName="committeeTypeName"
+              class="form-control" mdbInput>
+            <label for="committeeTypeName">Committee Type Name *</label>
+            <mdb-error *ngIf="formErrors.committeeTypeName.required">Committee Type Name required</mdb-error>
+          </div>
+
+          <div class="md-form m-top-10px m-bottom-10px w-48-p">
+            <input mdbValidate type="text" id="committeeDescription" maxlength="200"
+              formControlName="committeeDescription" class="form-control" mdbInput>
+            <label for="committeeDescription">Committee Type Description *</label>
+            <mdb-error *ngIf="formErrors.committeeDescription.required">Committee Type Description
+              required</mdb-error>
+          </div>
+
+          <div class="md-form m-top-10px m-bottom-10px w-48-p">
+            <mdb-select [options]="optionsSelect" formControlName="status" id="status"
+              placeholder="Status"></mdb-select>
+            <label for="status">Status *</label>
+            <mdb-error *ngIf="formErrors.status.required">Status is required</mdb-error>
+          </div>
+
+          <div class="md-form m-top-10px m-bottom-10px w-48-p">
+            <mdb-select [options]="systemOptionsSelect" formControlName="isSystem" id="isSystem"
+              placeholder="Is System Only"></mdb-select>
+            <label for="isSystem">Is System Only</label>
+          </div>
+
+        </ng-container>
+        <div class="md-form m-top-10px m-bottom-10px w-100-p row d-flex justify-content-end mx-0">
+          <button type="button" class="medium-button btn btn-info" mdbBtn (click)="saveType()"
+            [disabled]="!isValid() || !isDirty()">
+            {{pageType =='new' ?"ADD":"UPDATE"}}
+          </button>
+        </div>
+      </div>
+    </form>
+
+  </ng-container>
+</div>

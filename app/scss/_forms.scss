@@ -1,0 +1,42 @@
+.form-control {
+  border-radius: 0 !important;
+}
+
+.custom-select-input {
+  width: 90%;
+  border-top: unset !important;
+  border-left: unset !important;
+  border-right: unset !important;
+  border-bottom: 1px solid #757575 !important;
+  background-color: unset;
+  padding: 4px;
+}
+
+
+.custom-text-input {
+  border-top: unset !important;
+  border-left: unset !important;
+  border-right: unset !important;
+  border-bottom: unset !important;
+  width: 100%;
+  padding-left: 5px;
+  padding-right: 5px;
+  background-color: unset !important;
+}
+
+.custom-text-input-error {
+  border-bottom: red 2px solid !important;
+}
+
+
+.custom-date-input {
+  input {
+    padding: unset !important;
+    width: 70px !important;
+    margin: unset !important;
+  }
+
+  th, td {
+    border: unset !important;
+  }
+}

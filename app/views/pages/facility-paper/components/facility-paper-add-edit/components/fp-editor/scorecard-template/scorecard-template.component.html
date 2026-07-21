@@ -1,0 +1,60 @@
+<ng-container *ngFor="let item of evaluations; let rowIndex = index">
+
+    <!-- <div class="d-flex flex-row justify-content-between mb-10p">
+      <label class="w-35-p">Facility Paper ID</label>
+      <span class="w-5">:</span>
+      <span class="font-weight-bold width-60">{{facilityPaper.facilityPaperID || '-'}}</span>
+    </div> -->
+  
+  
+    <div *ngIf="evaluations">
+      <h4 class="sStyle heading-1">{{ evaluations[0].elementCaption }}</h4>
+      <p class="sStyle qst-score">Total Score : {{score}}</p>
+  
+      
+      <ul>
+        <li *ngFor="let evaluation of evaluations[0].lstEva; let subRowIndex = index">
+          <fieldset class="fieldset-s">
+          <h4 class="qst">{{ evaluation.elementCaption }}</h4>
+          <p class="ans">{{ evaluation.answerCaption }}</p>
+    
+          
+          <ul *ngIf="evaluation.lstEva">
+            <li *ngFor="let subEvaluation of evaluation.lstEva; let sub2RowIndex = index">
+              <fieldset class="fieldset-s">
+              <h5 class="qst">{{ subEvaluation.elementCaption }}</h5>
+              <p class="ans">{{ subEvaluation.answerCaption }}</p>
+  
+              <ul *ngIf="subEvaluation.lstEva">
+                <li *ngFor="let sub2Evaluation of subEvaluation.lstEva; let sub3RowIndex = index">
+                  <fieldset class="fieldset-s">
+                  <h5 class="qst">{{ sub2Evaluation.elementCaption }}</h5>
+                  <p class="ans">{{ sub2Evaluation.answerCaption }}</p>
+  
+                  <ul *ngIf="sub2Evaluation.lstEva">
+                    <li *ngFor="let sub3Evaluation of sub2Evaluation.lstEva; let sub4RowIndex = index">
+                      <fieldset class="fieldset-s">
+                      <h5 class="qst">{{ sub3Evaluation.elementCaption }}</h5>
+                      <p class="ans">{{ sub3Evaluation.answerCaption }}</p>
+                    </fieldset>
+                    </li>
+                  </ul>
+                </fieldset>
+                </li>
+              </ul>
+            </fieldset>
+            </li>
+          </ul>
+        </fieldset>
+        </li>
+      </ul>
+   
+    </div>
+  
+  
+    <div *ngFor="let evaluation of evaluations">
+    </div>
+  
+  </ng-container>
+  
+  

@@ -1,0 +1,76 @@
+<div class="tab-view">
+
+  <div mdbSticky id="facility-paper" class="d-flex flex-row justify-content-between page-header">
+    <div class="d-flex flex-row align-items-center">
+      <a appGoBack class="d-flex flex-row align-items-center">
+        <i class="fas fa-angle-left header-icon-back"></i>
+      </a>
+      <h5><i class="fas fa-edit header-icon"></i>
+        <ng-container>
+          <span>Application Form </span>
+        </ng-container>
+      </h5>
+    </div>
+  </div>
+  <div>
+    <form [formGroup]="cribSearchForm">
+      <div class="d-flex flex-column justify-content-between w-100-p">
+        <div class="d-flex flex-row justify-content-start w-100-p m-bottom-10px">
+
+          <div class="md-form width-25">
+            <mdb-select
+              [options]="identityOptionSelect"
+              formControlName="identificationType"
+              id="identificationType"
+              class="mt-8p"
+              placeholder="Identification Type"
+              label="Identification Type"
+            >
+            </mdb-select>
+            <mdb-error *ngIf="formErrors.identificationType.required">Identification Type required</mdb-error>
+          </div>
+
+          <div class="md-form width-25 m-top-12px">
+            <input mdbValidate
+                   type="text"
+                   id="identificationNumber"
+                   maxlength="200"
+                   formControlName="identificationNumber"
+                   class="form-control"
+                   mdbInput
+            >
+            <label for="identificationNumber">Identification No *</label>
+            <mdb-error class="m-top-8px"
+                       *ngIf=" !formErrors.identificationNumber.required && formErrors.identificationNumber.isNICError">
+              Invalid
+            </mdb-error>
+          </div>
+
+          <div class="d-flex flex-row md-form m-top-12px">
+            <ng-container *appBlockedByUPMs>
+              <button type="button"
+                      mdbBtn
+                      color="secondary"
+                      [disabled]="cribSearchForm.invalid"
+                      (click)="searchCribDetails()"
+                      mdbWavesEffect>
+                SEARCH CRIB
+              </button>
+              <button type="button"
+                      mdbBtn
+                      color="secondary"
+                      [disabled]="cribSearchForm.invalid"
+                      (click)="skipCribReport()"
+                      mdbWavesEffect>
+                SKIP CRIB
+              </button>
+            </ng-container>
+          </div>
+
+        </div>
+      </div>
+    </form>
+  </div>
+
+</div>
+

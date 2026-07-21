@@ -1,0 +1,45 @@
+.page-section {
+  border: 1px solid #6a9ed3;
+  margin: 0.5rem 0;
+
+  &:first-child {
+    margin-top: 1rem;
+  }
+
+  .info-section {
+    margin: 3px 15px 3px 0;
+    min-width: 220px;
+
+    .info-caption {
+      margin-right: 5px;
+    }
+  }
+}
+
+.tbl-btn {
+  padding: 0px;
+}
+
+.input-size {
+  margin: 5px;
+}
+
+.cft-btn {
+  padding: 0px;
+  height: 30px;
+  float: right;
+}
+
+.cta-btn {
+  padding: .4rem .7rem;
+  font-size: .8rem;
+  color: #15181bb3;
+}
+
+.table th, .table td {
+  padding: 0.27rem;
+}
+
+.delete-button {
+  background-color: #ff354785 !important;
+}

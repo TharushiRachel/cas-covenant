@@ -1,0 +1,203 @@
+<div class="row d-flex flex-column p-3">
+
+    <mat-accordion class="custom-accordion">
+        <ng-container *ngFor="let template of fpFacilityTemplates; let pi=index">
+            <mat-expansion-panel [expanded]="template.expanded">
+                <mat-expansion-panel-header>
+                    {{template.creditFacilityName}}
+                </mat-expansion-panel-header>
+
+                <app-tabs (onTabSelect)="setTabIndex($event,template.creditFacilityName)"
+                    [selectedTabIndex]="template.selectedTabIndex" class="w-100-p">
+                    <ng-container *ngFor="let facility of template.facilities; let i =index">
+                        <app-tab [active]="i == template.selectedTabIndex" [tabTitle]="facility.tabTitle">
+                            <div class="row d-flex mx-0">
+                                <div class="col-md-3 py-0 pl-0">
+                                    <mat-accordion class="custom-accordion-sm">
+                                        <!-- Pending -->
+                                        <ng-container *ngIf="showPendingList(template.facilityTypeName)">
+                                            <mat-expansion-panel
+                                                [expanded]="isElementsExpand(documentStatusConst.PENDING)">
+                                                <mat-expansion-panel-header>
+                                                    Pending
+                                                </mat-expansion-panel-header>
+                                                <div class="mx-0 mt-1 p-0" style="max-height: 45vh; overflow-y: auto;">
+                                                    <div class="m-0 p-0" style="position: relative;"
+                                                        *ngFor="let doc of facility.pendingDocuments">
+                                                        <button class="btn btn-sm-1"
+                                                            (click)="getSecurityDocumentContent(doc,facility,template)"
+                                                            [disabled]="doc.isDisabled">
+                                                            {{doc.elementName}}
+                                                        </button>
+                                                        <button class="btn btn-sm-2"
+                                                            *ngIf="isEmptyTagsExist(facility.facilityID,doc.facilityTags)"
+                                                            (click)="handleOpenTagInfo(facility,doc.facilityTags)">
+                                                            <mdb-icon fas icon="bell"></mdb-icon>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </mat-expansion-panel>
+                                        </ng-container>
+
+                                        <!-- Drafted -->
+                                        <ng-container *ngIf="showDraftedList(facility)">
+                                            <mat-expansion-panel
+                                                [expanded]="isElementsExpand(documentStatusConst.DRAFT)">
+                                                <mat-expansion-panel-header>
+                                                    Drafted
+                                                </mat-expansion-panel-header>
+                                                <div class="mx-0 mt-1 p-0" style="max-height: 45vh; overflow-y: auto;">
+                                                    <div class="m-0 p-0" style="position: relative;"
+                                                        *ngFor="let doc of facility.draftedDocuments">
+                                                        <button class="btn btn-sm-1"
+                                                            (click)="getSecurityDocumentContent(doc,facility,template)"
+                                                            [disabled]="doc.isDisabled">
+                                                            {{doc.elementName}}
+                                                        </button>
+                                                        <button class="btn btn-sm-2"
+                                                            *ngIf="isEmptyTagsExist(facility.facilityID,doc.facilityTags)"
+                                                            (click)="handleOpenTagInfo(facility,doc.facilityTags)">
+                                                            <mdb-icon fas icon="bell"></mdb-icon>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </mat-expansion-panel>
+                                        </ng-container>
+
+                                        <!-- Returned -->
+                                        <ng-container *ngIf="showReturnedList(facility)">
+                                            <mat-expansion-panel
+                                                [expanded]="isElementsExpand(documentStatusConst.RETURN)">
+                                                <mat-expansion-panel-header>
+                                                    Returned
+                                                </mat-expansion-panel-header>
+                                                <div class="mx-0 mt-1 p-0" style="max-height: 45vh; overflow-y: auto;">
+                                                    <div class="m-0 p-0" *ngFor="let doc of facility.returnedDocuments">
+                                                        <button class="btn btn-sm-1"
+                                                            (click)="getSecurityDocumentContent(doc,facility,template)"
+                                                            [disabled]="doc.isDisabled">
+                                                            {{doc.elementName}}
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </mat-expansion-panel>
+                                        </ng-container>
+
+                                        <!-- Submitted -->
+                                        <ng-container *ngIf="showSubmittedList(facility)">
+                                            <mat-expansion-panel
+                                                [expanded]="isElementsExpand(documentStatusConst.SUBMIT)">
+                                                <mat-expansion-panel-header>
+                                                    Submitted
+                                                </mat-expansion-panel-header>
+                                                <div class="mx-0 mt-1 p-0" style="max-height: 45vh; overflow-y: auto;">
+                                                    <div class="m-0 p-0"
+                                                        *ngFor="let doc of facility.submittedDocuments">
+                                                        <button class="btn btn-sm-1"
+                                                            (click)="getSecurityDocumentContent(doc,facility,template)"
+                                                            [disabled]="doc.isDisabled">
+                                                            {{doc.elementName}}
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </mat-expansion-panel>
+                                        </ng-container>
+
+                                        <!-- Recommended & Forwarded -->
+                                        <ng-container *ngIf="facility.recommandedDocuments.length > 0">
+                                            <mat-expansion-panel
+                                                [expanded]="isElementsExpand(documentStatusConst.APPROVE)">
+                                                <mat-expansion-panel-header>
+                                                    Recommended & Forwarded
+                                                </mat-expansion-panel-header>
+                                                <div class="mx-0 mt-1 p-0" style="max-height: 45vh; overflow-y: auto;">
+                                                    <div class="m-0 p-0"
+                                                        *ngFor="let doc of facility.recommandedDocuments">
+                                                        <button class="btn btn-sm-1"
+                                                            (click)="getSecurityDocumentContent(doc,facility,template)"
+                                                            [disabled]="doc.isDisabled">
+                                                            {{doc.elementName}}
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </mat-expansion-panel>
+                                        </ng-container>
+                                    </mat-accordion>
+                                </div>
+                                <div class="col-md-9 border border-1 p-4" style="max-height: 65vh; overflow-y: auto;">
+                                    <div class="row d-flex justify-content-end mx-0 mb-2" *ngIf="documentContent">
+                                        <button mdbBtn type="button" class="medium-button btn btn-light btn-sm"
+                                            outline="true" mdbWavesEffect (click)="handleCancel()">
+                                            Cancel
+                                        </button>
+                                        <button mdbBtn type="button" class="medium-button btn btn-outline-info btn-sm"
+                                            outline="true" mdbWavesEffect (click)="viewActionLog()"
+                                            *ngIf="showActionLogButton()">
+                                            Action Log
+                                        </button>
+                                        <button mdbBtn type="button"
+                                            class="action-button-padding btn-outline-success btn-sm btn" outline="true"
+                                            mdbWavesEffect (click)="handleDocumentAction(documentStatusConst.PRINT)"
+                                            *ngIf="showPrintButton()">
+                                            Print
+                                        </button>
+                                        <button mdbBtn type="button"
+                                            class="action-button-padding btn-outline-success btn-sm btn" outline="true"
+                                            (click)="previewDocument()" *ngIf="!showPrintButton()">
+                                            Preview
+                                        </button>
+                                        <button mdbBtn type="button"
+                                            class="action-button-padding btn-outline-success btn-sm btn" outline="true"
+                                            (click)="submitDocument()" *ngIf="showSubmitDocumentButton()">
+                                            Submit
+                                        </button>
+                                        <button mdbBtn type="button"
+                                            class="action-button-padding btn-outline-success btn-sm btn" outline="true"
+                                            (click)="reccomandDocument()"
+                                            *ngIf="showAuthorizeActionButton() || showReccomandApprove()">
+                                            {{isCCPUAuthorizer() ? "Approve" : "Forward"}}
+                                        </button>
+                                        <button mdbBtn type="button" class="medium-button btn btn-outline-info btn-sm"
+                                            outline="true" mdbWavesEffect (click)="handleRefresh()"
+                                            *ngIf="showRefreshButton()">
+                                            Refresh
+                                        </button>
+                                        <button mdbBtn type="button" class="medium-button btn btn-outline-info btn-sm"
+                                            outline="true" mdbWavesEffect (click)="openCovenantListModal()"
+                                            *ngIf="showCovenantButton()">
+                                            Update Covenants
+                                        </button>
+                                        <button mdbBtn type="button"
+                                            class="action-button-padding btn-outline-info btn-sm btn" outline="true"
+                                            (click)="returnDocument()"
+                                            *ngIf="showAuthorizeActionButton() || showReccomandReturn(facility)">
+                                            Return
+                                        </button>
+                                        <button mdbBtn type="button"
+                                            class="action-button-padding btn-outline-info btn-sm" outline="true"
+                                            (click)="openModalAddEdit()" *ngIf="showEditDocumentButton()">
+                                            Edit
+                                        </button>
+                                    </div>
+                                    <ng-container *ngIf="documentContent !== ''; else emptyDocumentContent">
+                                        <div class="doc-content" [innerHtml]="documentContent | safeHtml"></div>
+                                    </ng-container>
+
+                                    <ng-template #emptyDocumentContent>
+                                        <div class="m-0 p-0 text-align-center">
+                                            <strong>There are no template found or select!</strong>
+                                        </div>
+                                    </ng-template>
+                                </div>
+                            </div>
+                        </app-tab>
+                    </ng-container>
+                </app-tabs>
+            </mat-expansion-panel>
+        </ng-container>
+    </mat-accordion>
+
+    <ng-container *ngIf="fpFacilityTemplates.length === 0">
+        <span class="border border-1 px-4 py-2 mx-auto w-50 text-align-center">There are no data found.</span>
+    </ng-container>
+</div>

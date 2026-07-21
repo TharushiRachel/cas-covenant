@@ -1,0 +1,52 @@
+<div class="modal-content">
+    <div class="modal-header modal-topic">
+        <button type="button" class="close" (click)="onClose()">
+            <span>&times;</span>
+        </button>
+        <h4 class="modal-title w-100 font-weight-bold" style="margin-bottom: -35px;">
+            <ng-container *ngIf="mode === 'inquiry'">
+                {{ isEdit ? 'Edit Committee Inquiry' : 'Add Committee Inquiry' }}
+            </ng-container>
+            <ng-container *ngIf="mode === 'response'">
+                {{ isEdit ? 'Edit Response' : 'Add Response' }}
+            </ng-container>
+        </h4>
+    </div>
+
+    <div class="modal-body mx-3 modal-detail form-margin">
+        <form  [formGroup]="componentForm">
+            <app-fp-inquiry-rich-editor [html]="componentForm.get('userComment').value"
+                (contentChange)="onEditorSave($event)">
+            </app-fp-inquiry-rich-editor>
+
+            <div class="md-form mt-4" *ngIf="mode !== 'confirm'">
+                <mdb-select [options]="userOptions" formControlName="userId" placeholder="Select User" class="form-control">
+                </mdb-select>
+                <mdb-error *ngIf="componentForm.get('userId').invalid && componentForm.get('userId').touched">
+                    Required
+                </mdb-error>
+            </div>
+
+        </form>
+    </div>
+
+    <div class="modal-footer modal-end">
+        <div *ngIf="showConfirmButton()" class="mr-auto ml-0">
+            <mdb-checkbox [(ngModel)] = "isChecked" [disabled]="!componentForm.get('userComment').value">Do you want to confirm the response?</mdb-checkbox>
+        </div>
+        
+        <button mdbBtn color="danger" (click)="onClose()">Close</button>
+
+        <!-- Only show Draft/Submit when not in confirm mode -->
+        <ng-container *ngIf="mode !== 'confirm'">
+            <button mdbBtn color="default" (click)="onDraft()"
+                [disabled]="!componentForm.get('userComment').value">Draft</button>
+            <button mdbBtn color="info" (click)="onSave()"
+                [disabled]="!componentForm.get('userId').value">Submit</button>
+        </ng-container>
+
+        <!-- Show Confirm only in confirm mode -->
+        <button *ngIf="showConfirmButton()" mdbBtn color="success" (click)="onConfirm()" [disabled]="!isChecked">Confirm</button>
+    </div>
+
+</div>

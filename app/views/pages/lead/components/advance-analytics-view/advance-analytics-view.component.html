@@ -1,0 +1,54 @@
+<div class="m-0 p-0">
+    <ng-container *ngIf="cribElegibilites.length != 0">
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr style="height: 30px" class="table-heading-color">
+                        <th style="width: 200px;">Full Name</th>
+                        <th style="width: 200px;">Identifications</th>
+                        <th style="width: 200px;">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <ng-container *ngFor="let borrower of cribElegibilites">
+                        <tr>
+                            <td style="vertical-align: middle;">{{borrower.personalName}}</td>
+                            <td style="vertical-align: middle;">
+                                <ul *ngIf="borrower.identifications" style="padding: 0px;">
+                                    <li *ngFor="let item of borrower.identifications">
+                                        {{idTypeDescription[item.identificationType]}} - {{item.identificationNumber}}
+                                        <mdb-icon fas icon="fas fa-check" *ngIf="item.isCribCheck"></mdb-icon>
+                                    </li>
+                                </ul>
+                            </td>
+                            <td style="vertical-align: middle;">
+                                <div class="row d-flex mx-0"
+                                    *ngIf="showCribButton(); else hideButton">
+                                    <button type="button" mdbBtn color="info" size="sm" class="waves-light"
+                                        (click)="getCribDetails(borrower)"
+                                        [disabled]="isCheckCribDisabled(borrower.identifications)">
+                                        Check Crib
+                                    </button>
+                                </div>
+                                <ng-template #hideButton>
+                                    <span>-</span>
+                                </ng-template>
+                            </td>
+                        </tr>
+                    </ng-container>
+                </tbody>
+            </table>
+        </div>
+    </ng-container>
+
+    <div class="row d-flex justify-content-end mx-0">
+        <button type="button" mdbBtn color="primary" size="sm" class="waves-light" (click)="checkAADecision()"
+            *ngIf="showAAButton()">
+            Check Advance Analytics Decision
+        </button>
+    </div>
+
+    <ng-container *ngIf="analyticsDecision">
+        <app-view-analytics-decision [analyticsDecision]="analyticsDecision"></app-view-analytics-decision>
+    </ng-container>
+</div>

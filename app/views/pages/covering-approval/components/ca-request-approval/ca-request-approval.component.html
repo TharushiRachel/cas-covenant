@@ -1,0 +1,109 @@
+<div class="center-container">
+  <div class="ca-creation-container-fluid">
+    <div mdbSticky id="covering-approval-detail" class="d-flex flex-row justify-content-between page-header">
+      <div class="d-flex flex-row align-items-center">
+        <a appGoBack class="d-flex flex-row align-items-center">
+          <i class="fas fa-angle-left header-icon-back"></i>
+        </a>
+        <h5>
+          <i class="fas fa-edit header-icon"></i>
+          <span>Covering Approval - Ref No : {{ this.coveringApproval?.covAppRefNumber }}
+            <ng-container *ngIf="this.coveringApproval.currentStatus === 'APPROVED'">
+            <br />
+            (<span [ngStyle]="getColour(this.coveringApproval.currentStatus)">
+              {{
+                this.coveringApproval.currentStatus
+              }}</span>
+            )
+          </ng-container></span>
+          
+        </h5>
+      </div>
+
+      <div class="float-right">
+        <div class="d-flex flex-row align-items-center">
+          <!-- <ng-container *ngIf="coveringApproval && showForwardButton(coveringApproval) && isEqualLoginAndAssignUsers() && isEqualLoginAndAssignUser()">
+            <button data-placement="bottom" mdbBtn type="button" mdbTooltip="Unauthorized / Dispute Covering Approval"
+              class="action-button-padding btn-outline-info btn-sm" outline="true" mdbWavesEffect
+              (click)="UnauthCOV($event,covStatusConst.IN_PROGRESS)"
+              >
+              <span>Unauthorized / Dispute</span>
+            </button>
+          </ng-container> -->
+          <ng-container *ngIf="coveringApproval && showForwardButton(coveringApproval) && isEqualLoginAndAssignUserFiftyLower() && showSubmitButton(coveringApproval) && isEqualLoginAndAssignUsersTypeCheck()">
+            <button data-placement="bottom" mdbBtn type="button" mdbTooltip="Submit Covering Approval"
+              class="action-button-padding btn-outline-success btn-sm" outline="true" mdbWavesEffect
+              (click)="submitCOV($event,covStatusConst.IN_PROGRESS)">
+              <span>Submit</span>
+            </button>
+          </ng-container>
+          <!-- <ng-container *ngIf="coveringApproval && showForwardButton(coveringApproval) && isEqualLoginAndAssignUsers() && isEqualLoginAndAssignUserFiftyAbove()">
+            <button data-placement="bottom" mdbBtn type="button" mdbTooltip="Forward Covering Approval"
+              class="action-button-padding btn-outline-success btn-sm" outline="true" mdbWavesEffect
+              (click)="changeStatusCOV($event,covStatusConst.IN_PROGRESS)">
+              <span>Forward</span>
+            </button>
+          </ng-container> -->
+          <!-- <ng-container *ngIf="coveringApproval && showReturnButton(coveringApproval) && isEqualLoginAndAssignUserFiftyAbove() && isEqualLoginAndAssignUsers()">
+            <button data-placement="bottom" mdbBtn type="button" mdbTooltip="Return Covering Approval"
+              class="action-button-padding btn-outline-info btn-sm" outline="true" mdbWavesEffect
+              (click)="changeStatusCOV($event,covStatusConst.CANCEL)">
+              <span>Return</span>
+            </button>
+          </ng-container> -->
+          <!-- <ng-container *ngIf="coveringApproval && showReturnButton(coveringApproval) && isEqualLoginAndAssignUserFiftyAbove() && isEqualLoginAndAssignUsers()">
+            <button data-placement="bottom" mdbBtn type="button" mdbTooltip="Approved Covering Approval" color="success"
+              class="save-btn relative waves-light "  mdbWavesEffect
+              (click)="changeStatusCOVSelectedApprove($event,covStatusConst.APPROVED)">
+              <span>APPROVED</span>
+            </button>
+          </ng-container> -->
+          <ng-container *ngIf="coveringApproval && isEqualLoginAndAssignUsersTypeCheck()  && isEqualLoginAndAssignUserFiftyLower() && showSubmitButton(coveringApproval)">
+            <button data-placement="bottom" mdbBtn type="button" mdbTooltip="Delete Covering Approval"
+              class="action-button-padding btn-outline-danger btn-sm" outline="true" mdbWavesEffect
+              (click)="declinePaper($event,covStatusConst.DELETE)">
+              <span>DELETE</span>
+            </button>
+          </ng-container>
+        </div>
+      </div>
+    </div>
+    <div class="ca-request-container">
+      <div class="d-flex flex-row align-items-center">
+        <button mdbBtn type="button" class="action-button-padding btn-info btn-sm" data-toggle="tooltip"
+          data-placement="bottom" [title]="'For a New Reference'" outline="true" mdbWavesEffect (click)="accStats()">
+          <span>Accounts' Details</span>
+        </button>
+        <button mdbBtn type="button" class="action-button-padding btn-info btn-sm" data-toggle="tooltip"
+          data-placement="bottom" [title]="'For a New Reference'" outline="true" mdbWavesEffect (click)="accDetails()">
+          <span>Comprehensive Statistics</span>
+        </button>
+        <button mdbBtn type="button" class="action-button-padding btn-info btn-sm" data-toggle="tooltip"
+          data-placement="bottom" [title]="'For a New Reference'" outline="true" mdbWavesEffect (click)="advDetails()">
+          <span>Advance Details</span>
+        </button>
+        <button mdbBtn type="button" class="action-button-padding btn-info btn-sm" data-toggle="tooltip"
+          data-placement="bottom" [title]="'For a New Reference'" outline="true" mdbWavesEffect (click)="depDetails()">
+          <span>Deposits Details</span>
+        </button>
+      </div>
+
+      <div class="d-flex flex-row align-items-center">
+        <div class="w-100 m-top-20px">
+          <div class="d-flex flex-column">
+            <div class="d-flex flex-wrap">
+              <div class="ca-details justify-content-between w-100-p">
+                <app-cov-creation-details [coveringApproval]="coveringApproval" [upmDetails]="this.upmDetails"></app-cov-creation-details>
+              </div>
+            </div>
+
+
+            <!-- <div class="ssection mb-15p " *ngIf="coveringApproval && isEqualLoginAndAssignUser() && coveringApproval.currentStatus != 'APPROVED'">
+              <app-cov-pending-dashboard [coveringApproval]="coveringApproval"></app-cov-pending-dashboard>
+            </div> -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

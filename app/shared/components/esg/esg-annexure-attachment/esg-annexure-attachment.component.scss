@@ -1,0 +1,26 @@
+.cta-btn {
+    padding: .4rem .7rem;
+    font-size: .8rem;
+    color: unset;
+    margin: 2px;
+    box-shadow: unset !important;
+  }
+  
+  .delete-button {
+    background-color: unset !important;
+  
+    mdb-icon {
+      color: #ff354785;
+    }
+  }
+
+  .form-margin {
+    margin-top: -2%;
+  }
+
+  .md-form textarea.md-textarea {
+    overflow-y: auto !important;
+    padding: 0;
+    height: 60px;
+}
+  

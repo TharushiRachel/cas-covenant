@@ -1,0 +1,77 @@
+<div class="d-flex mt-10p flex-column justify-content-start align-items-start w-100-p">
+
+  <div class="text-align-center topic w-100 my-2">
+    <h5 style="font-weight: 400">ESG Attachment(s)</h5>
+  </div>
+
+  <div *ngIf="loading" class="w-100 text-align-center my-3">
+    <span>Loading...</span>
+  </div>
+
+  <div class="table-responsive" *ngIf="!loading">
+    <table class="table custom-table" *ngIf="attachments.length > 0; else noData">
+      <thead>
+        <tr>
+          <ng-container *ngFor="let col of tableColumns">
+            <th scope="col">{{ col }}</th>
+          </ng-container>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let item of attachments">
+          <td>{{ item.name }}</td>
+          <td>{{ item.description }}</td>
+          <td>{{ item.fileName }}</td>
+          <td class="text-align-center">
+            {{item.createdBy}} On
+            <ng-container *ngIf="item.createdDate; else naDate">
+              {{ item.createdDate | date:'medium' }}
+            </ng-container>
+            <ng-template #naDate>-</ng-template>
+          </td>
+          <td class="text-align-center">
+            <button *ngIf="isPreviewable(item)" class="btn btn-sm btn-info mr-1" type="button" mdbWavesEffect
+              (click)="onPreview(item)" mdbTooltip="Preview" placement="left">
+              <mdb-icon fas icon="fas fa-eye"></mdb-icon>
+            </button>
+            
+            <button *ngIf="isDownloadOnly(item)" class="btn btn-sm btn-success mr-1" type="button" mdbWavesEffect
+              (click)="downloadAttachment(item)" mdbTooltip="Download" placement="left">
+              <mdb-icon fas icon="download"></mdb-icon>
+            </button>
+
+            <button *ngIf="isEditEnabled() && isCreatedUser(item)" class="btn btn-sm btn-secondary mr-1" type="button"
+              mdbWavesEffect (click)="openEditAttachmentModal(item)" mdbTooltip="Edit" placement="left">
+              <mdb-icon fas icon="pencil-alt"></mdb-icon>
+            </button>
+
+            <button *ngIf="isEditEnabled() && isCreatedUser(item)" class="btn btn-sm btn-danger" type="button"
+              mdbWavesEffect (click)="confirmDeleteAttachment(item)" mdbTooltip="Delete" placement="left">
+              <mdb-icon fas icon="trash-alt"></mdb-icon>
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <ng-template #noData>
+      <table class="table custom-table">
+        <thead>
+          <tr>
+            <ng-container *ngFor="let col of tableColumns">
+              <th scope="col">{{ col }}</th>
+            </ng-container>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th colspan="5" class="text-align-center">
+              <p class="no-data-message">No Record(s)</p>
+            </th>
+          </tr>
+        </tbody>
+      </table>
+    </ng-template>
+  </div>
+</div>

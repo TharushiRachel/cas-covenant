@@ -1,0 +1,96 @@
+<mdb-card>
+  <mdb-card-header class="custom-card-header">
+    BASIC INFORMATION : {{basicInformationType[applicationForm.formType]}}
+  </mdb-card-header>
+  <ng-container *ngIf="basicDetails.length > 0">
+    <app-tabs class="w-100-p" [selectedTabIndex]="selectedTabIndex" (onTabSelect)="setTabIndex($event)">
+      <ng-container *ngFor="let basicDetail of basicDetails; let i =index">
+
+        <app-tab [tabTitle]="basicDetail.identificationType + ' :'+ basicDetail.identificationNo"
+          [showBadge]="basicDetail.primaryInformation=='Y'" [badgeContent]="'P'" [badgeColor]="'red'"
+          [active]="i == selectedTabIndex">
+          <div class="d-flex flex-column justify-content-start width-100">
+            <app-apf-basic-information-preview [basicInformation]="basicDetail" class="width-100">
+            </app-apf-basic-information-preview>
+          </div>
+          <div class="d-flex d-flex-row justify-content-end width-100">
+            <ng-container *ngIf="isAbleToEdit()">
+              <button mdbBtn size="sm" color="info" class="margin-right-unset" mdbTooltip="Update"
+                (click)="saveOrUpdateBasicDetails($event,basicDetail)">Update
+              </button>
+              <button *ngIf="basicDetail.primaryInformation ==yesNoConst.N" mdbBtn size="sm"
+                class="action-button-padding btn-danger btn-sm" mdbTooltip="Remove"
+                (click)="removeBasicDetails($event,basicDetail)">Remove
+              </button>
+            </ng-container>
+          </div>
+          <ng-container *ngIf="basicDetail.type != this.basicInformationTypeConst.PERSONAL">
+            <div class="d-flex d-flex-row width-100">
+              <app-apf-basic-ownership-details [basicInformation]="basicDetail" class="width-100">
+              </app-apf-basic-ownership-details>
+            </div>
+          </ng-container>
+
+
+          <!--<ng-container>
+            <div class="w-100-p">
+              <app-tabs class="w-100-p">
+                <app-tab [tabTitle]="'Bank Facilities'">
+                  <div class="p-2">
+                    <ng-container>
+                      <app-personal-detail-bank
+                        [FormData]="applicationForm"
+                        [FormType]="'APPLICATION_FORM'"
+                        class="w-100-p">
+                      </app-personal-detail-bank>
+                    </ng-container>
+                    <ng-container>
+                      <app-personal-detail-facility
+                        [FormData]="applicationForm"
+                        [FormType]="'APPLICATION_FORM'"
+                        class="w-100-p">
+                      </app-personal-detail-facility>
+                    </ng-container>
+                  </div>
+                </app-tab>
+                <app-tab [tabTitle]="'Customer Statistics'">
+                  <div class="p-2">
+                    <hr style="padding: unset !important;">
+                    <app-personal-customer-stat-wrapper
+                      [FormData]="applicationForm"
+                      [FormType]="'APPLICATION_FORM'"
+                      class="w-100-p">
+                    </app-personal-customer-stat-wrapper>
+                  </div>
+                </app-tab>
+              </app-tabs>
+            </div>
+          </ng-container>-->
+
+
+
+
+
+          <app-apf-other-bank-account-details-add-edit [applicationForm]="applicationForm"
+            [basicInformation]="basicDetail">
+          </app-apf-other-bank-account-details-add-edit>
+
+          <ng-container *ngIf="!isNonFinacleCustomer()">
+            <div class="p-2">
+              <hr style="padding: unset !important;">
+              <app-personal-customer-stat-wrapper
+                [FormData]="selectedBasicInformationMap[basicDetail.basicInformationID]" [FormType]="'APPLICATION_FORM'"
+                class="w-100-p">
+              </app-personal-customer-stat-wrapper>
+            </div>
+          </ng-container>
+
+        </app-tab>
+      </ng-container>
+    </app-tabs>
+  </ng-container>
+
+  <ng-container>
+    <app-view-analytics-decision [analyticsDecision]="analyticsDecision"></app-view-analytics-decision>
+  </ng-container>
+</mdb-card>

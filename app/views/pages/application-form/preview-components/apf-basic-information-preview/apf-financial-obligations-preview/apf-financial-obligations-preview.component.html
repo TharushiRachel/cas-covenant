@@ -1,0 +1,62 @@
+<mdb-card>
+  <mdb-card-header class="custom-card-header">
+    <div class="d-flex flex-row justify-content-between">
+      <div class="">
+        LIST OF EXISTING FINANCIAL OBLIGATIONS AS BORROWER/GUARANTOR/INDEMNITOR
+      </div>
+      <div>
+      </div>
+    </div>
+  </mdb-card-header>
+  <mdb-card-body class="custom-card-body" *ngIf="identificationGroups.length>0">
+    <table class="table custom-apf-table">
+      <ng-container *ngFor="let identificationGroup of identificationGroups">
+        <tr style="height: 45px">
+          <th colspan="7" style="border: unset !important; text-align: start !important;">
+            <b>Identification Number : {{identificationGroup.identificationNumber}}</b>
+          </th>
+        </tr>
+        <tr>
+          <th>Name of Financial Institutions</th>
+          <th>Signed As</th>
+          <th>Securities</th>
+          <th>Original Amount (Rs.)</th>
+          <th>Present Outstanding (Rs.)</th>
+          <th>Arrears if any (Rs.)</th>
+        </tr>
+        <ng-container
+          *ngIf="identificationTypeViceFinancialObligationMap[identificationGroup.identificationNumber].length>0 ; else noData;">
+          <tr
+            *ngFor="let financialObligation of identificationTypeViceFinancialObligationMap[identificationGroup.identificationNumber]">
+            <td>{{financialObligation.financialInstitution}}</td>
+            <td class="text-align-center">{{financialObligation.signedAs}}</td>
+            <td class="text-align-center">{{financialObligation.securities}}</td>
+            <td class="text-align-end">{{getCurrencyFormat(financialObligation.originalAmount)}}</td>
+            <td class="text-align-end">{{getCurrencyFormat(financialObligation.presentOutstanding)}}</td>
+            <td class="text-align-end">{{getCurrencyFormat(financialObligation.arrears)}}</td>
+          <tr style="height: 30px">
+            <td colspan="3" class="font-weight-bold">Total</td>
+            <td class="text-align-end font-weight-bold">
+              {{getCurrencyFormat(identificationTypeViceTotalValuesMap[identificationGroup.identificationNumber].originalAmountTotal)}}
+            </td>
+            <td class="text-align-end font-weight-bold">
+              {{getCurrencyFormat(identificationTypeViceTotalValuesMap[identificationGroup.identificationNumber].presentOutstandingTotal)}}
+            </td>
+            <td class="text-align-end font-weight-bold">
+              {{getCurrencyFormat(identificationTypeViceTotalValuesMap[identificationGroup.identificationNumber].arrearsTotal)}}
+            </td>
+          </tr>
+        </ng-container>
+        <ng-template #noData>
+          <tr>
+            <th colspan="7" class="text-align-center">
+              <p class="no-data-message">
+                No Records
+              </p>
+            </th>
+          </tr>
+        </ng-template>
+      </ng-container>
+    </table>
+  </mdb-card-body>
+</mdb-card>

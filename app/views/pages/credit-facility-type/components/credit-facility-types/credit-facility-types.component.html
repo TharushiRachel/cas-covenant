@@ -1,0 +1,103 @@
+<div mdbSticky class="d-flex flex-row justify-content-between page-header">
+  <div class="d-flex flex-row align-items-center">
+    <h5><i class="fas fa-money-bill header-icon"></i>Credit Facility Type(s)</h5>
+  </div>
+
+  <div class="d-flex flex-row align-items-center">
+    <ng-container *appHasAnyPrivilege="masterDataPrivilege.ICAS_SETTINGS_CREDIT_FACILITY_TYPE_ADD">
+      <button (click)="loadCreditfacilityType(null)"
+              class="custom-button"
+              mdbBtn
+              type="button"
+              color="default"
+              outline="true"
+              mdbWavesEffect>New Credit Facility Type
+      </button>
+    </ng-container>
+  </div>
+</div>
+
+<div class="page-search-section section display-flex flex-column jc-start p-2 pt-3 pb-3 default-box-styles">
+  <form class="display-flex w-100-p flex-row jc-space-around ai-center flex-1-gap" [formGroup]="searchForm">
+
+    <div class="md-form w-31-p min-width-120">
+      <input type="text" id="facilityTypeName" formControlName="facilityTypeName" class="form-control" mdbInput>
+      <label for="facilityTypeName">Facility Type</label>
+    </div>
+
+    <div class="md-form w-31-p min-width-120">
+      <input type="text" id="description" formControlName="description" class="form-control" mdbInput>
+      <label for="description">Description</label>
+    </div>
+
+    <div class="md-form w-31-p min-width-120">
+      <mdb-select
+        [options]="optionsSelect"
+        formControlName="status"
+        id="status"
+        placeholder="Status"></mdb-select>
+      <label for="status">Status</label>
+    </div>
+
+    <div class="display-flex flex-1 flex-row jc-end ai-center">
+      <button (click)="doSearch()" type="button" class=" medium-button btn btn-info" mdbBtn>Search</button>
+      <button (click)="clearSearch()" class=" medium-button btn btn-outline-info clear-btn" mdbBtn type="button">
+        Clear
+      </button>
+    </div>
+  </form>
+</div>
+
+<div *ngIf="creditFacilityTypes.length == 0" class="alert alert-warning section" role="alert">
+  No Credit Facility Group(s) Found !
+</div>
+
+<ng-container *ngIf="creditFacilityTypes.length > 0">
+  <div class="section table-responsive mb-15p">
+    <table class="table">
+      <thead>
+      <tr>
+        <ng-container *ngFor="let col of tableColumns">
+          <th scope="col">{{col}}</th>
+        </ng-container>
+      </tr>
+      </thead>
+      <tbody>
+      <ng-container *ngFor="let creditFacility of creditFacilityTypes">
+        <tr (click)="loadCreditfacilityType(creditFacility.creditFacilityTypeID)" class="table-clickable-row">
+          <td>{{creditFacility.facilityTypeName}}</td>
+          <td>{{creditFacility.description ? creditFacility.description : '-'}}</td>
+          <td>
+            <span
+              [class.color-green]="creditFacility.status === statusConst.ACT"
+              [class.color-red]="creditFacility.status === statusConst.INA"
+            >
+                  {{status[creditFacility.status]}}
+                </span>
+          </td>
+          <td>
+            <span
+              [class.color-green]="creditFacility.approveStatus === approvedStatusConst.APPROVED"
+              [class.color-red]="creditFacility.approveStatus === approvedStatusConst.REJECTED"
+              [class.color-blue]="creditFacility.approveStatus == approvedStatusConst.PENDING"
+            >
+                  {{approvedStatus[creditFacility.approveStatus]}}
+                </span>
+          </td>
+          <td>{{creditFacility.approvedDateStr ? creditFacility.approvedDateStr : '-'}}</td>
+          <td>{{creditFacility.approvedBy ? creditFacility.approvedBy : '-'}}</td>
+        </tr>
+      </ng-container>
+      </tbody>
+    </table>
+  </div>
+    <app-paginator
+      [pageIndex]="pageSize.pageIndex"
+      [length]="pageSize.length"
+      [pageSize]="pageSize.pageSize"
+      [pageSizeOptions]="pageSize.pageSizeOptions"
+      (page)="onPageEvent($event)"
+    ></app-paginator>
+  
+</ng-container>
+

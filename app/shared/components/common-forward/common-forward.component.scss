@@ -1,0 +1,21 @@
+.form-margin {
+  margin-top: -2%;
+}
+
+.fp-commentr-header-padding {
+  padding-top: 0px;
+  padding-bottom: 0px;
+}
+
+.comment-area {
+  border: 1px solid;
+  padding-left: 8px !important;
+}
+
+
+.defaultMessage-style {
+  border-radius: var(--rounded-lg, 8px);
+  background: var(--Colors-Background-bg-warning-50, rgba(255, 193, 49, 0.10));
+  color: rgba(163, 123, 30, 1);
+  padding: 20px;
+}

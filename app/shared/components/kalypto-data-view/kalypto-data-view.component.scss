@@ -1,0 +1,29 @@
+:host ::ng-deep .md-pills .nav-link.active {
+  transition: 0s !important;
+  border-radius: 0 !important;
+  color: #222 !important;
+  padding: 2px 8px !important;;
+  border-bottom: 2px solid #666 !important;
+  background-color: transparent !important;
+  box-shadow: none !important;
+}
+
+:host ::ng-deep .md-pills .nav-link:hover {
+  transition: 0s !important;
+  border-radius: 0 !important;
+  color: #666 !important;
+  padding: 2px 8px !important;;
+  border-bottom: 2px solid #666 !important;
+  background-color: transparent !important;
+  box-shadow: none !important;
+}
+
+:host ::ng-deep .md-pills .nav-link {
+  transition: 0s;
+  border-radius: 0;
+  color: #666;
+  padding: 2px 8px;
+  border-bottom: 2px solid lightgray;
+  background-color: transparent;
+  box-shadow: none;
+}

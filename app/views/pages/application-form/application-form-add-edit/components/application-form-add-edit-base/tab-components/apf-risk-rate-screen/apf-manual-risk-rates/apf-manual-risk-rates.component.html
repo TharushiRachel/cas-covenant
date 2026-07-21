@@ -1,0 +1,82 @@
+<mdb-card>
+  <mdb-card-body class="custom-card-body">
+    <table class="table custom-apf-table width-100">
+      <thead>
+      <tr>
+        <th colspan="10" class="text-align-center" style="border: unset !important;">
+          <b>RISK RATING</b>
+        </th>
+      </tr>
+      <tr>
+        <th>Scoring</th>
+        <th>Grading</th>
+        <th>Model</th>
+        <th>Last Rated</th>
+        <th>Asset Classification</th>
+        <th>Initiated Branch</th>
+        <th>Risk Confirmed</th>
+        <ng-container *ngIf="isAbleToEdit()">
+          <th class="width-10 text-align-center">
+            <ng-container
+              *ngIf="basicInformation.afRiskRateDTOList && basicInformation.afRiskRateDTOList.length>0 ; else actionButton">
+              Action
+            </ng-container>
+            <ng-template #actionButton>
+              <button
+                *ngIf="basicInformation.afRiskRateDTOList && basicInformation.afRiskRateDTOList.length==0"
+                class="btn btn-sm btn-secondary cta-btn" type="button" mdbWavesEffect
+                (click)="save($event)"
+                mdbTooltip="New Ownership" placement="left">
+                <mdb-icon fas icon="fas fa-plus" aria-hidden="true"></mdb-icon>
+              </button>
+            </ng-template>
+          </th>
+        </ng-container>
+      </tr>
+      </thead>
+      <tbody>
+      <ng-container
+        *ngIf="basicInformation.afRiskRateDTOList && basicInformation.afRiskRateDTOList.length>0 ; else noData">
+        <ng-container *ngFor="let item of basicInformation.afRiskRateDTOList">
+          <tr>
+            <td class="text-align-center">{{item.scoring}}</td>
+            <td class="text-align-center">{{item.riskGrading}}</td>
+            <td class="text-align-center">{{ratingModel[item.model]}}</td>
+            <td class="text-align-center width-10">{{item.lastRatedStr}}</td>
+            <td class="text-align-center">{{item.assetClassification}}</td>
+            <td class="text-align-center">{{item.initiatedBranch}}</td>
+            <td class="text-align-center width-10">{{yesNoConst[item.riskConfirmed]}}</td>
+            <ng-container *ngIf="isAbleToEdit()">
+              <td class="text-align-center">
+                <div>
+                  <button class="btn btn-sm btn-secondary cta-btn" type="button" mdbWavesEffect
+                          mdbTooltip="Update Details"
+                          (click)="save($event,item)"
+                          placement="left">
+                    <mdb-icon fas icon="pencil-alt" aria-hidden="true"></mdb-icon>
+                  </button>
+                  <button class="btn btn-sm btn-danger cta-btn delete-button" type="button" mdbWavesEffect
+                          (click)="remove($event,item)"
+                          mdbTooltip="Remove Details" placement="left">
+                    <mdb-icon fas icon="trash-alt" aria-hidden="true"></mdb-icon>
+                  </button>
+                </div>
+              </td>
+            </ng-container>
+          </tr>
+        </ng-container>
+      </ng-container>
+      <ng-template #noData>
+        <tr>
+          <th colspan="10" class="text-align-center">
+            <p class="not-auth-message margin-unset">
+              No Record(s)
+            </p>
+          </th>
+        </tr>
+      </ng-template>
+      </tbody>
+    </table>
+
+  </mdb-card-body>
+</mdb-card>

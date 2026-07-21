@@ -1,0 +1,21 @@
+<div class="w-100-p item-box section item-left item-right">
+  <div class="item-wrapper d-flex flex-column justify-content-start">
+
+    <div class="d-flex flex-row w-100-p mb-3 flex-wrap">
+      <ng-container *ngIf="isDataEmpty">
+        <label
+          [class.not-auth-message]="isNotAuthMessage"
+          class="mr-auto p-2">{{message}}</label>
+      </ng-container>
+    </div>
+  </div>
+
+  <div>
+    <!-- Nav Tabs -->
+    <ng-container *ngIf="!isDataEmpty">
+      <app-kalypto-data-view [kalyptoData]="fpKalyptoData">
+      </app-kalypto-data-view>
+    </ng-container>
+  </div>
+</div>
+

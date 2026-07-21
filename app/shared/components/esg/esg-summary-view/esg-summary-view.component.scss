@@ -1,0 +1,30 @@
+.topic {
+  background-color: #dae3e6 !important;
+  padding-top: 6px !important;
+  padding-bottom: 1px !important;
+  margin-bottom: 5px !important;
+}
+
+::ng-deep legend {
+  width: fit-content;
+  font-size: 16px;
+}
+
+.category-txt {
+  font-size: 16px;
+  font-weight: 400;
+  width: fit-content;
+  margin: 0px;
+}
+
+.font-weight-400 {
+  font-weight: 400;
+}
+
+.font-weight-500 {
+  font-weight: 500;
+}
+
+.box-shadow {
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075) !important;
+}

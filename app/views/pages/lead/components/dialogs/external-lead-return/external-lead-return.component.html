@@ -1,0 +1,43 @@
+<div class="modal-header modal-topic flex-center">
+  <h4 class="modal-title w-100 font-weight-bold">
+    Return Lead
+  </h4>
+  <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="mdbModalRef.hide()">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
+<div class="modal-body mx-3 modal-detail form-margin">
+
+  <h6>
+    Do you want to return the lead ?
+  </h6>
+
+  <form class="d-flex flex-column justify-content-start align-items-start w-100-p" [formGroup]="componentForm">
+
+    <div class="row d-flex flex-row w-100-p">
+      <div class="md-form m-top-10px m-bottom-10px w-48-p" *ngIf="createdFromExternal && userOption.length > 0">
+        <mdb-select [options]="userOption" [filterEnabled]="true" formControlName="returnUser" id="user"
+          label="User" (ngModelChange)="handleSelectUser($event)"></mdb-select>
+      </div>
+      <div class="md-form m-top-10px m-bottom-10px w-100-p ">
+        <textarea type="text" class="form-control common-comment-area" id="remark" formControlName="remark"
+          maxlength="4000" mdbInput></textarea>
+
+        <label for="remark" class="text-area-label">Remark *</label>
+
+        <mdb-error *ngIf="formErrors.remark.maxlength">Maximum length for Remark
+          is {{formErrors.remark.maxlength.requiredLength}}</mdb-error>
+      </div>
+    </div>
+  </form>
+</div>
+<div class="modal-footer modal-end">
+  <button type="button" mdbBtn color="light" class="btn-sm relative waves-light" mdbWavesEffect
+    (click)="mdbModalRef.hide()">Cancel
+  </button>
+  <button type="button" mdbBtn color="warning" class="btn-sm relative waves-light" mdbWavesEffect
+    [disabled]="!isValid()" (click)="onReturn()">Return
+  </button>
+
+</div>

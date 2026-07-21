@@ -1,0 +1,114 @@
+<div mdbSticky class="d-flex flex-row justify-content-between page-header">
+  <div class="d-flex flex-row align-items-center">
+    <h5><i class="fas fa-box header-icon"></i> Workflow Template(s)</h5>
+  </div>
+
+  <div class="d-flex flex-row align-items-center">
+    <ng-container *appHasAnyPrivilege="masterDataPrivilege.ICAS_SETTINGS_WORKFLOW_TEMPLATE_ADD">
+      <button (click)="loadSelectedItem(null)"
+              class="custom-button"
+              mdbBtn
+              type="button"
+              color="default"
+              outline="true"
+              mdbWavesEffect>New Workflow Template
+      </button>
+    </ng-container>
+  </div>
+</div>
+
+<div class="page-search-section section display-flex flex-column jc-start p-2 pt-3 pb-3 default-box-styles">
+  <form class="display-flex w-100-p flex-row jc-space-around ai-center flex-1-gap" [formGroup]="searchForm">
+
+    <div class="md-form w-24-p min-width-120">
+      <input type="text" id="workFlowTemplateName" formControlName="workFlowTemplateName" class="form-control" mdbInput>
+      <label for="workFlowTemplateName">Template Name</label>
+    </div>
+
+    <div class="md-form w-24-p min-width-120">
+      <input type="text" id="code" formControlName="code" class="form-control" mdbInput>
+      <label for="code">Code</label>
+    </div>
+
+    <div class="md-form w-24-p min-width-120">
+      <mdb-select
+        [options]="optionsSelect"
+        formControlName="status"
+        id="status"
+        placeholder="All"></mdb-select>
+      <label for="status">Status</label>
+    </div>
+
+    <div class="md-form w-24-p min-width-120">
+      <mdb-select
+        [multiple]="true"
+        [options]="approveStatusOptionsSelect"
+        formControlName="approveStatusList"
+        id="approveStatusList"
+        placeholder="All"></mdb-select>
+      <label for="approveStatusList">Approval Status</label>
+    </div>
+
+    <div class="display-flex flex-1 flex-row jc-end ai-center">
+      <button (click)="doSearch()" type="button" class=" medium-button btn btn-info" mdbBtn>Search</button>
+      <button (click)="clearSearch()" class=" medium-button btn btn-outline-info clear-btn" mdbBtn type="button">
+        Clear
+      </button>
+    </div>
+  </form>
+</div>
+
+<div *ngIf="pageDataDTOs.length == 0" class="alert alert-warning section" role="alert">
+  No UPC Template(s) Found !
+</div>
+
+<ng-container *ngIf="pageDataDTOs.length > 0">
+  <div class="section table-responsive">
+    <table class="table">
+      <thead>
+      <tr>
+        <ng-container *ngFor="let col of tableColumns">
+          <th scope="col">{{col}}</th>
+        </ng-container>
+      </tr>
+      </thead>
+      <tbody>
+      <ng-container *ngFor="let dataDTO of pageDataDTOs">
+        <tr (click)="loadSelectedItem(dataDTO.workFlowTemplateID)" class="table-clickable-row">
+          <td>{{dataDTO.workFlowTemplateName}}</td>
+          <td>{{dataDTO.code}}</td>
+          <td>{{dataDTO.description ? dataDTO.description : '-'}}</td>
+          <td>
+            <span
+              [class.color-green]="dataDTO.status === statusConst.ACT"
+              [class.color-red]="dataDTO.status === statusConst.INA"
+            >
+                  {{status[dataDTO.status]}}
+                </span>
+          </td>
+          <td>
+            <span
+              [class.color-green]="dataDTO.approveStatus === approvedStatusConst.APPROVED"
+              [class.color-red]="dataDTO.approveStatus === approvedStatusConst.REJECTED"
+              [class.color-blue]="dataDTO.approveStatus == approvedStatusConst.PENDING"
+            >
+                  {{approvedStatus[dataDTO.approveStatus]}}
+                </span>
+          </td>
+          <td>{{dataDTO.approvedDateStr ? dataDTO.approvedDateStr : '-'}}</td>
+          <td>{{dataDTO.approvedBy ? dataDTO.approvedBy : '-'}}</td>
+        </tr>
+      </ng-container>
+      </tbody>
+    </table>
+  </div>
+    <app-paginator
+      [pageIndex]="pageSize.pageIndex"
+      [length]="pageSize.length"
+      [pageSize]="pageSize.pageSize"
+      [pageSizeOptions]="pageSize.pageSizeOptions"
+      (page)="onPageEvent($event)"
+    ></app-paginator>
+  
+</ng-container>
+

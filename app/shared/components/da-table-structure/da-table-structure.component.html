@@ -1,0 +1,84 @@
+<div class="designation" style="margin-bottom: 10px; text-align: right;" *ngIf="mode=='edit'" [ngClass]="{ 'view-mode': mode === 'view', 'edit-mode': mode === 'edit' }">
+    <button type="button"  class="btn btn-sm btn-secondary cta-btn" size="sm" mdbWavesEffect (click)="openModalUpdateDesignationOrder()">
+        Change Designation Order
+    </button>
+</div>
+<!-- <div class="designation" style="margin-bottom: 10px; text-align: right;" *ngIf="mode=='edit'" [ngClass]="{ 'view-mode': mode === 'view', 'edit-mode': mode === 'edit' }">
+    <button type="button"  class="btn btn-sm btn-secondary cta-btn" size="sm" mdbWavesEffect (click)="saveUpdate()">
+        Save Designation Order
+    </button>
+</div> -->
+<div class="text-right" [ngClass]="{ 'view-mode': mode === 'view', 'edit-mode': mode === 'edit' }">
+	(In Rs’Mn)
+  </div>
+
+
+<div class="table-responsive">
+	<table [class]="mode === 'edit' ? 'da-table width-100 mt-5p' : 'custom-bordered-table width-100 mt-5p'">
+
+		<tr class="highlight-row-1" *ngFor="let headingRow of tableHeadings.tableHeadings">
+			<ng-container *ngIf="!headingRow.subHeadings">
+				<th [attr.colspan]="headingRow.colSpan" [attr.rowspan]="headingRow.rowSpan">{{ headingRow.label }}</th>
+			</ng-container>
+			<ng-container *ngIf="headingRow.subHeadings">
+				<th [attr.colspan]="headingRow.colSpan" [attr.rowspan]="headingRow.rowSpan">{{ headingRow.label }}</th>
+				<th *ngFor="let subHeading of headingRow.subHeadings" [attr.colspan]="subHeading.colSpan"
+					[attr.rowspan]="subHeading.rowSpan">{{ subHeading.label }} </th>
+			</ng-container>
+		</tr>
+
+		<tbody>
+			<ng-container *ngFor="let row of approvedDesignationList">
+				<tr >
+					<td [class.highlight-row-2]="mode=='view' && getDesignation(row.desid) === loggedUserDesignation"
+						style="text-align: left; font-weight: bold; width: 350px">{{ getDesignation(row.desid) }}</td>
+					<ng-container *ngFor="let headingRow of tableHeadings.tableHeadings">
+						<ng-container *ngFor="let subHeading of headingRow.subHeadings">
+							<ng-container *ngIf="subHeading.subId">
+
+								<td [attr.colspan]="subHeading.colSpan" [attr.rowspan]="subHeading.rowSpan"
+									[class.highlight-row-2]="(mode=='view' && getDesignation(row.desid) === loggedUserDesignation)"
+									[class.highlight-row-3]="(!isAuthorizeToEdit(row.desid) && mode=='edit')"
+									style="text-align: right; width: 100px;"> <span>
+										{{ (isAuthorizeToEdit(row.desid)|| mode=='view' ?
+										getApprovedCellValues(row.desid, subHeading.subId) :
+										getPendingCellValues(row.desid, subHeading.subId)) | number:'1.0-2'}}
+									</span> </td>
+							</ng-container>
+						</ng-container>
+					</ng-container>
+					<td style=" border: none ; " *ngIf="mode=='edit'">
+						<div class="action-buttons d-flex flex-column">
+
+							<button (click)="editRiskValuesbtn({ rowid: row.desid, tableName: 'master'  })"
+								class="btn btn-sm btn-info cta-btn" mdbTooltip="Edit DA table" placement="left"
+								*ngIf="isAuthorizeToEdit(row.desid)">
+								<mdb-icon aria-hidden="true" fas icon="pencil-alt"></mdb-icon>
+							</button>
+
+							<button (click)="moreOptionbtn({ rowid: row.desid, type: 'more' })"
+								class="btn btn-sm btn-info cta-btn" mdbTooltip="More options" placement="left"
+								*ngIf="isAuthorizeToApproveReject(row.desid)">
+								<mdb-icon aria-hidden="true" fas icon="ellipsis-h"></mdb-icon>
+							</button>
+
+							<button style="visibility: hidden;" class="btn btn-sm btn-info cta-btn"
+								mdbTooltip="More options" placement="left"
+								*ngIf="!isAuthorizeToEdit(row.desid) && !isAuthorizeToApproveReject(row.desid) ">
+								<mdb-icon aria-hidden="true" fas icon="pencil-alt"></mdb-icon>
+							</button>
+						</div>
+					</td>
+				</tr>
+			</ng-container>
+		</tbody>
+	</table>
+</div>
+<br />
+
+<div class="btn-center" *ngIf="mode=='edit'">
+	<button class="btn btn-sm btn-secondary cta-btn" type="button" mdbWavesEffect (click)="addNewDesignationbtn()"
+		mdbTooltip="Add New designation" placement="right">
+		<mdb-icon fas icon="fas fa-plus" aria-hidden="true"></mdb-icon>
+	</button>
+</div>

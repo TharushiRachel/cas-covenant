@@ -1,0 +1,80 @@
+<mdb-card>
+  <mdb-card-header class="custom-card-header">
+    DETAILS OF DIRECTORS/ PARTNER/ OWNERSHIP
+  </mdb-card-header>
+  <mdb-card-body class="custom-card-body">
+    <table class="table custom-apf-table width-100">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Address</th>
+        <th>Contact No</th>
+        <th>Identification No</th>
+        <th>Share Holding</th>
+        <th>Constitution</th>
+        <th>CreditCard</th>
+        <th>Date Of Birth</th>
+        <th>Civil Status</th>
+        <ng-container *ngIf="isAbleToEdit()">
+          <th class="width-10 text-align-center">
+            <button class="btn btn-sm btn-secondary cta-btn" type="button" mdbWavesEffect
+                    mdbTooltip="New Ownership" placement="left"
+                    (click)="openModalOwnerShipDetails(basicInformation,{})">
+              <mdb-icon fas icon="fas fa-plus" aria-hidden="true"></mdb-icon>
+            </button>
+          </th>
+        </ng-container>
+      </tr>
+      </thead>
+      <tbody>
+      <ng-container
+        *ngIf="basicInformation.ownershipDetailsDTOList && basicInformation.ownershipDetailsDTOList.length>0 ; else noData">
+        <ng-container *ngFor="let item of basicInformation.ownershipDetailsDTOList">
+          <tr>
+            <td>{{item.name}}</td>
+            <td>{{item.address}}</td>
+            <td>{{item.contactNo}}</td>
+            <td>{{customerIdentificationType[item.identificationType]}}:{{item.identificationNumber}}</td>
+            <td class="text-align-end">{{item.shareHolding}}</td>
+            <td>{{ConstitutionType[item.constitutionType]}}</td>
+            <td>{{yesNo[item.creditCard]}}</td>
+            <td>{{item.dateOfBirthStr}}</td>
+            <td>{{civilStatus[item.civilStatus]}}</td>
+            <ng-container *ngIf="isAbleToEdit()">
+              <td class="text-align-center">
+                <div>
+                  <ng-container>
+                    <button class="btn btn-sm btn-secondary cta-btn" type="button" mdbWavesEffect
+                            (click)="openModalOwnerShipDetails(basicInformation,item)"
+                            mdbTooltip="Update Details"
+                            placement="left">
+                      <mdb-icon fas icon="pencil-alt" aria-hidden="true"></mdb-icon>
+                    </button>
+                  </ng-container>
+                  <ng-container>
+                    <button class="btn btn-sm btn-danger cta-btn delete-button" type="button" mdbWavesEffect
+                            (click)="removeOwnerShipDetails($event,item)"
+                            mdbTooltip="Remove Details" placement="left">
+                      <mdb-icon fas icon="trash-alt" aria-hidden="true"></mdb-icon>
+                    </button>
+                  </ng-container>
+                </div>
+              </td>
+            </ng-container>
+          </tr>
+        </ng-container>
+      </ng-container>
+      <ng-template #noData>
+        <tr>
+          <th colspan="10" class="text-align-center">
+            <p class="not-auth-message margin-unset">
+              No Record(s)
+            </p>
+          </th>
+        </tr>
+      </ng-template>
+      </tbody>
+    </table>
+
+  </mdb-card-body>
+</mdb-card>

@@ -1,0 +1,24 @@
+<div class="w-100-p h-100-p d-flex flex-column justify-content-start">
+
+  <form method="post" class="w-100-p">
+    <textarea id="custom-html-editor-v2" name="tiny-mce-content">
+    </textarea>
+  </form>
+
+  <div class="w-100-p d-flex flex-row justify-content-end align-content-center">
+    <button *ngIf="isSaveEnabled"
+            (click)="onSave()"
+            mdbBtn
+            color="info"
+            class="my-4 editor-save-btn">{{actionName ? actionName : 'Save'}}
+    </button>
+    <ng-container *ngIf="isSaveAndCloseEnabled">
+      <button
+        (click)="onSaveAndClose()"
+        mdbBtn
+        color="info"
+        class="my-4 editor-save-btn">Save & Close
+      </button>
+    </ng-container>
+  </div>
+</div>

@@ -1,0 +1,37 @@
+.input-color {
+      appearance: auto;
+      width: 200px;
+      height: 48px;
+      cursor: default;
+      box-sizing: border-box;
+      background-color: white;
+      color: buttontext;
+      border-width: 0px;
+      border-style: solid;
+      border-color: #c9c5c5;
+      border-image: initial;
+      padding: 0px 0px 0px 0px;
+}
+
+.label-font {
+  color : #757575;
+}
+
+.margin-10 {
+  margin: 10px;
+}
+
+.w-80-p {
+  width: 80% !important;
+}
+
+.input-text {
+    width: 60px;
+    height: 40px;
+    border: 1px solid #c9c5c5;
+    font-size: 15px;
+    text-align: center;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+}
+

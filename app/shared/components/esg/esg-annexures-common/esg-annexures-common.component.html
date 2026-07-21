@@ -1,0 +1,81 @@
+<div class="d-flex flex-row justify-content-center mb-3">
+    <strong class="description">{{annexureData?.name}} - {{ annexureData?.description }}</strong>
+</div>
+
+<form *ngIf="!loading" [formGroup]="form" class="p-4">
+
+    <div *ngFor="let q of questions; let i = index" class="mb-4">
+        <label>
+            <strong>
+                {{ i + 1 }}. {{ q.question }}
+                <span *ngIf="q.isMandatory === 'Y'" style="color:red">*</span>
+            </strong>
+        </label>
+
+        <!-- MCQ WITH SINGLE (Radio Buttons) -->
+        <div class="d-flex flex-wrap mt-2" *ngIf="q.answerType === 'MCQ_WITH_SINGLE'">
+            <div class="form-check mr-3" *ngFor="let a of q.answers">
+                <input class="form-check-input" type="radio" [id]="'q' + q.questionId + '-' + a.answerId"
+                    [formControlName]="q.questionId" [value]="a.answerId" />
+                <label class="form-check-label" [for]="'q' + q.questionId + '-' + a.answerId">
+                    {{ a.answer }}
+                </label>
+            </div>
+        </div>
+
+        <!-- MCQ WITH MULTIPLE (Checkboxes) -->
+        <div class="d-flex flex-wrap mt-2" *ngIf="q.answerType === 'MCQ_WITH_MULTIPLE'">
+            <div class="form-check mr-3" *ngFor="let a of q.answers">
+                <input class="form-check-input" type="checkbox" [id]="'q' + q.questionId + '-' + a.answerId"
+                    [checked]="form.get(q.questionId.toString()).value.includes(a.answerId)"
+                    (change)="onCheckboxArrayChange($event, q.questionId, a.answerId)"
+                    [disabled]="!editMode && existingData" />
+                <label class="form-check-label" [for]="'q' + q.questionId + '-' + a.answerId">
+                    {{ a.answer }}
+                </label>
+            </div>
+        </div>
+
+
+        <!-- DESCRIPTIVE (Textarea) -->
+        <div class="mt-2" *ngIf="q.answerType === 'DESCRIPTIVE'" style="margin-right: 15px;">
+            <textarea class="form-control rounded-0 comment-area text-area" rows="3"
+                [formControlName]="q.questionId"></textarea>
+        </div>
+
+        <!-- DESCRIPTIVE WITH SUB QUESTION -->
+        <div class="mt-2" *ngIf="q.answerType === 'DESCRIPTIVE_WITH_SUB_QUESTION'">
+            <div class="d-flex flex-column">
+                <div *ngFor="let a of q.answers" class="d-flex align-items-center mb-2 multi-quiz">
+                    <label class="mr-2 mb-0 d-flex align-items-center" style="min-width: 150px;">
+                        <strong class="mb-0">{{ a.answer }}</strong>
+                        <span *ngIf="q.isMandatory === 'Y'" style="color:red" class="ml-1">*</span>
+                    </label>
+                    <textarea class="form-control rounded-0 comment-area text-area flex-grow-1" rows="2"
+                        [formControlName]="q.questionId + '_' + a.answerId"></textarea>
+                </div>
+            </div>
+        </div>
+
+        <!-- <div class="row d-flex mx-0 justify-content-end mt-1" *ngIf="q.answeredBy && q.answeredDate">
+            <span class="m-0" style="font-size: 12px; color: #a09f9f;">
+                Answered By {{q.answeredBy}} On {{ q.answeredDate | date:'medium' }}
+            </span>
+        </div> -->
+    </div>
+
+    <div class="mt-3 d-flex justify-content-end">
+        <button *ngIf="existingData && editMode" type="button" mdbBtn size="sm" color="info" class="mr-2"
+            (click)="onUpdate()" [disabled]="form.invalid || !anyAnswerFilled"
+            [mdbTooltip]="'Update Annexure'">Update</button>
+        <button *ngIf="existingData && editMode" type="button" mdbBtn size="sm" color="info" class="mr-2"
+            (click)="onCancel()">Cancel</button>
+
+        <button *ngIf="!existingData" type="button" mdbBtn size="sm" color="info" class="mr-2" (click)="onSubmit()"
+            [disabled]="form.invalid || !anyAnswerFilled" [mdbTooltip]="'Save Annexure'">Submit</button>
+        <button *ngIf="!existingData" type="button" mdbBtn size="sm" color="info" class="mr-2"
+            (click)="onCancel()">Cancel</button>
+
+    </div>
+
+</form>

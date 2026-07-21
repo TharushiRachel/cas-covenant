@@ -1,0 +1,185 @@
+<div class="modal-header modal-topic">
+    <h4 class="modal-title w-100 font-weight-bold">CRIB File Upload</h4>
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="mdbModalRef.hide()">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<div class="row d-flex flex-row mx-0 px-4">
+    <button type="button" mdbBtn color="secondary" class="relative waves-light ml-auto my-0" size="sm"
+        (click)="addNewUser()">
+        Add New
+    </button>
+</div>
+<div class="modal-body mx-3 modal-detail form-margin" style="max-height: 75vh;overflow-y: auto;" #modalBody>
+
+    <div class="card row d-flex flex-row py-3 px-2 mx-0 my-3 border border-1"
+        *ngFor="let item of cribUsers;let i=index;">
+        <div class="col-md-12 mb-2">
+            <mdb-checkbox [(ngModel)]="item.isRequired">Report is required.</mdb-checkbox>
+        </div>
+        <div [class]="!item.isRequired ? 'blur-div m-0 p-0 row d-flex flex-row' : 'm-0 p-0 row d-flex flex-row'">
+            <!-- Identification List -->
+            <div class="row d-flex flex-row mx-3 py-1 my-3 w-100" *ngIf="item.identifications.length > 0"
+                [ngStyle]="{'border' : item.errors.identifications ? '1px solid red' : ''}">
+                <div class="col-3" *ngFor="let idItem of item.identifications">
+                    <input type="radio" class="form-check-input" id="{{idItem.identificationType}}"
+                        [value]="idItem.identificationType" name="identificationType"
+                        [(ngModel)]="item.identificationType" (change)="handleIdentificationType(i,idItem)">
+                    <label class="form-check-label" for="{{idItem.identificationType}}">
+                        {{idItem.identificationType}} - {{idItem.identificationNumber}}
+                    </label>
+                </div>
+            </div>
+
+            <div class="col-md-6 my-3">
+                <div class="md-form">
+                    <mdb-select [options]="customerTypeList" id="customerType" placeholder="Choose..."
+                        [(ngModel)]="item.customerType" [disabled]="!item.isNew || !item.isRequired"
+                        (ngModelChange)="handleCustomerTypeChange(i)"></mdb-select>
+                    <label for="customerType" style="font-size: 14px !important;">Customer Type</label>
+                    <mdb-error *ngIf="item.errors.customerType">{{item.errors.customerType}}</mdb-error>
+                </div>
+            </div>
+
+            <div class="col-md-6 my-3" *ngIf="item.isNew && item.customerType == customerType.PERSONAL">
+                <div class="md-form">
+                    <mdb-select [options]="personalIDOptions" [(ngModel)]="item.identificationType"
+                        placeholder="Select Identification Type" id="identificationType"
+                        [disabled]="!item.isNew || !item.isRequired"
+                        (ngModelChange)="handleIdentificationChange(i)"></mdb-select>
+                    <label for="identificationType" style="font-size: 14px !important;">Identification Type *</label>
+                    <mdb-error *ngIf="item.errors.identificationType">{{item.errors.identificationType}}</mdb-error>
+                </div>
+            </div>
+
+            <div class="col-md-6 my-3">
+                <div class="md-form">
+                    <input type="text" class="form-control" id="identificationNumber" mdbInput
+                        [disabled]="!item.isNew || !item.isRequired" [(ngModel)]="item.identificationNumber"
+                        placeholder="{{getIdentificationType(item.customerType,item.identificationType)}}">
+                    <label for="identificationNumber"
+                        style="font-size: 14px !important;">{{getIdentificationType(item.customerType,item.identificationType)}}
+                        *</label>
+                    <mdb-error *ngIf="item.errors.identificationNumber">{{item.errors.identificationNumber}}</mdb-error>
+                </div>
+            </div>
+            <div [class]="item.customerType == customerType.PERSONAL ? 'col-md-6 my-3' : 'col-md-12 my-3'">
+                <div class="md-form">
+                    <input class="form-control" id="fullName" mdbInput type="text"
+                        [disabled]="!item.isNew || !item.isRequired" [(ngModel)]="item.fullName"
+                        placeholder="Full Name">
+                    <label for="fullName" style="font-size: 14px !important;">Full Name</label>
+                    <mdb-error *ngIf="item.errors.fullName">{{item.errors.fullName}}</mdb-error>
+                </div>
+            </div>
+            <div class="col-md-6 my-3" *ngIf="item.customerType == customerType.PERSONAL">
+                <div class="md-form">
+                    <mdb-select [options]="genderList" id="gender" [(ngModel)]="item.gender" placeholder="Choose..."
+                        [disabled]="!item.isRequired"></mdb-select>
+                    <label for="gender" style="font-size: 14px !important;">Gender *</label>
+                    <mdb-error *ngIf="item.errors.gender">{{item.errors.gender}}</mdb-error>
+                </div>
+            </div>
+
+            <div class="col-md-12 my-3">
+                <div class="md-form">
+                    <mdb-select [options]="inquiryReasonSelect" [(ngModel)]="item.inquiryReason"
+                        placeholder="Select Reason" id="inquiryReason" [disabled]="!item.isRequired"></mdb-select>
+                    <label for="inquiryReason" style="font-size: 14px !important;">Inquiry Reason *</label>
+                    <mdb-error *ngIf="item.errors.inquiryReason">{{item.errors.inquiryReason}}</mdb-error>
+                </div>
+            </div>
+
+            <div class="border border-1 p-2 mx-3 my-2 w-100">
+                <div class="col-md-12 mb-3" *ngIf="item.errors.reportName">
+                    <div class="md-form">
+                        <mdb-error style="top: 0;">{{item.errors.reportName}}</mdb-error>
+                    </div>
+                </div>
+
+                <div class="col-md-12 row d-flex flex-row align-items-center mx-0 my-2" style="position: relative;">
+                    <span class="mr-2 ml-0" *ngIf="item.reportName">{{item.reportName}}.pdf</span>
+
+                    <button class="btn btn-sm btn-info ml-0" type="button" mdbTooltip="Retrive New Crib Report"
+                        placement="bottom" *ngIf="!item.reportName" (click)="getCribReport(item,i)"
+                        [disabled]="item.isLoading || item.isMannualUpload || !item.isRequired">
+                        <mdb-icon fas icon="fa fa-download" aria-hidden="true" *ngIf="!item.isLoading"></mdb-icon>
+                        <div class="spinner-border spinner-border-sm" role="status" *ngIf="item.isLoading">
+                            <span class="sr-only">Loading...</span>
+                        </div>
+                    </button>
+                    <button class="btn btn-sm btn-success" type="button" mdbTooltip="Upload Crib Report"
+                        placement="bottom" *ngIf="!item.reportName && !item.isMannualUpload"
+                        (click)="uploadReport(item)" [disabled]="item.isLoading || !item.isRequired">
+                        <mdb-icon fas icon="fa fa-upload" aria-hidden="true"></mdb-icon>
+                    </button>
+                    <button class="btn btn-sm btn-secondary ml-0" type="button" mdbTooltip="View Crib Report"
+                        placement="bottom" *ngIf="item.reportName" (click)="viewNewReport(item)"
+                        [disabled]="item.isLoading || !item.isRequired">
+                        <mdb-icon fas icon="fa fa-eye" aria-hidden="true"></mdb-icon>
+                    </button>
+                    <button class="btn btn-sm btn-success" type="button" mdbTooltip="Download Crib Report"
+                        placement="bottom" *ngIf="item.reportName" (click)="downloadNewReport(item)"
+                        [disabled]="item.isLoading || !item.isRequired">
+                        <mdb-icon fas icon="fa fa-download" aria-hidden="true"></mdb-icon>
+                    </button>
+                    <button class="btn btn-sm btn-danger" type="button" mdbTooltip="Close Upload" placement="bottom"
+                        (click)="closeFileUpload(item)" *ngIf="item.isMannualUpload"
+                        [disabled]="item.isLoading || !item.isRequired">
+                        <mdb-icon fas icon="fa fa-times" aria-hidden="true"></mdb-icon>
+                    </button>
+                    <button class="btn btn-sm btn-danger" type="button" mdbTooltip="Remove Report" placement="bottom"
+                        (click)="removeReport(item)" *ngIf="item.reportName"
+                        [disabled]="item.isLoading || !item.isRequired">
+                        <mdb-icon fas icon="fa fa-trash" aria-hidden="true"></mdb-icon>
+                    </button>
+                </div>
+
+                <div class="col-md-12 row d-flex flex-row mx-0 mb-2 align-items-center" *ngIf="item.isMannualUpload">
+                    <div class="md-form">
+                        <input type="file" class="form-control" id="inputGroupFile01"
+                            (change)="handleFileUpload($event,item)" accept=".pdf" [disabled]="!item.isRequired">
+                        <label class="custom-file-label" for="inputGroupFile01" style="top: -5px;">
+                            Choose file
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 mt-3">
+                <div class="md-form mt-2">
+                    <mdb-select [options]="optionscribStatusSelect" required="cribStatus" id="cribStatus"
+                        placeholder="Choose..." [(ngModel)]="item.cribStatus"
+                        [disabled]="!item.isRequired"></mdb-select>
+                    <label for="cribStatus" style="font-size: 14px !important;">CRIB Status *</label>
+                    <mdb-error *ngIf="item.errors.cribStatus">{{item.errors.cribStatus}}</mdb-error>
+                </div>
+            </div>
+            <div class="col-md-6 mt-3">
+                <div class="md-form">
+                    <label for="cribIssueDateStr" style="margin-top: -12px;font-size: 14px;">Issued Date *</label>
+                    <mdb-date-picker class="form-control" id="cribIssueDateStr" required="cribIssueDateStr"
+                        [options]="myDatePickerOptions" [inline]="true" [(ngModel)]="item.cribIssueDateStr"
+                        [disabled]="!item.isRequired"></mdb-date-picker>
+                    <mdb-error *ngIf="item.errors.cribIssueDateStr"
+                        style="margin-top: 8px;">{{item.errors.cribIssueDateStr}}</mdb-error>
+                </div>
+            </div>
+            <div class="col-md-12 my-2">
+                <div class="md-form">
+                    <textarea type="text" id="remarks" class="form-control border border-1 p-2" rows="4"
+                        style="min-height: 100px;" placeholder="Remark" appTextAreaAutoHeight mdbInput
+                        [(ngModel)]="item.remark" [disabled]="!item.isRequired"></textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal-footer modal-end">
+    <button type="button" mdbBtn color="secondary" class="relative waves-light mr-24p" size="sm"
+        [disabled]="isReportLoaing() || !checkRequiredReport()" (click)="submit()">
+        Submit
+    </button>
+</div>
+
+<a class="download-link" #downloadLink></a>

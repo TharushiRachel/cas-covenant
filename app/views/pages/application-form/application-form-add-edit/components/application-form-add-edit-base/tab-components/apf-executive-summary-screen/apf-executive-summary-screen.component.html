@@ -1,0 +1,33 @@
+<mdb-card>
+  <mdb-card-body class="custom-card-body">
+    <ng-container *ngIf="lpsTopics.length>0">
+      <ng-container *ngFor="let topic of lpsTopics">
+        <app-apf-topic-view [selectedTopic]="topic">
+        </app-apf-topic-view>
+      </ng-container>
+    </ng-container>
+  </mdb-card-body>
+
+  <mdb-card-header class="custom-card-header justify-content-center">
+    <div class="d-flex flex-row w-100-p mb-3 flex-wrap justify-content-between">
+      <div>
+      </div>
+      <div>
+        <ng-container *ngIf="isAbleToEdit()">
+          <button mdbBtn
+                  size="sm"
+                  color="info"
+                  placement="left"
+                  class="margin-right-unset"
+                  mdbTooltip="Add Topic"
+                  (click)="openModalTopics($event,applicationFormTopicPageConst.EXECUTIVE_SUMMARY)"
+          >Add Topic
+          </button>
+        </ng-container>
+      </div>
+    </div>
+  </mdb-card-header>
+
+  <mdb-card-footer class="custom-card-footer">
+  </mdb-card-footer>
+</mdb-card>

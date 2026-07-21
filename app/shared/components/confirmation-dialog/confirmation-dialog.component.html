@@ -1,0 +1,22 @@
+<div>
+  <div class="modal-header modal-topic flex-center">
+    <button type="button" class="close pull-right" aria-label="Close" (click)="onNoClick()">
+      <span aria-hidden="true">×</span>
+    </button>
+    <h4 class="modal-title w-100 heading-align" id="myModalLabel" style="font-size: 1rem ; font-weight: bold">
+      {{heading}}</h4>
+  </div>
+  <div class="modal-body modal-detail form-margin">
+    <h6 *ngIf="isCribConfirmation"><strong class="text-danger">This service will incur charges.</strong> Do you want to
+      proceed?</h6>
+    <h6 *ngIf="!isCribConfirmation" style="font-size: 0.9rem" [innerHTML]="message"></h6>
+  </div>
+  <div class="modal-footer modal-end">
+    <button type="button" mdbBtn color="secondary" size="sm" class="waves-light" aria-label="Close"
+      (click)="onNoClick()" mdbWavesEffect>No
+    </button>
+    <button type="button" mdbBtn color="success" size="sm" class="relative waves-light" (click)="onYesClick()"
+      mdbWavesEffect>Yes
+    </button>
+  </div>
+</div>

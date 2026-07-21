@@ -1,0 +1,111 @@
+<div class="m-0 p-0">
+    <div class="facility-item" *ngFor="let facility of facilities;let i=index">
+        <div class="row d-flex mx-0 my-1">
+            <div class="col-2 text-center">
+                <span>Pervious Amount</span>
+            </div>
+            <div class="col-8"></div>
+            <div class="col-2 text-center">
+                <span>Required Amount</span>
+            </div>
+        </div>
+        <div class="row d-flex mx-0 my-1">
+            <div class="col-2 text-center">
+                <span class="font-weight-bold">{{facility.currency}} {{facility.preValue}}</span>
+            </div>
+            <div class="col-8">
+                <span class="font-weight-bold">Facility {{i+1}} : {{facility.facilityName}}
+                    <span *ngIf="facility.sightUsance">({{facility.sightUsance}})</span>
+                </span>
+            </div>
+            <div class="col-2 text-center">
+                <span class="font-weight-bold">{{facility.currency}} {{facility.value}}</span>
+            </div>
+        </div>
+
+        <div class="row d-flex mx-0 my-1" *ngIf="facility.sector">
+            <div class="col-2">
+                <span class="font-weight-bold">Sector :</span>
+            </div>
+            <div class="col-8">
+                <span>{{facility.sector}}</span>
+            </div>
+            <div class="col-2"></div>
+        </div>
+
+        <div class="row d-flex mx-0 my-1" *ngIf="facility.subSector">
+            <div class="col-2">
+                <span class="font-weight-bold">Subsector :</span>
+            </div>
+            <div class="col-8">
+                <span>{{facility.subSector}}</span>
+            </div>
+            <div class="col-2"></div>
+        </div>
+
+        <div class="row d-flex mx-0 my-1" *ngIf="facility.purpose">
+            <div class="col-2">
+                <span class="font-weight-bold">Purpose Of Advance :</span>
+            </div>
+            <div class="col-8">
+                <span>{{facility.purpose}}</span>
+            </div>
+            <div class="col-2"></div>
+        </div>
+
+        <div class="row d-flex mx-0 my-1" *ngFor="let item of facility.facilityTexts">
+            <div class="col-2">
+                <span>{{item.lable}} :</span>
+            </div>
+            <div class="col-9">
+                <span>{{item.value}}</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="text-center mt-4 mx-0" *ngIf="facilities.length <= 0">
+        <h5 class="text-muted">No Records Found</h5>
+    </div>
+</div>
+
+<div class="mx-0 mt-5 p-0" *ngIf="basicData">
+    <table class="table w-100">
+        <thead>
+            <th>Previous Values</th>
+            <th></th>
+            <th>New Values</th>
+        </thead>
+        <tbody>
+            <tr>
+                <td>{{getFormattedAmount(basicData.preDirectTotal)}}</td>
+                <td><strong>Company Total Direct Exposure</strong></td>
+                <td>{{getFormattedAmount(basicData.directTotal)}}</td>
+            </tr>
+            <tr>
+                <td>{{getFormattedAmount(basicData.preIndirectTotal)}}</td>
+                <td><strong>Company Total Indirect Exposure</strong></td>
+                <td>{{getFormattedAmount(basicData.indirectTotal)}}</td>
+            </tr>
+            <tr>
+                <td>{{getFormattedAmount(basicData.preTotalExposure)}}</td>
+                <td><strong>Company Total Exposure</strong></td>
+                <td>{{getFormattedAmount(basicData.totalExposure)}}</td>
+            </tr>
+            <tr>
+                <td>{{getFormattedAmount(basicData.grpPreDirectTotal)}}</td>
+                <td><strong>Group Total Direct Exposure</strong></td>
+                <td>{{getFormattedAmount(basicData.grpDirectTotal)}}</td>
+            </tr>
+            <tr>
+                <td>{{getFormattedAmount(basicData.grpPreIndirectTotal)}}</td>
+                <td><strong>Group Total Indirect Exposure</strong></td>
+                <td>{{getFormattedAmount(basicData.grpIndirectTotal)}}</td>
+            </tr>
+            <tr>
+                <td>{{getFormattedAmount(basicData.grpPreTotalExposure)}}</td>
+                <td><strong>Group Total Exposure</strong></td>
+                <td>{{getFormattedAmount(basicData.grpTotalExposure)}}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>

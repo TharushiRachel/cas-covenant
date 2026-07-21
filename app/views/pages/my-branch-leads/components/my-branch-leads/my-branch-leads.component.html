@@ -1,0 +1,192 @@
+<div mdbSticky class="d-flex flex-row justify-content-between page-header">
+  <div class="d-flex flex-row align-items-center">
+    <h5><i class="fas fa-cogs header-icon"></i> My Branch Leads</h5>
+  </div>
+</div>
+
+<div class="page-search-section section display-flex flex-column jc-start p-2 pt-3 pb-3 default-box-styles align-start">
+  <form class="display-flex w-100-p flex-row jc-start ai-center flex-wrap flex-2-gap" [formGroup]="searchForm">
+
+    <div class="md-form w-18-p min-width-120 ">
+      <input type="text" id="leadName" formControlName="leadName" class="form-control" mdbInput>
+      <label for="leadName">Lead Name</label>
+    </div>
+
+    <div class="md-form w-18-p min-width-120 ">
+      <input type="text" id="leadRefNumber" formControlName="leadRefNumber" class="form-control" mdbInput>
+      <label for="leadRefNumber">Reference ID</label>
+    </div>
+
+    <div class="md-form w-18-p min-width-120 ">
+      <input type="text" id="identificationNumber" formControlName="identificationNumber" class="form-control" mdbInput>
+      <label for="identificationNumber">NIC Number</label>
+    </div>
+
+    <div class="md-form w-18-p min-width-120 ">
+      <input type="text" id="accountNumber" formControlName="accountNumber" class="form-control" mdbInput>
+      <label for="accountNumber">Account Number</label>
+    </div>
+
+    <div class="md-form w-18-p min-width-120 ">
+      <input type="text" id="mobileNo" formControlName="mobileNo" class="form-control" mdbInput>
+      <label for="mobileNo">Contact Number</label>
+    </div>
+
+    <div class="md-form w-18-p min-width-120 ">
+      <mdb-date-picker class="form-control"
+                       id="createdFromDateStr"
+                       formControlName="createdFromDateStr"
+                       [options]="myDatePickerOptions"
+                       [placeholder]="'Open from date'"
+                       [inline]="true"
+                       required></mdb-date-picker>
+    </div>
+
+    <div class="md-form w-18-p  min-width-120 ">
+      <mdb-date-picker class="form-control"
+                       id="createdToDateStr"
+                       formControlName="createdToDateStr"
+                       [options]="myDatePickerOptions"
+                       [placeholder]="'Open to date'"
+                       [inline]="true"
+                       required></mdb-date-picker>
+    </div>
+
+    <div class="md-form w-18-p min-width-120 ">
+      <mdb-select
+        [multiple]="true"
+        [options]="optionsSelect"
+        placeholder="Select status"
+        formControlName="leadStatusList"
+        id="leadStatusList"></mdb-select>
+      <label for="leadStatusList">Status</label>
+    </div>
+
+    <div class="md-form w-18-p min-width-120 ">
+      <mdb-select
+        [multiple]="true"
+        [options]="optionsLeadTypeSelect"
+        placeholder="Select type"
+        formControlName="leadCreationTypeList"
+        id="leadCreationTypeList"></mdb-select>
+      <label for="leadCreationTypeList">Type</label>
+    </div>
+
+    <div class="md-form w-18-p min-width-120 ">
+      <input type="text" id="assignUserID" formControlName="assignUserID" class="form-control" mdbInput>
+      <label for="assignUserID">Assigned User</label>
+    </div>
+
+    <div class="display-flex flex-1 flex-row jc-end ai-center">
+      <button (click)="doSearch()" type="button" class=" medium-button btn btn-info" mdbBtn>Search</button>
+      <button (click)="clearSearch()" class=" medium-button btn btn-outline-info clear-btn" mdbBtn type="button">
+        Clear
+      </button>
+    </div>
+
+  </form>
+</div>
+
+<div *ngIf="myBranchLeads.length == 0" class="alert alert-warning section" role="alert">
+  No Leads(s) Found !
+</div>
+
+<ng-container *ngIf="myBranchLeads.length > 0">
+  <div class="section table-responsive mb-15p">
+    <table class="table">
+      <thead>
+      <tr>
+        <ng-container *ngFor="let col of tableColumns">
+          <th scope="col">{{col}}</th>
+        </ng-container>
+      </tr>
+      </thead>
+      <tbody>
+      <ng-container *ngFor="let lead of myBranchLeads">
+        <tr (click)="loadLead(lead.leadID)" class="table-clickable-row">
+          <td>{{lead.leadName}}</td>
+          <td>{{lead.leadRefNumber}}</td>
+          <td>{{lead.identificationNumber ? lead.identificationNumber : '-'}}</td>
+          <td>{{lead.accountNumber ? lead.accountNumber : '-'}}</td>
+          <td>{{lead.mobileNo ? lead.mobileNo : '-'}}</td>
+          <td>{{lead.createdDateStr ? lead.createdDateStr : '-'}}</td>
+          <td class="status-icon status-col">
+            <a *ngIf="lead.leadCreationType == this.leadCreationType.BUSINESS"
+               data-toggle="tooltip" data-placement="left" title="Business" class="icon-padding">
+              <img class="status-img-width" src="assets/media/images/leadTypes/business.png" alt="Business">
+            </a>
+
+            <a *ngIf="lead.leadCreationType == this.leadCreationType.PERSONAL"
+               data-toggle="tooltip" data-placement="left" title="Personal" class="icon-padding">
+              <img class="status-img-width" src="assets/media/images/leadTypes/personal.png" alt="Personal">
+            </a>
+
+          </td>
+          <td class="status-icon status-col">
+            <!--            <div class="lead-status">-->
+            <!--              <h6>-->
+            <!--                <mdb-badge-->
+            <!--                  [color]="getColor(lead.leadStatus)">-->
+            <!--                  {{leadStatus[lead.leadStatus]}}-->
+            <!--                </mdb-badge>-->
+            <!--              </h6>-->
+            <!--            </div>-->
+
+
+            <!--              In Progress-->
+            <a *ngIf="lead.leadStatus == this.leadStatusConst.RETURNED"
+               data-toggle="tooltip" data-placement="left" title="Returned" class="icon-padding">
+              <img class="status-img-width" src="assets/media/images/fpstatusicon/return.png" alt="Returned">
+            </a>
+
+            <!--              Approved-->
+            <a *ngIf="lead.leadStatus == this.leadStatusConst.APPROVED"
+               data-toggle="tooltip" data-placement="left" title="Approved" class="icon-padding">
+              <img class="status-img-width" src="assets/media/images/fpstatusicon/approved.png" alt="Processed">
+            </a>
+
+            <!--              Approved-->
+            <a *ngIf="lead.leadStatus == this.leadStatusConst.ACCEPTED"
+               data-toggle="tooltip" data-placement="left" title="Accepted" class="icon-padding">
+              <img class="status-img-width" src="assets/media/images/fpstatusicon/approved.png" alt="Accepted">
+            </a>
+
+            <!--              Returned-->
+            <a *ngIf="lead.leadStatus == this.leadStatusConst.SUBMITTED"
+               data-toggle="tooltip" data-placement="left" title="Submitted" class="icon-padding">
+              <img class="status-img-width" src="assets/media/images/fpstatusicon/assigned.png" alt="Submitted">
+            </a>
+
+            <!--              Rejected-->
+            <a *ngIf="lead.leadStatus == this.leadStatusConst.DECLINED"
+               data-toggle="tooltip" data-placement="left" title="Declined" class="icon-padding">
+              <img class="status-img-width" src="assets/media/images/fpstatusicon/decline.png" alt="Declined">
+            </a>
+
+            <!--              Drafted-->
+            <a *ngIf="lead.leadStatus == this.leadStatusConst.PENDING"
+               data-toggle="tooltip" data-placement="left" title="Pending" class="icon-padding">
+              <img class="status-img-width" src="assets/media/images/fpstatusicon/draft.png" alt="Pending">
+            </a>
+
+            <a *ngIf="lead.leadStatus == this.leadStatusConst.PAPER_CREATED"
+               data-toggle="tooltip" data-placement="left" title="Paper Created" class="icon-padding">
+              <img class="status-img-width" src="assets/media/images/fpstatusicon/papercreated.png" alt="Paper Created">
+            </a>
+
+          </td>
+          <td>{{lead.assignUserID || '-'}}</td>
+        </tr>
+      </ng-container>
+      </tbody>
+    </table>
+
+    <app-paginator
+      [pageIndex]="pageSize.pageIndex"
+      [length]="pageSize.length"
+      [pageSize]="pageSize.pageSize"
+      [pageSizeOptions]="pageSize.pageSizeOptions"
+      (page)="onPageEvent($event)"
+    ></app-paginator>
+  </div>
+</ng-container>

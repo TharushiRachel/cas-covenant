@@ -1,0 +1,34 @@
+<div class="modal-header modal-topic facility-order-header-padding">
+  <h4 class="modal-title w-100 font-weight-bold">{{heading}}</h4>
+  <button type="button" class="close pull-right" data-dismiss="modal" aria-label="Close" (click)="mdbModalRef.hide()">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
+<div class="modal-body modal-detail mx-3">
+  <form class="d-flex p-2 flex-column align-items-start w-100-p" [formGroup]="componentForm">
+    <div class="d-flex flex-row justify-content-center w-100-p">
+      <div class="md-form m-top-10px m-bottom-10px side-margin width-80">
+        <mdb-date-picker class="form-control"
+                         id="outstandingDateStr"
+                         label="Outstanding Date *"
+                         formControlName="outstandingDateStr"
+                         [options]="myDatePickerOptions"
+                         [inline]="true"
+        ></mdb-date-picker>
+      </div>
+    </div>
+  </form>
+</div>
+
+<div class="modal-footer modal-end update-button-div">
+  <button type="button"
+          mdbBtn
+          color="secondary"
+          size="sm"
+          [disabled]="!isValid()"
+          class="relative waves-light"
+          mdbWavesEffect
+          (click)="update()">Update
+  </button>
+</div>

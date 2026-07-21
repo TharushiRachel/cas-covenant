@@ -1,0 +1,184 @@
+<div mdbSticky class="d-flex flex-row justify-content-between page-header">
+  <div class="d-flex flex-row align-items-center">
+    <a appGoBack class="d-flex flex-row align-items-center">
+      <i class="fas fa-angle-left header-icon-back"></i>
+    </a>
+    <h5><i class="fas fa-vector-square header-icon"></i>
+      <span *ngIf="pageType=='new'">Add Topic</span>
+      <span *ngIf="pageType=='edit'">Edit Topic</span>
+    </h5>
+  </div>
+  <div class="d-flex  justify-content-end">
+    <ng-container *ngIf="isApproveOrRejectValid()">
+      <ng-container *appHasAnyPrivilege="masterDataPrivilege.ADMIN_MASTER_DATA_APPROVE_OR_REJECT">
+        <button (click)="approve()"
+                mdbBtn
+                class="custom-button"
+                type="button"
+                color="success"
+                outline="true"
+                [disabled]="isDirty()"
+                mdbWavesEffect>
+          <span *ngIf="pageType=='edit'">Approve</span>
+        </button>
+        <button (click)="reject()"
+                mdbBtn
+                type="button"
+                class="custom-button"
+                color="danger"
+                outline="true"
+                [disabled]="isDirty()"
+                mdbWavesEffect>
+          <span *ngIf="pageType=='edit'">Reject</span>
+        </button>
+      </ng-container>
+    </ng-container>
+    <ng-container *appHasAnyPrivilege="masterDataPrivilege.ICAS_SETTINGS_APPLICATION_TOPIC_ADD">
+      <button *ngIf="pageType=='new'" (click)="saveUpdate() "
+              class="custom-button"
+              mdbBtn
+              type="button"
+              color="secondary"
+              outline="true"
+              [disabled]="!isValid() || !isDirty()"
+              mdbWavesEffect>
+        <span>SAVE</span>
+      </button>
+    </ng-container>
+
+    <ng-container *appHasAnyPrivilege="masterDataPrivilege.ICAS_SETTINGS_APPLICATION_TOPIC_EDIT">
+      <button *ngIf="pageType=='edit'" (click)="saveUpdate()"
+              class="custom-button"
+              mdbBtn
+              type="button"
+              color="secondary"
+              outline="true"
+              [disabled]="!isValid() || !isDirty()"
+              mdbWavesEffect>
+        <span>UPDATE</span>
+      </button>
+    </ng-container>
+  </div>
+</div>
+
+<div class="page-search-section d-flex p-2 flex-column justify-content-start align-items-start section">
+  <form class="d-flex p-2 flex-column justify-content-start align-items-start w-100-p" [formGroup]="componentForm">
+
+    <div class="md-form m-top-10px m-bottom-10px w-100-p">
+
+      <mdb-select
+        [options]="pageOptionSelect"
+        formControlName="page"
+        id="page"
+        label="Page *"></mdb-select>
+      <mdb-error *ngIf="formErrors.page.required">Page required</mdb-error>
+    </div>
+
+    <div class="md-form m-top-10px m-bottom-10px w-100-p">
+      <input mdbValidate type="text" id="topic" maxlength="200" formControlName="topic"
+             class="form-control"
+             mdbInput>
+      <label for="topic">Topic *</label>
+      <mdb-error *ngIf="formErrors.topic.required">required</mdb-error>
+    </div>
+
+    <div class="md-form m-top-10px m-bottom-10px w-100-p">
+      <input mdbValidate type="text" id="topicCode" maxlength="200" formControlName="topicCode"
+             class="form-control"
+             mdbInput>
+      <label for="topicCode">Topic Code</label>
+    </div>
+
+    <div class="md-form m-top-10px m-bottom-10px w-100-p">
+      <input mdbValidate type="text" id="description" maxlength="200" formControlName="description"
+             class="form-control"
+             (keydown)="tabPressDisabled($event)"
+             mdbInput>
+      <label for="description">Description </label>
+    </div>
+
+    <div class="md-form m-top-10px m-bottom-10px w-100-p">
+      <mdb-select
+        [options]="optionsSelect"
+        formControlName="status"
+        id="status"
+        placeholder="Status"></mdb-select>
+      <label for="status">Status</label>
+      <mdb-error *ngIf="formErrors.status.required">Status required</mdb-error>
+    </div>
+
+    <div class="d-flex flex-row justify-content-start md-form m-top-10px m-bottom-10px w-100-p">
+      <div class="mt-5p">
+        <b>Content</b>
+      </div>
+      <div class="ml-10p">
+        <button class="btn btn-sm btn-secondary cta-btn" type="button" mdbWavesEffect
+                (click)="openModalTemplateData($event)"
+                mdbTooltip="Add Content" placement="left">
+          <mdb-icon fas [icon]="getIcon()" aria-hidden="true"></mdb-icon>
+        </button>
+      </div>
+    </div>
+
+    <ng-container *ngIf="selectedUpdateDTO.topicData">
+      <div class="md-form m-top-10px m-bottom-10px w-100-p border p-2"
+           [innerHTML]="selectedUpdateDTO.topicData | safeHtml">
+      </div>
+    </ng-container>
+
+    <div class="d-flex flex-row justify-content-start md-form m-top-10px m-bottom-10px w-100-p">
+      <div class="mt-5p">
+        <b>Link UPC Topics</b>
+      </div>
+      <div class="ml-10p">
+        <button class="btn btn-sm btn-secondary cta-btn" type="button" mdbWavesEffect
+                (click)="openModalAddUPCTemplate($event)"
+                mdbTooltip="Link UPC Topics" placement="left">
+          <mdb-icon fas [icon]="'fas fa-plus'" aria-hidden="true"></mdb-icon>
+        </button>
+      </div>
+    </div>
+
+    <div class="d-flex flex-column justify-content-start m-top-10px m-bottom-10px w-100-p">
+      <table class="table">
+        <thead *ngIf="selectedUpdateDTO.afTopicUpcSectionDTOList.length>0">
+        <tr>
+          <th>UPC Template Name</th>
+          <th>UPC Section</th>
+          <th>Status</th>
+          <th class="text-align-center">Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        <ng-container *ngFor="let topicUpcSection of selectedUpdateDTO.afTopicUpcSectionDTOList">
+          <tr *ngIf="topicUpcSection.status==statusConst.ACT">
+            <td>{{topicUpcSection.upcTemplateName}}</td>
+            <td>{{topicUpcSection.upcSectionName}}</td>
+            <td>
+            <span
+              [class.color-green]="topicUpcSection.status === statusConst.ACT"
+              [class.color-red]="topicUpcSection.status === statusConst.INA"
+            >
+                  {{status[topicUpcSection.status]}}
+                </span>
+            </td>
+            <td class="text-align-center">
+              <i class="fas fa-trash-alt text-black-50 input-size color-red" aria-hidden="true"
+                 mdbTooltip="Delete" placement="top"
+                 (click)="remove(topicUpcSection)">
+              </i>
+            </td>
+          </tr>
+        </ng-container>
+        </tbody>
+      </table>
+    </div>
+
+    <ng-container *ngIf="pageType=='edit'" class="w-100-p">
+      <app-trackeble-info class="w-100-p"
+                          [updateDTO]="selectedUpdateDTO">
+      </app-trackeble-info>
+    </ng-container>
+  </form>
+</div>
+<a class="download-link" #link></a>

@@ -1,0 +1,93 @@
+<form [formGroup]="cribDetailsGroup">
+  <div class="d-flex flex-row ">
+    <p class="w-15">Crib Status</p>
+    <p>:</p>
+    <div class="w-85 data-lbl">
+      <table class="width-100 custom-bordered-table ">
+        <thead class="text-align-center">
+        <tr>
+          <th class="width-30">Borrower</th>
+          <th class="width-30">Status</th>
+          <th class="width-15">Report Date</th>
+          <th>Remark</th>
+          <th>
+            <button class="btn btn-sm btn-secondary cta-btn" type="button" mdbWavesEffect
+                    (click)="addCribDetailFromRow.emit()"
+                    mdbTooltip="Add New Record" placement="left">
+              <mdb-icon fas icon="fas fa-plus" aria-hidden="true"></mdb-icon>
+            </button>
+          </th>
+        </tr>
+        </thead>
+        <tbody formArrayName="bccCustomerCribDetailDTOs">
+        <tr *ngFor="let item of cribDetailsGroup.get('bccCustomerCribDetailDTOs')['controls'];
+           let i = index;"
+            [formGroupName]="i"
+        >
+          <td>
+            <textarea
+              mdbValidate
+              type="text"
+              id="borrower"
+              formControlName="borrower"
+              class="form-control"
+              maxlength="4000"
+              appTextAreaAutoHeight
+              placeholder="..."
+              mdbInput>
+            </textarea>
+          </td>
+          <td>
+            <mdb-select
+              [options]="optionsCribStatusSelect"
+              formControlName="cribStatus"
+              required="cribStatus"
+              id="cribStatus"
+              placeholder="CRIB Status"></mdb-select>
+          </td>
+          <td>
+            <mdb-date-picker class="form-control custom-date-input"
+                             id="reportDateStr"
+                             required="reportDateStr"
+                             formControlName="reportDateStr"
+                             [options]="myDatePickerOptions"
+                             [inline]="true"
+                             inlineIcon=""
+            ></mdb-date-picker>
+          </td>
+          <td>
+                <textarea
+                  mdbValidate
+                  type="text"
+                  id="remark"
+                  formControlName="remark"
+                  class="form-control"
+                  maxlength="4000"
+                  appTextAreaAutoHeight
+                  placeholder="..."
+                  mdbInput>
+                </textarea>
+          <td class="w-5">
+            <div class="d-flex flex-row justify-content-end">
+              <ng-container *ngIf="item.value.bccCustomerCribDetailsID">
+                <button class="btn btn-sm cta-btn delete-button" type="button" mdbWavesEffect
+                        (click)="removeCribDetail(item)"
+                        mdbTooltip="Remove" placement="left">
+                  <mdb-icon fas icon="trash-alt" aria-hidden="true"></mdb-icon>
+                </button>
+              </ng-container>
+              <ng-container *ngIf="!item.value.bccCustomerCribDetailsID">
+                <button class="btn btn-sm cta-btn delete-button" type="button" mdbWavesEffect
+                        (click)="removeCribDetailRow.emit(i)"
+                        mdbTooltip="Remove" placement="left">
+                  <mdb-icon fas icon="trash-alt" aria-hidden="true"></mdb-icon>
+                </button>
+              </ng-container>
+            </div>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</form>

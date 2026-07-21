@@ -1,0 +1,44 @@
+<div class="modal-header modal-topic flex-center">
+    <button type="button" class="close pull-right" aria-label="Close" (click)="onClose()">
+        <span aria-hidden="true">×</span>
+    </button>
+    <h4 class="modal-title w-100 heading-align" id="myModalLabel" style="font-size: 1rem ; font-weight: bold">
+        Add / Edit Deviation
+    </h4>
+</div>
+<div class="modal-body modal-detail form-margin mt-0 px-3"
+    style="min-height: 20vh; max-height: 80vh; overflow-y: auto;">
+    <div class="row d-flex flex-row mx-0 my-3">
+
+        <div class="col-md-6" *ngIf="typeOptions.length > 0">
+            <div class="md-form">
+                <mdb-select [allowClear]="true" [options]="typeOptions" [(ngModel)]="formData.deviationType"
+                    class="form-control py-0" label="Deviation Type">
+                </mdb-select>
+                <mdb-error *ngIf="errors.deviationType">{{errors.deviationType}}</mdb-error>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="md-form">
+                <mdb-select [allowClear]="true" [options]="statusOptions" [(ngModel)]="formData.status"
+                    class="form-control py-0" label="Status">
+                </mdb-select>
+            </div>
+        </div>
+        <div class="col-md-12 my-2">
+            <div class="md-form">
+                <input class="form-control" id="type" [(ngModel)]="formData.description" type="text" mdbInput
+                    style="margin-top: 2px;">
+                <label for="description">Description *</label>
+                <mdb-error *ngIf="errors.description">{{errors.description}}</mdb-error>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal-footer modal-end pt-0 border border-top-1">
+    <button type="button" mdbBtn color="info" size="sm" class="waves-light" mdbWavesEffect (click)="handleSave()"
+        [disabled]="!isSaveEnabled()">
+        Save
+    </button>
+</div>

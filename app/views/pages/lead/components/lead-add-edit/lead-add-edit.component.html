@@ -1,0 +1,687 @@
+<div mdbSticky class="d-flex flex-row justify-content-between page-header">
+  <div class="d-flex flex-row align-items-center">
+    <a appGoBack class="d-flex flex-row align-items-center">
+      <i class="fas fa-angle-left header-icon-back"></i>
+    </a>
+    <h5><i class="fas fa-cog header-icon"></i>
+      <span *ngIf="pageType=='new'">Create Lead</span>
+      <span *ngIf="pageType=='edit'">View Lead</span>
+    </h5>
+  </div>
+
+  <div class="d-flex  justify-content-end">
+
+    <ng-container *appHasAnyPrivilege="masterDataPrivilege.ICAS_WEB_AUDIT_VIEW">
+      <button (click)="onViewLeadAuditClick(this.leadUpdateDTO.leadID)" mdbBtn type="button"
+        class="medium-button btn btn-info btn-sm" color="secondary" mdbWavesEffect *ngIf="pageType=='edit'">View Lead
+        Audit
+      </button>
+    </ng-container>
+
+    <!--    This is for the Agent to start paper-->
+    <ng-container *ngIf="showAgentStartPaperBtn()">
+      <ng-container *appBlockedByUPMs>
+        <button class="medium-button btn btn-success btn-sm" mdbBtn type="button" (click)="agentConfirmStartPaper()"
+          mdbWavesEffect>
+          <span>START PAPER</span>
+        </button>
+      </ng-container>
+    </ng-container>
+
+    <!--    This is for the supervisor to start paper-->
+    <ng-container *ngIf="showCASStartPaperBtn()">
+      <ng-container *appBlockedByUPMs>
+        <button class="medium-button btn btn-success btn-sm" mdbBtn type="button"
+          (click)="supervisorConfirmStartPaper()" mdbWavesEffect>
+          <span>START PAPER</span>
+        </button>
+      </ng-container>
+    </ng-container>
+
+
+    <ng-container *ngIf="showSubmitExternalLead()">
+      <button (click)="confirmExternalLeadAssign()" mdbBtn [disabled]="!isValid() || !isActiveFacilitiesAvailable()"
+        type="button" class="medium-button btn btn-outline-success btn-sm" mdbWavesEffect>
+        <span>SUBMIT</span>
+      </button>
+    </ng-container>
+
+
+    <ng-container *appHasAnyPrivilege="masterDataPrivilege.ICAS_SETTINGS_LEAD_ADD">
+      <button *ngIf="pageType=='new'" (click)="saveUpdate() " mdbBtn type="button"
+        class="medium-button btn btn-info btn-sm" [disabled]=" !isValid() || !isActiveFacilitiesAvailable()"
+        mdbWavesEffect>
+        <span>SAVE</span>
+      </button>
+    </ng-container>
+
+    <ng-container *appHasAnyPrivilege="masterDataPrivilege.ICAS_SETTINGS_EXTERNAL_LEAD_APPROVE_DECLINE">
+      <ng-container *ngIf="leadUpdateDTO.isExternalLead()">
+        <ng-container *ngIf="showExternalLeadActionButtons()">
+          <button class="medium-button btn btn-secondary btn-sm" mdbBtn type="button"
+            (click)="approveLeadConfirmation(false)" mdbWavesEffect>
+            <span>APPROVE</span>
+          </button>
+
+          <button class="medium-button btn btn-warning btn-sm" mdbBtn type="button" (click)="returnLeadConfirmation()"
+            mdbWavesEffect>
+            <span>RETURN</span>
+          </button>
+
+          <button class="medium-button btn btn-primary btn-sm" mdbBtn type="button" (click)="declineLeadConfirmation()"
+            mdbWavesEffect>
+            <span>DECLINE</span>
+          </button>
+        </ng-container>
+      </ng-container>
+    </ng-container>
+
+    <ng-container *ngIf="leadUpdateDTO.isInternalLead()">
+      <ng-container *ngIf="showInternalLeadActionButtons()">
+        <ng-container *appHasAnyPrivilege="masterDataPrivilege.ICAS_SETTINGS_INTERNAL_LEAD_ACCEPT">
+          <button mdbBtn type="button" (click)="returnLeadConfirmation()"
+            class="action-button-padding btn-outline-info btn-sm" outline="true" data-toggle="tooltip"
+            data-placement="bottom" [title]='"Back to a Initial Level"' mdbWavesEffect>
+            <span>RETURN</span>
+          </button>
+        </ng-container>
+
+        <ng-container *appHasAnyPrivilege="masterDataPrivilege.ICAS_SETTINGS_INTERNAL_LEAD_ACCEPT">
+          <button class="medium-button btn btn-secondary btn-sm" mdbBtn type="button" (click)="acceptLeadConfirmation()"
+            mdbWavesEffect>
+            <span>ACCEPT</span>
+          </button>
+        </ng-container>
+
+        <ng-container *appHasAnyPrivilege="masterDataPrivilege.ICAS_SETTINGS_INTERNAL_LEAD_DECLINE">
+          <button class="medium-button btn btn-primary btn-sm" mdbBtn type="button" (click)="declineLeadConfirmation()"
+            mdbWavesEffect>
+            <span>DECLINE</span>
+          </button>
+        </ng-container>
+      </ng-container>
+    </ng-container>
+
+    <ng-container *appHasAnyPrivilege="masterDataPrivilege.ICAS_SETTINGS_LEAD_EDIT">
+      <ng-container *ngIf="isActionsActivated()">
+        <button *ngIf="pageType=='edit'" (click)="saveUpdate()" class="medium-button btn btn-info btn-sm" mdbBtn
+          type="button" [disabled]="!isValid() || !isActiveFacilitiesAvailable()" mdbWavesEffect>
+          <span>SAVE</span>
+        </button>
+      </ng-container>
+
+      <ng-container *ngIf="showInternalLeadSubmitBtn()">
+        <button *ngIf="pageType=='edit'" (click)="confirmInternalLeadAssign()" class="medium-button btn btn-info btn-sm"
+          mdbBtn type="button" [disabled]="!isValid() || !isActiveFacilitiesAvailable()" mdbWavesEffect>
+          <span>SUBMIT</span>
+        </button>
+      </ng-container>
+    </ng-container>
+  </div>
+</div>
+
+<div class="page-search-section section d-flex p-4 flex-column justify-content-start align-items-start">
+
+  <div *ngIf="pageType=='edit'" class="d-flex w-100-p p-2">
+
+    <div>
+      <div>
+        <label class="facility-data-lbl ml-0 pl-0 font-weight-semi-bold">Lead Reference ID : </label>
+        <span class="mr-4 color-primary font-weight-semi-bold">{{leadUpdateDTO.leadRefNumber }}</span>
+      </div>
+    </div>
+
+    <div>
+      <div>
+        <label class="facility-data-lbl font-weight-semi-bold">Created User : </label>
+        <span class="mr-4 color-primary">{{leadUpdateDTO.createdBy}}</span>
+      </div>
+    </div>
+
+    <div>
+      <div *ngIf="this.leadUpdateDTO.externalAppDescription || this.leadUpdateDTO.externalAppRefNumber ">
+        <label class="facility-data-lbl ml-0 pl-0 font-weight-semi-bold">Lead External App: </label>
+        <span class="mr-4 color-primary font-weight-semi-bold"> {{this.leadUpdateDTO.externalAppDescription}} - Ref
+          :{{this.leadUpdateDTO.externalAppRefNumber}}</span>
+      </div>
+    </div>
+
+    <div style="width: 20%">
+      <!-- <div><label class="facility-data-lbl font-weight-semi-bold" style="margin-left: 5%">Lead Status : </label>
+        <span
+          [class.color-red]="leadUpdateDTO.leadStatus === leadStatusConst.PENDING"
+          [class.color-primary]="leadUpdateDTO.leadStatus === leadStatusConst.SUBMITTED || leadUpdateDTO.leadStatus === leadStatusConst.PAPER_CREATED"
+          [class.color-green]="leadUpdateDTO.leadStatus === leadStatusConst.ACCEPTED || leadUpdateDTO.leadStatus === leadStatusConst.APPROVED"
+        >
+          {{leadStatus[leadUpdateDTO.leadStatus]}}
+         </span>
+       </div>-->
+    </div>
+  </div>
+
+  <form class="d-flex flex-column justify-content-start align-items-start w-100-p" [formGroup]="componentForm">
+    <div class="d-flex w-25-p justify-content-between p-1">
+      <input type="radio" class="form-check-input" formControlName="leadCreationType" id="leadCreationTypePersonal"
+        [value]="leadCreationTypeConst.PERSONAL" name="leadCreationType">
+      <label class="form-check-label" for="leadCreationTypePersonal">Personal</label>
+      <input type="radio" class="form-check-input" id="leadCreationTypeBusiness"
+        [value]="leadCreationTypeConst.BUSINESS" formControlName="leadCreationType" name="leadCreationType">
+      <label class="form-check-label" for="leadCreationTypeBusiness">Business</label>
+      <input type="radio" class="form-check-input" id="leadCreationTypeCorporate"
+        [value]="leadCreationTypeConst.CORPORATE" formControlName="leadCreationType" name="leadCreationType">
+      <label class="form-check-label" for="leadCreationTypeCorporate">Corporate</label>
+    </div>
+    <div class="d-flex w-100-p p-2">
+      <div class="md-form flex-fill">
+        <input mdbValidate type="text" id="leadName" maxlength="200" formControlName="leadName" class="form-control"
+          mdbInput>
+        <label for="leadName">Lead Name *</label>
+        <mdb-error *ngIf="formErrors.leadName.required">Lead Name required</mdb-error>
+      </div>
+    </div>
+
+    <div class="d-flex justify-content-between w-100-p p-2">
+      <div class="md-form w-49-p">
+        <input mdbValidate type="text" id="name" maxlength="200" formControlName="name" class="form-control" mdbInput>
+        <ng-container *ngIf="this.leadUpdateDTO.leadCreationType==leadCreationTypeConst.PERSONAL ; else business ">
+          <label for="name">Personal Name *</label>
+        </ng-container>
+        <ng-template #business>
+          <label for="name">Business Name *</label>
+        </ng-template>
+
+
+        <!--          <ng-container *appHasAnyPrivilege="masterDataPrivilege.ICAS_SETTINGS_LEAD_EDIT">-->
+        <!--            &lt;!&ndash;            <span class="input-field-icon">&ndash;&gt;-->
+        <!--            &lt;!&ndash;              <a *ngIf="!hasCustomer()">&ndash;&gt;-->
+        <!--            &lt;!&ndash;                <i mdbTooltip="Add Customer" placement="top"&ndash;&gt;-->
+        <!--            &lt;!&ndash;                   (click)="openModalCustomerSearch()"&ndash;&gt;-->
+        <!--            &lt;!&ndash;                   class="fas fa-plus color-primary icon-button ml-2" aria-hidden="true"></i>&ndash;&gt;-->
+        <!--            &lt;!&ndash;              </a>&ndash;&gt;-->
+        <!--            &lt;!&ndash;              <a *ngIf="hasCustomer()">&ndash;&gt;-->
+        <!--            &lt;!&ndash;                <i mdbTooltip="Edit Customer" placement="top"&ndash;&gt;-->
+        <!--            &lt;!&ndash;                   (click)="openModalCustomerSearch()"&ndash;&gt;-->
+        <!--            &lt;!&ndash;                   class="fas fa-user-edit color-primary icon-button ml-2" aria-hidden="true"></i>&ndash;&gt;-->
+        <!--            &lt;!&ndash;              </a>&ndash;&gt;-->
+        <!--            &lt;!&ndash;            </span>&ndash;&gt;-->
+        <!--          </ng-container>-->
+
+        <mdb-error *ngIf="formErrors.fullName.required">Required</mdb-error>
+      </div>
+
+      <div class="md-form w-49-p">
+        <input mdbValidate type="text" id="address" maxlength="200" formControlName="address" class="form-control"
+          mdbInput>
+        <label for="address">Address *</label>
+      </div>
+    </div>
+
+
+    <div class="d-flex w-100-p justify-content-between p-2">
+      <div class="md-form w-49-p">
+        <ng-container *ngIf="!isFormDisabled ; else branchNameDisabled">
+          <input mdbValidate formControlName="branchName" type="text" class="form-control" [mdbAutoCompleter]="auto"
+            placeholder="Preferred Branch *" />
+          <mdb-auto-completer #auto="mdbAutoCompleter" [clearButton]="!isFormDisabled">
+            <ng-container *ngIf="!isFormDisabled">
+              <ng-container *ngFor="let option of results | async">
+                <mdb-option [value]="option.branchName">
+                  {{ option.branchName }}
+                </mdb-option>
+              </ng-container>
+            </ng-container>
+          </mdb-auto-completer>
+          <mdb-error *ngIf="formErrors.branchName ? formErrors.branchName.required : false">Enter your branch name
+          </mdb-error>
+        </ng-container>
+        <ng-template #branchNameDisabled>
+          <input mdbValidate type="text" id="disabledInputField" class="form-control" disabled="true"
+            value="{{this.leadUpdateDTO.branchName}} - {{this.leadUpdateDTO.branchCode}}" mdbInput>
+          <label for="disabledInputField">Branch Name</label>
+        </ng-template>
+      </div>
+      <div class="md-form w-49-p">
+        <input mdbValidate type="text" id="accountNumber" maxlength="200" formControlName="accountNumber"
+          class="form-control" mdbInput>
+        <label for="accountNumber">Account Number</label>
+      </div>
+    </div>
+
+    <div class="d-flex w-100-p justify-content-between p-2">
+      <div class="md-form w-49-p">
+        <input mdbValidate type="email" id="email" maxlength="200" formControlName="email" class="form-control"
+          mdbInput>
+        <label for="email">Email</label>
+      </div>
+
+      <div class="md-form w-49-p">
+        <input mdbValidate type="tel" id="mobileNo" maxlength="20" formControlName="mobileNo" class="form-control"
+          mdbInput>
+        <label for="mobileNo">Mobile Number *</label>
+        <mdb-error *ngIf="formErrors.mobileNo.required">Mobile Number required</mdb-error>
+        <mdb-error *ngIf="formErrors.mobileNo.pattern">Please, Enter 10 digit Mobile Number.</mdb-error>
+      </div>
+    </div>
+
+    <div class="d-flex w-100-p p-2 justify-content-between">
+      <div class="md-form w-49-p">
+        <mdb-select #opt [options]="identityOptionSelect" (ngModelChange)="onIDTypeChange(opt.value)"
+          formControlName="identificationType" id="identificationType" placeholder="Identification Type"></mdb-select>
+        <label for="identificationType">Identification Type *</label>
+        <mdb-error *ngIf="formErrors.identificationType.required">Identification Type required</mdb-error>
+      </div>
+
+      <div class="md-form w-49-p">
+        <input mdbValidate type="text" id="identificationNumber" maxlength="200" formControlName="identificationNumber"
+          class="form-control" mdbInput>
+        <label for="identificationNumber">{{identificationNumberLabel}} *</label>
+        <mdb-error *ngIf="formErrors.identificationNumber.required">required</mdb-error>
+        <mdb-error *ngIf="formErrors.identificationNumber.invalidNic">Invalid NIC</mdb-error>
+        <mdb-error *ngIf="formErrors.identificationNumber.invalidBrn">Invalid Business Registration Number</mdb-error>
+        <mdb-error *ngIf="formErrors.identificationNumber.invalidPassport">Invalid Passport Number</mdb-error>
+
+      </div>
+    </div>
+
+    <div class="d-flex w-100-p justify-content-between p-2"
+      *ngIf="this.leadUpdateDTO.leadCreationType==leadCreationTypeConst.PERSONAL">
+
+      <div class="md-form w-49-p">
+        <mdb-select [options]="optionsCivilStatusSelect" [formControl]="this.componentForm.controls['civilStatus']"
+          id="civilStatus" placeholder="Select One"></mdb-select>
+        <label for="civilStatus">Civil Status *</label>
+        <mdb-error *ngIf="formErrors.civilStatus.required">required</mdb-error>
+      </div>
+
+
+      <div class="md-form w-49-p">
+        <mdb-date-picker class="form-control" id="dateOfBirthStr" formControlName="dateOfBirthStr"
+          [options]="myDatePickerOptionsForBirthDay" [inline]="true" label="Date of Birth *"></mdb-date-picker>
+        <mdb-error *ngIf="formErrors.dateOfBirthStr.required">Required</mdb-error>
+      </div>
+    </div>
+
+    <div class="d-flex w-100-p justify-content-between p-2">
+      <ng-container
+        *ngIf="(this.leadUpdateDTO.leadCreationType==leadCreationTypeConst.BUSINESS) || (this.leadUpdateDTO.leadCreationType==leadCreationTypeConst.CORPORATE)">
+        <div class="md-form w-49-p">
+          <input mdbValidate type="text" id="contactPerson" maxlength="200" formControlName="contactPerson"
+            class="form-control" mdbInput>
+          <label for="contactPerson">Contact Person *</label>
+          <mdb-error *ngIf="formErrors.contactPerson.required">Required</mdb-error>
+        </div>
+
+        <div class="md-form w-49-p">
+          <input mdbValidate type="text" id="designation" maxlength="200" formControlName="designation"
+            class="form-control" mdbInput>
+          <label for="designation">Designation</label>
+        </div>
+      </ng-container>
+    </div>
+
+
+    <div class="d-flex w-100-p p-2 justify-content-between">
+      <ng-container
+        *ngIf="(this.leadUpdateDTO.leadCreationType==leadCreationTypeConst.BUSINESS) || (this.leadUpdateDTO.leadCreationType==leadCreationTypeConst.CORPORATE)">
+        <div class="md-form w-49-p">
+          <input mdbValidate type="text" id="typeOfBusiness" maxlength="200" formControlName="typeOfBusiness"
+            class="form-control" mdbInput>
+          <label for="name">Type Of Business *</label>
+          <mdb-error *ngIf="formErrors.typeOfBusiness.required">Required</mdb-error>
+        </div>
+      </ng-container>
+    </div>
+
+
+    <ng-container *ngIf="pageType=='edit'">
+
+      <app-personal-customer-stat-wrapper [FormData]="leadUpdateDTO" [FormType]="'LEAD'" class="w-100 p-3">
+      </app-personal-customer-stat-wrapper>
+
+    </ng-container>
+
+
+    <div class="d-flex w-23-p justify-content-between p-1">
+      <input type="radio" class="form-check-input" formControlName="leadFsType" id="leadFsTypeOther"
+        [value]="leadFsTypeConst.OTHER" name="leadFsType">
+      <label class="form-check-label" for="leadFsTypeOther">OTHER</label>
+      <input type="radio" class="form-check-input" formControlName="leadFsType" id="leadFsTypeLease"
+        [value]="leadFsTypeConst.LEASE" name="leadFsType">
+      <label class="form-check-label" for="leadFsTypeLease">LEASE</label>
+      <input type="radio" class="form-check-input" id="leadFsTypeOneOff" [value]="leadFsTypeConst.ONEOFF"
+        formControlName="leadFsType" name="leadFsType">
+      <label class="form-check-label" for="leadFsTypeOneOff">ONE-OFF</label>
+      <input type="radio" class="form-check-input" id="leadFsTypeTod" [value]="leadFsTypeConst.TOD"
+        formControlName="leadFsType" name="leadFsType">
+      <label class="form-check-label" for="leadFsTypeTod">TOD</label>
+    </div>
+
+    <div class="d-flex w-100-p p-2">
+      <mdb-checkbox formControlName="isExistingCustomer">Existing Customer</mdb-checkbox>
+    </div>
+
+    <!--   <ng-container *ngIf="pageType=='edit'">
+        <div class="w-100-p">
+          <app-tabs class="w-100-p">
+            <app-tab [tabTitle]="'Bank Facilities'">
+              <div class="p-2">
+                <ng-container>
+                  <app-personal-detail-bank
+                    [FormData]="leadUpdateDTO"
+                    [FormType]="'LEAD'"
+                    class="w-100-p">
+                  </app-personal-detail-bank>
+                </ng-container>
+                <ng-container>
+                  <app-personal-detail-facility
+                    [FormData]="leadUpdateDTO"
+                    [FormType]="'LEAD'"
+                    class="w-100-p">
+                  </app-personal-detail-facility>
+                </ng-container>
+              </div>
+            </app-tab>
+            <app-tab [tabTitle]="'Customer Statistics'">
+              <div class="p-2">
+                <hr style="padding: unset !important;">
+                <app-personal-customer-stat-wrapper
+                  [FormData]="leadUpdateDTO"
+                  [FormType]="'LEAD'"
+                  class="w-100-p">
+                </app-personal-customer-stat-wrapper>
+              </div>
+            </app-tab>
+          </app-tabs>
+        </div>
+      </ng-container>-->
+
+
+    <!-- <div class="md-form m-top-10px p-2 m-bottom-10px flex-fill">
+      <h5 class="font-weight-semi-bold inline-item mt-2 mr-2">
+        View CRIB Details *
+        <ng-container *ngIf="isActionsActivated()">
+          <i mdbTooltip="View CRIB Details" placement="top"
+              (click)="viewCustomerCribDetails()"
+             class="fas fa-plus color-primary icon-button ml-2" aria-hidden="true"></i>
+        </ng-container>
+      </h5>
+    </div>-->
+
+    <div class="md-form m-top-10px p-2 m-bottom-10px flex-fill">
+      <h5 class="font-weight-semi-bold inline-item mt-2 mr-2">
+        Lead Facilities *
+        <ng-container *ngIf="isActionsActivated()">
+          <i mdbTooltip="Add Lead Facility" placement="top" (click)="openModalLeadFacility()"
+            class="fas fa-plus color-primary icon-button ml-2" aria-hidden="true"></i>
+        </ng-container>
+      </h5>
+    </div>
+
+    <ng-container *ngIf="dataSource.length ==0">
+      <p class="pl-2">No Lead Facilities Added</p>
+    </ng-container>
+
+    <ng-container *ngIf="dataSource.length !=0">
+      <div class="table-responsive">
+        <table class="table">
+          <thead>
+            <tr>
+              <ng-container *ngFor="let col of tableColumns">
+                <th scope="col">{{col}}</th>
+              </ng-container>
+            </tr>
+          </thead>
+          <tbody>
+            <ng-container *ngFor="let item of dataSource">
+              <ng-container *ngIf="item.status === statusConst.ACT">
+                <tr class="table-clickable-row">
+                  <td>{{item.facilityTemplateName}}</td>
+                  <td>{{item.creditFacilityType}}</td>
+                  <td>{{item.facilityCurrency}} {{getFormattedValue(item.amount)}}</td>
+                  <td>{{item.description}}</td>
+                  <td>
+                    <span [class.color-green]="item.status === statusConst.ACT"
+                      [class.color-red]="item.status === statusConst.INA">
+                      {{status[item.status]}}
+                    </span>
+                  </td>
+                  <td>
+                    <ng-container *ngIf="isActionsActivated()">
+                      <mdb-icon class="color-red" (click)="onChangeStatus(item)" fas icon="trash-alt"
+                        aria-hidden="true">
+                      </mdb-icon>
+                    </ng-container>
+                  </td>
+                </tr>
+              </ng-container>
+            </ng-container>
+          </tbody>
+        </table>
+      </div>
+    </ng-container>
+    <ng-container *ngIf="pageType=='edit'">
+      <div class="md-form m-top-10px p-2 m-bottom-10px flex-fill">
+
+        <h5 class="font-weight-semi-bold inline-item mt-2 mr-2">
+          Lead Document(s)
+          <ng-container *ngIf="isActionsActivated()">
+            <i mdbTooltip="Add Lead Document" placement="top" (click)="openModalLeadDocument()"
+              class="fas fa-plus color-primary icon-button ml-2" aria-hidden="true"></i>
+          </ng-container>
+        </h5>
+      </div>
+
+      <ng-container *ngIf="dataSourceForLeadDocument.length ==0">
+        <p class="pl-2">No Lead Document(s) Added</p>
+      </ng-container>
+
+      <div *ngIf="pageType=='edit'" class="table-responsive">
+        <table class="table">
+          <thead>
+            <tr>
+              <ng-container *ngFor="let col of tableColumnsForLeadDocument">
+                <th scope="col">{{col}}</th>
+              </ng-container>
+            </tr>
+          </thead>
+          <tbody>
+            <ng-container *ngFor="let item of dataSourceForLeadDocument">
+              <ng-container *ngIf="item.status === statusConst.ACT">
+                <tr class="table-clickable-row">
+                  <td>{{item.supportingDocDTO.documentName}}</td>
+                  <td>{{item.remark}}</td>
+                  <td>
+                    <span [class.color-green]="item.status === statusConst.ACT"
+                      [class.color-red]="item.status === statusConst.INA">
+                      {{status[item.status]}}
+                    </span>
+
+                  </td>
+                  <td>
+                    <ng-container *ngIf="isCheckedPdf(item)">
+                      <i (click)="onDownLoadDoc(item)" class="fas fa-eye icon-button mr-3" aria-hidden="true"
+                        mdbTooltip="View Lead Doc"></i>
+                    </ng-container>
+                    <i (click)="downloadDocument(item)" class="fa fa-download icon-button mr-3" aria-hidden="true"
+                      mdbTooltip="Download Lead Doc"></i>
+                    <ng-container *ngIf="isActionsActivated()">
+                      <mdb-icon class="color-red" (click)="onChangeStatus(item)" fas icon="trash-alt" aria-hidden="true"
+                        mdbTooltip="Delete Lead Doc">
+                      </mdb-icon>
+                    </ng-container>
+                  </td>
+                </tr>
+              </ng-container>
+            </ng-container>
+          </tbody>
+        </table>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="pageType=='edit'">
+      <div class="md-form m-top-10px p-2 m-bottom-10px flex-fill">
+
+        <h5 class="font-weight-semi-bold inline-item mt-2 mr-2">
+          Comment(s)
+          <ng-container *ngIf="isActionsActivated()">
+            <i mdbTooltip="Add Comment" placement="top" (click)="saveOrUpdateComment($event)"
+              class="fas fa-plus color-primary icon-button ml-2" aria-hidden="true"></i>
+          </ng-container>
+        </h5>
+      </div>
+
+      <div class="d-flex flex-column justify-content-center w-100-p">
+        <ng-container *ngIf="comments.length>0; else noData">
+          <app-common-user-comment [comments]="comments"
+            [modifiedDateStr]="this.leadUpdateDTO.modifiedDateStr ? this.leadUpdateDTO.modifiedDateStr : this.leadUpdateDTO.createdDateStr"
+            [branchList]="allBranches" [isAbleToAddEdit]="true" (updateComment)="saveOrUpdateComment($event)">
+          </app-common-user-comment>
+        </ng-container>
+
+        <ng-template #noData>
+          <table class="table">
+            <tr>
+              <th class="text-align-center">
+                <p class="no-data-message">
+                  No Comments.
+                </p>
+              </th>
+            </tr>
+          </table>
+        </ng-template>
+      </div>
+
+      <!-- <ng-container *ngIf="dataSourceForLeadDocument.length ==0">
+         <p class="pl-2">No Comment(s) Added</p>
+       </ng-container>-->
+
+      <!--<div *ngIf="pageType=='edit'" class="table-responsive">
+         <table class="table">
+           <thead>
+           <tr>
+             <ng-container *ngFor="let col of tableColumnsForLeadDocument">
+               <th scope="col">{{col}}</th>
+             </ng-container>
+           </tr>
+           </thead>
+           <tbody>
+           <ng-container *ngFor="let item of dataSourceForLeadDocument">
+             <ng-container *ngIf="item.status === statusConst.ACT">
+               <tr class="table-clickable-row">
+                 <td>{{item.supportingDocDTO.documentName}}</td>
+                 <td>{{item.remark}}</td>
+                 <td>
+              <span
+                [class.color-green]="item.status === statusConst.ACT"
+                [class.color-red]="item.status === statusConst.INA"
+              >
+                  {{status[item.status]}}
+                </span>
+
+                 </td>
+                 <td>
+                   <i
+                     (click)="onDownLoadDoc(item)"
+                     class="fas fa-eye icon-button mr-3" aria-hidden="true"
+                     mdbTooltip="View Lead Doc"></i>
+                   <ng-container *ngIf="isActionsActivated()">
+                     <mdb-icon class="color-red"
+                               (click)="onChangeStatus(item)"
+                               fas icon="trash-alt"
+                               aria-hidden="true"
+                               mdbTooltip="Delete Lead Doc">
+                     </mdb-icon>
+                   </ng-container>
+                 </td>
+               </tr>
+             </ng-container>
+           </ng-container>
+           </tbody>
+         </table>
+       </div>-->
+    </ng-container>
+
+
+
+    <!--    <ng-container *ngIf="!leadUpdateDTO.externalLead">-->
+    <!--      <ng-container *ngIf="(pageType=='edit') && !(this.leadUpdateDTO.assignUserID == '')">-->
+    <!--        <div class="md-form m-top-10px p-2 m-bottom-10px flex-fill">-->
+    <!--          <p-->
+    <!--            class="font-weight-bold color-green m-0 p-0"-->
+    <!--            *ngIf="(pageType=='edit') && !(this.leadUpdateDTO.assignUserID == '')"-->
+    <!--          >Assigned Lead-->
+    <!--            <ng-container *appHasAnyPrivilege="masterDataPrivilege.ICAS_SETTINGS_LEAD_EDIT">-->
+    <!--              <i mdbTooltip="Un Assign" placement="top"-->
+    <!--                 (click)="unAssign(this.leadUpdateDTO.leadID)"-->
+    <!--                 class="fas fa-user-times color-red icon-button ml-2" aria-hidden="true"></i>-->
+    <!--            </ng-container>-->
+    <!--          </p>-->
+    <!--        </div>-->
+    <!--      </ng-container>-->
+
+    <!--      <ng-container *ngIf="(pageType=='edit') && (this.leadUpdateDTO.assignUserID == '')">-->
+    <!--        <div class="md-form m-top-10px p-2 m-bottom-10px flex-fill">-->
+    <!--          <p-->
+    <!--            class="font-weight-bold color-red m-0 p-0"-->
+    <!--            *ngIf="(pageType=='edit') && (this.leadUpdateDTO.assignUserID == '')"-->
+    <!--          >Un Assigned-->
+
+    <!--            <i mdbTooltip="Assign to Myself" placement="top"-->
+    <!--               (click)="Assign(this.leadUpdateDTO.leadID)"-->
+    <!--               class="fas fa-user-check color-red icon-button ml-2" aria-hidden="true"></i>-->
+    <!--          </p>-->
+
+    <!--        </div>-->
+    <!--      </ng-container>-->
+
+    <!--    </ng-container>-->
+
+    <div *ngIf="pageType=='edit' && leadUpdateDTO.leadActionDTOList.length>0" class="table-responsive">
+      <div class="md-form m-top-10px p-2 m-bottom-10px flex-fill">
+        <h5 class="font-weight-semi-bold inline-item mt-2 mr-2">
+          User Action Log
+        </h5>
+      </div>
+      <table class="table">
+        <thead>
+          <tr>
+            <ng-container *ngFor="let col of tableColumnSForLeadAction">
+              <th scope="col">{{col}}</th>
+            </ng-container>
+          </tr>
+        </thead>
+        <tbody>
+          <ng-container *ngFor="let item of leadUpdateDTO.leadActionDTOList">
+            <tr class="table-clickable-row">
+              <td>{{item.actionedByDisplayName ? item.actionedByDisplayName : '-'}}</td>
+              <td>{{item.action}}</td>
+              <td>{{item.actionedTimestampStr}}</td>
+              <td>
+                <pre class="custom-pre-tag">{{item.remark || ''}}</pre>
+              </td>
+            </tr>
+          </ng-container>
+          <ng-container *ngIf="this.leadUpdateDTO.leadStatus == this.leadStatusConst.PAPER_CREATED">
+            <tr>
+              <td colspan="2" class="proceed"><b>Paper Proceed on {{this.facilityPaperStatusHistory.createdDateStr}}
+                  with
+                  Reference {{this.facilityPaperStatusHistory.fpRefNumber}} </b></td>
+              <td></td>
+              <th>Paper Status</th>
+            </tr>
+            <ng-container *ngFor="let item of facilityPaperStatusHistory.leadFacilityPaperStatusDetailDTOS">
+              <tr class="table-clickable-row">
+                <td>{{item.updateBy ? item.updateBy : '-'}}</td>
+                <td>{{item.actionMessage}}</td>
+                <td>{{item.updateDate}}</td>
+                <td>{{facilityStatus[item.facilityPaperStatus]}}</td>
+              </tr>
+            </ng-container>
+          </ng-container>
+        </tbody>
+      </table>
+    </div>
+  </form>
+</div>
+
+<a class="download-link" #downloadLink></a>

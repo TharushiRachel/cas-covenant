@@ -1,0 +1,57 @@
+<form [formGroup]="finacleCustomerAddressForm">
+  <table class="width-100 ">
+    <tbody formArrayName="afCustomerAddressDTOList">
+
+    <ng-container *ngFor="let item of finacleCustomerAddressForm.get('afCustomerAddressDTOList')['controls'];
+           let i = index;"
+                  [formGroupName]="i">
+      <tr>
+        <td>
+          <div class="d-flex flex-row justify-content-between ">
+
+            <div class="md-form width-25 m-top-15px">
+              <span>{{addressType[item.value.addressType]}} address</span>
+            </div>
+
+            <div class="md-form width-25 m-top-12px">
+              <input mdbValidate
+                     type="text"
+                     id="'{{addressType[item.value.addressType]}}'+'address1+'"
+                     maxlength="200"
+                     formControlName="address1"
+                     class="form-control"
+                     mdbInput
+              >
+              <label for="'{{addressType[item.value.addressType]}}'+'address1+'">Line 01 </label>
+            </div>
+
+            <div class="md-form width-25 m-top-12px">
+              <input mdbValidate
+                     type="text"
+                     id="'{{addressType[item.value.addressType]}}'+'address2'"
+                     maxlength="200"
+                     formControlName="address2"
+                     class="form-control"
+                     mdbInput
+              >
+              <label for="'{{addressType[item.value.addressType]}}'+'address2'">Line 02 </label>
+            </div>
+
+            <div class="md-form width-25 m-top-12px">
+              <input mdbValidate
+                     type="text"
+                     id="'{{addressType[item.value.addressType]}}'+'city'"
+                     maxlength="200"
+                     formControlName="city"
+                     class="form-control"
+                     mdbInput
+              >
+              <label for="'{{addressType[item.value.addressType]}}'+'city'">City </label>
+            </div>
+          </div>
+        </td>
+      </tr>
+    </ng-container>
+    </tbody>
+  </table>
+</form>

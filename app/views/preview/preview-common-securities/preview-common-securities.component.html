@@ -1,0 +1,128 @@
+<table class="width-100" [class.preview-mode]="true">
+  <thead>
+    <tr>
+      <th scope="col" class="text-align-center common-security" style="padding-left: 24% !important;"> Common
+        Securities
+      </th>
+      <th scope="col" class="text-right">Amount</th>
+  </thead>
+  <tbody>
+    <ng-container *ngFor="let commonSecurity of commonFacilitySecurityList; let i =index">
+      <ng-container *ngIf="commonSecurity">
+        <tr>
+          <td colspan="2">
+            <hr class="">
+          </td>
+        </tr>
+        <tr id="{{commonSecurity.facilitySecurityID+commonSecurity.securityCode}}">
+          <th class="">
+            <b>{{commonSecurity.securityCode}}</b>
+          </th>
+          <th class="text-right">
+            <span *ngIf="isCommittee">{{commonSecurity.securityCurrency}}
+              {{getFormattedThreeDecimalValues(getMillionValue(commonSecurity.securityAmount))}}{{" "}}Mn</span>
+            <span *ngIf="!isCommittee">{{commonSecurity.securityCurrency}}
+              {{this.getFormattedValue(commonSecurity.securityAmount)}}</span>
+          </th>
+        </tr>
+
+        <tr>
+          <td><b></b></td>
+        </tr>
+        <tr>
+          <td colspan="2">
+            <pre class="custom-pre-tag-with-spaces">{{commonSecurity.securityDetail}}</pre>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="2" style="margin: unset; padding: unset">
+            <table class="width-100 mt-10p">
+              <thead>
+                <tr>
+                  <th style="vertical-align:top">
+                    Linked Facilities
+                  </th>
+
+                  <th style="vertical-align:top ; text-align: end">
+                    Previous Amount
+                  </th>
+
+                  <th style="vertical-align:top ; text-align: end">
+                    Required/Outstanding Amount
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <ng-container *ngFor="let facility of commonSecurity.facilityDTOS ; let i =index">
+                  <tr>
+                    <td>
+                      {{facility.creditFacilityTemplateDTO.creditFacilityName}}
+                      - {{facility.facilityRefCode}} ({{facility.facilityType}})
+                    </td>
+                    <td class="text-align-end">
+                      <span *ngIf="isCommittee">{{facility.facilityCurrency}}
+                        {{getFormattedThreeDecimalValues(getMillionValue(facility.outstandingAmount))}}{{" "}}Mn</span>
+                      <span *ngIf="!isCommittee">{{facility.facilityCurrency}}
+                        {{this.getFormattedValue(facility.outstandingAmount)}}</span>
+                    </td>
+                    <td class="text-align-end">
+                      <span *ngIf="isCommittee">{{facility.facilityCurrency}}
+                        {{getFormattedThreeDecimalValues(getMillionValue(facility.facilityAmount))}}{{" "}}Mn</span>
+                      <span *ngIf="!isCommittee">{{facility.facilityCurrency}}
+                        {{getFormattedValue(facility.facilityAmount)}}</span>
+                    </td>
+                  </tr>
+                </ng-container>
+              </tbody>
+            </table>
+          </td>
+        </tr>
+      </ng-container>
+    </ng-container>
+    <tr>
+      <td class="cash-amount vertical-align-baseline"><b>Cash Amount </b></td>
+      <td class="cash-amount text-align-end">
+        <ng-container class="border-bottom-0" *ngFor="let item of commonCashAmounts">
+          <span class="text-align-end" *ngIf="isCommittee">{{item.currency}}
+            {{getFormattedThreeDecimalValues(getMillionValue(item.amount))}}{{" "}}Mn</span><br>
+          <span class="text-align-end" *ngIf="!isCommittee">{{item.currency}}
+            {{getFormattedValue(item.amount)}}</span><br>
+        </ng-container>
+    </tr>
+
+    <tr>
+      <td colspan="2">
+        <hr class="">
+      </td>
+    </tr>
+
+    <tr>
+      <td class="margin-unset vertical-align-baseline"><b>Total Cash Amount Kept as Security/ies </b></td>
+      <td class="margin-unset text-align-end" *ngIf="facilityPaper">
+        <ng-container class="border-bottom-0" *ngFor="let item of cashAmounts">
+          <span class="text-align-end" *ngIf="isCommittee">{{item.currency}}
+            {{getFormattedThreeDecimalValues(getMillionValue(item.amount))}}{{" "}}Mn</span><br>
+          <span class="text-align-end" *ngIf="!isCommittee">{{item.currency}}
+            {{getFormattedValue(item.amount)}}</span><br>
+        </ng-container>
+    </tr>
+
+    <tr>
+      <td colspan="2">
+        <hr class="">
+      </td>
+    </tr>
+
+    <!--<div>
+    <button
+      class="btn btn-sm btn-secondary cta-btn"
+      style="margin-left: unset"
+      type="button"
+      mdbWavesEffect
+      (click)="moveUpWindow()"
+      placement="left">
+      <i class="fas fa-angle-up"></i> Move Up
+    </button>
+  </div>-->
+  </tbody>
+</table>

@@ -1,0 +1,89 @@
+<div class="modal-header modal-topic">
+    <h4 class="modal-title w-100 font-weight-bold" *ngIf="!isSecurity">Facility Changes</h4>
+    <h4 class="modal-title w-100 font-weight-bold" *ngIf="isSecurity">Security Changes</h4>
+
+    <mdb-icon class="header-icon" fas icon="sync" style="color: #198ddb;" (click)="refreshComments()"></mdb-icon>
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="close()">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+
+<div class="modal-body m-3 modal-detail form-margin px-0" style="height: 85vh;">
+
+    <div class="row d-flex mx-0" style="height: 100%;">
+
+        <div class="col-md-12 px-0 h-100"
+            style="position: relative; border:2px solid rgba(222, 226, 230, 0.5) !important; border-radius: 8px;">
+            <div class="row d-flex chat-section" *ngIf="commentHistory.length > 0" [class.chat-section-cmnt-disabled]="!isCommentable()">
+                <div class="m-0 p-0 w-100" *ngFor="let item of commentHistory">
+                    <div class="row d-flex chat-item"
+                        [style.background]="item.id == parentCmntId || item.id == selectedId  ? 'rgba(222, 226, 230, 0.5)' : 'transparent'">
+
+                        <span class="text-1" [class.w-100]="!isCommentable()">
+                            <pre class="custom-pre-tag-with-spaces mx-0">{{item.comment}}</pre>
+                            <span class="text-1" style="color: #198ddb;font-weight: 400;">
+                                by {{item.addedBy}}{{item.createdUserDesignation ? " ("+item.createdUserDesignation+") "
+                                : ""}} on {{item.date}}
+                            </span>
+                        </span>
+                        <div class="cht-item-btn-div" *ngIf="isCommentable()">
+                            <mdb-icon class="cht-item-icon" fas icon="reply" style="color: #198ddb;"
+                                (click)="setParentCommentId(item)" *ngIf="isReplyEnabled(item)"></mdb-icon>
+                            <mdb-icon class="cht-item-icon" fas icon="edit" style="color: #bfc0c0;"
+                                (click)="setCommentToEdit(item)" *ngIf="isActionEnabled(item)"></mdb-icon>
+                            <mdb-icon class="cht-item-icon" fas icon="trash-alt" style="color: #ff4a67;"
+                                (click)="removeComment(item.id)" *ngIf="isActionEnabled(item)"></mdb-icon>
+                        </div>
+                    </div>
+                    <div class="m-0 pl-4 pr-0" *ngFor="let child of item.childCmnt">
+                        <div class="row d-flex chat-item"
+                            [style.background]="child.id == selectedId  ? 'rgba(222, 226, 230, 0.5)' : 'transparent'">
+
+                            <span class="text-1" [class.w-100]="!isCommentable() && !isActionEnabled(child)">
+                                <pre class="custom-pre-tag-with-spaces mx-0">{{child.comment}}</pre>
+                                <span class="text-1" style="color: #198ddb;font-weight: 400;">
+                                    by {{child.addedBy}}{{item.createdUserDesignation ? "
+                                    ("+item.createdUserDesignation+") "
+                                    : ""}} on {{child.date}}
+                                </span>
+                            </span>
+                            <div class="cht-item-btn-div" *ngIf="isCommentable() && isActionEnabled(child)">
+                                <mdb-icon class="cht-item-icon" fas icon="edit" style="color: #bfc0c0;"
+                                    (click)="setCommentToEdit(child)"></mdb-icon>
+                                <mdb-icon class="cht-item-icon" fas icon="trash-alt" style="color: #ff4a67;"
+                                    (click)="removeComment(child.id)"></mdb-icon>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row d-flex flex-column chat-section justify-content-center align-items-center my-auto h-100"
+                *ngIf="commentHistory.length <= 0">
+                <mdb-icon fas icon="comment-slash" style="font-size: 60px;"></mdb-icon>
+                <span class="text-center" style="font-size: 16px;font-weight: 600;">There are no records!</span>
+            </div>
+            <div class="row d-flex align-items-center mx-0 cht-btn-div" *ngIf="isCommentable()">
+                <div class="col-6 px-2" *ngIf="!isCmntDisabled() && isSecurity">
+                    <div class="md-form p-0 m-0 w-100">
+                        <mdb-select [options]="fcSecurities" class="form-control m-0 p-0" [disabled]="true"
+                            [(ngModel)]="selectedFCSecurity" id="selectedFCSecurity" label="Facility Security *">
+                        </mdb-select>
+                    </div>
+                </div>
+                <div class="col-12 px-2">
+                    <textarea #cmntInput name="commentText" id="commentText"
+                        class="form-control border border-1 border-rounded" rows="3" [(ngModel)]="commentText"
+                        maxlength="3900" [disabled]="isCmntDisabled()">
+                    </textarea>
+                </div>
+
+                <div class="col-12 row d-flex mx-0 px-0 pb-2 justify-content-end">
+                    <button class="btn btn-info" [disabled]="!commentText" (click)="handleComment()"
+                        mdbTooltip="Save Comment" placement="top"><mdb-icon fas icon="check"></mdb-icon></button>
+                    <button class="btn btn-primary" (click)="close()" mdbTooltip="Close" placement="top"><mdb-icon fas
+                            icon="times"></mdb-icon></button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

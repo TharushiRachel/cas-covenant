@@ -1,0 +1,84 @@
+<div class="modal-header flex-center">
+  <div class="text-center no-border">
+    <h4 class="w-100 font-weight-bold">{{heading}}
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="mdbModalRef.hide()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+    </h4>
+  </div>
+</div>
+
+<div class="modal-body mx-3">
+  <div class="d-flex flex-column justify-content-start">
+    <div class="row">
+      <div class="col-sm-12">
+        <div class="personal-detail-section">
+          <div class="d-flex flex-row justify-content-between">
+            <label class="info-caption">Name</label>
+            <span class="info-caption w-5">:</span>
+            <span class="font-weight-bold info-details">{{getUserDisplayName() || '-'}}</span>
+          </div>
+          <ng-container *ngIf="!isAgent()">
+            <div class="d-flex flex-row justify-content-between">
+              <label class="info-caption">DIV Code</label>
+              <span class="info-caption w-5">:</span>
+              <span class="font-weight-bold info-details">{{getBranchName(getLoggedInUserDivCode())}}</span>
+            </div>
+          </ng-container>
+          <ng-container *ngIf="!isAgent()">
+            <div class="d-flex flex-row justify-content-between">
+              <label class="info-caption">Branch (SOL ID)</label>
+              <span class="info-caption w-5">:</span>
+              <span class="font-weight-bold info-details">{{getUserSolID() || '-'}}</span>
+            </div>
+          </ng-container>
+          <div class="d-flex flex-row justify-content-between">
+            <label class="info-caption">User Name</label>
+            <span class="info-caption w-5">:</span>
+            <span class="font-weight-bold info-details">{{getUserName() || '-'}}</span>
+          </div>
+          <ng-container *ngIf="!isAgent()">
+            <div class="d-flex flex-row justify-content-between">
+              <label class="info-caption">UPM Access Level</label>
+              <span class="info-caption w-5">:</span>
+              <span class="font-weight-bold info-details">{{getUPMAccessLevel() || '-'}}</span>
+            </div>
+          </ng-container>
+          <ng-container *ngIf="!isAgent()">
+            <div class="d-flex flex-row justify-content-between">
+              <label class="info-caption">UPM ID</label>
+              <span class="info-caption w-5">:</span>
+              <span class="font-weight-bold info-details">{{getUPMID() || '-'}}</span>
+            </div>
+          </ng-container>
+          <ng-container *ngIf="!isAgent()">
+            <div class="d-flex flex-row justify-content-between">
+              <label class="info-caption">DA Approval Level</label>
+              <span class="info-caption w-5">:</span>
+              <span class="font-weight-bold info-details">{{getDaMaxAmount()}}</span>
+            </div>
+          </ng-container>
+
+          <ng-container *ngIf="!isAgent()">
+            <div class="d-flex flex-row justify-content-between">
+              <label class="info-caption">Designation</label>
+              <span class="info-caption w-5">:</span>
+              <span class="font-weight-bold info-details">{{designationName}}</span>
+            </div>
+          </ng-container>
+
+          <ng-container *ngIf="isAgent()">
+            <ng-container *ngIf="upmDetailOfADUser.firstName">
+              <div class="d-flex flex-row justify-content-between">
+                <label class="info-caption">Reporting Officer</label>
+                <span class="info-caption w-5">:</span>
+                <span
+                  class="font-weight-bold info-details">{{upmDetailOfADUser.firstName + " " + upmDetailOfADUser.lastName}}</span>
+              </div>
+            </ng-container>
+          </ng-container>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

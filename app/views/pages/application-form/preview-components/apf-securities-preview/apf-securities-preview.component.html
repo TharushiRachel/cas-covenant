@@ -1,0 +1,34 @@
+<ng-container *ngIf="creditFacilityList.length>0">
+  <ng-container *ngFor="let facility of creditFacilityList;let i = index">
+    <table class="width-100">
+      <thead>
+      <tr>
+        <th colspan="5" class="text-align-center">
+          <h6 class="f-bold">
+            <span>{{i + 1}} . </span>
+            <span>{{facility.creditFacilityTemplateDTO.creditFacilityName}}</span>
+            <span> - </span>
+            <span>{{facility.facilityRefCode}}</span>
+          </h6>
+          <span class="margin-unset padding-unset" style="font-size: .8rem; ">
+            ({{facility.facilityTypeDTO.facilityTypeName}}
+            : {{facility.facilityCurrency}} {{this.getFormattedThreeDecimalValues(getMillionValue(facility.facilityAmount))}}
+            Mn )
+          </span>
+        </th>
+      </tr>
+      </thead>
+    </table>
+    <app-apf-securities-row-preview class="width-100" [securities]="facility.afSecurityDTOList">
+    </app-apf-securities-row-preview>
+  </ng-container>
+</ng-container>
+<ng-container *ngIf="commonFacilitySecurityList.length>0">
+  <app-apf-facilities-common-securities
+    [commonFacilitySecurityList]="commonFacilitySecurityList"
+    [facilities]="creditFacilityList"
+    (moveUp)="moveUp()"
+  >
+
+  </app-apf-facilities-common-securities>
+</ng-container>

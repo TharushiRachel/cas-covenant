@@ -1,0 +1,24 @@
+<div class="wfr-data" [class.wfr-data-error]="!componentForm.valid">
+  <div class="flex-row flex-end">
+    <a (click)="remove($event)"><mdb-icon class="float-right icon-color" far icon="window-close"></mdb-icon></a>
+  </div>
+  <form class="d-flex p-2 flex-column justify-content-start align-items-start w-100-p" [formGroup]="componentForm">
+    <div class="md-form w-100-p">
+      <mdb-select
+        required
+        class="w-100-p"
+        placeholder="Select UPM Group"
+        [options]="optionUpmGroupList"
+        (change)="updateSelectedItem($event)"
+        formControlName="upmGroupID"
+        id="upmGroupID"></mdb-select>
+      <label for="upmGroupID">Group Code</label>
+      <mdb-error *ngIf="formErrors.upmGroupID.required">Please Select a UPM Group</mdb-error>
+    </div>
+    <div class="md-form w-100-p flex-column">
+      <span class="w-50-p">Reference Code:</span>
+      <span class="font-weight-bold">{{selectedUPMGroup.referenceName}}</span>
+    </div>
+    <div></div>
+  </form>
+</div>

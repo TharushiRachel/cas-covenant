@@ -1,0 +1,24 @@
+<div class="ca-creation-container-fluid">
+  <div class="tab-view">
+    <app-tabs [selectedTabIndex]="selectedTabIndex" class="w-100-p" (onTabSelect)="onTabSelect($event)">
+      <app-tab [tabTitle]="'About'">
+        <ng-container *ngIf="isTabSelected(aboutTabIndex)">
+          <app-ca-details-about class="w-100-p" [coveringApproval]="coveringApproval" [upmDetails]="this.upmDetails">
+
+          </app-ca-details-about>
+        </ng-container>
+
+      </app-tab>
+      <app-tab [tabTitle]="'Comment'">
+        <ng-container *ngIf="isTabSelected(commentTabIndex)">
+          <div class="padding-4px">
+            <app-ca-details-comment class="w-100-p" [commentDetails]="commentDetails">
+
+            </app-ca-details-comment>
+          </div>
+        </ng-container>
+
+      </app-tab>
+    </app-tabs>
+  </div>
+</div>

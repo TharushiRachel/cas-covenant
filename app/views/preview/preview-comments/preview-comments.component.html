@@ -1,0 +1,26 @@
+<div class="w-100-p mt-10p">
+  <div class="d-flex flex-column justify-content-center w-100-p">
+    <ng-container *ngIf="resizedFPCommentList.length>0; else noData">
+      <div class="text-align-center topic" *ngIf="!tabView">
+        <h5>Comments</h5>
+      </div>
+      <app-common-user-comment
+        [comments]="resizedFPCommentList"
+        [branchList]="allBanksDetails"
+        [isAbleToAddEdit]="false">
+      </app-common-user-comment>
+    </ng-container>
+
+    <ng-template #noData>
+      <table class="table">
+        <tr>
+          <th class="text-align-center">
+            <p class="no-data-message">
+              No Comments.
+            </p>
+          </th>
+        </tr>
+      </table>
+    </ng-template>
+  </div>
+</div>

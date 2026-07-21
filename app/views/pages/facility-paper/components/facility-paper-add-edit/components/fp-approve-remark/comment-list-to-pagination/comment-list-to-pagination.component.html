@@ -1,0 +1,11 @@
+<div class="table-paginator d-flex p-2 flex-row justify-content-end align-items-center">
+  <span class="custom-margin" *ngIf="inputArray.length>10">
+    {{currentBeginIndex == 0 ? 1 : currentBeginIndex}}-{{currentEndIndex}} of {{inputArray.length}}
+  </span>
+  <span class="custom-margin" *ngIf="inputArray.length<=10">
+    {{inputArray.length == 0 ? 0 : 1}}-{{inputArray.length}} of {{inputArray.length}}
+  </span>
+  <span [class.a-color]="true" (click)="prvClick($event)" class="custom-margin"><i class="fas fa-angle-left"></i></span>
+  <span [class.a-color]="true" (click)="nextClick($event)" class="custom-margin"><i
+    class="fas fa-angle-right"></i></span>
+</div>

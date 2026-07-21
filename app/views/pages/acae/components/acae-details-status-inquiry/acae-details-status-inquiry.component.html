@@ -1,0 +1,208 @@
+<div mdbSticky class="d-flex flex-row justify-content-between page-header">
+  <div class="d-flex flex-row align-items-center">
+    <h5><i class="fas fa-comments header-icon"></i>Status Inquiry Page</h5>
+  </div>
+</div>
+<div class="page-search-section section display-flex flex-column jc-start p-2 pt-3 pb-3 default-box-styles align-start">
+  <div style="border: 1px solid rgba(0, 0, 0, 0.125);border-radius: 5px; padding: 15px;">
+    <h6 class="card-title"><b>Inquire by Date Range</b></h6>
+    <form class="display-flex w-100-p flex-row jc-start ai-center flex-wrap flex-2-gap"
+      [formGroup]="inquiryByDateRangeForm">
+      <div class="md-form w-18-p min-width-120">
+        <mdb-date-picker class="form-control" id="fromDate" formControlName="fromDate" [options]="myDatePickerOptions"
+          [(ngModel)]="vFromDate" [placeholder]="'From'" [inline]="true" required></mdb-date-picker>
+      </div>
+      <div class="md-form w-18-p min-width-120">
+        <mdb-date-picker class="form-control" id="toDate" formControlName="toDate" [options]="myDatePickerOptions"
+          [(ngModel)]="vToDate" [placeholder]="'To'" [inline]="true" required></mdb-date-picker>
+      </div>
+      <div class="display-flex flex-1 flex-row jc-end ai-center">
+        <button (click)="dateRangeSearch()" type="button" class="medium-button btn btn-info" mdbBtn>
+          Search
+        </button>
+        <button mdbBtn type="button" class="medium-button btn btn-light" outline="true" data-toggle="tooltip"
+          data-placement="bottom" [title]="'Clear Date Range'" mdbWavesEffect (click)='clearDateRangeSearch()'>
+          Clear
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<ng-container *ngIf="isDateRangeSearch">
+  <div *ngIf="dateRangeData.length == 0" class="alert alert-warning" role="alert">
+    No matching records found !
+  </div>
+</ng-container>
+<ng-container *ngIf="dateRangeData.length > 0">
+  <div class="section table-responsive mb-15p">
+    <table class="table">
+      <thead>
+        <tr>
+          <!-- <th scope="col">Current User</th> -->
+          <th scope="col">Sol Id</th>
+          <th scope="col">ACAE Date</th>
+          <th scope="col">Recieved Date</th>
+          <th scope="col">Status</th>
+          <th scope="col">Paper Count</th>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-container *ngFor="let paper of dateRangeData">
+          <tr>
+            <!-- <td>{{ paper.currentUser }}</td> -->
+            <td>{{ paper.solId }}</td>
+            <td>{{ paper.acaeDate }}</td>
+            <td>{{ paper.receivedDate }}</td>
+            <td>{{ paper.status }}</td>
+            <td>{{ paper.paperCount }}</td>
+          </tr>
+        </ng-container>
+      </tbody>
+    </table>
+  </div>
+  <div style="z-index: 2;">
+    <app-paginator [pageIndex]="dateRangeDataPageData.currentPageNo - 1"
+      [length]="dateRangeDataPageData.totalNoOfRecords" [pageSize]="dateRangePaginationData.pageSize"
+      [pageSizeOptions]="pageSize.pageSizeOptions" (page)="onDateRangePageEvent($event)">
+    </app-paginator>
+  </div>
+</ng-container>
+
+<div class="page-search-section section display-flex flex-column jc-start p-2 pt-3 pb-3 default-box-styles align-start">
+  <div style="border: 1px solid rgba(0, 0, 0, 0.125);border-radius: 5px; padding: 15px;">
+    <h6 class="card-title"><b>Inquire by SOL Id(s)</b></h6>
+    <form class="display-flex w-100-p flex-row jc-start ai-center flex-wrap flex-2-gap"
+      [formGroup]="inquiryBySolIdForm">
+      <div class="md-form w-18-p min-width-120">
+        <p-chips id="solIdList" placeholder="Enter SOL ID(s)" formControlName="solIdList" [(ngModel)]="solIdList"
+          class="form-control"></p-chips>
+      </div>
+      <div class="display-flex flex-1 flex-row jc-end ai-center">
+        <button (click)="solIdsSearch()" type="button" class="medium-button btn btn-info" [disabled]="false" mdbBtn>
+          Search
+        </button>
+        <button mdbBtn type="button" class="medium-button btn btn-light" outline="true" data-toggle="tooltip"
+          data-placement="bottom" [title]="'Clear Date Range'" mdbWavesEffect (click)='clearSolIdsSearch()'>
+          Clear
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+<ng-container *ngIf="isSOLIdsSearch">
+  <div *ngIf="solIdData.length == 0" class="alert alert-warning" role="alert">
+    No matching records found !
+  </div>
+</ng-container>
+<ng-container *ngIf="solIdData.length > 0">
+  <div class="section table-responsive mb-15p">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>SOL Id</th>
+          <th colspan="2">Forward to approvals</th>
+          <th colspan="2">To Be Forwarded from branch</th>
+        </tr>
+        <tr>
+          <th></th>
+          <th>Date</th>
+          <th>Count</th>
+          <th>Last Fetched Date</th>
+          <th>Count</th>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-container *ngFor="let paper of solIdData">
+          <tr>
+            <td>{{ paper.solId || "-" }}</td>
+            <td>{{ paper.forwardByApprovalDate || "-"}}</td>
+            <td>{{ paper.forwardByApprovalCount || "-"}}</td>
+            <td>{{ paper.lastFetchedDate || "-"}}</td>
+            <td>{{ paper.lastFetchedCount || "-" }}</td>
+          </tr>
+        </ng-container>
+      </tbody>
+    </table>
+  </div>
+</ng-container>
+
+<div class="page-search-section section display-flex flex-column jc-start p-2 pt-3 pb-3 default-box-styles align-start">
+  <div style="border: 1px solid rgba(0, 0, 0, 0.125);border-radius: 5px; padding: 15px;">
+    <h6 class="card-title"><b>Inquire 'To Be Resubmitted' ACAE</b></h6>
+    <form class="display-flex w-100-p flex-row jc-start ai-center flex-wrap flex-2-gap"
+      [formGroup]="toBeResubmittedForm">
+      <div class="md-form w-18-p min-width-120">
+        <p>Report Type</p>
+        <input type="radio" class="form-check-input" formControlName="reportType" id="{{acaeReportTypeConst.CURRENT}}"
+          [value]="acaeReportTypeConst.CURRENT" name="reportType" />
+        <label class="form-check-label" for="{{acaeReportTypeConst.CURRENT}}">Current</label>
+        <input type="radio" class="form-check-input" formControlName="reportType" id="{{acaeReportTypeConst.HISTORY}}"
+          [value]="acaeReportTypeConst.HISTORY" name="reportType" />
+        <label class="form-check-label" for="{{acaeReportTypeConst.HISTORY}}">History</label>
+      </div>
+      <div class="md-form w-18-p min-width-120">
+        <mdb-date-picker class="form-control" id="fromDate" formControlName="fromDate" [options]="myDatePickerOptions"
+          [placeholder]="'From Date'" [(ngModel)]="tFromDate" [inline]="false" required></mdb-date-picker>
+      </div>
+      <div class="md-form w-18-p min-width-120">
+        <mdb-date-picker class="form-control" id="toDate" formControlName="toDate" [options]="myDatePickerOptions"
+          [placeholder]="'To Date'" [(ngModel)]="tToDate" [inline]="false" required></mdb-date-picker>
+      </div>
+      <div class="md-form w-18-p min-width-120">
+        <p-chips id="solIdListResub" placeholder="Enter SOL ID(s)" formControlName="solIdListResub"
+          [(ngModel)]="solIdListResub"></p-chips>
+      </div>
+
+      <div class="display-flex flex-1 flex-row jc-end ai-center">
+        <button (click)="toBeResubmittedSearch()" type="button" class="medium-button btn btn-info"
+          [disabled]="isSearchDataEntered()" mdbBtn>
+          Search
+        </button>
+        <button mdbBtn type="button" class="medium-button btn btn-light" outline="true" data-toggle="tooltip"
+          data-placement="bottom" [title]="'Clear Date Range'" mdbWavesEffect (click)='clearToBeResubmitted()'>
+          Clear
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<ng-container *ngIf="isToBeResubmittedSearch">
+  <div *ngIf="toBeResubmittedData.length == 0" class="alert alert-warning" role="alert">
+    No matching records found !
+  </div>
+</ng-container>
+<ng-container *ngIf="toBeResubmittedData.length > 0">
+  <div class="section table-responsive mb-15p">
+    <table class="table">
+      <thead>
+        <tr>
+          <th scope="col">Sol Id</th>
+          <th scope="col">ACAE Date</th>
+          <th scope="col">Account No</th>
+          <th scope="col">Ref No</th>
+          <th scope="col">Current Status</th>
+          <th scope="col">Current User</th>
+          <th scope="col">Max OD for Week</th>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-container *ngFor="let paper of toBeResubmittedData">
+          <tr>
+            <td>{{ paper.solId }}</td>
+            <td>{{ paper.acaeDate }}</td>
+            <td>{{ paper.accountNo }}</td>
+            <td>{{ paper.refNo }}</td>
+            <td>{{ paper.currentStatus }}</td>
+            <td>{{ paper.currentUser }}</td>
+            <td>{{ paper.maxOdForWeek }}</td>
+          </tr>
+        </ng-container>
+      </tbody>
+    </table>
+    <app-paginator [pageIndex]="toBeResubmittedPageData.currentPageNo - 1"
+      [length]="toBeResubmittedPageData.totalNoOfRecords" [pageSize]="toBeResubmittedPaginationData.pageSize"
+      [pageSizeOptions]="pageSize.pageSizeOptions" (page)="onToBeResubmittedPageEvent($event)"></app-paginator>
+  </div>
+</ng-container>

@@ -1,0 +1,103 @@
+<div mdbSticky class="d-flex flex-row justify-content-between page-header">
+  <div class="d-flex flex-row align-items-center">
+    <h5><i class="fas fa-dice-d20 header-icon"></i> Role(s)</h5>
+  </div>
+
+  <div class="d-flex flex-row align-items-center">
+    <ng-container *appHasAnyPrivilege="masterDataPrivilege.ICAS_SETTINGS_ROLE_ADD">
+      <button (click)="loadRole(null)"
+              class="custom-button"
+              mdbBtn
+              type="button"
+              color="default"
+              outline="true"
+              mdbWavesEffect>New Role
+      </button>
+    </ng-container>
+  </div>
+</div>
+
+<div class="page-search-section section display-flex flex-column jc-start p-2 pt-3 pb-3 default-box-styles align-start">
+  <form class="display-flex w-100-p flex-row jc-start ai-center flex-wrap flex-2-gap" [formGroup]="searchForm">
+
+    <div class="md-form w-25-p min-width-120">
+      <input type="text" id="roleName" formControlName="roleName" class="form-control" mdbInput>
+      <label for="roleName">Role Name</label>
+    </div>
+
+    <div class="md-form w-25-p min-width-120">
+      <input type="text" id="upmPrivilegeCode" formControlName="upmPrivilegeCode" class="form-control" mdbInput>
+      <label for="upmPrivilegeCode">UPM Privilege code</label>
+    </div>
+
+    <div class="md-form w-25-p min-width-120">
+      <mdb-select
+        [options]="optionsSelect"
+        formControlName="status"
+        id="status"
+        placeholder="All"></mdb-select>
+      <label for="status">Status</label>
+    </div>
+
+    <div class="display-flex flex-1 flex-row jc-end ai-center">
+      <button (click)="doSearch()" type="button" class=" medium-button btn btn-info" mdbBtn>Search</button>
+      <button (click)="clearSearch()" class=" medium-button btn btn-outline-info clear-btn" mdbBtn type="button">
+        Clear
+      </button>
+    </div>
+  </form>
+</div>
+
+<div *ngIf="roles.length == 0" class="alert section alert-warning" role="alert">
+  No Role(s) Found !
+</div>
+
+<ng-container *ngIf="roles.length > 0">
+  <div class="section table-responsive mb-15p">
+    <table class="table">
+      <thead>
+      <tr>
+        <ng-container *ngFor="let col of tableColumns">
+          <th scope="col">{{col}}</th>
+        </ng-container>
+      </tr>
+      </thead>
+      <tbody>
+      <ng-container *ngFor="let role of roles">
+        <tr (click)="loadRole(role.roleID)" class="table-clickable-row">
+          <td>{{role.roleName}}</td>
+          <td>{{role.upmPrivilegeCode}}</td>
+          <td>
+            <span
+              [class.color-green]="role.status === statusConst.ACT"
+              [class.color-red]="role.status === statusConst.INA"
+            >
+                  {{status[role.status]}}
+                </span>
+          </td>
+          <td>
+            <span
+              [class.color-green]="role.approveStatus === approvedStatusConst.APPROVED"
+              [class.color-red]="role.approveStatus === approvedStatusConst.REJECTED"
+              [class.color-blue]="role.approveStatus == approvedStatusConst.PENDING"
+            >
+                  {{approvedStatus[role.approveStatus]}}
+                </span>
+          </td>
+          <td>{{role.approvedDateStr ? role.approvedDateStr : '-'}}</td>
+          <td>{{role.approvedBy ? role.approvedBy : '-'}}</td>
+        </tr>
+      </ng-container>
+      </tbody>
+    </table>
+  </div>
+    <app-paginator
+      [pageIndex]="pageSize.pageIndex"
+      [length]="pageSize.length"
+      [pageSize]="pageSize.pageSize"
+      [pageSizeOptions]="pageSize.pageSizeOptions"
+      (page)="onPageEvent($event)"
+    ></app-paginator>
+  
+</ng-container>
+

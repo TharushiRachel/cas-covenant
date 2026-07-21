@@ -1,0 +1,75 @@
+<div mdbSticky class="d-flex flex-row justify-content-between page-header">
+  <div class="d-flex flex-row align-items-center">
+    <h5><i class="fas fa-random header-icon"></i>Paper Transfer</h5>
+  </div>
+</div>
+
+<div class="page-search-section section display-flex flex-column jc-start p-2 pt-3 pb-3 default-box-styles align-start">
+  <form class="display-flex w-100-p flex-row jc-start ai-center flex-wrap flex-2-gap" [formGroup]="searchForm">
+    <div class="md-form w-18-p  min-width-120">
+      <input type="text" id="fpRefNumber" formControlName="fpRefNumber" class="form-control" mdbInput>
+      <label for="fpRefNumber">Ref Number</label>
+    </div>
+    <div class="display-flex flex-1 flex-row jc-end ai-center">
+      <button
+        [disabled]="!this.searchForm.valid"
+        (click)="doSearch()" type="button" class=" medium-button btn btn-info" mdbBtn>Search</button>
+      <button (click)="clearSearch()" class=" medium-button btn btn-outline-info clear-btn" mdbBtn type="button">
+        Clear
+      </button>
+    </div>
+  </form>
+</div>
+
+<ng-container *ngIf=" facilityPaper && facilityPaper.fpRefNumber">
+  <div class="section table-responsive mb-15p">
+    <table class="table">
+      <thead>
+      <tr>
+        <ng-container *ngFor="let col of tableColumns">
+          <th scope="col">{{col}}</th>
+        </ng-container>
+      </tr>
+      </thead>
+      <tbody>
+      <tr
+        (click)="loadFacilityPaper(facilityPaper.facilityPaperID)"
+        class="table-clickable-row">
+        <td>{{facilityPaper.fpRefNumber || '-'}}</td>
+        <td>{{facilityPaper.bankAccountID || '-'}}</td>
+        <td>{{getBranchName(facilityPaper.branchCode) || '-'}}</td>
+        <td>{{facilityPaper.createdDateStr || '-'}}</td>
+        <td class="assign-user-col">{{facilityPaper.assignUserDisplayName || getBranchName(facilityPaper.assignDepartmentCode) || '-'}}</td>
+        <td class="status-icon status-col">
+
+          <a *ngIf="facilityPaper.currentFacilityPaperStatus == this.facilityPaperStatusConst.IN_PROGRESS"
+             data-toggle="tooltip" data-placement="left" title="In Progress" class="icon-padding">
+            <img class="status-img-width" src="assets/media/images/fpstatusicon/inprogress.png" alt="In Progress">
+          </a>
+
+          <a *ngIf="facilityPaper.currentFacilityPaperStatus == this.facilityPaperStatusConst.APPROVED"
+             data-toggle="tooltip" data-placement="left" title="Approved" class="icon-padding">
+            <img class="status-img-width" src="assets/media/images/fpstatusicon/approved.png" alt="Approved">
+          </a>
+
+          <a *ngIf="facilityPaper.currentFacilityPaperStatus == this.facilityPaperStatusConst.CANCEL"
+             data-toggle="tooltip" data-placement="left" title="Returned" class="icon-padding">
+            <img class="status-img-width" src="assets/media/images/fpstatusicon/return.png" alt="Returned">
+          </a>
+
+          <a *ngIf="facilityPaper.currentFacilityPaperStatus == this.facilityPaperStatusConst.REJECTED"
+             data-toggle="tooltip" data-placement="left" title="Rejected" class="icon-padding">
+            <img class="status-img-width" src="assets/media/images/fpstatusicon/rejected.png" alt="Rejected">
+          </a>
+
+          <a *ngIf="facilityPaper.currentFacilityPaperStatus == this.facilityPaperStatusConst.DRAFT"
+             data-toggle="tooltip" data-placement="left" title="Drafted" class="icon-padding">
+            <img class="status-img-width" src="assets/media/images/fpstatusicon/draft.png" alt="Drafted">
+          </a>
+
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</ng-container>

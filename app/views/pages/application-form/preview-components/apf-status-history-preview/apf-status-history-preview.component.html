@@ -1,0 +1,55 @@
+<mdb-card>
+  <mdb-card-body class="custom-card-body">
+    <ng-container>
+      <div class="d-flex flex-column justify-content-between w-100-p mt-10p table-responsive">
+        <table class="table">
+          <thead>
+          <tr class="table-heading">
+            <th colspan="5"><p class="mb-5p"><b>APPLICATION FORM HISTORY</b></p></th>
+          </tr>
+          <tr *ngIf="applicationForm.afStatusHistoryDTOList && applicationForm.afStatusHistoryDTOList.length>0">
+            <th class="text-align-start">User</th>
+            <th class="text-align-start">Action</th>
+            <th class="text-align-start">Date</th>
+            <th class="text-align-start">Assigned User</th>
+          </tr>
+          </thead>
+          <tbody>
+          <ng-container
+            *ngIf="applicationForm.afStatusHistoryDTOList && applicationForm.afStatusHistoryDTOList.length>0 ; else noData">
+            <ng-container *ngFor="let item of applicationForm.afStatusHistoryDTOList">
+              <tr>
+                <td
+                  class="text-align-start">{{item.updatedUserDisplayName ? item.updatedUserDisplayName : item.updateBy }}</td>
+                <td
+                  *ngIf="item.forwardingType==applicationFormForwardType.CLUSTER ; else directForwarding">
+                  Opened For Clusters
+                  <span [mdbTooltip]='item.actionMessage' [placement]="'top'"
+                        [container]="'body'">
+                  <mdb-icon fas icon="info-circle"></mdb-icon>
+                  </span>
+                </td>
+                <ng-template #directForwarding>
+                  <td>{{item.actionMessage}}</td>
+                </ng-template>
+                <td class="text-align-start">{{item.updateDateStr}}</td>
+                <td
+                  class="text-align-start">{{item.assignUserDisplayName ? item.assignUserDisplayName : getBranchName(item.assignDepartmentCode) }}</td>
+              </tr>
+            </ng-container>
+          </ng-container>
+          <ng-template #noData>
+            <tr>
+              <th colspan="5" class="text-align-center" style="border: unset !important;">
+                <p class="no-data-message">
+                  No Data Recorded
+                </p>
+              </th>
+            </tr>
+          </ng-template>
+          </tbody>
+        </table>
+      </div>
+    </ng-container>
+  </mdb-card-body>
+</mdb-card>

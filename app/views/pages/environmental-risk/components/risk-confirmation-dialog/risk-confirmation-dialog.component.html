@@ -1,0 +1,61 @@
+<div>
+    <div class="modal-header modal-topic flex-center">
+        <button type="button" class="close pull-right" aria-label="Close" (click)="onClose()">
+            <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-title w-100 heading-align" id="myModalLabel" style="font-size: 1rem ; font-weight: bold">
+            {{heading}}
+        </h4>
+    </div>
+    <div class="modal-body modal-detail form-margin" *ngIf="!isModified">
+        <h6 style="font-size: 0.9rem">{{message}}</h6>
+    </div>
+    <div class="modal-body modal-detail form-margin" *ngIf="isModified">
+        <div class="row d-flex mx-0">
+            <div class="col-md-6">
+                <h6 class="font-weight-bold">Current Details</h6>
+                <div class="row d-flex mx-0">
+                    <span>{{ node.description }}</span>
+                    <div class="ml-3 mr-0" *ngIf="!isParent(node)">
+                        <mdb-badge default="true" style="color: #b7b7b7 !important;border-color: #b7b7b7 !important;">
+                            {{node.score}}
+                        </mdb-badge>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <h6 class="font-weight-bold">Edited Details</h6>
+                <div class="row d-flex mx-0">
+                    <span>{{ node.pendingRec.description }}</span>
+                    <div class="ml-3 mr-0" *ngIf="!isParent(node.pendingRec)">
+                        <mdb-badge default="true" style="color: #b7b7b7 !important;border-color: #b7b7b7 !important;">
+                            {{node.pendingRec.score}}
+                        </mdb-badge>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer modal-end">
+        <ng-container *ngIf="!isModified">
+            <button type="button" mdbBtn color="secondary" size="sm" class="waves-light" aria-label="Close"
+                (click)="onNoClick()" mdbWavesEffect>
+                No
+            </button>
+            <button type="button" mdbBtn color="success" size="sm" class="relative waves-light" (click)="onYesClick()"
+                mdbWavesEffect>
+                Yes
+            </button>
+        </ng-container>
+        <ng-container *ngIf="isModified && isValidUser(node.pendingRec)">
+            <button type="button" mdbBtn color="primary" size="sm" class="waves-light" aria-label="Close"
+                (click)="onNoClick()" mdbWavesEffect>
+                Reject
+            </button>
+            <button type="button" mdbBtn color="success" size="sm" class="relative waves-light" (click)="onYesClick()"
+                mdbWavesEffect>
+                Approve
+            </button>
+        </ng-container>
+    </div>
+</div>

@@ -1,0 +1,46 @@
+<div class="modal-header flex-center modal-topic">
+  <h5 class="modal-title w-100 font-weight-bold">Batch Comment</h5>
+  <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="onCloseModel()">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
+<div class="card p-3 bg-white">
+  <form [formGroup]="bulkCommentForm">
+    <div class="d-flex flex-row justify-content-start w-100-p">
+      <div class="md-form m-top-10px m-bottom-10px side-margin w-100-p">
+        <div style="border: 2px solid gray;border-radius: 2px;">
+          <div class="autocomplete">
+            <textarea type="text" id="myInput" class="form-control rounded-0 comment-area m-top-10px" maxlength="100"
+              placeholder="Comment here.. (Applicable for selected record/s)" formControlName="remark" 
+              (ngModelChange)="getRefreshComment($event)" appTextAreaAutoHeight customHeight="120px" mdbInput>
+                </textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="display-flex w-100-p flex-row jc-start ai-center flex-wrap flex-2-gap"
+      style="position: relative; z-index: 1;">
+      <b>Anticipated date of Regularization : </b>
+      <div class="md-form w-18-p min-width-120">
+        <mdb-date-picker class="form-control" id="anticipatedDateStr" formControlName="anticipatedDateStr"
+          [options]="myDatePickerOptions" [(ngModel)]="anticipatedDateStr" [placeholder]="'Select Date'"
+          [inline]="false" required>
+        </mdb-date-picker>
+      </div>
+
+
+      <div class="display-flex flex-1 flex-row jc-end ai-center">
+        <button type="button" mdbBtn [disabled]="!isCommentEdited" [title]="'Save Comment'" size="sm"
+          class="medium-button btn btn-info" (click)="addComment()">
+          Save
+        </button>
+        <!-- <button mdbBtn type="button" class="medium-button btn btn-light" outline="true" data-toggle="tooltip"
+          data-placement="bottom" [title]="'Clear Comment'" mdbWavesEffect (click)="clearComment()">
+          Clear
+        </button> -->
+      </div>
+    </div>
+  </form>
+</div>

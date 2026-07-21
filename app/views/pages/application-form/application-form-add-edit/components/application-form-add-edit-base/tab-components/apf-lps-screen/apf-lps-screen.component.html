@@ -1,0 +1,19 @@
+<mdb-card>
+  <mdb-card-body class="custom-card-bod">
+    <div class="d-flex flex-column justify-content-center w-100-p">
+      <app-apf-lps-basic-details [applicationForm]="applicationForm">
+      </app-apf-lps-basic-details>
+      <app-apf-documents-preview [applicationForm]="applicationForm">
+      </app-apf-documents-preview>
+      <app-apf-facilities-preview [applicationForm]="applicationForm">
+      </app-apf-facilities-preview>
+      <app-apf-lps-executive-summary-topics [applicationForm]="applicationForm">
+      </app-apf-lps-executive-summary-topics>
+      <app-apf-status-history-preview [applicationForm]="applicationForm">
+      </app-apf-status-history-preview>
+    </div>
+  </mdb-card-body>
+  <mdb-card-footer class="custom-card-footer">
+  </mdb-card-footer>
+</mdb-card>
+<a class="download-link" #lpsDownloadLink></a>

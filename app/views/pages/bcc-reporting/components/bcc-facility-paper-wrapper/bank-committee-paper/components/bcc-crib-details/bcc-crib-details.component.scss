@@ -1,0 +1,41 @@
+.item-box {
+  border-width: 2px;
+  width: 100%;
+}
+
+.data-lbl {
+  padding-left: 2.5%;
+  padding-right: 3px;
+  min-width: 255px;
+  //font-weight: bold;
+}
+
+
+.cta-btn {
+  padding: .4rem .7rem;
+  font-size: .8rem;
+  color: unset;
+  margin: 2px;
+  box-shadow: unset !important;
+}
+
+.delete-button {
+  background-color: unset !important;
+
+  mdb-icon {
+    color: #ff354785;
+  }
+}
+
+.add-record {
+  border-bottom: 2px solid #9d9ea0 !important;
+}
+
+input.form-control.validate-success.ng-valid.ng-dirty, input.form-control.validate-success.ng-valid.ng-touched, .form-submitted input.form-control.validate-success.ng-valid {
+  border-bottom: none !important;
+  box-shadow: none !important;
+}
+
+
+
+

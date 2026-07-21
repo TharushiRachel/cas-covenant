@@ -1,0 +1,78 @@
+<div mdbSticky class="d-flex flex-row justify-content-between page-header">
+    <div class="d-flex flex-row align-items-center">
+        <h5><i class="fas fa-dice-d20 header-icon"></i> Environmental Risk Annexure</h5>
+    </div>
+</div>
+
+<div class="m-0 p-2">
+    <div class="row d-flex mx-0 my-3">
+        <div class="col-md-4">
+            <div class="md-form">
+                <input class="form-control" id="name" [(ngModel)]="formData.name" type="text" mdbInput
+                    style="margin-top: 2px;">
+                <label for="name">Name *</label>
+                <mdb-error *ngIf="errors.name">{{errors.name}}</mdb-error>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="md-form">
+                <mdb-select [options]="yesNoOptions" [(ngModel)]="formData.isMandatory" class="form-control py-0"
+                    label="Is Mandatory *">
+                </mdb-select>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="md-form">
+                <mdb-select [options]="yesNoOptions" [(ngModel)]="formData.allowRiskEdit" class="form-control py-0"
+                    label="Allow Risk Department to Edit*">
+                </mdb-select>
+            </div>
+        </div>
+        <div class="col-md-12 my-3">
+            <div class="md-form">
+                <textarea type="text" name="description" id="description" class="form-control border-bottom"
+                    appTextAreaAutoHeight mdbInput [(ngModel)]="formData.description"></textarea>
+                <label for="description">Description *</label>
+                <mdb-error *ngIf="errors.description">{{errors.description}}</mdb-error>
+            </div>
+        </div>
+    </div>
+
+    <div class="row d-flex mx-2 my-3 p-2 border border-1 rounded">
+        <div class="col-md-12 text-align-end p-0">
+            <button type="button" mdbBtn color="info" size="sm" class="waves-light" aria-label="Close" mdbWavesEffect
+                (click)="handleSortQuestions()" *ngIf="isSortEnabled(questions)">
+                Sort Question
+            </button>
+
+            <button type="button" mdbBtn color="info" size="sm" class="waves-light" aria-label="Close" mdbWavesEffect
+                (click)="handleAddEditQuestion()">
+                Add Question
+            </button>
+        </div>
+
+        <div class="col-md-12 text-align-center p-0" *ngIf="errors.questions">
+            <span class="text-danger">{{errors.questions}}</span>
+        </div>
+
+        <ng-container *ngIf="questions.length > 0">
+            <app-view-question-wrapper style="width: 100%;" [questions]="questions" [isEditEnabled]="true"
+                [isBadgeShow]="false" (addEditQuestion)="handleAddEditQuestion($event)"
+                (removeQuestion)="handleRemoveQuestion($event)" (addEditAnswer)="handleAddEditAnswer($event)"
+                (removeAnswer)="handleRemoveAnswer($event)" (sortAnswers)="handleSortAnswers($event)">
+            </app-view-question-wrapper>
+        </ng-container>
+
+    </div>
+
+    <div class="row d-flex justify-content-end px-3">
+        <button type="button" mdbBtn color="info" size="sm" class="waves-light" aria-label="Close" mdbWavesEffect
+            (click)="handleDraftSave()" *ngIf="showDraft()">
+            Save as Draft
+        </button>
+        <button type="button" mdbBtn color="info" size="sm" class="waves-light" aria-label="Close" mdbWavesEffect
+            (click)="handleSave()">
+            Save
+        </button>
+    </div>
+</div>

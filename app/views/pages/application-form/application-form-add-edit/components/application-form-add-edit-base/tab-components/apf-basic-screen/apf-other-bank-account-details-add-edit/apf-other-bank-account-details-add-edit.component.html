@@ -1,0 +1,61 @@
+<mdb-card>
+  <mdb-card-header class="custom-card-header">
+    OTHER BANK ACCOUNT DETAILS
+  </mdb-card-header>
+  <mdb-card-body class="custom-card-body">
+    <ng-container>
+      <div class="d-flex flex-column justify-content-between w-100-p">
+        <table class="table custom-apf-table width-100">
+          <tr>
+            <th>Bank Name</th>
+            <th>Name of Branch</th>
+            <th>Account No.</th>
+            <th>Type of Account</th>
+            <ng-container *ngIf="isAbleToEdit()">
+              <th class="width-12 text-align-center">
+                <button class="btn btn-sm btn-secondary cta-btn" type="button" mdbWavesEffect
+                        (click)="openModalOtherBankDetails($event)"
+                        mdbTooltip="Add New Detail" placement="left">
+                  <mdb-icon fas icon="fas fa-plus" aria-hidden="true"></mdb-icon>
+                </button>
+              </th>
+            </ng-container>
+          </tr>
+          <ng-container *ngIf="basicInformation.afOtherBankDetailsDTOList.length>0; else noData;">
+            <tr *ngFor="let otherBankDetail of basicInformation.afOtherBankDetailsDTOList; let i = index;">
+              <td>{{otherBankDetail.nameOfBank}}</td>
+              <td>{{otherBankDetail.nameOfBranch}}</td>
+              <td>{{otherBankDetail.accountNo}}</td>
+              <td>{{otherBankDetail.typeOfAccount}}</td>
+              <ng-container *ngIf="isAbleToEdit()">
+                <td class="text-align-center">
+                  <button class="btn btn-sm btn-secondary cta-btn" type="button" mdbWavesEffect
+                          (click)="openModalOtherBankDetails($event,otherBankDetail)"
+                          mdbTooltip="Edit Details"
+                          placement="left">
+                    <mdb-icon fas icon="pencil-alt" aria-hidden="true"></mdb-icon>
+                  </button>
+                  <button class="btn btn-sm btn-danger cta-btn delete-button" type="button" mdbWavesEffect
+                          mdbTooltip="Remove Bank Details"
+                          (click)="deactivateAFCribAttachment($event,otherBankDetail)"
+                          placement="left">
+                    <mdb-icon fas icon="trash-alt" aria-hidden="true"></mdb-icon>
+                  </button>
+                </td>
+              </ng-container>
+            </tr>
+          </ng-container>
+          <ng-template #noData>
+            <tr>
+              <th colspan="5" class="text-align-center">
+                <p class="no-data-message">
+                  No Details
+                </p>
+              </th>
+            </tr>
+          </ng-template>
+        </table>
+      </div>
+    </ng-container>
+  </mdb-card-body>
+</mdb-card>

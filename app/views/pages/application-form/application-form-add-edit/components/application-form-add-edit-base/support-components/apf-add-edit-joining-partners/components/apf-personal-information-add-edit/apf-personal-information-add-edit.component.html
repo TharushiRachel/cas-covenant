@@ -1,0 +1,206 @@
+<mdb-card>
+  <mdb-card-header class="custom-card-header">
+    PERSONAL INFORMATION
+  </mdb-card-header>
+  <mdb-card-body class="custom-card-body">
+    <form [formGroup]="personalInformationForm" class="width-100">
+      <div class="d-flex flex-column justify-content-between w-100-p">
+        <div class="d-flex flex-row justify-content-between width-100 m-bottom-10px">
+          <div class="md-form w-25-p">
+            <mdb-select
+              [options]="optionsSelectTitle"
+              label="Title"
+              class="m-top-8px"
+              formControlName="title"
+              id="title"></mdb-select>
+            <mdb-error *ngIf="formErrors.title.required">Title is required</mdb-error>
+          </div>
+
+          <div class="md-form w-75-p m-top-12px">
+            <input mdbValidate
+                   type="text"
+                   id="nameWithInitials"
+                   maxlength="200"
+                   formControlName="nameWithInitials"
+                   class="form-control"
+                   mdbInput
+            >
+            <label for="nameWithInitials">Name With Initial *</label>
+          </div>
+        </div>
+
+        <div class="d-flex flex-row justify-content-between width-100 m-bottom-10px">
+          <div class="md-form width-100 m-top-12px">
+            <input mdbValidate
+                   type="text"
+                   id="initialRepresentation"
+                   maxlength="200"
+                   formControlName="initialRepresentation"
+                   class="form-control"
+                   mdbInput
+            >
+            <label for="initialRepresentation">Name Represented by Initials *</label>
+          </div>
+        </div>
+
+        <div class="d-flex flex-row justify-content-between width-100 m-bottom-10px">
+          <div class="md-form width-35">
+            <mdb-date-picker class="form-control"
+                             id="dateOfBirthStr"
+                             formControlName="dateOfBirthStr"
+                             [options]="myDatePickerOptionsForBirthDay"
+                             [inline]="true"
+                             label="Date of Birth "
+            ></mdb-date-picker>
+            <mdb-error *ngIf="formErrors.dateOfBirthStr.required">Required</mdb-error>
+          </div>
+
+          <div class="md-form width-35 m-top-12px">
+            <input mdbValidate
+                   type="text"
+                   id="placeOfBirth"
+                   maxlength="200"
+                   formControlName="placeOfBirth"
+                   class="form-control"
+                   mdbInput
+            >
+            <label for="placeOfBirth">Place of Birth *</label>
+          </div>
+
+          <div class="md-form width-35 m-top-12px">
+            <input mdbValidate
+                   type="text"
+                   id="nationality"
+                   maxlength="200"
+                   formControlName="nationality"
+                   class="form-control"
+                   mdbInput
+            >
+            <label for="nationality">Nationality *</label>
+          </div>
+        </div>
+
+        <div class="d-flex flex-row justify-content-between width-100 m-bottom-10px">
+          <div class="md-form width-50">
+            <mdb-select
+              [options]="optionsCivilStatusSelect"
+              formControlName="civilStatus"
+              id="civilStatus"
+              class="m-top-8px"
+              label="Civil Status *"
+            ></mdb-select>
+            <mdb-error *ngIf="formErrors.civilStatus.required">required</mdb-error>
+          </div>
+
+          <div class="md-form width-50">
+            <mdb-select
+              [options]="optionsEmploymentSelect"
+              formControlName="employment"
+              id="employment"
+              class="m-top-8px"
+              label="Employment *"
+            ></mdb-select>
+            <mdb-error *ngIf="formErrors.employment.required">required</mdb-error>
+          </div>
+        </div>
+
+        <ng-container *ngIf="isEmployed()">
+          <div class="d-flex flex-row justify-content-between width-100 m-bottom-10px">
+            <div class="md-form width-50 m-top-12px">
+              <input mdbValidate
+                     type="text"
+                     id="employer"
+                     maxlength="200"
+                     formControlName="employer"
+                     class="form-control"
+                     mdbInput
+              >
+              <label for="employer">Employer *</label>
+            </div>
+
+            <div class="md-form width-30 m-top-12px">
+              <input mdbValidate
+                     type="text"
+                     id="position"
+                     maxlength="200"
+                     formControlName="position"
+                     class="form-control"
+                     mdbInput
+              >
+              <label for="position">Your Position *</label>
+            </div>
+
+            <div class="md-form width-20 m-top-12px">
+              <input mdbValidate
+                     type="text"
+                     id="noOfYearsEmployment"
+                     maxlength="200"
+                     formControlName="noOfYearsEmployment"
+                     class="form-control"
+                     (keydown)="validateNumber($event)"
+                     mdbInput
+              >
+              <label for="noOfYearsEmployment">No of Years with Employer *</label>
+            </div>
+          </div>
+        </ng-container>
+
+        <ng-container *ngIf="isSelfEmployed()">
+          <div class="d-flex flex-row justify-content-between width-100 m-bottom-10px">
+            <div class="md-form width-50 m-top-12px">
+              <input mdbValidate
+                     type="text"
+                     id="natureOfBusiness"
+                     maxlength="200"
+                     formControlName="natureOfBusiness"
+                     class="form-control"
+                     mdbInput
+              >
+              <label for="position">Nature Of Business *</label>
+            </div>
+
+            <div class="md-form width-50 m-top-12px">
+              <input mdbValidate
+                     type="text"
+                     id="noOfBusinessYears"
+                     maxlength="200"
+                     formControlName="noOfBusinessYears"
+                     class="form-control"
+                     (keydown)="validateNumber($event)"
+                     mdbInput
+              >
+              <label for="noOfBusinessYears">No of Business Years *</label>
+            </div>
+          </div>
+        </ng-container>
+
+        <div class="d-flex flex-row justify-content-between width-100 m-bottom-10px">
+          <div class="md-form width-50 m-top-12px">
+            <input mdbValidate
+                   type="text"
+                   id="highestEduAchievement"
+                   maxlength="200"
+                   formControlName="highestEduAchievement"
+                   class="form-control"
+                   mdbInput
+            >
+            <label for="highestEduAchievement">Highest Education Achievement </label>
+          </div>
+
+          <div class="md-form width-50 m-top-12px">
+            <input mdbValidate
+                   type="text"
+                   id="officialAddress"
+                   maxlength="200"
+                   formControlName="officialAddress"
+                   class="form-control"
+                   mdbInput
+            >
+            <label for="officialAddress">Official Address</label>
+          </div>
+        </div>
+
+      </div>
+    </form>
+  </mdb-card-body>
+</mdb-card>

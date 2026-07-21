@@ -1,0 +1,29 @@
+<mdb-card>
+  <mdb-card-body class="custom-card-body">
+    <mdb-card-header class="custom-card-header justify-content-center">
+      <div class="d-flex flex-row w-100-p mb-3 flex-wrap justify-content-between">
+        <div>
+        </div>
+        <div>
+          <ng-container *appHasAnyPrivilege="masterDataPrivilege.ICAS_SETTINGS_UPLOAD_SUPPORTING_DOCUMENTS">
+            <ng-container *ngIf="isAbleToEdit()">
+              <button
+                type="button"
+                class="btn btn-light cft-btn px-sm-2 "
+                mdbTooltip="Add Supporting Doc" placement="left"
+                (click)="openModalDocumentDetails()">
+                <i class="fas fa-plus" aria-hidden="true"></i>
+              </button>
+            </ng-container>
+          </ng-container>
+        </div>
+      </div>
+    </mdb-card-header>
+    <div class="d-flex flex-column justify-content-center w-100-p">
+      <app-apf-document-attachments-uploads (openModalDocumentDetailsDetails)="openModalDocumentDetails($event)">
+      </app-apf-document-attachments-uploads>
+    </div>
+  </mdb-card-body>
+  <mdb-card-footer class="custom-card-footer">
+  </mdb-card-footer>
+</mdb-card>

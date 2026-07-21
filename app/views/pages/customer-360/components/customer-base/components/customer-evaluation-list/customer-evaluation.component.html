@@ -1,0 +1,45 @@
+<!-- <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="mdbModalRef.hide()">
+    <span aria-hidden="true">&times;</span>
+  </button>
+ -->
+
+<div class="table-responsive">
+
+  <div *ngIf=" showComponentB">
+    <button type="button" class="btn btn-sm btn-danger cta-btn delete-button cust-evl-btn"
+        mdbWavesEffect
+        mdbTooltip="Remove template"
+        placement="right"
+        (click)="closeDataComponent()">
+          <mdb-icon fas icon="trash-alt" aria-hidden="true"></mdb-icon>
+        </button>
+    <app-customer-evaluation-form [customerEvaluationId]="customerEvaluationId"></app-customer-evaluation-form>
+  </div>
+
+  <table class="table">
+    <tr>
+      <th>Customer Financial Id</th>
+      <th>Score</th>
+      <th>Filled Date</th>
+    </tr>
+    <ng-container *ngFor="let evaluation of evaluations">
+      <tr>
+        <td>{{evaluation.customerId}}</td>
+        <td>{{evaluation.score}}</td>
+        <td>{{evaluation.filledDate}}</td>
+        <button type="button" class="btn btn-info" (click) = "openDialog(evaluation.customerEvaluationId)" >view</button>
+      </tr>
+    </ng-container>
+
+    <tr *ngIf="evaluations.length==0">
+      <th colspan="5" class="text-align-center">
+        <p class="no-data-message">
+          No Evaluations.
+        </p>
+      </th>
+    </tr>
+    
+  </table>
+
+ 
+<app-scroll-to-top></app-scroll-to-top>

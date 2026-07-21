@@ -1,0 +1,279 @@
+<div #modalBody style="max-height: 100%;">
+    <div class="row d-flex mx-0 justify-content-center" *ngIf="commissionReportingDataList.length > 0">
+        <mdb-icon class="btn-sm" fas icon="chevron-down" aria-hidden="true" *ngIf="!isCollapsed"
+            (click)="handleCollapsed()" style="cursor: pointer;">
+        </mdb-icon>
+        <mdb-icon class="btn-sm" fas icon="chevron-up" aria-hidden="true" *ngIf="isCollapsed"
+            (click)="handleCollapsed()" style="cursor: pointer;">
+        </mdb-icon>
+    </div>
+
+    <div class="mx-0 px-0 pb-2 mb-3" *ngIf="isCollapsed" style="border-bottom: 1px solid #dee2e6;">
+        <div class="row d-flex flex-row mx-0">
+            <div class="col-3 md-form mx-0">
+                <mdb-date-picker class="form-control" id="fromDate" label="From Date *" [(ngModel)]="fromDate"
+                    [options]="myDatePickerOptions" [inline]="true" [disabled]="isSearched"></mdb-date-picker>
+            </div>
+
+            <div class="col-3 md-form mx-0">
+                <mdb-date-picker class="form-control" id="toDate" label="To Date *" [(ngModel)]="toDate"
+                    [options]="myDatePickerOptions" [inline]="true" [disabled]="isSearched"></mdb-date-picker>
+            </div>
+
+            <div class="col-3 md-form mx-0">
+                <mdb-select class="mt-2" id="sector" [options]="sectorOptions" [filterEnabled]="true"
+                    [(ngModel)]="sector" label="Sector *" [disabled]="isSearched"></mdb-select>
+            </div>
+
+            <div class="col-3 md-form mx-0">
+                <mdb-select class="mt-2" id="riskRating" [options]="riskRatingOptions" [(ngModel)]="riskRating"
+                    label="Risk Rating *" [disabled]="isSearched"></mdb-select>
+            </div>
+        </div>
+
+        <div class="row d-flex flex-row mx-0 my-2 pb-2 width-100">
+            <div class="col-3 md-form mx-0">
+                <mdb-select id="productId" [options]="commissionTypeOptions" [filterEnabled]="true"
+                    [(ngModel)]="productId" label="Product Type *" [disabled]="isSearched"></mdb-select>
+            </div>
+            <div class="col-3">
+                <div class="md-form mx-0">
+                    <input class="form-control" [(ngModel)]="chargeFrom" id="chargeFrom" mdbInput type="text"
+                        [disabled]="isSearched">
+                    <label for="chargeFrom">Charge From (%) *</label>
+                </div>
+            </div>
+            <div class="col-3">
+                <div class="md-form mx-0">
+                    <input class="form-control" [(ngModel)]="chargeTo" id="chargeTo" mdbInput type="text"
+                        [disabled]="isSearched">
+                    <label for="chargeTo">Charge To (%) *</label>
+                </div>
+            </div>
+            <div class="col-3">
+                <div class="row d-flex flex-row justify-content-end mx-0 width-100">
+                    <button type="button" mdbBtn color="secondary" size="sm" class="waves-light" aria-label="Close"
+                        mdbWavesEffect (click)="handleSearch()" [disabled]="isSearched">
+                        Search
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="table-responsive mt-2"
+            [ngStyle]="{'max-height' : commissionReportingDataList.length == 0 ? '45vh' : '20vh'}"
+            style="overflow-y: auto;">
+            <table class="table" style="border-collapse: collapse !important;" *ngIf="commissionDataList.length > 0">
+                <thead>
+                    <tr>
+                        <th style="width: 10%; vertical-align: middle;">Customer</th>
+                        <th style="width: 10%; vertical-align: middle;">Loan Account No</th>
+                        <th style="width: 10%; vertical-align: middle;">Commission</th>
+                        <th></th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let commission of getSliceData()">
+                        <td>{{commission.acctName}}</td>
+                        <td>{{commission.acct_id}}</td>
+                        <td>{{commission.pcntAmt}}%</td>
+                        <td>
+                            <button type="button" mdbBtn color="secondary" size="sm" class="waves-light"
+                                aria-label="Close" mdbWavesEffect
+                                style="margin: 0px;width: fit-content;padding: 8px !important;"
+                                (click)="getLoanAccounts(commission.cif,commission.pcntAmt)"
+                                [disabled]="commission.isSearch">
+                                More Details
+                            </button>
+                        </td>
+                        <td>
+                            <ng-container *ngIf="isSearchAndNoLoanAcc(commission.cif) && !commission.isAddStatement">
+                                <div class="d-flex flex-row align-items-center mx-0">
+                                    There are no loan accounts. Do you want to add this record to the statement ?
+                                    <button type="button" mdbBtn color="secondary" size="sm" class="waves-light"
+                                        aria-label="Close" mdbWavesEffect
+                                        style="margin: 0px 4px;width: fit-content;padding: 6px 10px !important;"
+                                        (click)="addWithoutLoanAcc(commission)">
+                                        Yes
+                                    </button>
+                                </div>
+                            </ng-container>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <ng-container *ngIf="commissionDataList.length > 0">
+            <app-paginator [pageIndex]="pageSize.pageIndex" [length]="pageSize.length" [pageSize]="pageSize.pageSize"
+                [pageSizeOptions]="pageSize.pageSizeOptions" (page)="onPageEvent($event)"></app-paginator>
+        </ng-container>
+    </div>
+
+    <div class="row d-flex mx-0 p-0 w-100" [ngStyle]="{'max-height' : isCollapsed ? '20vh' : '70vh'}"
+        style="overflow-y: auto;" *ngIf="commissionReportingDataList.length > 0">
+        <div class="row d-flex flex-row mx-0 p-2 my-1"
+            style="border: 1px solid #dee2e6; border-radius: 6px;width: 50% !important;"
+            *ngIf="commissionReportingDataList.length > 0">
+            <div class="col-5">
+                <div class="md-form mt-2">
+                    <input class="form-control" [(ngModel)]="cifId" id="cifId" mdbInput type="text"
+                        [disabled]="isSorted">
+                    <label for="cifId">CIF ID</label>
+                </div>
+            </div>
+            <div class="col-5">
+                <div class="md-form mt-2">
+                    <input class="form-control" [(ngModel)]="account" id="account" mdbInput type="text"
+                        [disabled]="isSorted">
+                    <label for="account">Loan Account No</label>
+                </div>
+            </div>
+            <div class="col-2 m-0"
+                style="display: flex; flex-direction: column; align-items: end; justify-content: center;">
+                <button type="button" mdbBtn color="secondary" size="sm" class="waves-light m-0" aria-label="Close"
+                    mdbWavesEffect (click)="handleSort()" *ngIf="!isSorted">
+                    Filter
+                </button>
+                <button type="button" mdbBtn color="secondary" size="sm" class="waves-light m-0" aria-label="Close"
+                    mdbWavesEffect (click)="clearSort()" *ngIf="isSorted">
+                    Clear
+                </button>
+            </div>
+        </div>
+
+        <div class="row d-flex mx-0 my-2 p-0 w-100" *ngIf="commissionReportingDataList.length > 0">
+            <ng-container *ngFor="let item of commissionReportingDataList">
+                <h6 class="mt-2" style="font-size: 14px;font-weight: 600;">{{item.acctName}}</h6>
+                <div class="table-responsive">
+                    <table class="table" *ngIf="item.loans.length > 0" style="border-collapse: collapse !important;">
+                        <thead>
+                            <tr>
+                                <th style="width: 10%; vertical-align: middle;"></th>
+                                <th style="width: 10%; vertical-align: middle;">Loan Account No</th>
+                                <th style="width: 12%; vertical-align: middle;">Product</th>
+                                <th style="width: 10%; vertical-align: middle;">Amount (Mn)</th>
+                                <th style="width: 10%; vertical-align: middle;">Interest Rate</th>
+                                <th style="width: 10%; vertical-align: middle;">Commission</th>
+                                <th style="width: 13%; vertical-align: middle;">Sector</th>
+                                <th style="width: 10%; vertical-align: middle;">Risk Rating</th>
+                                <th style="width: 15%; vertical-align: middle;background-color: #dee2e6;">
+                                    Facility Type
+                                    <br />
+                                    <small>Select the facility type</small>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <ng-container *ngFor="let loan of item.loans">
+                                <tr>
+                                    <td>
+                                        <button type="button" mdbBtn color="secondary" size="sm" class="waves-light"
+                                            aria-label="Close" mdbWavesEffect
+                                            style="margin: 0px;width: fit-content;padding: 8px !important;"
+                                            [disabled]="!loan.iimitB2kId"
+                                            (click)="getLimitNodeDetails(loan.iimitB2kId,item.custId,loan.foracid)">
+                                            Check Limit Node
+                                        </button>
+                                    </td>
+                                    <td style="vertical-align: middle;">
+                                        <mdb-checkbox [(ngModel)]="loan.isAccSelected"
+                                            (change)="handleSelectChange($event,item.custId,loan.foracid)">
+                                            {{loan.foracid}}
+                                        </mdb-checkbox>
+                                    </td>
+                                    <td style="vertical-align: middle;">
+                                        <ng-container *ngIf="loan.schmDesc">{{loan.schmDesc}}</ng-container>
+                                        <ng-container *ngIf="loan.productGroup">({{loan.productGroup}})</ng-container>
+                                        <ng-container *ngIf="!loan.schmDesc || !loan.productGroup">-</ng-container>
+                                    </td>
+                                    <td style="vertical-align: middle;">
+                                        {{loan.acctCrncyCode}} {{loan.sanctLim ? loan.sanctLim : "-"}}
+                                    </td>
+                                    <td style="vertical-align: middle;">
+                                        {{loan.intTbleCode ? loan.intTbleCode + " + " +
+                                        loan.prefRate +"%" : ""}}
+                                        <br />
+                                        {{loan.interestRate ? "("+ loan.interestRate +"%)" : "-"}}
+                                    </td>
+                                    <td style="vertical-align: middle;">{{loan.commission}}%</td>
+                                    <td style="vertical-align: middle;">
+                                        {{loan.sectorCode}}-{{loan.sectorDesc}}
+                                    </td>
+                                    <td style="vertical-align: middle;">
+                                        {{loan.riskRating ? loan.riskRating : "-"}}
+                                    </td>
+                                    <td style="vertical-align: middle;">
+                                        <div class="m-0 p-0" *ngIf="loan.isAccSelected">
+                                            <mdb-select id="facilityType" [options]="facilityTypeOptions"
+                                                [(ngModel)]="loan.facilityType" placeholder="Choose..."
+                                                (ngModelChange)="handleFacilityTypeChange(item.custId,loan.foracid,loan.facilityType)"></mdb-select>
+                                        </div>
+                                        <div class="m-0 p-0" *ngIf="!loan.isAccSelected">
+                                            -
+                                        </div>
+                                    </td>
+                                </tr>
+                                <!-- Extra Rows After Each Loan -->
+                                <tr *ngIf="loan.limitNode">
+                                    <td colspan="6">
+                                        <div class="row d-flex mx-0 w-100">
+                                            <div class="w-25-p p-1">
+                                                <strong>Limit Name:</strong>
+                                                {{loan.limitNode.limitPrefix}}
+                                                {{loan.limitNode.limitSuffix}}
+                                            </div>
+                                            <div class="w-25-p p-1">
+                                                <strong>Limit Description:</strong>
+                                                {{loan.limitNode.limitDesc}}
+                                            </div>
+                                            <div class="w-25-p p-1">
+                                                <strong>Node Sanction:</strong>
+                                                {{loan.limitNode.nodeCcy}}
+                                                {{loan.limitNode.nodeSanction}} Mn
+                                            </div>
+                                            <div class="w-25-p p-1">
+                                                <strong>Drawing Power:</strong>
+                                                {{loan.limitNode.nodeCcy}}
+                                                {{loan.limitNode.drawingPower}} Mn
+                                            </div>
+                                            <div class="w-25-p p-1">
+                                                <strong>Liab:</strong>
+                                                {{loan.limitNode.nodeCcy}}
+                                                {{loan.limitNode.liab}} Mn
+                                            </div>
+                                            <div class="w-25-p p-1">
+                                                <strong>Contingent Liab:</strong>
+                                                {{loan.limitNode.contingentLiab}}
+                                            </div>
+                                            <div class="w-25-p p-1">
+                                                <strong>Limit Sanction Date: </strong>
+                                                {{loan.limitNode.limSanctDate}}
+                                            </div>
+                                            <div class="w-25-p p-1">
+                                                <strong>Limit Exp Date:</strong>
+                                                {{loan.limitNode.limExpDate}}
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </ng-container>
+                        </tbody>
+                    </table>
+                </div>
+            </ng-container>
+        </div>
+    </div>
+</div>
+
+<div class="row d-flex flex-row mx-0 my-2 justify-content-end align-items-center">
+    <button type="button" mdbBtn color="secondary" size="sm" class="waves-light" aria-label="Close" mdbWavesEffect
+        (click)="handleSearchClear()" *ngIf="isSearched">
+        Clear Search Data
+    </button>
+
+    <button type="button" mdbBtn color="success" size="sm" class="waves-light" aria-label="Close" mdbWavesEffect
+        (click)="submitLoans()" *ngIf="isGenerateBtnEnabled()">
+        Submit
+    </button>
+</div>

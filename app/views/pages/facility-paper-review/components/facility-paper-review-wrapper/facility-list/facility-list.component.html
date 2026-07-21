@@ -1,0 +1,95 @@
+<div class="page-search-section section display-flex flex-column jc-start p-2 pt-3 pb-3 default-box-styles align-start">
+  <form class="display-flex w-100-p flex-row jc-start ai-center flex-wrap flex-2-gap" [formGroup]="searchForm">
+
+    <div class="md-form w-18-p min-width-120">
+      <input type="text" id="customerName" formControlName="customerName" class="form-control" mdbInput>
+      <label for="customerName">Customer Name</label>
+    </div>
+
+    <div class="md-form w-18-p  min-width-120">
+      <input type="text" id="fpRefNumber" formControlName="fpRefNumber" class="form-control" mdbInput>
+      <label for="fpRefNumber">Ref Number</label>
+    </div>
+
+    <div class="md-form w-18-p min-width-120">
+      <mdb-select
+        [multiple]="true"
+        [options]="optionsSelect"
+        formControlName="paperReviewStatusList"
+        label="Paper Reviewer Status"
+        id="leadStatusList"></mdb-select>
+    </div>
+
+    <ng-container *ngIf="this.facilityReviewSearchDetails.upmGroupCode">
+      <div class="md-form w-18-p  min-width-120">
+        <span>UPM Group Code</span> : <span
+        style="font-weight: bold"> {{this.facilityReviewSearchDetails.upmGroupCode}}</span>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="this.facilityReviewSearchDetails.dateRange !== this.dateRangeConst.CUSTOM">
+      <div class="md-form w-18-p  min-width-120">
+        <span style="font-weight: bold">{{dateRange[this.facilityReviewSearchDetails.dateRange]}}</span>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="this.facilityReviewSearchDetails.dateRange == this.dateRangeConst.CUSTOM">
+      <div class="md-form w-18-p  min-width-120">
+        <span style="font-weight: bold">{{this.facilityReviewSearchDetails.fromDate}}</span> <span
+        style="font-weight: bold">  -  </span>
+        <span style="font-weight: bold">{{this.facilityReviewSearchDetails.toDate}}</span>
+      </div>
+    </ng-container>
+
+    <div class="display-flex flex-1 flex-row jc-end ai-center">
+      <button (click)="doSearch()" type="button" class=" medium-button btn btn-info" mdbBtn size="sm">Search</button>
+      <button (click)="clearSearch()" class=" medium-button btn btn-outline-info clear-btn" type="button">
+        Clear
+      </button>
+    </div>
+  </form>
+</div>
+
+
+<ng-container *ngIf="facilityPapers && facilityPapers.length > 0">
+  <div class="section table-responsive mb-15p">
+    <table class="table">
+      <thead>
+      <tr>
+        <th scope="col" class="width-15">Facility Ref Number</th>
+        <th scope="col">Customer</th>
+        <th scope="col">Approved Date</th>
+        <th scope="col" class="text-align-end">No of Days</th>
+        <th scope="col" class="text-align-end">Proposed/Previous Values</th>
+        <th scope="col" class="text-align-end">Required/Outstanding Values</th>
+      </tr>
+      </thead>
+      <tbody>
+      <ng-container *ngFor="let facilityPaper of facilityPapers; let i = index">
+        <tr
+          class="table-clickable-row"
+          (click)="viewFacilityPapers(facilityPaper)"
+        >
+          <td class="fp-ref-number-header">{{facilityPaper.fpRefNumber || '-'}}
+            <app-facility-paper-reviewer-label [facilityPaper]="facilityPaper">
+            </app-facility-paper-reviewer-label>
+          </td>
+          <td class="customer-name-col">{{facilityPaper.customerName || '-'}}</td>
+          <td class="width-12">{{facilityPaper.createdDateStr || '-'}}</td>
+          <td class="text-right width-10">{{facilityPaper.noOfDays}}</td>
+          <td class="text-right width-20">{{this.getCurrencyFormat(facilityPaper.totalExposurePrevious)}}</td>
+          <td class="text-right width-20">{{this.getCurrencyFormat(facilityPaper.totalExposureNew)}}</td>
+        </tr>
+      </ng-container>
+      </tbody>
+    </table>
+  </div>
+  <app-paginator
+    [pageIndex]="pageSize.pageIndex"
+    [length]="pageSize.length"
+    [pageSize]="pageSize.pageSize"
+    [pageSizeOptions]="pageSize.pageSizeOptions"
+    (page)="onPageEvent($event)"
+  ></app-paginator>
+
+</ng-container>

@@ -1,0 +1,26 @@
+<div>
+  <div class="treeview__level" [attr.data-level]="node.dataLabel">
+    <span class="level-title">{{nodeTitle}}</span>
+    <div class="treeview__level-btns">
+      <div *ngIf="!isPreviewMode" class="btn btn-default btn-sm level-add cta-btn" (click)="onEdit($event)">
+        <mdb-icon fas icon="pencil-alt" aria-hidden="true"></mdb-icon>
+      </div>
+    </div>
+    <ng-container *ngIf="node.modifiedUserDisplayName">
+      <span class="level-title" style="margin-left: 12px ; font-weight: normal">Last Updated :
+        <b>{{node.modifiedUserDisplayName}}</b></span>
+    </ng-container>
+    <ng-container *ngIf="node.modifiedDateStr">
+      <span class="level-title" style="margin-left: 16px;"><b>{{node.modifiedDateStr}} </b></span>
+    </ng-container>
+    <ng-container *ngIf="isShow() && nodeContent">
+      <button class="btn fustrace-btn" [ngClass]="node.commentCount > 0 && !isPreviewMode ? 'btn-primary' : 'btn-info'" type="button" mdbTooltip="Comments/Changes" placement="left"
+        (click)="openModalUPCTemplateComment()">
+        <mdb-icon aria-hidden="true" fas icon="comments"></mdb-icon>
+      </button>
+    </ng-container>
+  </div>
+
+  <div class="treeview__level__content html-content-view" [innerHTML]="nodeContent | safeHtml"></div>
+
+</div>

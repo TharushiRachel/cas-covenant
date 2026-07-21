@@ -1,0 +1,17 @@
+<div>
+    <div class="modal-header modal-topic flex-center">
+        <button type="button" class="close pull-right" aria-label="Close" (click)="onClose()">
+            <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-title w-100 heading-align" id="myModalLabel" style="font-size: 1rem ; font-weight: bold">
+            ESG Instructions
+        </h4>
+    </div>
+    <div class="modal-body modal-detail form-margin">
+        <div class="row d-flex mx-0">
+            <div class="col-md-12 border border-1 rounded my-1 p-2" *ngFor="let item of instructions">
+                <span class="m-0">{{item}}</span>
+            </div>
+        </div>
+    </div>
+</div>

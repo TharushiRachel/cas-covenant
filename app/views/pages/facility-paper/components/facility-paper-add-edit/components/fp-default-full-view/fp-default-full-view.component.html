@@ -1,0 +1,153 @@
+<div class="d-flex justify-content-end">
+
+  <!-- <button (click)="generatePdf()" type="button" class=" medium-button btn btn-info cta-btn" data-toggle="tooltip"
+    data-placement="left" [title]='"Full Paper Preview"' mdbBtn>
+    <i class="fas fa-eye"></i>
+  </button> -->
+
+  <app-fp-add-committe-inqury-button [facilityPaper]="facilityPaper">
+  </app-fp-add-committe-inqury-button>
+
+  <button (click)="fullPaperWindow()" type="button" class=" medium-button btn btn-info cta-btn" data-toggle="tooltip"
+    data-placement="bottom" [title]='"Open In New Window"' mdbBtn>
+    <i class="fas fa-book-open"></i>
+  </button>
+</div>
+
+<div class="d-flex justify-content-center" id="filter-full-paper-view-section">
+
+  <app-fp-customer-float-view [facilityPaper]="facilityPaper"></app-fp-customer-float-view>
+
+  <div class="width-90 m-top-20px">
+    <div class="page" id="print-section">
+
+      <app-preview-fp-about [facilityPaper]="facilityPaper">
+      </app-preview-fp-about>
+
+
+      <div class="w-100 my-2 mx-0">
+        <app-view-analytics-decision [analyticsDecision]="analyticsDecision"></app-view-analytics-decision>
+      </div>
+
+      <hr>
+
+      <ng-container *ngFor="let customer of customerList; let i = index">
+        <div class="m-top-15px">
+          <app-personal-detail-basic [customer]="customer">
+          </app-personal-detail-basic>
+          <app-fp-show-crib-details-button [customer]="customer" [facilityPaper]="facilityPaper">
+          </app-fp-show-crib-details-button>
+          <!-- <app-preview-customer-crib-detail [customer]="customer">
+          </app-preview-customer-crib-detail> -->
+
+          <ng-container>
+            <app-personal-customer-ratings [customer]="customer">
+            </app-personal-customer-ratings>
+          </ng-container>
+
+          <ng-container>
+            <app-preview-director-details [facilityPaper]="facilityPaper">
+            </app-preview-director-details>
+          </ng-container>
+
+          <ng-container *ngIf="customer.customerFinancialID">
+            <!--<app-personal-customer-stat-wrapper [customer]="customer" class="noPrint">
+            </app-personal-customer-stat-wrapper>-->
+            <app-personal-customer-stat-wrapper [FormData]="customer" [FormType]="'FACILITY_PAPER'" class="noPrint"
+              [facilityPaper]="facilityPaper">
+            </app-personal-customer-stat-wrapper>
+          </ng-container>
+
+          
+            <ng-container>
+              <label class="font-weight-bold mr-auto">Customer Clarification</label>
+              <app-customer-clarification-view [facilityPaper]="facilityPaper"
+                [customer]="customer" [isEditEnabled]="false"></app-customer-clarification-view>
+            </ng-container>
+        </div>
+        <hr>
+      </ng-container>
+
+      <app-preview-customer-crib-detail [customer]="customerObj">
+      </app-preview-customer-crib-detail>
+
+      <div class="break-page"></div>
+
+      <app-preview-facilities [creditScheduleESBResponseStatusList]="creditScheduleESBResponseStatusList"
+        [facilityPaper]="this.facilityPaper">
+      </app-preview-facilities>
+
+      <app-preview-customer-covenants></app-preview-customer-covenants>
+      <app-preview-existing-covenants [facilityPaper]="this.facilityPaper"></app-preview-existing-covenants>
+
+      <div class="break-page"></div>
+
+      <div class="m-top-15px">
+        <ng-container *ngIf="isCommitteePaper; else nonCorporateFacilityExposureData">
+          <app-preview-three-col-facility-exposure-data [facilityPaper]="facilityPaper">
+          </app-preview-three-col-facility-exposure-data>
+        </ng-container>
+        <ng-template #nonCorporateFacilityExposureData>
+          <app-preview-facility-exposure-data [facilityPaper]="this.facilityPaper">
+          </app-preview-facility-exposure-data>
+        </ng-template>
+      </div>
+
+      <div class="m-top-15px">
+        <app-preview-security-summary [facilityPaper]="this.facilityPaper" [isView]="false">
+        </app-preview-security-summary>
+      </div>
+
+      <div class="m-top-15px">
+        <app-fp-deviation [facilityPaper]="facilityPaper" [isDeviationTableEditable]="isDeviationTableEditable"
+          class="w-100-p">
+        </app-fp-deviation>
+      </div>
+
+      <div class="break-page"></div>
+
+      <div class="m-top-15px">
+        <app-preview-upc-document [isCommentEnable]="true" [upcTemplateList]="this.upcTemplateList"
+          [upcSectionData]="this.fpUpcSectionData" [facilityPaper]="this.facilityPaper">
+        </app-preview-upc-document>
+      </div>
+
+      <!-- <app-preview-scorecard></app-preview-scorecard> -->
+
+      <div class="break-page"></div>
+
+      <div class="m-top-15px">
+        <app-preview-risk-comments [riskCommentList]="this.facilityPaper.fpCreditRiskCommentFilterDTO">
+        </app-preview-risk-comments>
+      </div>
+
+      <ng-container *ngIf="isESGPaper">
+        <div class="m-top-15px">
+          <app-esg-summary-view [facilityPaper]="facilityPaper"></app-esg-summary-view>
+        </div>
+        <div class="break-page"></div>
+      </ng-container>
+
+      <div class="break-page"></div>
+      <div class="m-top-15px">
+        <app-preview-comments [resizedFPCommentList]="this.facilityPaper.fpCommentDTOList">
+        </app-preview-comments>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-container *appHasAnyPrivilege="masterDataPrivilege.ICAS_SETTINGS_PAPER_PRINTING">
+  <div class="d-flex flex-row justify-content-center">
+    <div class="width-90 text-align-end">
+      <app-cas-print-button [printSectionId]="'print-section'" [actionMessage]="'Print Page'"
+        [toolTipMessage]="'Print Default View to PDF'"
+        [styleSheetFileUrl]="'assets/css/pdfprintcustomcss/_default_view_print.css'">
+      </app-cas-print-button>
+    </div>
+  </div>
+</ng-container>
+
+<app-scroll-to-top></app-scroll-to-top>
+
+<a class="download-link" #downloadLink></a>

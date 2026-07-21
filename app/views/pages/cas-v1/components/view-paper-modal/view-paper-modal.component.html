@@ -1,0 +1,14 @@
+<div>
+    <div class="modal-header modal-topic flex-center">
+        <button type="button" class="close pull-right" aria-label="Close" (click)="onClose()">
+            <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-title w-100 heading-align" id="myModalLabel" style="font-size: 1rem ; font-weight: bold">
+            {{customer.fullName}} - {{customer.accNo}} (Ref No:{{customer.refNo}}) ({{customer.facilityDate}})
+        </h4>
+        <span class="badge bg-danger-outline mr-5 py-2 px-4 status-wrapper">{{customer.status}}</span>
+    </div>
+    <div class="modal-body modal-detail form-margin mt-0 px-3">
+        <app-facility-paper-tabs [facilityPaper]="facilityPaper"></app-facility-paper-tabs>
+    </div>
+</div>

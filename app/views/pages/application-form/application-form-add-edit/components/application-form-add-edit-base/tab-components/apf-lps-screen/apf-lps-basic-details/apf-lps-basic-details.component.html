@@ -1,0 +1,55 @@
+<div class="d-flex flex-column justify-content-center w-100-p text-align-center">
+  <h6>PROPOSAL SUMMARY
+    <ng-container *ngIf="applicationForm.fsType != null">
+      (<span class="s-fs-type"> {{applicationForm.fsType}} </span>)
+    </ng-container>
+  </h6>
+</div>
+
+<div class="d-flex flex-column w-100-p initial-info-padding">
+  <table class="custom-apf-table">
+    <tr class="text-align-start">
+      <td>Branch</td>
+      <td>{{getBranchName(applicationForm.branchCode)}}</td>
+    </tr>
+    <tr class="text-align-start" *ngIf="applicationForm.assignUserDisplayName">
+      <td>Assigned User</td>
+      <td>{{applicationForm.assignUserDisplayName}}</td>
+    </tr>
+    <tr class="text-align-start">
+      <td>Created Date</td>
+      <td>{{applicationForm.createdDateStr}}</td>
+    </tr>
+  </table>
+</div>
+
+
+<ng-container *ngFor=" let basicInformation  of applicationForm.basicInformationDTOList ; index as i">
+  <div class="d-flex flex-column justify-content-center w-100-p p-2 basic-details-border mt-10p">
+    <ng-container *ngIf="basicInformation.primaryInformation==yesNoConst.Y ; else joiningPartner">
+      <h6>Main Party</h6>
+    </ng-container>
+    <ng-template #joiningPartner>
+      <h6>Joint Party ({{i}})</h6>
+    </ng-template>
+    <app-apf-basic-information-preview [basicInformation]="basicInformation" class="mt-10p mb-10p">
+    </app-apf-basic-information-preview>
+    <app-apf-crib-preview [basicInformation]="basicInformation">
+    </app-apf-crib-preview>
+    <app-apf-risk-rating-preview [basicInformation]="basicInformation" *ngIf="visibility">
+    </app-apf-risk-rating-preview>
+    <app-apf-financial-obligations-preview [basicInformation]="basicInformation">
+    </app-apf-financial-obligations-preview>
+    <app-apf-other-bank-details-preview [basicInformation]="basicInformation">
+    </app-apf-other-bank-details-preview>
+    <ng-container *ngIf="applicationForm.formType!=basicInformationTypeConst.PERSONAL">
+      <app-apf-director-details-preview [basicInformation]="basicInformation">
+      </app-apf-director-details-preview>
+    </ng-container>
+    <app-personal-customer-stat-wrapper [FormData]="applicationForm.basicInformationDTOList[i]" [FormType]="'APPLICATION_FORM'" class="w-100-p">
+    </app-personal-customer-stat-wrapper>
+  </div>
+</ng-container>
+
+
+

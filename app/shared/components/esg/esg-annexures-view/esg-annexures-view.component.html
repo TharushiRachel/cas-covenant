@@ -1,0 +1,30 @@
+<div *ngFor="let annexure of existingAnnexures" class="position-relative border p-3 mb-3 rounded shadow-sm">
+    <div class="row d-flex mx-0">
+        <div class="col-md-8 p-0">
+            <span class="m-0" style="font-size: 13px; color: #a09f9f;"
+                *ngIf="annexure.annexureAddedBy && annexure.annexureAddedDate">
+                Action By {{annexure.annexureAddedBy}} On {{ annexure.annexureAddedDate | date:'medium' }}
+            </span>
+        </div>
+        <div class="col-md-4 text-align-end p-0" style="font-size: 16px;" *ngIf="canAnnexureChange(annexure)">
+            <ng-container>
+                <button type="button" class="btn-sm btn-outline-info my-0 annexure-btn" type="button"
+                    mdbTooltip="Edit Annexure" placement="right" mdbBtn (click)="onEditAnnexure(annexure)">
+                    <mdb-icon fas icon="pencil-alt"></mdb-icon>
+                </button>
+                <button type="button" class="btn-sm btn-outline-secondary my-0 annexure-btn" type="button"
+                    mdbTooltip="Refresh Annexure" placement="right" mdbBtn (click)="onRefreshAnnexure(annexure)">
+                    <mdb-icon fas icon="sync"></mdb-icon>
+                </button>
+                <button type="button" class="btn-sm btn-outline-primary my-0 annexure-btn" type="button"
+                    mdbTooltip="Delete Annexure" placement="right" mdbBtn (click)="onDeleteAnnexure(annexure)"
+                    *ngIf="annexure.isMandatory === 'N'">
+                    <mdb-icon class="text-danger" fas icon="trash-alt"></mdb-icon>
+                </button>
+            </ng-container>
+        </div>
+    </div>
+
+    <app-esg-annexure-view [annexureData]="annexure" (handleSaveAnnexure)="saveOrUpdateAnnexure($event)"
+        (handleActionCancel)="onActionCancel($event)"></app-esg-annexure-view>
+</div>

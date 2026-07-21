@@ -1,0 +1,39 @@
+<div class="modal-header flex-center modal-topic">
+  <h4 class="modal-title w-100 font-weight-bold">{{heading}}</h4>
+  <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="mdbModalRef.hide()">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
+<div class="modal-body mx-3 modal-detail form-margin">
+  <form class="d-flex p-2 flex-row justify-content-start align-items-start w-100-p" [formGroup]="componentForm">
+    <div class="md-form width-50">
+      <mdb-select mdbValidate
+                  required
+                  label="Select upc template"
+                  id="upcTemplateID"
+                  [options]="upcTemplateListOpt"
+                  formControlName="upcTemplateID"
+                  class="form-control">
+      </mdb-select>
+    </div>
+    <div class="md-form width-50">
+      <mdb-select mdbValidate
+                  required
+                  label="Select UPC Section"
+                  id="uspSectionID"
+                  [options]="upcSectionOptionList"
+                  formControlName="uspSectionID"
+                  class="form-control">
+      </mdb-select>
+    </div>
+  </form>
+</div>
+<div class="modal-footer modal-end">
+  <button
+    class="ml-15p"
+    type="button" mdbBtn color="info" size="sm"
+    (click)="linkTopic($event)">Link
+  </button>
+</div>
+

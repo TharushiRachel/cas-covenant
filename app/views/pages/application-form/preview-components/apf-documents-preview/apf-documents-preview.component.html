@@ -1,0 +1,64 @@
+<mdb-card>
+  <mdb-card-body class="custom-card-body">
+    <ng-container>
+      <div class="d-flex flex-column justify-content-between w-100-p mt-10p">
+        <table class="table custom-apf-table">
+          <thead>
+          <tr>
+            <th colspan="5" style="border: unset !important;"><p class="mb-5p"><b>SUPPORTING DOCUMENTS</b></p></th>
+          </tr>
+          <tr *ngIf="applicationForm.afDocumentDTOList && applicationForm.afDocumentDTOList.length>0">
+            <th class="width-14">Document Name</th>
+            <th>Document Type</th>
+            <th class="width-20">Document Description</th>
+            <th>Remarks</th>
+            <th class="width-14">Actions</th>
+          </tr>
+          </thead>
+          <tbody>
+          <ng-container
+            *ngIf="applicationForm.afDocumentDTOList && applicationForm.afDocumentDTOList.length>0 ; else noData">
+            <ng-container *ngFor="let item of applicationForm.afDocumentDTOList">
+              <tr>
+                <td>{{item.documentName}}</td>
+                <td>{{item.supportDocumentType}}</td>
+                <td>{{item.supportDocDescription}}</td>
+                <td>{{item.remark}}</td>
+                <td>
+                  <div class="text-align-center">
+                    <ng-container *ngIf="isCheckedPdf(item)">
+                      <button class="btn btn-sm btn-success cta-btn" type="button" mdbWavesEffect
+                              (click)="onDownloadDoc(item)"
+                              mdbTooltip="View Supporting Doc" placement="left">
+                        <mdb-icon fas icon="fas fa-eye" aria-hidden="true"></mdb-icon>
+                      </button>
+                    </ng-container>
+                    <ng-container>
+                      <button class="btn btn-sm btn-success cta-btn" type="button" mdbWavesEffect
+                              (click)="downloadDocument(item)"
+                              mdbTooltip="Download Supporting Doc" placement="left">
+                        <mdb-icon fas icon="fa fa-download" aria-hidden="true"></mdb-icon>
+                      </button>
+                    </ng-container>
+                  </div>
+                </td>
+              </tr>
+            </ng-container>
+          </ng-container>
+          <ng-template #noData>
+            <tr>
+              <th colspan="5" class="text-align-center" style="border: unset !important;">
+                <p class="no-data-message">
+                  No Uploaded Supporting Documents
+                </p>
+              </th>
+            </tr>
+          </ng-template>
+          </tbody>
+        </table>
+      </div>
+    </ng-container>
+  </mdb-card-body>
+</mdb-card>
+
+<a class="download-link" #downloadLink></a>

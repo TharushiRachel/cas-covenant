@@ -1,0 +1,174 @@
+<div class="d-flex p-2 flex-column justify-content-between align-items-start w-100-p">
+  <div class="display-flex flex-row jc-space-between ai-center w-100-p">
+
+    <div *ngIf="hasFptemplates" class="display-flex flex-1 flex-row jc-end ai-center">
+      <h5 class="upc-template-heading">{{this.upcTemplateName}}</h5>
+    </div>
+
+    <div class="display-flex flex-row jc-end ai-center flex-1">
+      <ng-container *ngIf="hasPrivilegeToEditFacilityPaperAsDefault || hasPrivilegeToEditUPCAsDefault">
+        <ng-container *ngIf="isEqualLoginAndAssignUser() && !isApproveStatus() && !isRejected() && hasFptemplates">
+            <button
+              type="button"
+              mdbBtn
+              class="action-button-padding btn-outline-info btn-sm"
+              outline="true"
+              mdbWavesEffect
+              (click)="toggleViewMode()">
+              <ng-container *ngIf="!isPreviewMode">
+                <mdb-icon fas icon="eye" aria-hidden="true"></mdb-icon>
+                Preview Mode
+              </ng-container>
+              <ng-container *ngIf="isPreviewMode">
+                <mdb-icon fas icon="pencil-alt" aria-hidden="true"></mdb-icon>
+                Edit Mode
+              </ng-container>
+            </button>
+        </ng-container>
+      </ng-container>
+
+      <div *ngIf="!isPreviewMode && !hasPrivilegeToEditUPCAsDefault">
+        <ng-container *ngIf="hasFptemplates">
+          <button type="button" class="btn btn-sm btn-danger cta-btn delete-button"
+                  mdbWavesEffect
+                  mdbTooltip="Remove template"
+                  placement="left"
+                  (click)="removeData()">
+            <mdb-icon fas icon="trash-alt" aria-hidden="true"></mdb-icon>
+          </button>
+        </ng-container>
+      </div>
+
+    </div>
+  </div>
+
+  <div *ngIf="readMode && hasFptemplates" class="w-100-p">
+    <!--    <h5 class="upc-template-heading">{{this.upcTemplateName}}</h5>-->
+    <app-show-full-node-html
+      [initNodeRowData]="initNodeRowData"
+      [isPreviewMode]="isPreviewMode"
+      [upcTemplateId]="upcTemplateId" 
+      [upcTemplateName]="upcTemplateName"
+      [isCommittee]="isCommittee"
+      [facilityPaper]="facilityPaper"
+      (onAddEditData)="onAddData.emit($event)">
+    </app-show-full-node-html>
+  </div>
+  <div class="w-100-p d-flex p-2 flex-row">
+    <div class="w-49-p">
+
+      <!--    <div class="float-right">-->
+      <!--      <i mdbTooltip="Html view" placement="top"-->
+      <!--         (click)="showFullTree($event)"-->
+      <!--         class="fas fa-code color-primary icon-button size=3x m-2" aria-hidden="true"></i>-->
+      <!--    </div>-->
+
+      <ng-container *ngIf="!readMode">
+        <h6>Template Structure</h6>
+        <tree-root #tree id="tree4" [focused]="true" [nodes]="nodes" [options]="options">
+
+          <ng-template #treeNodeFullTemplate let-node let-index="index" let-templates="templates">
+            <div
+              [class]="node.getClass()"
+              [class.tree-node]="true"
+              [class.tree-node-expanded]="node.isExpanded && node.hasChildren"
+              [class.tree-node-collapsed]="node.isCollapsed && node.hasChildren"
+              [class.tree-node-leaf]="node.isLeaf"
+              [class.tree-node-active]="node.isActive"
+              [class.tree-node-focused]="node.isFocused"
+            >
+
+              <tree-node-drop-slot
+                *ngIf="index === 0"
+                [dropIndex]="node.index"
+                [node]="node.parent">
+              </tree-node-drop-slot>
+
+              <tree-node-wrapper [node]="node" [index]="index" [templates]="templates"></tree-node-wrapper>
+
+              <tree-node-children [node]="node" [templates]="templates"></tree-node-children>
+
+              <ng-template #treeNodeTemplate let-node let-index="index">
+                <!--            <span (click)="onViewHtmlForSingleNode($event, node.data.item)">-->
+                <span (click)="getData(node)">{{ node.data.name}}</span>
+                <!--            [hidden]="!addedToDataMap && dataMap[node.data.item.upcSectionID]"-->
+                <mdb-icon
+                  [hidden]="dataMap[node.data.item.upcSectionID] != 'No data available' || !hasFptemplates"
+                  class="item-remove-btn"
+                  (click)="openModalTemplateData($event, tree.treeModel, node)"
+                  fas icon="plus-circle"></mdb-icon>
+
+                <!--            [hidden]="addedToDataMap && !dataMap[node.data.item.upcSectionID] && dataMap[node.data.item.upcSectionID].data!=null"-->
+                <mdb-icon
+                  [hidden]="dataMap[node.data.item.upcSectionID] ==='No data available' || !hasFptemplates"
+                  class="item-remove-btn"
+                  (click)="openModalTemplateData($event, tree.treeModel, node)"
+                  fas icon="pencil-alt"></mdb-icon>
+
+                <mdb-icon
+                  [hidden]="!hasFptemplates"
+                  class="item-remove-btn"
+                  (click)="removeItem($event, tree.treeModel, node)"
+                  fas icon="times"></mdb-icon>
+                <!--            </span>-->
+
+              </ng-template>
+
+              <tree-node-drop-slot [dropIndex]="node.index + 1" [node]="node.parent">
+              </tree-node-drop-slot>
+            </div>
+          </ng-template>
+        </tree-root>
+
+      </ng-container>
+    </div>
+
+    <div *ngIf="upcSectionMode" class="w-49-p">
+      <h6>UPC Sections</h6>
+      <ng-container *ngIf="allUpcSectionData.length > 0">
+        <ng-container *ngFor="let item of allUpcSectionData">
+          <ng-container *ngIf="addEligible(item)">
+            <div
+              class="draggable-item"
+              [treeDrag]="{name: item.upcSectionName, item : item}"
+              [treeDragEnabled]="true">
+              {{item.upcSectionName}}
+            </div>
+          </ng-container>
+        </ng-container>
+      </ng-container>
+
+      <ng-container *ngIf="allUpcSectionData.length == 0">
+        <p>
+          No Upc section(s) found
+        </p>
+      </ng-container>
+
+    </div>
+    <div *ngIf="previewMode" class="w-49-p">
+      <h6>Preview Mode</h6>
+      <ng-container>
+        <div class="html-preview w-4p-p html-content-view"
+             [innerHTML]="getDataForPreview() | safeHtml">
+        </div>
+      </ng-container>
+      <ng-container *ngIf="allUpcSectionData.length == 0">
+        <p>
+          No Upc section(s) found
+        </p>
+      </ng-container>
+
+    </div>
+  </div>
+  <!--  <div *ngIf="readMode" class="w-49-p">-->
+  <!--    <app-upc-template-read-view-->
+  <!--      [dataMap]="dataMap"-->
+  <!--      [initNodeData]="initNodeData"-->
+  <!--      [allUpcSectionData]="allUpcSectionData">-->
+  <!--    </app-upc-template-read-view>-->
+  <!--  </div>-->
+
+</div>
+
+
+

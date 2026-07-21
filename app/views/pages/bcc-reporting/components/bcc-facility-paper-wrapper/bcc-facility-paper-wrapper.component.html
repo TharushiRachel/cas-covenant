@@ -1,0 +1,57 @@
+<div>
+  <div mdbSticky id="facility-paper" class="d-flex flex-row justify-content-between page-header">
+    <div class="d-flex flex-row align-items-center">
+      <a appGoBack class="d-flex flex-row align-items-center">
+        <i class="fas fa-angle-left header-icon-back"></i>
+      </a>
+      <h5><i class="fas fa-edit header-icon"></i>
+        <span>Facility Paper - Ref No : {{this.facilityPaper.fpRefNumber}}
+          (<span
+            [ngStyle]="getColour(this.facilityPaper.currentFacilityPaperStatus)"> {{facilityStatus[this.facilityPaper.currentFacilityPaperStatus]}}</span> )</span>
+      </h5>
+    </div>
+
+    <div class="float-right">
+      <div class="d-flex flex-row align-items-center">
+        <!--        <ng-container *appHasAnyPrivilege="masterDataPrivilege.ICAS_SETTINGS_FACILITY_PAPER_GENERATE_BCC_PAPER">-->
+        <ng-container *ngIf="!isBccPaperCreated(facilityPaper)">
+          <ng-container *appBlockedByUPMs>
+            <button mdbBtn
+                    type="button"
+                    mdbTooltip="Generate BCC paper"
+                    [placement]="'bottom'"
+                    color="success"
+                    class="btn-width"
+                    size="sm"
+                    mdbWavesEffect
+                    (click)="onCreateBCCPaper()">
+              <span>Create BCC/EAC Report</span>
+            </button>
+          </ng-container>
+        </ng-container>
+        <!--        </ng-container>-->
+      </div>
+    </div>
+  </div>
+
+
+  <div class="tab-view">
+    <ng-container *ngIf="isBccPaperCreated(facilityPaper)">
+      <app-tabs
+        [selectedTabIndex]="selectedTabIndex"
+        class="w-100-p" (onTabSelect)="onTabSelect($event)">
+
+        <ng-container *ngIf="isBccPaperCreated(facilityPaper)">
+          <app-tab [tabTitle]="'BCC/EAC Report'">
+            <ng-container *ngIf="isTabSelected(printPreviewIndex)">
+              <app-view-bcc-pdf>
+              </app-view-bcc-pdf>
+            </ng-container>
+          </app-tab>
+        </ng-container>
+
+      </app-tabs>
+    </ng-container>
+  </div>
+</div>
+

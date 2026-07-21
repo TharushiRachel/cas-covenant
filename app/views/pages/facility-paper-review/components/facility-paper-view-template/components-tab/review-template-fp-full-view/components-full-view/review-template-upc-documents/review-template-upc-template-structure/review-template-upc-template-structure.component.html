@@ -1,0 +1,7 @@
+<div *ngIf="readMode && hasFptemplates" class="w-100-p">
+  <!--    <h5 class="upc-template-heading">{{this.upcTemplateName}}</h5>-->
+  <app-review-template-full-node-html
+    [initNodeRowData]="initNodeRowData"
+    >
+  </app-review-template-full-node-html>
+</div>

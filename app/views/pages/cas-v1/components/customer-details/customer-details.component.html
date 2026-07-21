@@ -1,0 +1,168 @@
+<div class="card p-4 shadow-lg">
+  <div class="d-flex justify-content-center">
+    <h3 class="legend">Customer: <strong>{{ customer.title }} {{ customer.lastName }} - ({{customer.accNo}})
+      </strong>
+    </h3>
+  </div>
+
+  <div class="info-list">
+    <div class="info-item">
+      <span class="info-number">1.</span>
+      <label class="info-caption">Address</label>
+      <span class="info-separator">:</span>
+      <span class="info-details">
+        {{ customer.correspondanceAddress1 }} {{ customer.correspondanceAddress2 }} {{
+        customer.correspondanceCity }}
+      </span>
+    </div>
+
+    <div class="info-item">
+      <span class="info-number">2.</span>
+      <label class="info-caption">Year of Establishment</label>
+      <span class="info-separator">:</span>
+      <span class="info-details">{{ customer.establishYear }}</span>
+    </div>
+
+    <div class="info-item">
+      <span class="info-number">3.</span>
+      <label class="info-caption">Name(s) of Directors</label>
+    </div>
+    <table class="table table-bordered mt-2">
+      <thead class="table-light">
+        <tr>
+          <th>Name</th>
+          <th>Age</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let director of customer.directors">
+          <td>{{ director.directorName }}</td>
+          <td>{{ director.age }}</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="info-item">
+      <span class="info-number">4.</span>
+      <label class="info-caption">Subsidiaries/Associates</label>
+    </div>
+    <ul class="info-list-cus">
+      <li *ngFor="let company of customer.companies">
+        {{ company.constitutionOfBusiness }}
+      </li>
+    </ul>
+
+    <div class="info-item">
+      <span class="info-number">5.</span>
+      <label class="info-caption">Other Bankers (quote also their latest report and date given)</label>
+      <span class="info-separator">:</span>
+      <span class="info-details">{{ customer.otherBankers }}</span>
+    </div>
+
+    <div class="info-item">
+      <span class="info-number">6.</span>
+      <label class="info-caption">Facilities from other Banks</label>
+    </div>
+    <table class="table table-bordered mt-2">
+      <thead class="table-light">
+        <tr>
+          <th>Name of Bank</th>
+          <th>Facility</th>
+          <th>Limit (LKR-Mn)</th>
+          <th>O/s (LKR-Mn)</th>
+          <th>Security</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let facility of customer?.otherFacilities">
+          <td>{{ facility.bankName }}</td>
+          <td>{{ facility.facility }}</td>
+          <td>{{ facility.limit | number:'1.2-2' }}</td>
+          <td>{{ facility.os | number:'1.2-2' }}</td>
+          <td>{{ facility.security }}</td>
+        </tr>
+      </tbody>
+    </table>
+
+
+    <div class="info-item">
+      <span class="info-number">7.</span>
+      <label class="info-caption">
+        Facilities taken from Finance companies/ Leasing Co./Any other Financial Institutions
+      </label>
+      <span class="info-separator">:</span>
+      <span class="info-details">{{ customer.takenFaci ? customer.takenFaci : "" }}</span>
+    </div>
+
+    <div class="info-item">
+      <span class="info-number">8.</span>
+      <label class="info-caption">Security Given to Other Banks</label>
+      <span class="info-separator">:</span>
+      <span class="info-details">{{ customer.givenSeq ? customer.givenSeq : "" }}</span>
+    </div>
+    <ol class="info-list-cus roman-list">
+      <li>
+        <div class="info-item">
+          <label class="info-caption">Tax particulars of the Directors</label>
+          <span class="info-separator">:</span>
+          <span class="info-details">{{ customer.taxPerticulars ? customer.taxPerticulars : "" }}</span>
+        </div>
+      </li>
+      <li>
+        <div class="info-item">
+          <label class="info-caption">Confirmation regarding Tax Liabilities</label>
+          <span class="info-separator">:</span>
+          <span class="info-details">{{ customer.taxLiabilities ? customer.taxLiabilities : "" }}</span>
+        </div>
+      </li>
+      <li>
+        <div class="info-item">
+          <label class="info-caption">Other relevant information</label>
+          <span class="info-separator">:</span>
+          <span class="info-details">{{ customer.otherInfo ? customer.otherInfo : "" }}</span>
+        </div>
+      </li>
+    </ol>
+
+    <div class="info-table-wrapper">
+      <div class="info-fields">
+        <div class="info-item">
+          <span class="info-number">9.</span>
+          <label class="info-caption">Kalypto Risk Score</label>
+          <span class="info-separator">:</span>
+          <span class="info-details">{{ customer.riskScore }}</span>
+        </div>
+
+        <div class="info-item">
+          <span class="info-number">10.</span>
+          <label class="info-caption">ROA % Existing</label>
+          <span class="info-separator">:</span>
+          <span class="info-details">{{ customer.roaexisting }}</span>
+        </div>
+
+        <div class="info-item">
+          <span class="info-number">11.</span>
+          <label class="info-caption">ROA % with Proposed Facility</label>
+          <span class="info-separator">:</span>
+          <span class="info-details">{{ customer.roanew }}</span>
+        </div>
+
+        <div class="info-item">
+          <span class="info-number">12.</span>
+          <label class="info-caption">Status of CRIB</label>
+          <span class="info-separator">:</span>
+          <span class="info-details">{{ customer.cribDescription }} &nbsp;&nbsp;
+            {{ customer.cribDate | date:'mediumDate' }}
+          </span>
+        </div>
+
+        <div class="info-item">
+          <span class="info-number">13.</span>
+          <label class="info-caption">Financials</label>
+          <span class="info-separator">:</span>
+          <span class="info-details">{{ customer.financialDescription }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
