@@ -1,12 +1,13 @@
-import { Component, OnInit, Input } from "@angular/core";
+import { Component, OnInit, OnDestroy, Input } from "@angular/core";
 import { MDBModalRef, MDBModalService } from "ng-uikit-pro-standard";
 import { CustomerCovenantListComponent } from "./add-customer-covenant/customer-covenant-list.component";
 import { FacilityPaperAddEditService } from "src/app/views/pages/facility-paper/services/facility-paper-add-edit.service";
+import { CovenantService } from "src/app/views/pages/covenant/services/covenant.service";
 import { Constants } from "src/app/core/setting/constants";
 import { ConfirmationDialogComponent } from "src/app/shared/components/confirmation-dialog/confirmation-dialog.component";
 import { AccountCovenantComponent } from "../add-account-covenant/account-covenant.component";
 import { Router } from "@angular/router";
-import { Subject } from "rxjs";
+import { Subject, Subscription } from "rxjs";
 import { ApplicationService } from "src/app/core/service/application/application.service";
 import { ApplicationCovenant } from "../../dto/application-covenant";
 import { AppUtils } from "src/app/shared/app.utils";
@@ -24,7 +25,7 @@ import { FacilitySelectModalComponent } from "../facility-select-modal/facility-
   templateUrl: "./customer-covenant.component.html",
   styleUrls: ["./customer-covenant.component.scss"],
 })
-export class CustomerCovenantComponent implements OnInit {
+export class CustomerCovenantComponent implements OnInit, OnDestroy {
   private toSentenceCase(value: any): any {
     if (typeof value !== "string") {
       return value;
@@ -95,14 +96,16 @@ export class CustomerCovenantComponent implements OnInit {
   mappedCovenants: any[] = [];
   sortedExistingFacilityCovenants: any[] = [];
   specialComment: any;
+  private subscriptions: Subscription = new Subscription();
 
   constructor(
-    private readonly mdbModalService: MDBModalService,
-    private readonly facilityPaperAddEditService: FacilityPaperAddEditService,
-    private readonly router: Router,
-    private readonly applicationService: ApplicationService,
-    private readonly currencyPipe: CurrencyPipe,
-    private readonly urlEncodeService: UrlEncodeService,
+    private mdbModalService: MDBModalService,
+    private facilityPaperAddEditService: FacilityPaperAddEditService,
+    private covenantService: CovenantService,
+    private router: Router,
+    private applicationService: ApplicationService,
+    private currencyPipe: CurrencyPipe,
+    private urlEncodeService: UrlEncodeService
   ) {
     this.router.routeReuseStrategy.shouldReuseRoute = () => false;
   }
@@ -129,31 +132,46 @@ export class CustomerCovenantComponent implements OnInit {
 
     this.getApprovedFacilityCovenantList();
 
-    this.facilityPaperAddEditService.onFacilityCovenantTabChange.subscribe(
-      (res) => {
-        this.getFacilityCovenantList();
-        this.getDeactiaveFacilityCovenantList();
-      },
+    this.subscriptions.add(
+      this.facilityPaperAddEditService.onFacilityCovenantTabChange.subscribe(
+        () => {
+          this.getFacilityCovenantList();
+          this.getDeactiaveFacilityCovenantList();
+        }
+      )
     );
 
-    this.facilityPaperAddEditService.getFacilityCovenantList().then((data) => {
-      this.groupedApprovedFacility =
-        this.getGroupedSortedApprovedCovenants(data);
-    });
+    this.subscriptions.add(
+      this.covenantService.onFacilityCovenantTabChange.subscribe(() => {
+        this.getFacilityCovenantList();
+        this.getDeactiaveFacilityCovenantList();
+      })
+    );
+
+    this.covenantService
+      .getAllFacilityCovenantLegacy(this.facilityPaper.facilityPaperID)
+      .then((data) => {
+        this.groupedApprovedFacility =
+          this.getGroupedSortedApprovedCovenants(data);
+      });
 
     this.getGroupedSortedApprovedCovenantsNew();
     this.computeApprovedCovenantCounters();
 
-    this.facilityPaperAddEditService
-      .getCovenantCommentList(this.facilityPaper.facilityPaperID)
-      .subscribe((comments: any[]) => {
-        this.covenantComments = comments;
-      });
+    this.subscriptions.add(
+      this.covenantService
+        .getCovenantCommentList(this.facilityPaper.facilityPaperID)
+        .subscribe((comments: any[]) => {
+          this.covenantComments = comments;
+        })
+    );
 
     this.checkMatch();
   }
 
-  ngOnDestroy(): void {}
+  ngOnDestroy(): void {
+    this.subscriptions.unsubscribe();
+  }
 
   computeCovenantCounters() {
     return (this.activeCustomerCovenantCounter = this.covenantList.filter(
@@ -412,66 +430,75 @@ export class CustomerCovenantComponent implements OnInit {
   isAbleToDeleteCovenant() {
     let ob1 = this.facilityPaper.currentAssignADUserID;
 
-    this.applicationService
-      .getUpmDetailsByAdUserIdAndAppCode(ob1)
-      .subscribe((response: any) => {
-        this.accessLevelOfCurrentAssignUser = response.applicationSecurityClass;
-      });
+    this.subscriptions.add(
+      this.applicationService
+        .getUpmDetailsByAdUserIdAndAppCode(ob1)
+        .subscribe((response: any) => {
+          this.accessLevelOfCurrentAssignUser = response.applicationSecurityClass;
+        })
+    );
   }
 
   getFacilityCovenantList() {
-    this.facilityPaperAddEditService.getFacilityCovenantList().then((data) => {
-      this.covenantVal = data
-        .map((result) => {
-          // Filter and sort `covValue`
-          const activeCovValues = result.covValue
-            .filter(
-              (covValue) =>
-                covValue.status === "Active" &&
-                (covValue.isExists === "N" || covValue.isExists === null),
-            )
-            .map((covValue) => ({
-              ...covValue,
-              applicationCovenantFacilityDTOS:
-                covValue.applicationCovenantFacilityDTOS.length > 0
-                  ? covValue.applicationCovenantFacilityDTOS.sort(
-                      (a, b) => a.displayOrder - b.displayOrder,
-                    )
-                  : [], // Keep empty arrays intact
-            }));
+    this.covenantService
+      .getAllFacilityCovenantLegacy(this.facilityPaper.facilityPaperID)
+      .then((data) => {
+        this.covenantVal = data
+          .map((result) => {
+            const facilities =
+              result.covValue && Array.isArray(result.covValue)
+                ? result.covValue
+                : [];
+            const activeCovValues = facilities
+              .filter(
+                (covValue) =>
+                  covValue.status === "Active" &&
+                  (covValue.isExists === "N" || covValue.isExists === null),
+              )
+              .map((covValue) => {
+                const facilityDtos =
+                  covValue.applicationCovenantFacilityDTOS || [];
+                return Object.assign({}, covValue, {
+                  applicationCovenantFacilityDTOS:
+                    facilityDtos.length > 0
+                      ? facilityDtos.sort(
+                          (a, b) => a.displayOrder - b.displayOrder,
+                        )
+                      : [],
+                });
+              });
 
-          if (activeCovValues.length > 0) {
-            return {
-              ...result,
-              covValue: activeCovValues.sort((a, b) => {
-                const aOrder =
-                  a.applicationCovenantFacilityDTOS.length > 0
-                    ? a.applicationCovenantFacilityDTOS[0].displayOrder
-                    : Number.MAX_VALUE; // Fallback for empty arrays
-                const bOrder =
-                  b.applicationCovenantFacilityDTOS.length > 0
-                    ? b.applicationCovenantFacilityDTOS[0].displayOrder
-                    : Number.MAX_VALUE; // Fallback for empty arrays
-                return aOrder - bOrder;
-              }),
-            };
-          } else {
-            return null;
-          }
-        })
-        .filter((result) => result !== null)
-        .sort((a, b) => {
-          const aOrder =
-            a.covValue[0].applicationCovenantFacilityDTOS.length > 0
-              ? a.covValue[0].applicationCovenantFacilityDTOS[0].displayOrder
-              : Number.MAX_VALUE;
-          const bOrder =
-            b.covValue[0].applicationCovenantFacilityDTOS.length > 0
-              ? b.covValue[0].applicationCovenantFacilityDTOS[0].displayOrder
-              : Number.MAX_VALUE;
-          return aOrder - bOrder;
-        });
-    });
+            if (activeCovValues.length > 0) {
+              return Object.assign({}, result, {
+                covValue: activeCovValues.sort((a, b) => {
+                  const aOrder =
+                    a.applicationCovenantFacilityDTOS.length > 0
+                      ? a.applicationCovenantFacilityDTOS[0].displayOrder
+                      : Number.MAX_VALUE;
+                  const bOrder =
+                    b.applicationCovenantFacilityDTOS.length > 0
+                      ? b.applicationCovenantFacilityDTOS[0].displayOrder
+                      : Number.MAX_VALUE;
+                  return aOrder - bOrder;
+                }),
+              });
+            } else {
+              return null;
+            }
+          })
+          .filter((result) => result !== null)
+          .sort((a, b) => {
+            const aOrder =
+              a.covValue[0].applicationCovenantFacilityDTOS.length > 0
+                ? a.covValue[0].applicationCovenantFacilityDTOS[0].displayOrder
+                : Number.MAX_VALUE;
+            const bOrder =
+              b.covValue[0].applicationCovenantFacilityDTOS.length > 0
+                ? b.covValue[0].applicationCovenantFacilityDTOS[0].displayOrder
+                : Number.MAX_VALUE;
+            return aOrder - bOrder;
+          });
+      });
   }
 
   computeFacilityCovenantCounters() {
@@ -487,16 +514,23 @@ export class CustomerCovenantComponent implements OnInit {
   }
 
   getDeactiaveFacilityCovenantList() {
-    this.facilityPaperAddEditService.getFacilityCovenantList().then((data) => {
-      this.deactivateCovenantVal = data
-        .map((result) => ({
-          ...result,
-          covValue: result.covValue.filter(
-            (covValue) => covValue.status === "Inactive",
-          ),
-        }))
-        .filter((result) => result.covValue.length > 0);
-    });
+    this.covenantService
+      .getAllFacilityCovenantLegacy(this.facilityPaper.facilityPaperID)
+      .then((data) => {
+        this.deactivateCovenantVal = data
+          .map((result) => {
+            const facilities =
+              result.covValue && Array.isArray(result.covValue)
+                ? result.covValue
+                : [];
+            return Object.assign({}, result, {
+              covValue: facilities.filter(
+                (covValue) => covValue.status === "Inactive",
+              ),
+            });
+          })
+          .filter((result) => result.covValue.length > 0);
+      });
   }
 
   getDisbursementTypeClass(disbursementType: string): string {
@@ -514,7 +548,7 @@ export class CustomerCovenantComponent implements OnInit {
     let custId = this.urlEncodeService.decode(this.selectedCIFID);
     let facilityPaperId = this.facilityPaper.facilityPaperID;
 
-    this.facilityPaperAddEditService
+    this.covenantService
       .getCovenantDetailsFromFinacle(custId, facilityPaperId)
       .then((response) => {
         if (response && Array.isArray(response.covenant)) {
@@ -575,7 +609,9 @@ export class CustomerCovenantComponent implements OnInit {
   }
 
   getApprovedFacilityCovenantList() {
-    this.facilityPaperAddEditService.getFacilityCovenantList().then((data) => {
+    this.covenantService
+      .getAllFacilityCovenantLegacy(this.facilityPaper.facilityPaperID)
+      .then((data) => {
       if (!data || !Array.isArray(data)) {
         console.warn("No valid 'covenant' array found in response:", data);
         this.approvedCovValues = [];
@@ -814,8 +850,8 @@ export class CustomerCovenantComponent implements OnInit {
   }
 
   getGroupedSortedApprovedCovenantsNew() {
-    this.facilityPaperAddEditService
-      .getFacilityCovenantList()
+    this.covenantService
+      .getAllFacilityCovenantLegacy(this.facilityPaper.facilityPaperID)
       .then((data) => {
         const allCovenants: any[] = [];
 
@@ -840,8 +876,13 @@ export class CustomerCovenantComponent implements OnInit {
           const map = new Map<string, any[]>();
           for (const item of items) {
             const accountId = item.accountId;
-            if (!map.has(accountId)) map.set(accountId, []);
-            map.get(accountId)!.push(item);
+            if (!map.has(accountId)) {
+              map.set(accountId, []);
+            }
+            const accountItems = map.get(accountId);
+            if (accountItems) {
+              accountItems.push(item);
+            }
           }
 
           return Array.from(map.entries())

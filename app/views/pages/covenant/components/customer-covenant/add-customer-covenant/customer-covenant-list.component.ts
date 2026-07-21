@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from "@angular/core";
+import { Component, OnInit, OnDestroy, Input } from "@angular/core";
 import {
   AbstractControl,
   FormBuilder,
@@ -9,7 +9,8 @@ import {
 import { IMyOptions, MDBModalRef } from "ng-uikit-pro-standard";
 import { Constants } from "src/app/core/setting/constants";
 import { FacilityPaperAddEditService } from "src/app/views/pages/facility-paper/services/facility-paper-add-edit.service";
-import { Subject } from "rxjs";
+import { CovenantService } from "src/app/views/pages/covenant/services/covenant.service";
+import { Subject, Subscription } from "rxjs";
 import { ApplicationService } from "src/app/core/service/application/application.service";
 import * as _ from "lodash";
 import { SessionStorage } from "ngx-webstorage";
@@ -22,7 +23,7 @@ import { AlertService } from "src/app/core/service/common/alert.service";
   templateUrl: "./customer-covenant-list.component.html",
   styleUrls: ["./customer-covenant-list.component.scss"],
 })
-export class CustomerCovenantListComponent implements OnInit {
+export class CustomerCovenantListComponent implements OnInit, OnDestroy {
   @Input() type: string;
   @Input("facilityPaper") facilityPaper;
   covenantList: any = [];
@@ -49,6 +50,7 @@ export class CustomerCovenantListComponent implements OnInit {
   content: any;
   customerCovenantId: number;
   isEditMode: boolean = false;
+  private subscriptions: Subscription = new Subscription();
 
   public myDatePickerOptions: IMyOptions = {
     dateFormat: "dd/mm/yyyy",
@@ -67,6 +69,7 @@ export class CustomerCovenantListComponent implements OnInit {
   constructor(
     public mdbModalRef: MDBModalRef,
     public facilityPaperAddEditService: FacilityPaperAddEditService,
+    public covenantService: CovenantService,
     public fb: FormBuilder,
     private applicationService: ApplicationService,
     private urlEncodeService: UrlEncodeService,
@@ -79,6 +82,10 @@ export class CustomerCovenantListComponent implements OnInit {
     if (this.isEditMode) {
       this.loadCustomerCovenantForEdit();
     }
+  }
+
+  ngOnDestroy() {
+    this.subscriptions.unsubscribe();
   }
 
   private resolveModeAndData() {
@@ -209,12 +216,6 @@ export class CustomerCovenantListComponent implements OnInit {
       }
     );
 
-    this.covenantForm
-      .get("covenantFrequency")
-      .valueChanges.subscribe((value) => {
-        this.onFrequencyChange(value);
-      });
-
     if (this.isEditMode) {
       this.applyCovenantDescriptionValidators();
       return;
@@ -230,11 +231,14 @@ export class CustomerCovenantListComponent implements OnInit {
 
       this.updateCovenantDetailsDropdown(defaultCovenantType);
 
-      this.covenantForm
-        .get("covenantType")
-        .valueChanges.subscribe((selectedType) => {
-          this.updateCovenantDetailsDropdown(selectedType);
-        });
+      const covenantTypeControl = this.covenantForm.get("covenantType");
+      if (covenantTypeControl) {
+        this.subscriptions.add(
+          covenantTypeControl.valueChanges.subscribe((selectedType) => {
+            this.updateCovenantDetailsDropdown(selectedType);
+          })
+        );
+      }
     } else {
       this.alertService.showToaster(
         "Failed to load facility covenant list. Please try again later.",
@@ -331,42 +335,40 @@ export class CustomerCovenantListComponent implements OnInit {
   private onAddBatchSubmit() {
     this.isSubmitting = true;
     this.errors = [];
-    let data: any = {};
 
-    data.RequestUUID = this.RequestUUID;
-    data.custId = this.urlEncodeService.decode(this.selectedCIFID);
-    data.casReference = this.casReference;
+    const createdUserDisplayName =
+      this.applicationService.getLoggedInUserDisplayName();
+    const facilityPaperId = this.getFacilityPaperId();
+    const customerFinancialID = this.urlEncodeService.decode(this.selectedCIFID);
 
-    data.covenantDetails = this.covenantDetails.map((covenant) => {
+    const payload = this.covenantDetails.map((covenant) => {
       return {
+        requestUUID: this.RequestUUID,
+        customerFinancialID: customerFinancialID,
+        facilityPaperRefNumber: this.casReference,
+        facilityPaperId: facilityPaperId,
         covenant_Code: covenant.covenantCode,
         covenant_Description: covenant.covenantDescription,
         covenant_Frequency: covenant.covenantFrequency,
         covenant_Due_Date: covenant.covenantDueDate,
         disbursementType: covenant.disbursementType,
         applicableType: covenant.applicableType,
+        createdUserDisplayName: createdUserDisplayName,
       };
     });
 
-    data.createdUserDisplayName =
-      this.applicationService.getLoggedInUserDisplayName();
-    this.facilityPaperAddEditService
-      .saveCustomerCovenantDetails(data)
-      .then((response: any) => {
-        response = Object.assign({}, response);
-        this.action.next(response);
-        this.covenantData = response;
-        this.mdbModalRef.hide();
-      });
+    this.covenantService.saveCustomerCovenant(payload).then((response: any) => {
+      response = Object.assign({}, response);
+      this.action.next(response);
+      this.covenantData = response;
+      this.mdbModalRef.hide();
+    });
   }
 
   private onUpdateSubmit() {
     this.isSubmitting = true;
     this.errors = [];
     const formData = this.covenantForm.value;
-
-    let data: any = {};
-    let covenantDetails: any = [];
 
     let disbursementType = "";
     if (formData.preDisbursement) {
@@ -391,41 +393,47 @@ export class CustomerCovenantListComponent implements OnInit {
         ? this.content.customerCovenant.covenant_Code
         : "";
 
-    covenantDetails.push({
-      covenant_Code: covenantCode,
-      covenant_Description: formData.covenantDescription,
-      covenant_Frequency: formData.covenantFrequency,
-      disbursementType: disbursementType,
-      covenant_Due_Date: covenantDueDate,
-      applicableType: applicableType,
-    });
-
-    if (this.customerCovenantId) {
-      data.customerCovenantId = this.customerCovenantId;
-    } else {
+    let customerCovenantId = this.customerCovenantId;
+    if (!customerCovenantId) {
       const customerCovenantIdString =
         sessionStorage.getItem("customerCovenantId");
       if (customerCovenantIdString) {
-        data.customerCovenantId = parseInt(customerCovenantIdString, 10);
+        customerCovenantId = parseInt(customerCovenantIdString, 10);
       }
     }
 
-    data.RequestUUID = this.RequestUUID;
-    data.custId = this.urlEncodeService.decode(this.selectedCIFID);
-    data.casReference = this.casReference;
-    data.covenantDetails = covenantDetails;
-    data.createdUserDisplayName =
-      this.applicationService.getLoggedInUserDisplayName();
-    data.createdDate = Date.now();
+    const payload = {
+      customerCovenantId: customerCovenantId,
+      requestUUID: this.RequestUUID,
+      customerFinancialID: this.urlEncodeService.decode(this.selectedCIFID),
+      facilityPaperRefNumber: this.casReference,
+      facilityPaperId: this.getFacilityPaperId(),
+      covenant_Code: covenantCode,
+      covenant_Description: formData.covenantDescription,
+      covenant_Frequency: formData.covenantFrequency,
+      covenant_Due_Date: covenantDueDate,
+      disbursementType: disbursementType,
+      applicableType: applicableType,
+      createdUserDisplayName:
+        this.applicationService.getLoggedInUserDisplayName(),
+    };
 
-    this.facilityPaperAddEditService
-      .updateCustomerCovenant(data)
+    this.covenantService
+      .updateCustomerCovenant(payload)
       .then((response: any) => {
         response = Object.assign({}, response);
         this.action.next(response);
         this.covenantData = response;
         this.mdbModalRef.hide();
       });
+  }
+
+  private getFacilityPaperId(): number {
+    if (this.facilityPaper && this.facilityPaper.facilityPaperID) {
+      return this.facilityPaper.facilityPaperID;
+    }
+    const fromSession = sessionStorage.getItem("facilityPaperID");
+    return fromSession ? Number(fromSession) : null;
   }
 
   /** Converts dd/mm/yyyy to yyyy-mm-dd */
@@ -451,13 +459,25 @@ export class CustomerCovenantListComponent implements OnInit {
   }
 
   onDisbursementTypeChange(type: string) {
+    const preControl = this.covenantForm.get("preDisbursement");
+    const postControl = this.covenantForm.get("postDisbursement");
+    if (!preControl || !postControl) {
+      return;
+    }
+
     if (type === "preDisbursement") {
-      if (this.covenantForm.get("preDisbursement").value) {
-        this.covenantForm.patchValue({ postDisbursement: false });
+      if (preControl.value) {
+        postControl.patchValue(false, { emitEvent: false });
+        postControl.disable({ emitEvent: false });
+      } else {
+        postControl.enable({ emitEvent: false });
       }
     } else if (type === "postDisbursement") {
-      if (this.covenantForm.get("postDisbursement").value) {
-        this.covenantForm.patchValue({ preDisbursement: false });
+      if (postControl.value) {
+        preControl.patchValue(false, { emitEvent: false });
+        preControl.disable({ emitEvent: false });
+      } else {
+        preControl.enable({ emitEvent: false });
       }
     }
   }

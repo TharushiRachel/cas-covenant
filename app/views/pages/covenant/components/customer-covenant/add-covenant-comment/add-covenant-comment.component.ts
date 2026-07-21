@@ -11,7 +11,7 @@ import { CovenantService } from 'src/app/views/pages/covenant/services/covenant.
 export class AddCovenantCommentComponent implements OnInit {
   @Output() action: EventEmitter<any> = new EventEmitter();
   covenantSerialNumber: number;
-  comment: string;
+  comment: string = '';
   nonComplianceCovenantId: number;
   addedBy: string;
   addedUserDisplayName: string;
@@ -21,38 +21,44 @@ export class AddCovenantCommentComponent implements OnInit {
 
   constructor(
     public modalRef: MDBModalRef,
-    public covenantService: CovenantService,
+    public covenantService: CovenantService
   ) {}
 
   ngOnInit(): void {
     if (this.modalRef && this.modalRef.content) {
-      this.comment = this.modalRef.content.comment;
+      this.comment = this.modalRef.content.comment || '';
       this.nonComplianceCovenantId = this.modalRef.content.nonComplianceCovenantId;
-      console.log("this.nonComplianceCovenantId", this.nonComplianceCovenantId);
+      if (this.modalRef.content.covenantSerialNumber != null) {
+        this.covenantSerialNumber = this.modalRef.content.covenantSerialNumber;
+      }
     }
   }
 
   saveComment() {
-    if (this.comment.trim()) {
-      const payload = {
-        serialNumber: this.covenantSerialNumber,
-        facilityPaperId: this.facilityPaperId,
-        comment: this.comment,
-        ...(this.nonComplianceCovenantId != null && { nonComplianceCovenantId: this.nonComplianceCovenantId })
-      };
-      this.covenantService.addCommentToCovenant(payload).then(
-        (response) => {
-          console.log('Comment added successfully:', response);
-          this.action.emit(response);
-          this.modalRef.hide();
-        },
-        (error) => {
-          console.error('Error adding comment:', error);
-        }
-      );
-    } else {
+    if (!this.comment || !this.comment.trim()) {
       console.warn('Comment cannot be empty');
+      return;
     }
+
+    const payload: any = {
+      serialNumber: this.covenantSerialNumber,
+      facilityPaperId: this.facilityPaperId,
+      comment: this.comment
+    };
+
+    if (this.nonComplianceCovenantId != null) {
+      payload.nonComplianceCovenantId = this.nonComplianceCovenantId;
+    }
+
+    this.covenantService.addCommentToCovenant(payload).then(
+      (response) => {
+        this.action.emit(response);
+        this.modalRef.hide();
+      },
+      (error) => {
+        console.error('Error adding comment:', error);
+      }
+    );
   }
 
   closeModal() {

@@ -28,7 +28,7 @@
           <div>
             <mdb-select [allowClear]="true" [options]="dropdownOptions || []"
               class="custom-mdb-select form-control custom-dropdown" label="Select Covenant *" data-size="10"
-              (ngModelChange)="onSelectedValueChange($event)" formControlName="covenantDescription"
+              (selected)="onSelectedValueChange($event)" formControlName="covenantDescription"
               id="covenantDescription" mdbValidate required>
             </mdb-select>
           </div>
@@ -77,7 +77,7 @@
           <div class="md-form w-50-p">
             <mdb-select [allowClear]="true" [options]="covenantFrequencyOptions" label="Frequency *"
               class="form-control" formControlName="covenantFrequency" id="covenantFrequency" mdbValidate required
-              (ngModelChange)="onFrequencyChange($event)"></mdb-select>
+              (selected)="onFrequencyChange($event)"></mdb-select>
           </div>
 
           <div class="date-picker-covenant md-form w-49-p">
@@ -91,15 +91,13 @@
           <div class="d-flex flex-row w-50-p mx-0">
             <div class="form-check">
               <input type="checkbox" formControlName="preDisbursement" id="preDisbursement" class="form-check-input"
-                (change)="onDisbursementTypeChange('preDisbursement')"
-                [disabled]="covenantForm.get('postDisbursement').value" mdbValidate />
+                (change)="onDisbursementTypeChange('preDisbursement')" mdbValidate />
               <label class="form-check-label" for="preDisbursement">Pre Disbursement</label>
             </div>
 
             <div class="form-check">
               <input type="checkbox" formControlName="postDisbursement" id="postDisbursement" class="form-check-input"
-                (change)="onDisbursementTypeChange('postDisbursement')"
-                [disabled]="covenantForm.get('preDisbursement').value" mdbValidate />
+                (change)="onDisbursementTypeChange('postDisbursement')" mdbValidate />
               <label class="form-check-label" for="postDisbursement">Post Disbursement</label>
             </div>
           </div>
