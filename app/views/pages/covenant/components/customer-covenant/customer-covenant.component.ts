@@ -158,13 +158,11 @@ export class CustomerCovenantComponent implements OnInit, OnDestroy {
     this.getGroupedSortedApprovedCovenantsNew();
     this.computeApprovedCovenantCounters();
 
-    this.subscriptions.add(
-      this.covenantService
-        .getCovenantCommentList(this.facilityPaper.facilityPaperID)
-        .subscribe((comments: any[]) => {
-          this.covenantComments = comments;
-        })
-    );
+    this.covenantService
+      .getCovenantCommentList(this.facilityPaper.facilityPaperID)
+      .then((comments: any) => {
+        this.covenantComments = Array.isArray(comments) ? comments : [];
+      });
 
     this.checkMatch();
   }

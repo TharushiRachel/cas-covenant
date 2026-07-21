@@ -3468,7 +3468,7 @@ export class FacilityPaperAddEditService implements Resolve<any> {
     return this.covenantService.addCommentToCovenant(data);
   }
 
-  getCovenantCommentList(facilityPaperId: number): Observable<any> {
+  getCovenantCommentList(facilityPaperId: number): Promise<any> {
     return this.covenantService.getCovenantCommentList(facilityPaperId);
   }
   

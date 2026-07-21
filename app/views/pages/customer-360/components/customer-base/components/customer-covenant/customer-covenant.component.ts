@@ -149,8 +149,8 @@ export class CustomerCovenantComponent implements OnInit {
 
     this.facilityPaperAddEditService
       .getCovenantCommentList(this.facilityPaper.facilityPaperID)
-      .subscribe((comments: any[]) => {
-        this.covenantComments = comments;
+      .then((comments: any) => {
+        this.covenantComments = Array.isArray(comments) ? comments : [];
       });
 
     this.checkMatch();

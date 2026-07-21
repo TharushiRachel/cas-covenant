@@ -5,8 +5,9 @@ import {
   RouterStateSnapshot,
 } from "@angular/router";
 import { BehaviorSubject, Observable } from "rxjs";
-import { map } from "rxjs/operators";
 import { DataService } from "src/app/core/service/data/data.service";
+import { AlertService } from "src/app/core/service/common/alert.service";
+import { SETTINGS } from "src/app/core/setting/commons.settings";
 import { EndpointConfig } from "src/app/shared/interfaces/EndpointConfig";
 import { COVENANT_SETTINGS } from "./endpoints";
 
@@ -17,7 +18,10 @@ export class CovenantService implements Resolve<any> {
   onCustomerCovenantTabChange = new BehaviorSubject<any>({});
   onFacilityCovenantTabChange = new BehaviorSubject<any>({});
 
-  constructor(private dataService: DataService) {}
+  constructor(
+    private dataService: DataService,
+    private alertService: AlertService
+  ) {}
 
   resolve(
     route: ActivatedRouteSnapshot,
@@ -26,74 +30,147 @@ export class CovenantService implements Resolve<any> {
     return Promise.resolve({});
   }
 
-  saveCustomerCovenant(data: any): Promise<any> {
-    return this.post(COVENANT_SETTINGS.ENDPOINTS.saveCustomerCovenant, data).then(
-      (response) => {
-        this.onCustomerCovenantTabChange.next(response);
-        return response;
-      }
-    );
-  }
-
-  updateCustomerCovenant(data: any): Promise<any> {
-    return this.post(
-      COVENANT_SETTINGS.ENDPOINTS.updateCustomerCovenant,
-      data
-    ).then((response) => {
-      this.onCustomerCovenantTabChange.next(response);
-      return response;
+  saveCustomerCovenant(payload: any) {
+    return new Promise((resolve, reject) => {
+      this.dataService
+        .post(COVENANT_SETTINGS.ENDPOINTS.saveCustomerCovenant, payload)
+        .subscribe(
+          (response: any) => {
+            if (response) {
+              this.onCustomerCovenantTabChange.next(response);
+              resolve(response);
+            }
+          },
+          (err: any) => {
+            this.alertService.showToaster(
+              "An error occurred. Please try again later.",
+              SETTINGS.TOASTER_MESSAGES.error
+            );
+            resolve([]);
+          }
+        );
     });
   }
 
-  getAllCustomerCovenant(facilityPaperId: number): Promise<any> {
-    const endpoint: EndpointConfig = {
-      ...COVENANT_SETTINGS.ENDPOINTS.getAllCustomerCovenant,
-      url:
-        COVENANT_SETTINGS.ENDPOINTS.getAllCustomerCovenant.url +
-        "/" +
-        facilityPaperId,
-    };
-    return this.get(endpoint);
-  }
-
-  saveFacilityCovenants(data: any): Promise<any> {
-    return this.post(
-      COVENANT_SETTINGS.ENDPOINTS.saveFacilityCovenants,
-      data
-    ).then((response) => {
-      this.onFacilityCovenantTabChange.next(response);
-      return response;
+  updateCustomerCovenant(payload: any) {
+    return new Promise((resolve, reject) => {
+      this.dataService
+        .post(COVENANT_SETTINGS.ENDPOINTS.updateCustomerCovenant, payload)
+        .subscribe(
+          (response: any) => {
+            if (response) {
+              this.onCustomerCovenantTabChange.next(response);
+              resolve(response);
+            }
+          },
+          (err: any) => {
+            this.alertService.showToaster(
+              "An error occurred. Please try again later.",
+              SETTINGS.TOASTER_MESSAGES.error
+            );
+            resolve([]);
+          }
+        );
     });
   }
 
-  updateFacilityCovenant(data: any): Promise<any> {
-    return this.post(
-      COVENANT_SETTINGS.ENDPOINTS.updateFacilityCovenant,
-      data
-    ).then((response) => {
-      this.onFacilityCovenantTabChange.next(response);
-      return response;
+  getAllCustomerCovenant(facilityPaperId: number) {
+    return new Promise((resolve, reject) => {
+      const endpoint: EndpointConfig = Object.assign(
+        {},
+        COVENANT_SETTINGS.ENDPOINTS.getAllCustomerCovenant
+      );
+      endpoint.url = endpoint.url + "/" + facilityPaperId;
+
+      this.dataService.get(endpoint).subscribe(
+        (response: any) => {
+          if (response) {
+            resolve(this.unwrap(response));
+          }
+        },
+        (err: any) => {
+          this.alertService.showToaster(
+            "An error occurred. Please try again later.",
+            SETTINGS.TOASTER_MESSAGES.error
+          );
+          resolve([]);
+        }
+      );
     });
   }
 
-  getAllFacilityCovenant(facilityPaperId: number): Promise<any> {
-    const endpoint: EndpointConfig = {
-      ...COVENANT_SETTINGS.ENDPOINTS.getAllFacilityCovenant,
-      url:
-        COVENANT_SETTINGS.ENDPOINTS.getAllFacilityCovenant.url +
-        "/" +
-        facilityPaperId,
-    };
-    return this.get(endpoint);
+  saveFacilityCovenants(payload: any) {
+    return new Promise((resolve, reject) => {
+      this.dataService
+        .post(COVENANT_SETTINGS.ENDPOINTS.saveFacilityCovenants, payload)
+        .subscribe(
+          (response: any) => {
+            if (response) {
+              this.onFacilityCovenantTabChange.next(response);
+              resolve(response);
+            }
+          },
+          (err: any) => {
+            this.alertService.showToaster(
+              "An error occurred. Please try again later.",
+              SETTINGS.TOASTER_MESSAGES.error
+            );
+            resolve([]);
+          }
+        );
+    });
   }
 
-  /**
-   * Maps getAllFacilityCovenant result into the legacy [{ covValue: [...] }] shape
-   * used by existing covenant UI grouping logic.
-   */
+  updateFacilityCovenant(payload: any) {
+    return new Promise((resolve, reject) => {
+      this.dataService
+        .post(COVENANT_SETTINGS.ENDPOINTS.updateFacilityCovenant, payload)
+        .subscribe(
+          (response: any) => {
+            if (response) {
+              this.onFacilityCovenantTabChange.next(response);
+              resolve(response);
+            }
+          },
+          (err: any) => {
+            this.alertService.showToaster(
+              "An error occurred. Please try again later.",
+              SETTINGS.TOASTER_MESSAGES.error
+            );
+            resolve([]);
+          }
+        );
+    });
+  }
+
+  getAllFacilityCovenant(facilityPaperId: number) {
+    return new Promise((resolve, reject) => {
+      const endpoint: EndpointConfig = Object.assign(
+        {},
+        COVENANT_SETTINGS.ENDPOINTS.getAllFacilityCovenant
+      );
+      endpoint.url = endpoint.url + "/" + facilityPaperId;
+
+      this.dataService.get(endpoint).subscribe(
+        (response: any) => {
+          if (response) {
+            resolve(this.unwrap(response));
+          }
+        },
+        (err: any) => {
+          this.alertService.showToaster(
+            "An error occurred. Please try again later.",
+            SETTINGS.TOASTER_MESSAGES.error
+          );
+          resolve([]);
+        }
+      );
+    });
+  }
+
   getAllFacilityCovenantLegacy(facilityPaperId: number): Promise<any[]> {
-    return this.getAllFacilityCovenant(facilityPaperId).then((response) => {
-      const list = this.unwrapList(response);
+    return this.getAllFacilityCovenant(facilityPaperId).then((response: any) => {
+      const list = Array.isArray(response) ? response : this.unwrapList(response);
       const covValue = list.map((dto: any) => {
         return Object.assign({}, dto, {
           applicationCovenantFacilityDTOS:
@@ -104,46 +181,102 @@ export class CovenantService implements Resolve<any> {
     });
   }
 
-  getCovenantsDetails(payload: any): Promise<any> {
-    return this.post(COVENANT_SETTINGS.ENDPOINTS.getCovenantsDetails, payload);
+  getCovenantsDetails(payload: any) {
+    return new Promise((resolve, reject) => {
+      this.dataService
+        .post(COVENANT_SETTINGS.ENDPOINTS.getCovenantsDetails, payload)
+        .subscribe(
+          (response: any) => {
+            if (response) {
+              resolve(this.unwrap(response));
+            }
+          },
+          (err: any) => {
+            this.alertService.showToaster(
+              "An error occurred. Please try again later.",
+              SETTINGS.TOASTER_MESSAGES.error
+            );
+            resolve([]);
+          }
+        );
+    });
   }
 
-  getCovenantDetailsFromFinacle(
-    custId: string,
-    facilityPaperId: number
-  ): Promise<any> {
+  getCovenantDetailsFromFinacle(custId: string, facilityPaperId: number) {
     const payload = {
       requestId: "CAS_0001",
       custId: custId,
       acctId: "",
       facilityPaperId: facilityPaperId,
     };
-    return this.getCovenantsDetails(payload).then((response) => {
-      return this.unwrap(response);
+    return this.getCovenantsDetails(payload);
+  }
+
+  getCovenantList(payload: any) {
+    return new Promise((resolve, reject) => {
+      this.dataService
+        .post(COVENANT_SETTINGS.ENDPOINTS.getCovenantList, payload)
+        .subscribe(
+          (response: any) => {
+            if (response) {
+              resolve(this.unwrap(response));
+            }
+          },
+          (err: any) => {
+            this.alertService.showToaster(
+              "An error occurred. Please try again later.",
+              SETTINGS.TOASTER_MESSAGES.error
+            );
+            resolve([]);
+          }
+        );
     });
   }
 
-  getCovenantList(data: any): Promise<any> {
-    return this.post(COVENANT_SETTINGS.ENDPOINTS.getCovenantList, data).then(
-      (response) => this.unwrap(response)
-    );
+  addCommentToCovenant(payload: any) {
+    return new Promise((resolve, reject) => {
+      this.dataService
+        .post(COVENANT_SETTINGS.ENDPOINTS.addCommentToCovenant, payload)
+        .subscribe(
+          (response: any) => {
+            if (response) {
+              resolve(response);
+            }
+          },
+          (err: any) => {
+            this.alertService.showToaster(
+              "An error occurred. Please try again later.",
+              SETTINGS.TOASTER_MESSAGES.error
+            );
+            resolve([]);
+          }
+        );
+    });
   }
 
-  addCommentToCovenant(data: any): Promise<any> {
-    return this.post(COVENANT_SETTINGS.ENDPOINTS.addCommentToCovenant, data);
-  }
+  getCovenantCommentList(facilityPaperId: number) {
+    return new Promise((resolve, reject) => {
+      const endpoint: EndpointConfig = Object.assign(
+        {},
+        COVENANT_SETTINGS.ENDPOINTS.getCovenantCommentList
+      );
+      endpoint.url = endpoint.url + "/" + facilityPaperId;
 
-  getCovenantCommentList(facilityPaperId: number): Observable<any> {
-    const endpoint: EndpointConfig = {
-      ...COVENANT_SETTINGS.ENDPOINTS.getCovenantCommentList,
-      url:
-        COVENANT_SETTINGS.ENDPOINTS.getCovenantCommentList.url +
-        "/" +
-        facilityPaperId,
-    };
-    return this.dataService.get(endpoint).pipe(
-      map((response: any) => this.unwrapList(response))
-    );
+      this.dataService.get(endpoint).subscribe(
+        (response: any) => {
+          if (response) {
+            resolve(this.unwrapList(response));
+          }
+        },
+        (err: any) => {
+          this.alertService.showToaster(
+            "An error occurred. Please try again later.",
+            SETTINGS.TOASTER_MESSAGES.error
+          );
+          resolve([]);
+        }
+      );
+    });
   }
 
   unwrap(response: any): any {
@@ -166,23 +299,5 @@ export class CovenantService implements Resolve<any> {
   unwrapList(response: any): any[] {
     const data = this.unwrap(response);
     return Array.isArray(data) ? data : [];
-  }
-
-  private post(endpoint: EndpointConfig, data: any): Promise<any> {
-    return new Promise((resolve, reject) => {
-      this.dataService.post(endpoint, data).subscribe(
-        (response: any) => resolve(response),
-        (error: any) => reject(error)
-      );
-    });
-  }
-
-  private get(endpoint: EndpointConfig): Promise<any> {
-    return new Promise((resolve, reject) => {
-      this.dataService.get(endpoint).subscribe(
-        (response: any) => resolve(response),
-        (error: any) => reject(error)
-      );
-    });
   }
 }
