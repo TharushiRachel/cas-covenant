@@ -132,6 +132,22 @@ export class CustomerCovenantComponent implements OnInit, OnDestroy {
     this.getCovenantDetailsFromFinacle();
 
     this.subscriptions.add(
+      this.facilityPaperAddEditService.onCustomerCovenantTabChange
+        .pipe(skip(1))
+        .subscribe(() => {
+          this.loadCustomerCovenantList();
+        })
+    );
+
+    this.subscriptions.add(
+      this.covenantService.onCustomerCovenantTabChange
+        .pipe(skip(1))
+        .subscribe(() => {
+          this.loadCustomerCovenantList();
+        })
+    );
+
+    this.subscriptions.add(
       this.facilityPaperAddEditService.onFacilityCovenantTabChange
         .pipe(skip(1))
         .subscribe(() => {
@@ -147,6 +163,7 @@ export class CustomerCovenantComponent implements OnInit, OnDestroy {
         })
     );
 
+    this.loadCustomerCovenantList();
     this.loadFacilityCovenantLists();
     this.computeApprovedCovenantCounters();
 
@@ -226,7 +243,7 @@ export class CustomerCovenantComponent implements OnInit, OnDestroy {
 
     this.modalRef.content.action.subscribe((response: any) => {
       this.covenantDetail = response;
-      this.ngOnInit();
+      this.loadCustomerCovenantList();
     });
   }
 
@@ -267,6 +284,7 @@ export class CustomerCovenantComponent implements OnInit, OnDestroy {
 
     this.modalRef.content.action.subscribe((response: any) => {
       this.covenantDetailUpdate = response;
+      this.loadCustomerCovenantList();
     });
   }
 
@@ -358,11 +376,11 @@ export class CustomerCovenantComponent implements OnInit, OnDestroy {
       if (isYes) {
         const createdUserDisplayName =
           this.applicationService.getLoggedInUserDisplayName();
-        this.facilityPaperAddEditService.deleteCovenant(
-          customerCovenantId,
-          createdUserDisplayName,
-        );
-        this.getFacilityCovenantList();
+        this.facilityPaperAddEditService
+          .deleteCovenant(customerCovenantId, createdUserDisplayName)
+          .then(() => {
+            this.loadCustomerCovenantList();
+          });
       }
     });
   }
@@ -427,6 +445,29 @@ export class CustomerCovenantComponent implements OnInit, OnDestroy {
           this.accessLevelOfCurrentAssignUser = response.applicationSecurityClass;
         })
     );
+  }
+
+  /**
+   * Loads customer covenants from cas-covenant getAllCustomerCovenant API.
+   */
+  loadCustomerCovenantList() {
+    if (!this.facilityPaper || !this.facilityPaper.facilityPaperID) {
+      this.covenantList = [];
+      this.computeApprovedCovenantCounters();
+      return;
+    }
+
+    this.covenantService
+      .getAllCustomerCovenant(this.facilityPaper.facilityPaperID)
+      .then((data: any) => {
+        this.covenantList = Array.isArray(data) ? data : [];
+        this.computeApprovedCovenantCounters();
+      })
+      .catch((error) => {
+        console.error("Error loading customer covenants:", error);
+        this.covenantList = [];
+        this.computeApprovedCovenantCounters();
+      });
   }
 
   /**

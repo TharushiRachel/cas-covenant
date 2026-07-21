@@ -84,9 +84,7 @@ export class CovenantService implements Resolve<any> {
 
       this.dataService.get(endpoint).subscribe(
         (response: any) => {
-          if (response) {
-            resolve(this.unwrap(response));
-          }
+          resolve(this.unwrapList(response));
         },
         (err: any) => {
           this.alertService.showToaster(
